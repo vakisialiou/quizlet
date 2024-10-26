@@ -8,11 +8,10 @@ export type MysqlConfig = {
   connectionLimit: number,
 }
 
-type TransactionCallback = { (connection: mysql2Promise.PoolConnection): Promise<void> }
-
-type Value = (number|string|JSON|Date)
-type Row = {[key: string]: Value}
-type Rows = Row[]
+export type TransactionCallback = { (connection: mysql2Promise.PoolConnection): Promise<void> }
+export type Value = (number|string|JSON|Date|null)
+export type Row = {[key: string]: Value}
+export type Rows = Row[]
 
 export default class Mysql {
 
@@ -54,7 +53,7 @@ export default class Mysql {
     this.closeConnection(connection)
   }
 
-  async execute(connection: mysql2Promise.PoolConnection, sql: string, values: Value[]): Promise<any> {
+  async execute(connection: mysql2Promise.PoolConnection, sql: string, values: (Value[]|Value[][][])): Promise<any> {
     return await connection.query(sql, values)
   }
 
@@ -63,27 +62,27 @@ export default class Mysql {
   //   return this.execute(connection, sql, [values])
   // }
   //
-  // multiInsert(table: string, rows: Rows, updateColumns: QueryUpdateColumns = []): Promise<any> {
-  //   const { sql, values } = this.generateUpsertSQL(table, rows, updateColumns)
-  //   return this.query(sql, values)
-  // }
+  multiInsert(table: string, rows: Rows, updateColumns: string[] = []): Promise<any> {
+    const { sql, values } = this.generateUpsertSQL(table, rows, updateColumns)
+    return this.query(sql, values)
+  }
 
-  // generateUpsertSQL(table: string, rows: Rows, updateColumns: QueryUpdateColumns = []): { sql: string, values: Value[][] } {
-  //   const fields = Object.keys(rows[0])
-  //   if (updateColumns.length === 0 && rows.length > 0) {
-  //     updateColumns = fields
-  //   }
-  //
-  //   const strInsertColumns = fields.join(', ')
-  //   const strUpdateColumns = updateColumns.map((column) => `${column}=VALUES(${column})`).join(', ')
-  //
-  //   return {
-  //     sql: `INSERT INTO ${table} (${strInsertColumns}) VALUES ? ON DUPLICATE KEY UPDATE ${strUpdateColumns}`,
-  //     values: rows.map((row) => Object.values(row))
-  //   }
-  // }
+  generateUpsertSQL(table: string, rows: Rows, updateColumns: string[] = []): { sql: string, values: Value[][][] } {
+    const fields = Object.keys(rows[0])
+    if (updateColumns.length === 0 && rows.length > 0) {
+      updateColumns = fields
+    }
 
-  async query(sql: string, values: Value[]): Promise<any> {
+    const strInsertColumns = fields.join(', ')
+    const strUpdateColumns = updateColumns.map((column) => `${column}=VALUES(${column})`).join(', ')
+
+    return {
+      sql: `INSERT INTO ${table} (${strInsertColumns}) VALUES ? ON DUPLICATE KEY UPDATE ${strUpdateColumns}`,
+      values: [rows.map((row) => Object.values(row))]
+    }
+  }
+
+  async query(sql: string, values: (Value[]|Value[][][])): Promise<any> {
     const connection = await this.openConnection()
     try {
       const res = await this.execute(connection, sql, values)

@@ -1,12 +1,12 @@
 'use client'
 
-import EntityFolder, { FolderType } from '@entities/EntityFolder'
+import EntityFolder, { EntityFolderType } from '@entities/EntityFolder'
 import MetaLabel from '@components/MetaLabel'
 import Folder from '@components/Folder'
 import { useState } from 'react'
 
-export default function Folders({ folders }: { folders: FolderType[] }) {
-  const [ data, setData ] = useState<{ items: FolderType[], editUUID: string | number | null }>({
+export default function Folders({ folders }: { folders: EntityFolderType[] }) {
+  const [ data, setData ] = useState<{ items: EntityFolderType[], editUUID: string | number | null }>({
     items: [...folders],
     editUUID: null
   })
@@ -36,10 +36,18 @@ export default function Folders({ folders }: { folders: FolderType[] }) {
               name={folder.name}
               href={`/folder/${folder.id}`}
               edit={folder.uuid === data.editUUID}
-              onExit={() => {
+              onExit={async () => {
+                const editFolder = data.items.find(({ uuid }) => uuid === data.editUUID)
+
                 setData((prevState) => {
                   return { ...prevState, editUUID: null }}
                 )
+
+                await fetch('http://localhost:3000/api/folder', {
+                  method: 'PUT',
+                  body: JSON.stringify(editFolder),
+                  headers: { 'Content-Type': 'application/json' },
+                })
               }}
               onEdit={() => {
                 if (folder.id) {
