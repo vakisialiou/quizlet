@@ -31,4 +31,8 @@ export default class ClientFolder {
     this.count = value
     return this
   }
+
+  serialize() {
+    return JSON.parse(JSON.stringify(this))
+  }
 }
