@@ -1,18 +1,19 @@
+import { ClientFolderType } from '@entities/ClientFolder'
+import SVGThreeDots from '@public/svg/three_dots.svg'
+import Dropdown from '@components/Dropdown'
+import Spinner from '@components/Spinner'
 import { ReactNode } from 'react'
 import Link from 'next/link'
 import clsx from 'clsx'
 
 export default function Folder(
-  { name, edit = false, label, href, onEdit, onExit, onChange }:
-  { name: string, edit: boolean, label: ReactNode, href: string, onEdit: () => void, onExit: () => void, onChange: (value: string) => void }
+  { data, edit = false, process = false, label, href, onEdit, onRemove, onExit, onChange }:
+  { data: ClientFolderType, edit: boolean, process: boolean, label: ReactNode, href: string, onEdit: () => void, onRemove: () => void, onExit: () => void, onChange: (value: string) => void }
 ) {
-
   return (
     <Link
       href={href}
-      data-attr="1"
       className={clsx('transition-colors group border border-gray-500 rounded w-full bg-gray-900 flex justify-between gap-2 p-4 select-none', {
-        ['active:border-gray-700']: !edit,
         ['hover:border-gray-600']: !edit,
         ['hover:cursor-pointer']: !edit,
       })}
@@ -27,7 +28,7 @@ export default function Folder(
           <div
             className="flex items-center px-1 transition-colors group group-hover:text-gray-400 group-active:text-gray-400 font-semibold text-sm truncate ..."
           >
-            {name}
+            {data.name}
           </div>
 
           <div className="flex gap-2 items-center">
@@ -38,16 +39,40 @@ export default function Folder(
             }
 
             <div className="flex gap-2">
-              <div
-                data-attr="2"
-                className="border border-gray-400 bg-gray-500 w-5 h-5 rounded-full hover:bg-gray-600 active:bg-gray-700 transition-colors hover:cursor-pointer flex items-center justify-center select-none"
+              <Dropdown
                 onClick={(e) => {
                   e.preventDefault()
-                  onEdit()
+                }}
+                items={[
+                  {id: 1, name: 'Edit'},
+                  {id: 2, name: 'Remove', disabled: data.count > 0},
+                ]}
+                onSelect={(id) => {
+                  switch (id) {
+                    case 1:
+                      onEdit()
+                      break
+                    case 2:
+                      onRemove()
+                      break
+                  }
                 }}
               >
+                {!process &&
+                  <SVGThreeDots
+                    width={24}
+                    height={24}
+                    className="text-gray-700"
+                  />
+                }
 
-              </div>
+                {process &&
+                  <div className="flex items-center justify-center w-6 h-6">
+                    <Spinner/>
+                  </div>
+                }
+              </Dropdown>
+
             </div>
           </div>
         </>
@@ -62,7 +87,7 @@ export default function Folder(
             id="name"
             name="name"
             type="text"
-            defaultValue={name}
+            defaultValue={data.name}
             autoComplete="off"
             placeholder="Folder name"
             className="block w-full bg-gray-800 text-gray-300 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline outline-1 focus:outline-blue-500 font-semibold text-sm"

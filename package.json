@@ -7,11 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "migration:up": "node migration.mjs up",
-    "migration:down": "node migration.mjs down",
-    "migration:add": "node migration.mjs add migration"
+    "migration:up": "npx tsx migration.ts up",
+    "migration:down": "npx tsx migration.ts down",
+    "migration:add": "npx tsx migration.ts add migration"
   },
   "dependencies": {
+    "@floating-ui/dom": "^1.6.11",
+    "@svgr/webpack": "^8.1.0",
     "@types/object-path": "^0.11.4",
     "@types/uuid": "^10.0.0",
     "clsx": "^2.1.1",
@@ -33,6 +35,7 @@
     "eslint-config-next": "14.2.16",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
+    "tsx": "^4.19.2",
     "typescript": "^5"
   }
 }

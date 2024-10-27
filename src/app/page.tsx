@@ -5,7 +5,7 @@ export default async function Page() {
   const folders = await findFolders(1)
   return (
     <div className="flex flex-col">
-      <Folders folders={folders}/>
+      <Folders folders={folders} />
     </div>
   )
 }

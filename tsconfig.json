@@ -18,6 +18,7 @@
       }
     ],
     "paths": {
+      "@public/*": ["./public/*"],
       "@app/*": ["./src/app/*"],
       "@lib/*": ["./src/lib/*"],
       "@entities/*": ["./src/entities/*"],

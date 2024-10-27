@@ -14,7 +14,7 @@ export type Row = {[key: string]: Value}
 export type Rows = Row[]
 
 export default class Mysql {
-
+  private static instance: Mysql | null = null
   pool: mysql2Promise.Pool
 
   constructor(config: MysqlConfig) {
@@ -26,6 +26,13 @@ export default class Mysql {
       database: config.database,
       connectionLimit: config.connectionLimit,
     })
+  }
+
+  static getInstance(config: MysqlConfig): Mysql {
+    if (!Mysql.instance) {
+      Mysql.instance = new Mysql(config)
+    }
+    return Mysql.instance
   }
 
   openConnection(): Promise<mysql2Promise.PoolConnection> {
