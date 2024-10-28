@@ -8,7 +8,6 @@ export async function GET(req: Request, { params }: { params: { uuid: string } }
       return new Response(null, { status: 400 })
     }
 
-    console.log(params.uuid, folder, '====')
     const items = await findTermsByFolderId(folder.id as number)
     return new Response(JSON.stringify({ items }), {
       headers: { 'Content-Type': 'application/json' },
@@ -16,7 +15,6 @@ export async function GET(req: Request, { params }: { params: { uuid: string } }
     })
 
   } catch (error) {
-    console.log(error, '========')
     return new Response(null, { status: 500 })
   }
 }

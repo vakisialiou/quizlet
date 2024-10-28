@@ -8,7 +8,7 @@ import clsx from 'clsx'
 
 export default function Folder(
   { data, edit = false, process = false, label, href, onEdit, onRemove, onExit, onChange }:
-  { data: ClientFolderType, edit: boolean, process: boolean, label: ReactNode, href: string, onEdit: () => void, onRemove: () => void, onExit: () => void, onChange: (value: string) => void }
+  { data: ClientFolderType, edit: boolean, process: boolean, label: ReactNode, href: string, onEdit: () => void, onRemove: () => void, onExit: () => void, onChange: (prop: string, value: string) => void }
 ) {
   return (
     <Link
@@ -84,16 +84,15 @@ export default function Folder(
         >
           <input
             autoFocus
-            id="name"
-            name="name"
             type="text"
-            defaultValue={data.name}
+            name="name"
             autoComplete="off"
+            defaultValue={data.name}
             placeholder="Folder name"
             className="block w-full bg-gray-800 text-gray-300 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline outline-1 focus:outline-blue-500 font-semibold text-sm"
             onBlur={onExit}
             onChange={(e) => {
-              onChange(e.target.value)
+              onChange('name', e.target.value)
             }}
             onKeyUp={(e) => {
               if ([27, 13].includes(e.keyCode)) {

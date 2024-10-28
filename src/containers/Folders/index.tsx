@@ -58,10 +58,10 @@ export default function Folders() {
               onEdit={() => {
                 actions.updateFolder({ editUUID: folder.uuid })
               }}
-              onChange={(name) => {
+              onChange={(prop, value) => {
                 actions.updateFolder({
                   items: folders.items.map((item) => {
-                    return item.uuid === folders.editUUID ? {...item, name} : item
+                    return item.uuid === folders.editUUID ? {...item, [prop]: value } : item
                   })
                 })
               }}

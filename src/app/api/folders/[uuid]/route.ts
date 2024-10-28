@@ -14,7 +14,6 @@ export async function PUT(req: Request) {
     return new Response(null, { status: 200 })
 
   } catch (error) {
-    console.log(error)
     return new Response(null, { status: 500 })
   }
 }

@@ -49,7 +49,8 @@ export default async function RootLayout({
             folders: createPreloadedFoldersState(folders)
           }}
         >
-          <Header />
+          <Header menuItems={[]} />
+
           {children}
         </ReduxProvider>
       </body>
