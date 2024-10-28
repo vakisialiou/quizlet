@@ -45,7 +45,7 @@ export default function Folder(
                 }}
                 items={[
                   {id: 1, name: 'Edit'},
-                  {id: 2, name: 'Remove', disabled: data.count > 0},
+                  {id: 2, name: 'Remove'},
                 ]}
                 onSelect={(id) => {
                   switch (id) {

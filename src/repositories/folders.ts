@@ -4,28 +4,20 @@ import objectPath from 'object-path'
 import { db, Rows } from '@lib/db'
 
 export const findFoldersByUserId = async (userId: number): Promise<ClientFolderType[]> => {
-  const res = await db.find(
-    `
-    SELECT f.uuid, f.name, COUNT(t.id) as count
-      FROM folders as f
-      LEFT JOIN terms as t ON t.folderId = f.id
-     WHERE f.userId = ?
-     GROUP BY f.id
-    `,
-    [userId]
-  )
+  const res = await db.find(`
+    SELECT uuid, name
+      FROM folders
+     WHERE userId = ?
+  `, [userId])
   return res as ClientFolderType[]
 }
 
 export const getFolderByUUID = async (userId: number, uuid: string): Promise<ServerFolderType | null> => {
-  const res = await db.find(
-    `
+  const res = await db.find(`
     SELECT id, userId, uuid, name, createdAt, updatedAt
       FROM folders
      WHERE userId = ? AND uuid = ?
-    `,
-    [userId, uuid]
-  )
+  `, [userId, uuid])
   return res ? res[0] as ServerFolderType : null
 }
 
