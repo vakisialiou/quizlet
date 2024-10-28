@@ -141,7 +141,7 @@ export default function Dropdown(
                     key={item.id}
                     className={clsx('block px-4 py-2 text-sm text-gray-400 transition-colors', {
                       ['bg-gray-900']: item.id === selected,
-                      ['disabled']: item.disabled,
+                      ['disabled pointer-events-none']: item.disabled,
                       ['text-gray-700']: item.disabled,
                       ['hover:bg-gray-900 active:bg-gray-800 cursor-pointer']: !item.disabled,
                       [item.className || '']: item.className

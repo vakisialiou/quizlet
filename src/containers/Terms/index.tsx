@@ -30,7 +30,7 @@ export default function Terms({ folderUUID }: { folderUUID: string }) {
             className="text-gray-600"
           />
 
-          <span>{folder?.name}</span>
+          <span className="text-gray-600">{folder?.name}</span>
         </div>
 
         <div

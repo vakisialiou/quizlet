@@ -43,9 +43,9 @@ export default function Term(
         {!edit &&
           <>
             <div
-              className="flex items-center px-1 h-6 transition-colors font-semibold text-sm truncate ..."
+              className="flex items-center px-1 h-6 transition-colors text-gray-400 font-semibold text-sm truncate ..."
             >
-              {data.question || <span className="text-gray-500">(Not set)</span>}
+              {data.question || <span className="text-gray-500">Question not set</span>}
             </div>
 
             <div className="flex gap-2 items-center">
@@ -99,7 +99,7 @@ export default function Term(
               type="text"
               name="question"
               autoComplete="off"
-              placeholder="Question"
+              placeholder="Question not set"
               defaultValue={data.question}
               className="block w-full bg-gray-800 text-gray-300 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline-none outline-1 focus:outline-blue-500 font-semibold text-sm"
               onChange={(e) => {
@@ -119,9 +119,9 @@ export default function Term(
         {!edit &&
           <>
             <div
-              className="flex items-center px-1 h-6 transition-colors font-semibold text-sm truncate ..."
+              className="flex items-center px-1 h-6 transition-colors text-sm text-gray-400 truncate ..."
             >
-              {data.answer || <span className="text-gray-500 text-xs">(Not set)</span>}
+              {data.answer || <span className="text-gray-500">Answer not set</span>}
             </div>
           </>
         }
@@ -134,9 +134,9 @@ export default function Term(
               type="text"
               name="answer"
               autoComplete="off"
-              placeholder="Answer"
+              placeholder="Answer not set"
               defaultValue={data.answer}
-              className="block w-full bg-gray-800 text-gray-300 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline-none outline-1 focus:outline-blue-500 font-semibold text-sm"
+              className="block w-full bg-gray-800 text-gray-300 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline-none outline-1 focus:outline-blue-500 text-sm"
               onChange={(e) => {
                 onChange('answer', e.target.value)
               }}
