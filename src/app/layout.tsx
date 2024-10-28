@@ -1,5 +1,7 @@
+import { findFolders } from '@repositories/folders'
 import localFont from 'next/font/local'
 import Header from '@containers/Header'
+import ReduxProvider from './provider'
 import type { Metadata } from 'next'
 import React from 'react'
 import './globals.css'
@@ -24,19 +26,30 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const items = await findFolders(1)
   return (
     <html lang="en">
       <body
         suppressHydrationWarning={true}
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header />
-        {children}
+        <ReduxProvider
+          preloadedState={{
+            folders: {
+              items,
+              editUUID: null,
+              processUUIDs: [],
+            }
+          }}
+        >
+          <Header />
+          {children}
+        </ReduxProvider>
       </body>
     </html>
   )

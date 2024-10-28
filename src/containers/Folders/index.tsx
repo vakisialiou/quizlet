@@ -10,7 +10,6 @@ import Folder from '@components/Folder'
 export default function Folders() {
   const dispatch = useDispatch()
   const folders = useSelector(({ folders }: { folders: DataStateType }) => folders)
-  console.log(folders)
 
   return (
     <div>
