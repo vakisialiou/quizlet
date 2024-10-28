@@ -18,7 +18,7 @@ enum Placement {
   leftEnd = 'left-end',
 }
 
-type DropdownItemType = {
+export type DropdownItemType = {
   id: string | number,
   name: ReactNode | string,
   className?: string,

@@ -1,14 +1,34 @@
+import Dropdown, { DropdownItemType } from '@components/Dropdown'
 import { ClientFolderType } from '@entities/ClientFolder'
 import SVGThreeDots from '@public/svg/three_dots.svg'
-import Dropdown from '@components/Dropdown'
 import Spinner from '@components/Spinner'
 import { ReactNode } from 'react'
 import Link from 'next/link'
 import clsx from 'clsx'
 
 export default function Folder(
-  { data, edit = false, process = false, label, href, onEdit, onRemove, onExit, onChange }:
-  { data: ClientFolderType, edit: boolean, process: boolean, label: ReactNode, href: string, onEdit: () => void, onRemove: () => void, onExit: () => void, onChange: (prop: string, value: string) => void }
+  {
+    data,
+    edit = false,
+    process = false,
+    label,
+    href,
+    onExit,
+    onChange,
+    dropdownItems,
+    onDropdownSelect
+  }:
+  {
+    data: ClientFolderType,
+    edit: boolean,
+    process: boolean,
+    label: ReactNode,
+    href: string,
+    onExit: () => void,
+    onChange: (prop: string, value: string) => void,
+    dropdownItems: DropdownItemType[],
+    onDropdownSelect: (id: string | number) => void,
+  }
 ) {
   return (
     <Link
@@ -43,19 +63,9 @@ export default function Folder(
                 onClick={(e) => {
                   e.preventDefault()
                 }}
-                items={[
-                  {id: 1, name: 'Edit'},
-                  {id: 2, name: 'Remove'},
-                ]}
+                items={dropdownItems}
                 onSelect={(id) => {
-                  switch (id) {
-                    case 1:
-                      onEdit()
-                      break
-                    case 2:
-                      onRemove()
-                      break
-                  }
+                  onDropdownSelect(id)
                 }}
               >
                 {!process &&

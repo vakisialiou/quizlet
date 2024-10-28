@@ -38,6 +38,32 @@ export default function Folders() {
               href={`/folder/${folder.uuid}`}
               edit={folder.uuid === folders.editUUID}
               process={folders.processUUIDs.includes(folder.uuid)}
+              dropdownItems={[
+                {id: 1, name: 'Edit'},
+                {id: 2, name: 'Remove', disabled: (terms[folder.uuid]?.items?.length || 0) > 0},
+              ]}
+              onDropdownSelect={(id) => {
+                switch (id) {
+                  case 1:
+                    actions.updateFolder({ editUUID: folder.uuid })
+                    break
+                  case 2:
+                    actions.updateFolder({
+                      processUUIDs: unique([...folders.processUUIDs, folder.uuid]),
+                    })
+
+                    fetch(`http://localhost:3000/api/folders/${folder.uuid}`, {
+                      method: 'DELETE',
+                      headers: {'Content-Type': 'application/json'},
+                    }).then(() => {
+                      actions.updateFolder({
+                        processUUIDs: remove(folders.processUUIDs, folder.uuid),
+                        items: folders.items.filter((item) => item.uuid !== folder.uuid)
+                      })
+                    })
+                    break
+                }
+              }}
               onExit={async () => {
                 const { editUUID, processUUIDs } = folders
                 const editFolder = folders.items.find(({uuid}) => uuid === editUUID)
@@ -55,28 +81,10 @@ export default function Folders() {
                   actions.updateFolder({ processUUIDs: remove(processUUIDs, editUUID) })
                 })
               }}
-              onEdit={() => {
-                actions.updateFolder({ editUUID: folder.uuid })
-              }}
               onChange={(prop, value) => {
                 actions.updateFolder({
                   items: folders.items.map((item) => {
                     return item.uuid === folders.editUUID ? {...item, [prop]: value } : item
-                  })
-                })
-              }}
-              onRemove={() => {
-                actions.updateFolder({
-                  processUUIDs: unique([...folders.processUUIDs, folder.uuid]),
-                })
-
-                fetch(`http://localhost:3000/api/folders/${folder.uuid}`, {
-                  method: 'DELETE',
-                  headers: {'Content-Type': 'application/json'},
-                }).then(() => {
-                  actions.updateFolder({
-                    processUUIDs: remove(folders.processUUIDs, folder.uuid),
-                    items: folders.items.filter((item) => item.uuid !== folder.uuid)
                   })
                 })
               }}
