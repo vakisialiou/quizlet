@@ -1,15 +1,16 @@
-import { DataStateType } from '@store/reducers/folders'
+import foldersReducer, { DataStateFoldersType } from '@store/reducers/folders'
+import termsReducer, { DataStateTermsType } from '@store/reducers/terms'
 import { configureStore } from '@reduxjs/toolkit'
-import foldersReducer from './reducers/folders'
-import { UnknownAction } from '@reduxjs/toolkit'
 
-export function initializeStore({ folders }: { folders: DataStateType }) {
+export function initializeStore({ folders, terms }: { folders: DataStateFoldersType, terms?: DataStateTermsType }) {
   return configureStore({
     reducer: {
+      terms: termsReducer,
       folders: foldersReducer,
     },
     preloadedState: {
-      folders: { ...foldersReducer(undefined, {} as UnknownAction), ...folders }
+      terms: { ...terms },
+      folders: { ...folders }
     },
   })
 }

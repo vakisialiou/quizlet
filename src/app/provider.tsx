@@ -1,6 +1,7 @@
 'use client'
 
-import { DataStateType } from '@store/reducers/folders'
+import { DataStateFoldersType } from '@store/reducers/folders'
+import { DataStateTermsType } from '@store/reducers/terms'
 import { initializeStore } from '@store/index'
 import { Provider } from 'react-redux'
 import { ReactNode } from 'react'
@@ -10,7 +11,8 @@ export default function ReduxProvider(
   {
     children: ReactNode,
     preloadedState: {
-      folders: DataStateType
+      terms: DataStateTermsType,
+      folders: DataStateFoldersType
     }
   }
 ) {

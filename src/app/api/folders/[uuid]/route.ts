@@ -1,5 +1,5 @@
 import { removeFolder, upsertFolder } from '@repositories/folders'
-import ServerFolder from '@entities/ServerFolder'
+import ServerFolder, { ServerFolderType } from '@entities/ServerFolder'
 
 export async function PUT(req: Request) {
   try {
@@ -10,10 +10,11 @@ export async function PUT(req: Request) {
       .setUUID(body.uuid)
       .setName(body.name)
 
-    await upsertFolder(folder)
+    await upsertFolder(folder as ServerFolderType)
     return new Response(null, { status: 200 })
 
   } catch (error) {
+    console.log(error)
     return new Response(null, { status: 500 })
   }
 }

@@ -1,8 +1,8 @@
 import { v4 } from 'uuid'
 
 export type ServerFolderType = {
-  id: number | null,
-  userId: number | null,
+  id: number,
+  userId: number,
   uuid: string
   name: string,
   createdAt: Date,

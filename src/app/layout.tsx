@@ -1,10 +1,13 @@
-import { findFolders } from '@repositories/folders'
+import { findFoldersByUserId } from '@repositories/folders'
+import { createPreloadedTermsState } from '@store/reducers/terms'
+import { findTermsByUserId } from '@repositories/terms'
 import localFont from 'next/font/local'
 import Header from '@containers/Header'
 import ReduxProvider from './provider'
 import type { Metadata } from 'next'
 import React from 'react'
 import './globals.css'
+import {createPreloadedFoldersState} from "@store/reducers/folders";
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -31,7 +34,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const items = await findFolders(1)
+  const folders = await findFoldersByUserId(1)
+  const terms = await findTermsByUserId(1)
+
   return (
     <html lang="en">
       <body
@@ -40,11 +45,8 @@ export default async function RootLayout({
       >
         <ReduxProvider
           preloadedState={{
-            folders: {
-              items,
-              editUUID: null,
-              processUUIDs: [],
-            }
+            terms: createPreloadedTermsState(terms),
+            folders: createPreloadedFoldersState(folders)
           }}
         >
           <Header />

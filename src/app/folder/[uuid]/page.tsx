@@ -1,12 +1,9 @@
-import Link from 'next/link'
+import Terms from '@containers/Terms'
 
-export default function Page({ params }: { params: { id: string } }) {
+export default async function Page({ params }: { params: { uuid: string } }) {
   return (
     <div>
-      <Link href="../">Назад</Link>
-
-      <br/>
-      Page {params.id}
+      <Terms folderUUID={params.uuid} />
     </div>
   )
 }

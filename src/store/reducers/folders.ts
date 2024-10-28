@@ -1,30 +1,36 @@
 import { ClientFolderType } from '@entities/ClientFolder'
 import { createSlice } from '@reduxjs/toolkit'
+import { useDispatch } from 'react-redux'
 
-export type DataStateType = {
+export type DataStateFoldersType = {
   items: ClientFolderType[],
   editUUID: string | number | null,
   processUUIDs: (string | number)[]
 }
 
-const foldersSlice = createSlice({
+type AddType = { editUUID?: string, folder: ClientFolderType }
+type UpdateType = Partial<{ items?: ClientFolderType[], editUUID?: string | null, processUUIDs?: (string | number)[] }>
+
+export const createPreloadedFoldersState = (items: ClientFolderType[]): DataStateFoldersType => {
+  return {
+    items,
+    editUUID: null,
+    processUUIDs: [],
+  }
+}
+
+const slice = createSlice({
   name: 'folders',
-  initialState: {} as DataStateType,
+  initialState: {} as DataStateFoldersType,
   reducers: {
-    setFolders: (state, action: { payload: ClientFolderType[] }) => {
-      return {
-        ...state,
-        items: [...action.payload],
-      }
-    },
-    addFolder: (state, action: { payload: { editUUID?: string, folder: ClientFolderType } }) => {
+    addFolder: (state, action: { payload: AddType }) => {
       return {
         ...state,
         editUUID: action.payload.editUUID || null,
         items: [...state.items, action.payload.folder],
       }
     },
-    updateFolder: (state, action: { payload: Partial<{ items?: ClientFolderType[], editUUID?: string | null, processUUIDs?: (string | number)[] }> }) => {
+    updateFolder: (state, action: { payload: UpdateType }) => {
       return {
         ...state,
         items: action.payload.items !== undefined ? action.payload.items : state.items,
@@ -35,10 +41,16 @@ const foldersSlice = createSlice({
   },
 })
 
-export const {
-  addFolder,
-  setFolders,
-  updateFolder
-} = foldersSlice.actions
+export default slice.reducer
 
-export default foldersSlice.reducer
+export const useFolderActions = () => {
+  const dispatch = useDispatch()
+  return {
+    addFolder: (payload: AddType) => {
+      dispatch(slice.actions.addFolder(payload))
+    },
+    updateFolder: (payload: UpdateType) => {
+      dispatch(slice.actions.updateFolder(payload))
+    }
+  }
+}

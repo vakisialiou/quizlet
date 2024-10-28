@@ -1,3 +1,4 @@
+import { ServerFolderType } from './ServerFolder'
 import { v4 } from 'uuid'
 
 export type ClientFolderType = {
