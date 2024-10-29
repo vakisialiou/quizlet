@@ -3,14 +3,17 @@
 import { DataStateTermsType, useTermActions } from '@store/reducers/terms'
 import { DataStateFoldersType } from '@store/reducers/folders'
 import SVGRightArrow from '@public//svg/rightarrow.svg'
+import { ClientTermType } from '@entities/ClientTerm'
 import ClientTerm from '@entities/ClientTerm'
 import { unique, remove } from '@lib/array'
 import { useSelector } from 'react-redux'
 import Term from '@components/Term'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
 
 export default function Terms({ folderUUID }: { folderUUID: string }) {
+  const [ originItem, setOriginItem ] = useState<ClientTermType | null>(null)
+
   const actions = useTermActions()
   const terms = useSelector(({ terms }: { terms: DataStateTermsType }) => terms[folderUUID])
   const folders = useSelector(({ folders }: { folders: DataStateFoldersType }) => folders)
@@ -53,33 +56,47 @@ export default function Terms({ folderUUID }: { folderUUID: string }) {
                 key={term.uuid}
                 edit={term.uuid === terms.editUUID}
                 process={terms.processUUIDs.includes(term.uuid)}
-                onExit={async () => {
-                  const { editUUID, processUUIDs } = terms
+                onSave={() => {
+                  setOriginItem(null)
 
-                  const editTerm = terms.items.find(({uuid}) => uuid === editUUID)
+                  const editTerm = terms.items.find(({uuid}) => uuid === term.uuid)
 
                   actions.updateTerm({
                     folderUUID,
                     editUUID: null,
-                    processUUIDs: unique([...processUUIDs, editUUID]),
+                    processUUIDs: unique([...terms.processUUIDs, term.uuid]),
                   })
 
-                  fetch(`http://localhost:3000/api/terms/${editUUID}`, {
+                  fetch(`http://localhost:3000/api/terms/${term.uuid}`, {
                     method: 'PUT',
                     body: JSON.stringify(editTerm),
                     headers: {'Content-Type': 'application/json'},
                   }).then(() => {
-                    actions.updateTerm({ folderUUID, processUUIDs: remove(processUUIDs, editUUID) })
+                    actions.updateTerm({ folderUUID, processUUIDs: remove(terms.processUUIDs, term.uuid) })
                   })
                 }}
+                onExit={async () => {
+                  actions.updateTerm({
+                    folderUUID,
+                    editUUID: null,
+                    items: terms.items.map((item) => {
+                      return item.uuid === originItem?.uuid ? { ...originItem } : item
+                    })
+                  })
+                  setOriginItem(null)
+                }}
                 onEdit={() => {
-                  actions.updateTerm({ folderUUID, editUUID: term.uuid })
+                  setOriginItem({ ...term })
+                  actions.updateTerm({
+                    folderUUID,
+                    editUUID: term.uuid
+                  })
                 }}
                 onChange={(prop, value) => {
                   actions.updateTerm({
                     folderUUID,
                     items: terms.items.map((item) => {
-                      return item.uuid === terms.editUUID ? {...item, [prop]: value} : item
+                      return item.uuid === term.uuid ? {...item, [prop]: value} : item
                     })
                   })
                 }}

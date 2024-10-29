@@ -6,8 +6,26 @@ import Spinner from '@components/Spinner'
 import clsx from 'clsx'
 
 export default function Term(
-  { data, edit = false, process = false, onEdit, onRemove, onExit, onChange }:
-  { data: ClientTermType, edit: boolean, process: boolean, onEdit: () => void, onRemove: () => void, onExit: () => void, onChange: (prop: string, value: string) => void }
+  {
+    data,
+    edit = false,
+    process = false,
+    onEdit,
+    onRemove,
+    onExit,
+    onSave,
+    onChange
+  }:
+  {
+    data: ClientTermType,
+    edit: boolean,
+    process: boolean,
+    onEdit: () => void,
+    onRemove: () => void,
+    onExit: () => void,
+    onSave: () => void,
+    onChange: (prop: string, value: string) => void
+  }
 ) {
 
   const ref = useRef<HTMLDivElement | null>(null)
@@ -106,8 +124,14 @@ export default function Term(
                 onChange('question', e.target.value)
               }}
               onKeyUp={(e) => {
-                if ([27, 13].includes(e.keyCode)) {
-                  onExit()
+                switch (e.keyCode) {
+                  case 13:
+                    onSave()
+                    break
+                  case 27:
+                    onExit()
+                    break
+
                 }
               }}
             />
