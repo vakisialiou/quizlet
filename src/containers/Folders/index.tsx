@@ -1,14 +1,18 @@
 'use client'
 
 import { DataStateFoldersType, useFolderActions } from '@store/reducers/folders'
+import ClientFolder, { ClientFolderType } from '@entities/ClientFolder'
 import { DataStateTermsType } from '@store/reducers/terms'
-import ClientFolder from '@entities/ClientFolder'
 import MetaLabel from '@components/MetaLabel'
 import { unique, remove } from '@lib/array'
+import { useRouter } from 'next/navigation'
 import { useSelector } from 'react-redux'
 import Folder from '@components/Folder'
+import { useState } from 'react'
 
 export default function Folders() {
+  const router = useRouter()
+  const [ originItem, setOriginItem ] = useState<ClientFolderType | null>(null)
   const folders = useSelector(({ folders }: { folders: DataStateFoldersType }) => folders)
   const terms = useSelector(({ terms }: { terms: DataStateTermsType }) => terms)
   const actions = useFolderActions()
@@ -40,14 +44,19 @@ export default function Folders() {
               process={folders.processUUIDs.includes(folder.uuid)}
               dropdownItems={[
                 {id: 1, name: 'Edit'},
-                {id: 2, name: 'Remove', disabled: (terms[folder.uuid]?.items?.length || 0) > 0},
+                {id: 2, name: 'Learn', disabled: (terms[folder.uuid]?.items?.length || 0) === 0},
+                {id: 3, name: 'Remove', disabled: (terms[folder.uuid]?.items?.length || 0) > 0},
               ]}
               onDropdownSelect={(id) => {
                 switch (id) {
                   case 1:
+                    setOriginItem({ ...folder })
                     actions.updateFolder({ editUUID: folder.uuid })
                     break
                   case 2:
+                    router.push(`/simulator/${folder.uuid}`)
+                    break
+                  case 3:
                     actions.updateFolder({
                       processUUIDs: unique([...folders.processUUIDs, folder.uuid]),
                     })
@@ -64,27 +73,37 @@ export default function Folders() {
                     break
                 }
               }}
-              onExit={async () => {
-                const { editUUID, processUUIDs } = folders
-                const editFolder = folders.items.find(({uuid}) => uuid === editUUID)
+              onSave={() => {
+                setOriginItem(null)
+
+                const editFolder = folders.items.find(({uuid}) => uuid === folder.uuid)
 
                 actions.updateFolder({
                   editUUID: null,
-                  processUUIDs: unique([...processUUIDs, editUUID]),
+                  processUUIDs: unique([...folders.processUUIDs, folder.uuid]),
                 })
 
-                fetch(`http://localhost:3000/api/folders/${editUUID}`, {
+                fetch(`http://localhost:3000/api/folders/${folder.uuid}`, {
                   method: 'PUT',
                   body: JSON.stringify(editFolder),
                   headers: {'Content-Type': 'application/json'},
                 }).then(() => {
-                  actions.updateFolder({ processUUIDs: remove(processUUIDs, editUUID) })
+                  actions.updateFolder({ processUUIDs: remove(folders.processUUIDs, folder.uuid) })
                 })
+              }}
+              onExit={async () => {
+                actions.updateFolder({
+                  editUUID: null,
+                  items: folders.items.map((item) => {
+                    return item.uuid === originItem?.uuid ? { ...originItem } : item
+                  })
+                })
+                setOriginItem(null)
               }}
               onChange={(prop, value) => {
                 actions.updateFolder({
                   items: folders.items.map((item) => {
-                    return item.uuid === folders.editUUID ? {...item, [prop]: value } : item
+                    return item.uuid === folder.uuid ? {...item, [prop]: value } : item
                   })
                 })
               }}

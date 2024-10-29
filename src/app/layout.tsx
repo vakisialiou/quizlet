@@ -1,5 +1,7 @@
-import { findFoldersByUserId } from '@repositories/folders'
+import { createPreloadedSimulatorsState } from '@store/reducers/simulators'
+import { createPreloadedFoldersState } from '@store/reducers/folders'
 import { createPreloadedTermsState } from '@store/reducers/terms'
+import { findFoldersByUserId } from '@repositories/folders'
 import { findTermsByUserId } from '@repositories/terms'
 import localFont from 'next/font/local'
 import Header from '@containers/Header'
@@ -7,7 +9,6 @@ import ReduxProvider from './provider'
 import type { Metadata } from 'next'
 import React from 'react'
 import './globals.css'
-import {createPreloadedFoldersState} from "@store/reducers/folders";
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -22,8 +23,8 @@ const geistMono = localFont({
 })
 
 export const metadata: Metadata = {
-  title: 'Quizlet App',
-  description: 'Quizlet App',
+  title: 'Quizlet',
+  description: 'Quizlet app',
   icons: {
     icon: '/favicon.ico',
   },
@@ -46,7 +47,8 @@ export default async function RootLayout({
         <ReduxProvider
           preloadedState={{
             terms: createPreloadedTermsState(terms),
-            folders: createPreloadedFoldersState(folders)
+            folders: createPreloadedFoldersState(folders),
+            simulators: createPreloadedSimulatorsState({})
           }}
         >
           <Header menuItems={[]} />

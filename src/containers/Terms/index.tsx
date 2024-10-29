@@ -7,8 +7,8 @@ import { ClientTermType } from '@entities/ClientTerm'
 import ClientTerm from '@entities/ClientTerm'
 import { unique, remove } from '@lib/array'
 import { useSelector } from 'react-redux'
-import Term from '@components/Term'
 import { useMemo, useState } from 'react'
+import Term from '@components/Term'
 import Link from 'next/link'
 
 export default function Terms({ folderUUID }: { folderUUID: string }) {

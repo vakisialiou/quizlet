@@ -32,7 +32,7 @@ export default function Term(
 
   const finishEdit = useCallback((event: MouseEvent) => {
     if (ref.current && !ref.current.contains(event.target as HTMLDivElement)) {
-      onExit()
+      onSave()
     }
   }, [data])
 
@@ -61,6 +61,7 @@ export default function Term(
         {!edit &&
           <>
             <div
+              title={data.question}
               className="flex items-center px-1 h-6 transition-colors text-gray-400 font-semibold text-sm truncate ..."
             >
               {data.question || <span className="text-gray-500">Question not set</span>}
@@ -131,7 +132,6 @@ export default function Term(
                   case 27:
                     onExit()
                     break
-
                 }
               }}
             />
@@ -143,6 +143,7 @@ export default function Term(
         {!edit &&
           <>
             <div
+              title={data.answer}
               className="flex items-center px-1 h-6 transition-colors text-sm text-gray-400 truncate ..."
             >
               {data.answer || <span className="text-gray-500">Answer not set</span>}
@@ -165,8 +166,13 @@ export default function Term(
                 onChange('answer', e.target.value)
               }}
               onKeyUp={(e) => {
-                if ([27, 13].includes(e.keyCode)) {
-                  onExit()
+                switch (e.keyCode) {
+                  case 13:
+                    onSave()
+                    break
+                  case 27:
+                    onExit()
+                    break
                 }
               }}
             />

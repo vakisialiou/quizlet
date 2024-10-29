@@ -31,7 +31,7 @@ export default function Dropdown(
     selected,
     disabled = false,
     placement = Placement.bottomEnd,
-    offsetOptions = 2,
+    offsetOptions = 0,
     items = [],
     onSelect,
     onClick
@@ -103,13 +103,13 @@ export default function Dropdown(
     <div
       ref={ref}
       onClick={onClick}
-      className={clsx('inline-block text-left', {
+      className={clsx('inline-block text-left hover:bg-gray-800', {
         ['disabled']: disabled
       })}
     >
       <div
         onClick={toggleDropdown}
-        className="flex items-center select-none group cursor-pointer"
+        className="flex items-center select-none group cursor-pointer pr-1"
       >
         {children}
 
@@ -132,7 +132,7 @@ export default function Dropdown(
         createPortal(
           <div
             ref={refMenu}
-            className="fixed z-10 mt-2 border border-gray-600 bg-black rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none select-none"
+            className="fixed z-10 mt-1 border border-gray-600 bg-black rounded shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none select-none"
           >
             <div className="py-1">
               {items.map((item: DropdownItemType) => {

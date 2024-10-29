@@ -13,6 +13,7 @@ export default function Folder(
     process = false,
     label,
     href,
+    onSave,
     onExit,
     onChange,
     dropdownItems,
@@ -24,6 +25,7 @@ export default function Folder(
     process: boolean,
     label: ReactNode,
     href: string,
+    onSave: () => void,
     onExit: () => void,
     onChange: (prop: string, value: string) => void,
     dropdownItems: DropdownItemType[],
@@ -45,10 +47,13 @@ export default function Folder(
     >
       {!edit &&
         <>
-          <div
-            className="flex items-center px-1 transition-colors group group-hover:text-gray-400 group-active:text-gray-400 font-semibold text-sm truncate ..."
-          >
-            {data.name}
+          <div className="flex items-center truncate">
+            <div
+              title={data.name}
+              className="px-1 transition-colors group group-hover:text-gray-400 group-active:text-gray-400 font-semibold text-sm truncate ..."
+            >
+              {data.name}
+            </div>
           </div>
 
           <div className="flex gap-2 items-center">
@@ -100,13 +105,18 @@ export default function Folder(
             defaultValue={data.name}
             placeholder="Folder name"
             className="block w-full bg-gray-800 text-gray-300 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline outline-1 focus:outline-blue-500 font-semibold text-sm"
-            onBlur={onExit}
+            onBlur={onSave}
             onChange={(e) => {
               onChange('name', e.target.value)
             }}
             onKeyUp={(e) => {
-              if ([27, 13].includes(e.keyCode)) {
-                onExit()
+              switch (e.keyCode) {
+                case 13:
+                  onSave()
+                  break
+                case 27:
+                  onExit()
+                  break
               }
             }}
           />
