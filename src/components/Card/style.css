@@ -8,7 +8,7 @@
   transform-style: preserve-3d;
 }
 
-.card:hover .card__inner {
+.card__inner_back {
   transform: rotateY(180deg);
 }
 

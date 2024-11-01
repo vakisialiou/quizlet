@@ -4,6 +4,7 @@ import { DataStateSimulatorsType, useSimulatorActions } from '@store/reducers/si
 import { DataStateFoldersType } from '@store/reducers/folders'
 import { DataStateTermsType } from '@store/reducers/terms'
 import SVGRightArrow from '@public/svg/rightarrow.svg'
+import SVGLoopBack from '@public/svg/loop_back.svg'
 import { useSelector } from 'react-redux'
 import {useEffect, useMemo} from 'react'
 import Button from '@components/Button'
@@ -81,10 +82,20 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
 
                 }}
               >
-                Repeat
+                Continue
               </Button>
             </div>
           </div>
+        </div>
+
+        <div
+          className="absolute flex items-center justify-center rounded-full bg-gray-900 hover:bg-gray-800 cursor-pointer w-8 h-8 left-2"
+        >
+          <SVGLoopBack
+            width={24}
+            height={24}
+            className="text-gray-600"
+          />
         </div>
 
         <div
