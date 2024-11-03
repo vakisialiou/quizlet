@@ -1,8 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { useDispatch } from 'react-redux'
+import { unique } from '@lib/array'
+
+export const PROCESSING = 'processing'
+export const FINISHING = 'finishing'
+export const WAITING = 'waiting'
 
 type UpdateType = {
-  termUUID:string
+  termUUID: string | null
   folderUUID: string
 }
 
@@ -11,7 +16,11 @@ type RemoveType = {
 }
 
 export type DataStateSimulatorType = {
-  termUUID: string,
+  status: '',
+  termUUID: string | null,
+  rememberUUIDs: string[],
+  continueUUIDs: string[],
+  historyUUIDs: string[],
 }
 
 export type DataStateSimulatorsType = {
@@ -32,12 +41,38 @@ const slice = createSlice({
       return prevState
     },
     updateSimulator: (state, { payload }: { payload: UpdateType }) => {
+      const prevState = state[payload.folderUUID] || {
+        historyUUIDs: [],
+        rememberUUIDs: [],
+        continueUUIDs: [],
+      }
+      return {
+        ...state,
+        [payload.folderUUID]: {
+          ...prevState,
+          termUUID: payload.termUUID,
+        }
+      }
+    },
+    remember: (state, { payload }: { payload: UpdateType }) => {
       const prevState = state[payload.folderUUID] || { }
       return {
         ...state,
         [payload.folderUUID]: {
           ...prevState,
-          termUUID: payload.termUUID
+          termUUID: payload.termUUID,
+          rememberUUIDs: unique([...prevState.rememberUUIDs, prevState.termUUID])
+        }
+      }
+    },
+    continue: (state, { payload }: { payload: UpdateType }) => {
+      const prevState = state[payload.folderUUID] || { }
+      return {
+        ...state,
+        [payload.folderUUID]: {
+          ...prevState,
+          termUUID: payload.termUUID,
+          continueUUIDs: unique([...prevState.continueUUIDs, prevState.termUUID])
         }
       }
     },
@@ -54,6 +89,12 @@ export const useSimulatorActions = () => {
     },
     updateSimulator: (payload: UpdateType) => {
       dispatch(slice.actions.updateSimulator(payload))
-    }
+    },
+    remember: (payload: UpdateType) => {
+      dispatch(slice.actions.remember(payload))
+    },
+    continue: (payload: UpdateType) => {
+      dispatch(slice.actions.continue(payload))
+    },
   }
 }
