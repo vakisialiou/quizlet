@@ -51,10 +51,10 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
         i++
 
         if (ref.current) {
-          ref.current.innerText = `${i}`
+          ref.current.innerText = `${5 - i}`
         }
 
-        if (i >= 6) {
+        if (i >= 5) {
           clearInterval(refIntervalId.current)
           actions.restart({ folderUUID })
         }
@@ -153,7 +153,7 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
 
             {simulators[folderUUID].continueUUIDs.length > 0 &&
               <div ref={ref}>
-                0
+                5
               </div>
             }
           </div>
