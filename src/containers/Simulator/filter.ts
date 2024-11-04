@@ -11,8 +11,8 @@ export const filterTerms = (termItems: ClientTermType[], simulator: DataStateSim
   })
 }
 
-export const filterActiveTerm = (termItems: ClientTermType[], simulator: DataStateSimulatorType | undefined): ClientTermType[] => {
+export const filterActiveTerm = (termItems: ClientTermType[], activeUUID: string | undefined): ClientTermType[] => {
   return termItems.filter((item) => {
-    return item.uuid !== simulator?.termUUID
+    return item.uuid !== activeUUID
   })
 }
