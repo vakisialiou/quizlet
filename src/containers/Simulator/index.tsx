@@ -164,59 +164,66 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
       }
 
       {status === SimulatorStatus.PROCESSING && activeTerm &&
-        <div className="flex justify-between w-full gap-2">
-          <CardEmpty>
-            <div className="flex flex-col items-center text-lg">
-              Remembered
-              <span>{simulators[folderUUID]?.rememberUUIDs.length || 0}</span>
-            </div>
-          </CardEmpty>
-          <div className="flex flex-col">
-            <Card
-              key={activeTerm?.uuid}
-              answer={activeTerm?.answer}
-              question={activeTerm?.question}
-            />
 
-            <div className="flex gap-2 justify-between grid grid-cols-2 py-2">
-              <div>
-                <Button
-                  className="flex items-center justify-center"
-                  onClick={() => {
-                    if (tailTermItems.length === 0) {
-                      actions.rememberAndFinish({ folderUUID })
-                    } else {
-                      const termItem = randomArrayElement(tailTermItems)
-                      actions.remember({ folderUUID, termUUID: termItem.uuid })
-                    }
-                  }}
-                >
+          <div className="flex items-center justify-between gap-4 w-full">
+            <div className="flex justify-center w-full">
+              <div className="flex rounded-full items-center justify-center bg-gray-900 border border-gray-600 w-36 h-36">
+                <div className="flex flex-col items-center text-lg">
                   Remembered
-                </Button>
-              </div>
-              <div>
-                <Button
-                  className="flex items-center justify-center"
-                  onClick={() => {
-                    if (tailTermItems.length === 0) {
-                      actions.continueAndFinish({ folderUUID })
-                    } else {
-                      const termItem = randomArrayElement(tailTermItems)
-                      actions.continue({ folderUUID, termUUID: termItem.uuid })
-                    }
-                  }}
-                >
-                  Continue
-                </Button>
+                  <span>{simulators[folderUUID]?.rememberUUIDs.length || 0}</span>
+                </div>
               </div>
             </div>
-          </div>
-          <CardEmpty>
-            <div className="flex flex-col items-center text-lg">
-              Waiting
-              <span>{tailTermItems.length} / {allTermItems.length}</span>
+            <div className="flex flex-col gap-4">
+              <Card
+                key={activeTerm?.uuid}
+                answer={activeTerm?.answer}
+                question={activeTerm?.question}
+              />
+
+              <div className="flex gap-4 justify-between grid grid-cols-2">
+                <div>
+                  <Button
+                    className="flex items-center justify-center"
+                    onClick={() => {
+                      if (tailTermItems.length === 0) {
+                        actions.rememberAndFinish({ folderUUID })
+                      } else {
+                        const termItem = randomArrayElement(tailTermItems)
+                        actions.remember({ folderUUID, termUUID: termItem.uuid })
+                      }
+                    }}
+                  >
+                    Remembered
+                  </Button>
+                </div>
+                <div>
+                  <Button
+                    className="flex items-center justify-center"
+                    onClick={() => {
+                      if (tailTermItems.length === 0) {
+                        actions.continueAndFinish({ folderUUID })
+                      } else {
+                        const termItem = randomArrayElement(tailTermItems)
+                        actions.continue({ folderUUID, termUUID: termItem.uuid })
+                      }
+                    }}
+                  >
+                    Continue
+                  </Button>
+                </div>
+              </div>
             </div>
-          </CardEmpty>
+            <div className="flex justify-center w-full">
+              <div
+                className="flex rounded-full items-center justify-center bg-gray-900 border border-gray-600 w-36 h-36"
+              >
+                <div className="flex flex-col items-center text-lg">
+                  Waiting
+                  <span>{tailTermItems.length} / {allTermItems.length}</span>
+                </div>
+              </div>
+            </div>
         </div>
       }
 
