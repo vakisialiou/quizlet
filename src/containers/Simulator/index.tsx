@@ -164,7 +164,7 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
       }
 
       {status === SimulatorStatus.PROCESSING && activeTerm &&
-        <div className="flex justify-between w-full py-20">
+        <div className="flex justify-between w-full py-20 gap-2">
           <CardEmpty>
             <div className="flex flex-col items-center text-lg">
               Remembered

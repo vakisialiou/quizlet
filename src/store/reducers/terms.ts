@@ -52,7 +52,7 @@ const slice = createSlice({
         [payload.term.folderUUID]: {
           ...prevState,
           editUUID: payload.editUUID || null,
-          items: [...prevState.items, payload.term],
+          items: [payload.term, ...prevState.items],
         }
       }
     },
