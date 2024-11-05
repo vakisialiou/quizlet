@@ -85,11 +85,11 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
       </div>
 
       <div
-        className="relative flex items-center justify-center w-full"
+        className="flex items-center justify-center w-full h-14"
       >
         {(status === SimulatorStatus.PROCESSING && simulators[folderUUID].historyUUIDs.length > 0) &&
           <div
-            className="absolute flex items-center justify-center rounded-full bg-gray-900 hover:bg-gray-800 cursor-pointer w-8 h-8 left-2 top-2"
+            className="flex items-center justify-center rounded-full bg-gray-900 hover:bg-gray-800 cursor-pointer w-8 h-8"
             onClick={() => {
               actions.back({ folderUUID })
             }}
@@ -104,7 +104,7 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
       </div>
 
       {status === SimulatorStatus.WAITING &&
-        <div className="flex justify-center w-full py-20">
+        <div className="flex justify-center w-full">
           <CardEmpty>
             <div className="text-lg">
               Are you ready?
@@ -125,7 +125,7 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
       }
 
       {status === SimulatorStatus.FINISHING &&
-        <div className="flex justify-center w-full py-20">
+        <div className="flex justify-center w-full">
           <CardEmpty>
             {simulators[folderUUID].continueUUIDs.length === 0 &&
               <>
@@ -164,7 +164,7 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
       }
 
       {status === SimulatorStatus.PROCESSING && activeTerm &&
-        <div className="flex justify-between w-full py-20 gap-2">
+        <div className="flex justify-between w-full gap-2">
           <CardEmpty>
             <div className="flex flex-col items-center text-lg">
               Remembered
@@ -178,7 +178,7 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
               question={activeTerm?.question}
             />
 
-            <div className="flex gap-2 justify-between grid grid-cols-2 py-6">
+            <div className="flex gap-2 justify-between grid grid-cols-2 py-2">
               <div>
                 <Button
                   className="flex items-center justify-center"
