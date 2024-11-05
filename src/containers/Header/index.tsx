@@ -1,3 +1,5 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -9,7 +11,7 @@ type MenuItemType = {
 
 type MenuItemsType = MenuItemType[]
 
-export default async function Header({ menuItems = [] }: { menuItems: MenuItemsType }) {
+export default function Header({ menuItems = [] }: { menuItems: MenuItemsType }) {
   return (
     <header>
       <nav className="mx-auto flex items-center justify-between p-6 lg:px-8 lg:gap-x-12">

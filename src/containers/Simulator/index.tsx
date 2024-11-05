@@ -2,18 +2,19 @@
 
 import {DataStateSimulatorsType, useSimulatorActions} from '@store/reducers/simulators'
 import {getSimulatorStatus, SimulatorStatus} from '@containers/Simulator/status'
+import { filterActiveTerm, filterTerms } from '@containers/Simulator/filter'
 import {getAllTermItems} from '@containers/Simulator/helpers'
-import {filterActiveTerm, filterTerms} from '@containers/Simulator/filter'
 import {DataStateFoldersType} from '@store/reducers/folders'
 import {DataStateTermsType} from '@store/reducers/terms'
 import SVGRightArrow from '@public/svg/rightarrow.svg'
 import SVGLoopBack from '@public/svg/loop_back.svg'
+import { useEffect, useMemo, useRef } from 'react'
+import { randomArrayElement } from '@lib/random'
 import {useSelector} from 'react-redux'
 import Button from '@components/Button'
 import Card from '@components/Card'
-import {useEffect, useMemo, useRef} from 'react'
+import CardEmpty from '@components/CardEmpty'
 import Link from 'next/link'
-import {randomArrayElement} from '@lib/random'
 
 export default function Simulator({ folderUUID }: { folderUUID: string }) {
   const actions = useSimulatorActions()
@@ -34,7 +35,7 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
       termItems,
       activeTerm: termItems.find((item) => {
         return item.uuid === simulators[folderUUID]?.termUUID
-      }) || termItems[0] || null
+      }) || null
     }
   }, [folders, simulators])
 
@@ -86,9 +87,12 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
       <div
         className="relative flex items-center justify-center w-full"
       >
-        {status === SimulatorStatus.PROCESSING &&
+        {(status === SimulatorStatus.PROCESSING && simulators[folderUUID].historyUUIDs.length > 0) &&
           <div
-            className="absolute flex items-center justify-center rounded-full bg-gray-900 hover:bg-gray-800 cursor-pointer w-8 h-8 left-2"
+            className="absolute flex items-center justify-center rounded-full bg-gray-900 hover:bg-gray-800 cursor-pointer w-8 h-8 left-2 top-2"
+            onClick={() => {
+              actions.back({ folderUUID })
+            }}
           >
             <SVGLoopBack
               width={24}
@@ -97,18 +101,11 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
             />
           </div>
         }
-        <div
-          className="absolute flex items-center justify-center rounded-full border border-gray-600 text-gray-600 px-4 h-12 right-2"
-        >
-          Learned: {simulators[folderUUID]?.rememberUUIDs.length || 0}:{ allTermItems.length }
-        </div>
       </div>
 
       {status === SimulatorStatus.WAITING &&
         <div className="flex justify-center w-full py-20">
-          <div
-            className="flex flex-col w-72 h-96 gap-4 items-center justify-center p-6 border border-gray-600 rounded bg-gray-900"
-          >
+          <CardEmpty>
             <div className="text-lg">
               Are you ready?
             </div>
@@ -123,47 +120,60 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
             >
               Start learn
             </Button>
-          </div>
+          </CardEmpty>
         </div>
       }
 
       {status === SimulatorStatus.FINISHING &&
         <div className="flex justify-center w-full py-20">
-          <div
-            className="flex flex-col w-72 h-96 gap-4 items-center justify-center p-6 border border-gray-600 rounded bg-gray-900"
-          >
-            <div className="text-lg">
-              Great job
-            </div>
-
+          <CardEmpty>
             {simulators[folderUUID].continueUUIDs.length === 0 &&
-              <div className="flex gap-2 w-full">
-                <Button
-                  onClick={() => {
-                    if (allTermItems.length > 0) {
-                      const termItem = randomArrayElement(allTermItems)
-                      actions.start({folderUUID, termUUID: termItem.uuid})
-                    }
-                  }}
-                >
-                  Start again
-                </Button>
-              </div>
+              <>
+                <div className="text-lg">
+                  Every thinks is done!
+                </div>
+
+                <div className="flex gap-2 w-full items-center justify-center">
+                  <Button
+                    onClick={() => {
+                      if (allTermItems.length > 0) {
+                        const termItem = randomArrayElement(allTermItems)
+                        actions.start({folderUUID, termUUID: termItem.uuid})
+                      }
+                    }}
+                  >
+                    Start again
+                  </Button>
+                </div>
+              </>
             }
 
             {simulators[folderUUID].continueUUIDs.length > 0 &&
-              <div ref={ref}>
-                5
-              </div>
+              <>
+                <div className="text-lg">
+                  Prepare to continue.
+                </div>
+
+                <div ref={ref}>
+                  5
+                </div>
+              </>
             }
-          </div>
+          </CardEmpty>
         </div>
       }
 
-      {status === SimulatorStatus.PROCESSING &&
-        <div className="flex justify-center w-full py-20">
+      {status === SimulatorStatus.PROCESSING && activeTerm &&
+        <div className="flex justify-between w-full py-20">
+          <CardEmpty>
+            <div className="flex flex-col items-center text-lg">
+              Remembered
+              <span>{simulators[folderUUID]?.rememberUUIDs.length || 0}</span>
+            </div>
+          </CardEmpty>
           <div className="flex flex-col">
             <Card
+              key={activeTerm?.uuid}
               answer={activeTerm?.answer}
               question={activeTerm?.question}
             />
@@ -201,6 +211,12 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
               </div>
             </div>
           </div>
+          <CardEmpty>
+            <div className="flex flex-col items-center text-lg">
+              Waiting
+              <span>{tailTermItems.length} / {allTermItems.length}</span>
+            </div>
+          </CardEmpty>
         </div>
       }
 

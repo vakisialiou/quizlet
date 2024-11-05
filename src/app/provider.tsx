@@ -20,6 +20,10 @@ export default function ReduxProvider(
 ) {
   const store = initializeStore(preloadedState)
   return (
-    <Provider store={store}>{children}</Provider>
+    <Provider
+      store={store}
+    >
+      {children}
+    </Provider>
   )
 }
