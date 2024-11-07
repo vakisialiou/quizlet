@@ -6,8 +6,6 @@ export type ServerUserType = {
   givenName: string | null
   familyName: string | null
   picture: string | null
-  accountId: string
-  refreshToken: string
   createdAt: Date
   updatedAt: Date
 }
@@ -19,20 +17,16 @@ export default class ServerUser {
   givenName: string | null
   familyName: string | null
   picture: string | null
-  accountId: string
-  refreshToken: string
   createdAt: Date
   updatedAt: Date
 
-  constructor(accountId: string = '', refreshToken: string = '') {
+  constructor() {
     this.id = null
     this.name = null
     this.email = null
     this.givenName = null
     this.familyName = null
     this.picture = null
-    this.accountId = accountId
-    this.refreshToken = refreshToken
     this.createdAt = new Date()
     this.updatedAt = new Date()
   }
@@ -64,16 +58,6 @@ export default class ServerUser {
 
   setPicture(value: string): ServerUser {
     this.picture = value
-    return this
-  }
-
-  setAccountId(value: string): ServerUser {
-    this.accountId = value
-    return this
-  }
-
-  setRefreshToken(value: string): ServerUser {
-    this.refreshToken = value
     return this
   }
 
