@@ -16,10 +16,18 @@ export const ENV_LOCAL = 'local'
 type AppConfig = {
   db: {
     mysql: MysqlConfig
-  }
+  },
+  oauth: {
+    clientId: string,
+    clientSecret: string,
+  },
 }
 
 export const config: AppConfig = {
+  oauth: {
+    clientId: env('OAUTH_CLIENT_ID', ''),
+    clientSecret: env('OAUTH_CLIENT_SECRET', ''),
+  },
   db: {
     mysql: {
       host: env('MYSQL_HOST', 'localhost'),

@@ -1,6 +1,6 @@
 // @ts-ignore
 import migration from 'mysql-migrations'
-import { config } from './config'
+import { config } from '@config'
 import mysql2 from 'mysql2'
 import path from 'path'
 
