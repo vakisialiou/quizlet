@@ -1,13 +1,4 @@
 import { MysqlConfig } from '@lib/mysql'
-import objectPath from 'object-path'
-import dotenv from 'dotenv'
-import path from 'path'
-
-const params = dotenv.config({ path: path.resolve(process.cwd(), '.env') })
-
-function env<T>(key: string, defaultValue: T): T {
-  return objectPath.get(params, ['parsed', key], defaultValue) as T || defaultValue
-}
 
 export const ENV_DEV = 'dev'
 export const ENV_PROD = 'prod'
@@ -18,23 +9,33 @@ type AppConfig = {
     mysql: MysqlConfig
   },
   oauth: {
-    clientId: string,
-    clientSecret: string,
-  },
+    secret: string,
+    providers: {
+      google: {
+        clientId: string,
+        clientSecret: string,
+      },
+    }
+  }
 }
 
 export const config: AppConfig = {
   oauth: {
-    clientId: env('OAUTH_CLIENT_ID', ''),
-    clientSecret: env('OAUTH_CLIENT_SECRET', ''),
+    secret: process.env.GOOGLE_CLIENT_ID || '',
+    providers: {
+      google: {
+        clientId: process.env.GOOGLE_CLIENT_ID || '',
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      },
+    }
   },
   db: {
     mysql: {
-      host: env('MYSQL_HOST', 'localhost'),
-      user: env('MYSQL_USER', 'root'),
-      password: env('MYSQL_PASSWORD', 'root'),
-      database: env('MYSQL_DATABASE', 'demo'),
-      connectionLimit: env('MYSQL_CONNECTION_LIMIT', 10),
+      host: process.env.MYSQL_HOST || 'localhost',
+      user: process.env.MYSQL_USER || 'root',
+      password: process.env.MYSQL_PASSWORD || 'root',
+      database: process.env.MYSQL_DATABASE || 'demo',
+      connectionLimit: Number(process.env.MYSQL_CONNECTION_LIMIT || 10),
     },
   },
 }

@@ -25,6 +25,7 @@
     "mysql-migrations": "^1.0.7",
     "mysql2": "^3.11.3",
     "next": "^15.0.2",
+    "next-auth": "^4.24.10",
     "object-path": "^0.11.8",
     "react": "^18",
     "react-dom": "^18",
