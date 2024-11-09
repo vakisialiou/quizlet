@@ -1,25 +1,25 @@
 import { v4 } from 'uuid'
 
 export type ClientFolderType = {
-  uuid: string
-  name: string,
+  uuid: string | null
+  name: string | null,
 }
 
 export default class ClientFolder {
-  uuid: string
-  name: string
+  uuid: string | null
+  name: string | null
 
   constructor() {
     this.uuid = v4()
-    this.name = ''
+    this.name = null
   }
 
-  setUUID(value: string): ClientFolder {
+  setUUID(value: string | null): ClientFolder {
     this.uuid = value
     return this
   }
 
-  setName(value: string): ClientFolder {
+  setName(value: string | null): ClientFolder {
     this.name = value
     return this
   }

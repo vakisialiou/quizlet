@@ -1,34 +1,79 @@
-import { ClientTermType } from '@entities/ClientTerm'
-import { ServerTermType } from '@entities/ServerTerm'
-import objectPath from 'object-path'
-import { db, Rows } from '@lib/db'
+import ServerTerm from '@entities/ServerTerm'
+import ClientTerm from '@entities/ClientTerm'
+import { prisma } from '@lib/prisma'
 
-export const findTermsByUserId = async (userId: number): Promise<ClientTermType[]> => {
-  const res = await db.find(`
-    SELECT t.uuid, f.uuid as folderUUID, t.sort, t.question, t.answer
-      FROM terms as t
-     INNER JOIN folders as f ON t.folderId = f.id
-     WHERE t.userId = ? and t.userId = ?;
-  `, [userId, userId])
+export const findTermsByUserId = async (userId: number): Promise<ClientTerm[]> => {
+  const res = await prisma.term.findMany({
+    where: { userId },
+    select: {
+      uuid: true,
+      sort: true,
+      question: true,
+      answer: true,
+      folder: {
+        select: { uuid: true },
+      },
+    },
+  })
 
-  return res as ClientTermType[]
+  return res.map(term => {
+    return new ClientTerm(term.folder?.uuid || '')
+      .setUUID(term.uuid)
+      .setSort(term.sort)
+      .setAnswer(term.answer)
+      .setQuestion(term.question)
+  })
 }
 
-export const findTermsByFolderId = async (folderId: number): Promise<ClientTermType[]> => {
-  const res = await db.find(`
-    SELECT uuid, sort, question, answer
-      FROM terms WHERE folderId = ?
-  `, [folderId])
+export const findTermsByFolderId = async (folderId: number): Promise<ClientTerm[]> => {
+  const res = await prisma.term.findMany({
+    where: { folderId },
+    select: {
+      uuid: true,
+      sort: true,
+      question: true,
+      answer: true,
+      folder: {
+        select: { uuid: true },
+      },
+    },
+  })
 
-  return res as ClientTermType[]
+  return res.map(term => {
+    return new ClientTerm()
+      .setUUID(term.uuid)
+      .setSort(term.sort)
+      .setAnswer(term.answer)
+      .setQuestion(term.question)
+      .setFolderUUID(term.folder?.uuid)
+  })
 }
 
-export const upsertTerm = async (folder: ServerTermType): Promise<number | null> => {
-  const res = await db.multiInsert('terms', [folder] as Rows, ['sort', 'question', 'answer', 'updatedAt'])
-  return objectPath.get(res, [0, 'insertId'], null)
+export const upsertTerm = async (term: ServerTerm): Promise<number | null> => {
+  const res = await prisma.term.upsert({
+    where: { uuid: term.uuid },
+    update: {
+      sort: term.sort,
+      answer: term.answer,
+      question: term.question,
+      updatedAt: term.updatedAt,
+    },
+    create: {
+      uuid: term.uuid,
+      sort: term.sort,
+      userId: term.userId as number,
+      answer: term.answer,
+      question: term.question,
+      folderId: term.folderId as number,
+      createdAt: term.createdAt,
+      updatedAt: term.updatedAt
+    },
+  })
+
+  return res.id
 }
 
 export const removeTerm = async (uuid: string): Promise<boolean> => {
-  const res = await db.query('DELETE FROM terms WHERE uuid = ?', [uuid])
-  return res[0]['affectedRows'] > 0
+  const res = await prisma.term.delete({ where: { uuid } })
+  return !!res?.id
 }

@@ -1,21 +1,21 @@
-import { ClientTermType } from '@entities/ClientTerm'
+import ClientTerm from '@entities/ClientTerm'
 import { createSlice } from '@reduxjs/toolkit'
 import { useDispatch } from 'react-redux'
 
 type AddType = {
   editUUID?: string | null,
-  term: ClientTermType
+  term: ClientTerm
 }
 
 type UpdateType = {
   folderUUID: string,
-  items?: ClientTermType[],
+  items?: ClientTerm[],
   editUUID?: string | null,
   processUUIDs?: (string | number)[]
 }
 
 export type DataStateTermType = {
-  items: ClientTermType[],
+  items: ClientTerm[],
   editUUID: string | null,
   processUUIDs: (string | number)[]
 }
@@ -24,7 +24,7 @@ export type DataStateTermsType = {
   [folderUUID: string]: DataStateTermType
 }
 
-export const createPreloadedTermsState = (terms: ClientTermType[]): DataStateTermsType => {
+export const createPreloadedTermsState = (terms: ClientTerm[]): DataStateTermsType => {
   const initialData = {} as DataStateTermsType
   for (let item of terms) {
     if (item.folderUUID in initialData) {

@@ -1,3 +1,4 @@
+import { AppProvider } from '@app/provider'
 import localFont from 'next/font/local'
 import Header from '@containers/Header'
 import type { Metadata } from 'next'
@@ -35,8 +36,10 @@ export default async function RootLayout({
         suppressHydrationWarning={true}
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header menuItems={[]} />
-        {children}
+        <AppProvider>
+          <Header menuItems={[]} />
+          {children}
+        </AppProvider>
       </body>
     </html>
   )

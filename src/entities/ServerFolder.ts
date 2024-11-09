@@ -4,24 +4,24 @@ export type ServerFolderType = {
   id: number,
   userId: number,
   uuid: string
-  name: string,
+  name: string | null,
   createdAt: Date,
   updatedAt: Date,
 }
 
 export default class ServerFolder {
   id: number | null
-  userId: number | null
+  userId: number
   uuid: string
-  name: string
+  name: string | null
   createdAt: Date
   updatedAt: Date
 
   constructor() {
     this.id = null
-    this.userId = null
+    this.name = null
+    this.userId = -1
     this.uuid = v4()
-    this.name = ''
     this.createdAt = new Date()
     this.updatedAt = new Date()
   }
@@ -41,7 +41,7 @@ export default class ServerFolder {
     return this
   }
 
-  setName(value: string): ServerFolder {
+  setName(value: string | null): ServerFolder {
     this.name = value
     return this
   }

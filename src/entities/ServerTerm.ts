@@ -2,12 +2,12 @@ import { v4 } from 'uuid'
 
 export type ServerTermType = {
   id: number
-  userId: number
-  folderId: number
+  userId: number | null
+  folderId: number | null
   sort: number
   uuid: string
-  question: string
-  answer: string,
+  question: string | null
+  answer: string | null,
   createdAt: Date
   updatedAt: Date
 }
@@ -18,8 +18,8 @@ export default class ServerTerm {
   folderId: number | null
   sort: number
   uuid: string
-  question: string
-  answer: string
+  question: string | null
+  answer: string | null
   createdAt: Date
   updatedAt: Date
 
@@ -29,8 +29,8 @@ export default class ServerTerm {
     this.folderId = null
     this.sort = 0
     this.uuid = v4()
-    this.question = ''
-    this.answer = ''
+    this.answer = null
+    this.question = null
     this.createdAt = new Date()
     this.updatedAt = new Date()
   }
@@ -40,12 +40,12 @@ export default class ServerTerm {
     return this
   }
 
-  setUserId(value: number): ServerTerm {
+  setUserId(value: number | null): ServerTerm {
     this.userId = value
     return this
   }
 
-  setFolderId(value: number): ServerTerm {
+  setFolderId(value: number | null): ServerTerm {
     this.folderId = value
     return this
   }
@@ -60,12 +60,12 @@ export default class ServerTerm {
     return this
   }
 
-  setQuestion(value: string): ServerTerm {
+  setQuestion(value: string | null): ServerTerm {
     this.question = value
     return this
   }
 
-  setAnswer(value: string): ServerTerm {
+  setAnswer(value: string | null): ServerTerm {
     this.answer = value
     return this
   }

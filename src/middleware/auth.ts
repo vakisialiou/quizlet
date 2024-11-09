@@ -1,22 +1,13 @@
-import type { NextRequest } from 'next/server'
-import { getCookieTokenId } from '@lib/cookie'
-import { getUserInfo } from '@lib/auth'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { getToken } from 'next-auth/jwt'
 
-export async function authMiddleware(request: NextRequest) {
-  const tokenId = await getCookieTokenId()
-  if (tokenId) {
-    const tokenInfo = await getUserInfo(tokenId)
-    console.log({ tokenId, tokenInfo })
+export async function authMiddleware(req: NextRequest) {
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
+  console.log({ token })
+
+  if (!token) {
+    return NextResponse.redirect(new URL('/login', req.url))
   }
+
   return NextResponse.next()
-  // if (checkIfUserIsAdmin(request)) {
-  //   return NextResponse.next()
-  // }
-
-  // return NextResponse.redirect(new URL('/private', request.url))
 }
-
-// function checkIfUserIsAdmin(request: NextRequest) {
-//   return !!request.nextUrl.searchParams.get('token')
-// }

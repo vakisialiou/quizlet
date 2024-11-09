@@ -17,7 +17,7 @@ export async function PUT(req: Request) {
       .setAnswer(body.answer)
       .setQuestion(body.question)
 
-    await upsertTerm(term as ServerTermType)
+    await upsertTerm(term)
     return new Response(null, { status: 200 })
 
   } catch (error) {

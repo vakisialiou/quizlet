@@ -1,32 +1,69 @@
-import { ClientFolderType } from '@entities/ClientFolder'
-import { ServerFolderType } from '@entities/ServerFolder'
-import objectPath from 'object-path'
-import { db, Rows } from '@lib/db'
+import ServerFolder, { ServerFolderType } from '@entities/ServerFolder'
+import ClientFolder from '@entities/ClientFolder'
+import { prisma } from '@lib/prisma'
 
-export const findFoldersByUserId = async (userId: number): Promise<ClientFolderType[]> => {
-  const res = await db.find(`
-    SELECT uuid, name
-      FROM folders
-     WHERE userId = ?
-  `, [userId])
-  return res as ClientFolderType[]
+export const findFoldersByUserId = async (userId: number): Promise<ClientFolder[]> => {
+  const res = await prisma.folder.findMany({
+    where: { userId },
+    select: {
+      uuid: true,
+      name: true,
+    },
+  })
+
+  return res.map(item => {
+    return new ClientFolder()
+      .setUUID(item.uuid)
+      .setName(item.name)
+  })
 }
 
-export const getFolderByUUID = async (userId: number, uuid: string): Promise<ServerFolderType | null> => {
-  const res = await db.find(`
-    SELECT id, userId, uuid, name, createdAt, updatedAt
-      FROM folders
-     WHERE userId = ? AND uuid = ?
-  `, [userId, uuid])
-  return res ? res[0] as ServerFolderType : null
+export const getFolderByUUID = async (userId: number, uuid: string): Promise<ServerFolder | null> => {
+  const res = await prisma.folder.findUnique({
+    where: { userId, uuid },
+    select: {
+      id: true,
+      userId: true,
+      uuid: true,
+      name: true,
+      createdAt: true,
+      updatedAt: true
+    },
+  })
+
+  if (res) {
+    return new ServerFolder()
+      .setId(res.id)
+      .setUUID(res.uuid)
+      .setName(res.name)
+      .setUserId(res.userId)
+      .setCreatedAt(res.createdAt)
+      .setUpdatedAt(res.updatedAt)
+  }
+
+  return null
 }
 
-export const upsertFolder = async (folder: ServerFolderType): Promise<number | null> => {
-  const res = await db.multiInsert('folders', [folder] as Rows, ['name', 'updatedAt'])
-  return objectPath.get(res, [0, 'insertId'], null)
+export const upsertFolder = async (folder: ServerFolder): Promise<number | null> => {
+  const res = await prisma.folder.upsert({
+    where: { uuid: folder.uuid },
+    update: {
+      name: folder.name,
+      updatedAt: folder.updatedAt,
+    },
+    create: {
+      uuid: folder.uuid,
+      name: folder.name,
+      userId: folder.userId,
+      createdAt: folder.createdAt,
+      updatedAt: folder.updatedAt
+    },
+  })
+
+  return res.id
 }
 
 export const removeFolder = async (uuid: string): Promise<boolean> => {
-  const res = await db.query('DELETE FROM folders WHERE uuid = ?', [uuid])
-  return res[0]['affectedRows'] > 0
+  const res = await prisma.folder.delete({ where: { uuid } })
+  return !!res?.id
 }

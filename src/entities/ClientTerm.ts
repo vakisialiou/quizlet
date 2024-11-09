@@ -12,15 +12,15 @@ export default class ClientTerm {
   sort: number
   uuid: string
   folderUUID: string
-  question: string
-  answer: string
+  question: string | null
+  answer: string | null
 
-  constructor(folderUUID: string) {
+  constructor(folderUUID = '') {
     this.sort = 0
     this.uuid = v4()
     this.folderUUID = folderUUID
-    this.question = ''
-    this.answer = ''
+    this.question = null
+    this.answer = null
   }
 
   setSort(value: number): ClientTerm {
@@ -38,12 +38,12 @@ export default class ClientTerm {
     return this
   }
 
-  setQuestion(value: string): ClientTerm {
+  setQuestion(value: string | null): ClientTerm {
     this.question = value
     return this
   }
 
-  setAnswer(value: string): ClientTerm {
+  setAnswer(value: string | null): ClientTerm {
     this.answer = value
     return this
   }
