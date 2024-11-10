@@ -1,22 +1,10 @@
-'use client'
+import { auth } from '@auth'
+import Test from './Test'
 
-import { signIn, signOut, useSession } from 'next-auth/react'
-
-export default function LoginPage() {
-  const { data: session } = useSession()
+export default async function LoginPage() {
+  const session = await auth()
 
   return (
-    <div>
-      {!session &&
-        <button onClick={() => signIn('google')}>Sign in with Google</button>
-      }
-
-      {session &&
-        <>
-          <p>Welcome, {session.user?.name}</p>
-          <button onClick={() => signOut()}>Sign out</button>
-        </>
-      }
-    </div>
+    <Test session={session} />
   )
 }

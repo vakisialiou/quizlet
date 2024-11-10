@@ -1,12 +1,14 @@
 import { removeFolder, upsertFolder } from '@repositories/folders'
 import ServerFolder from '@entities/ServerFolder'
+import { auth } from '@auth'
 
 export async function PUT(req: Request) {
+  const session = await auth()
   try {
     const body = await req.json()
     const folder = new ServerFolder()
     folder
-      .setUserId(1)
+      .setUserId(session?.user?.id as string)
       .setUUID(body.uuid)
       .setName(body.name)
 

@@ -1,17 +1,19 @@
 import { removeTerm, upsertTerm } from '@repositories/terms'
 import { getFolderByUUID } from '@repositories/folders'
-import ServerTerm, { ServerTermType } from '@entities/ServerTerm'
+import ServerTerm from '@entities/ServerTerm'
+import { auth } from '@auth'
 
 export async function PUT(req: Request) {
+  const session = await auth()
   try {
     const body = await req.json()
-    const folder = await getFolderByUUID(1, body.folderUUID)
+    const folder = await getFolderByUUID(session?.user?.id as string, body.folderUUID)
     if (!folder) {
       return new Response(null, { status: 400 })
     }
 
     const term = new ServerTerm()
-      .setUserId(1)
+      .setUserId(session?.user?.id as string)
       .setUUID(body.uuid)
       .setFolderId(folder.id)
       .setAnswer(body.answer)

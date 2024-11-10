@@ -3,7 +3,6 @@
 import { DataStateTermsType, useTermActions } from '@store/reducers/terms'
 import { DataStateFoldersType } from '@store/reducers/folders'
 import SVGRightArrow from '@public//svg/rightarrow.svg'
-import { ClientTermType } from '@entities/ClientTerm'
 import ClientTerm from '@entities/ClientTerm'
 import { unique, remove } from '@lib/array'
 import { useSelector } from 'react-redux'
@@ -12,7 +11,7 @@ import Term from '@components/Term'
 import Link from 'next/link'
 
 export default function Terms({ folderUUID }: { folderUUID: string }) {
-  const [ originItem, setOriginItem ] = useState<ClientTermType | null>(null)
+  const [ originItem, setOriginItem ] = useState<ClientTerm | null>(null)
 
   const actions = useTermActions()
   const terms = useSelector(({ terms }: { terms: DataStateTermsType }) => terms[folderUUID])

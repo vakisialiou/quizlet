@@ -1,4 +1,3 @@
-import { MysqlConfig } from '@lib/mysql'
 
 export const ENV_DEV = 'dev'
 export const ENV_PROD = 'prod'
@@ -6,7 +5,14 @@ export const ENV_LOCAL = 'local'
 
 type AppConfig = {
   db: {
-    mysql: MysqlConfig
+    mysql: {
+      port: number,
+      host: string,
+      username: string,
+      password: string,
+      database: string,
+      connectionLimit: number
+    }
   },
   oauth: {
     secret: string,

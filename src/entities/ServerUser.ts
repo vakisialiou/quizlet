@@ -1,17 +1,6 @@
 
-export type ServerUserType = {
-  id: number
-  name: string | null
-  email: string | null
-  givenName: string | null
-  familyName: string | null
-  picture: string | null
-  createdAt: Date
-  updatedAt: Date
-}
-
 export default class ServerUser {
-  id: number | null
+  id: string | null
   name: string | null
   email: string | null
   givenName: string | null
@@ -31,7 +20,7 @@ export default class ServerUser {
     this.updatedAt = new Date()
   }
 
-  setId(value: number): ServerUser {
+  setId(value: string): ServerUser {
     this.id = value
     return this
   }

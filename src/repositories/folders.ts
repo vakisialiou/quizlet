@@ -1,8 +1,8 @@
-import ServerFolder, { ServerFolderType } from '@entities/ServerFolder'
+import ServerFolder from '@entities/ServerFolder'
 import ClientFolder from '@entities/ClientFolder'
 import { prisma } from '@lib/prisma'
 
-export const findFoldersByUserId = async (userId: number): Promise<ClientFolder[]> => {
+export const findFoldersByUserId = async (userId: string): Promise<ClientFolder[]> => {
   const res = await prisma.folder.findMany({
     where: { userId },
     select: {
@@ -15,10 +15,11 @@ export const findFoldersByUserId = async (userId: number): Promise<ClientFolder[
     return new ClientFolder()
       .setUUID(item.uuid)
       .setName(item.name)
+      .serialize()
   })
 }
 
-export const getFolderByUUID = async (userId: number, uuid: string): Promise<ServerFolder | null> => {
+export const getFolderByUUID = async (userId: string, uuid: string): Promise<ServerFolder | null> => {
   const res = await prisma.folder.findUnique({
     where: { userId, uuid },
     select: {
@@ -44,7 +45,7 @@ export const getFolderByUUID = async (userId: number, uuid: string): Promise<Ser
   return null
 }
 
-export const upsertFolder = async (folder: ServerFolder): Promise<number | null> => {
+export const upsertFolder = async (folder: ServerFolder): Promise<string | null> => {
   const res = await prisma.folder.upsert({
     where: { uuid: folder.uuid },
     update: {

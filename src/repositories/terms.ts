@@ -2,7 +2,7 @@ import ServerTerm from '@entities/ServerTerm'
 import ClientTerm from '@entities/ClientTerm'
 import { prisma } from '@lib/prisma'
 
-export const findTermsByUserId = async (userId: number): Promise<ClientTerm[]> => {
+export const findTermsByUserId = async (userId: string): Promise<ClientTerm[]> => {
   const res = await prisma.term.findMany({
     where: { userId },
     select: {
@@ -22,10 +22,11 @@ export const findTermsByUserId = async (userId: number): Promise<ClientTerm[]> =
       .setSort(term.sort)
       .setAnswer(term.answer)
       .setQuestion(term.question)
+      .serialize()
   })
 }
 
-export const findTermsByFolderId = async (folderId: number): Promise<ClientTerm[]> => {
+export const findTermsByFolderId = async (folderId: string): Promise<ClientTerm[]> => {
   const res = await prisma.term.findMany({
     where: { folderId },
     select: {
@@ -49,7 +50,7 @@ export const findTermsByFolderId = async (folderId: number): Promise<ClientTerm[
   })
 }
 
-export const upsertTerm = async (term: ServerTerm): Promise<number | null> => {
+export const upsertTerm = async (term: ServerTerm): Promise<string | null> => {
   const res = await prisma.term.upsert({
     where: { uuid: term.uuid },
     update: {
@@ -61,10 +62,10 @@ export const upsertTerm = async (term: ServerTerm): Promise<number | null> => {
     create: {
       uuid: term.uuid,
       sort: term.sort,
-      userId: term.userId as number,
+      userId: term.userId as string,
       answer: term.answer,
       question: term.question,
-      folderId: term.folderId as number,
+      folderId: term.folderId as string,
       createdAt: term.createdAt,
       updatedAt: term.updatedAt
     },

@@ -1,9 +1,9 @@
 import { v4 } from 'uuid'
 
 export type ServerTermType = {
-  id: number
-  userId: number | null
-  folderId: number | null
+  id: string
+  userId: string | null
+  folderId: string | null
   sort: number
   uuid: string
   question: string | null
@@ -13,9 +13,9 @@ export type ServerTermType = {
 }
 
 export default class ServerTerm {
-  id: number | null
-  userId: number | null
-  folderId: number | null
+  id: string | null
+  userId: string | null
+  folderId: string | null
   sort: number
   uuid: string
   question: string | null
@@ -35,17 +35,17 @@ export default class ServerTerm {
     this.updatedAt = new Date()
   }
 
-  setId(value: number): ServerTerm {
+  setId(value: string): ServerTerm {
     this.id = value
     return this
   }
 
-  setUserId(value: number | null): ServerTerm {
+  setUserId(value: string | null): ServerTerm {
     this.userId = value
     return this
   }
 
-  setFolderId(value: number | null): ServerTerm {
+  setFolderId(value: string | null): ServerTerm {
     this.folderId = value
     return this
   }

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { ClientTermType } from '@entities/ClientTerm'
 import SVGThreeDots from '@public/svg/three_dots.svg'
+import ClientTerm from '@entities/ClientTerm'
 import Dropdown from '@components/Dropdown'
 import Spinner from '@components/Spinner'
 import clsx from 'clsx'
@@ -17,7 +17,7 @@ export default function Term(
     onChange
   }:
   {
-    data: ClientTermType,
+    data: ClientTerm,
     edit: boolean,
     process: boolean,
     onEdit: () => void,
@@ -61,7 +61,7 @@ export default function Term(
         {!edit &&
           <>
             <div
-              title={data.question}
+              title={data.question || ''}
               className="flex items-center px-1 h-6 transition-colors text-gray-400 font-semibold text-sm truncate ..."
             >
               {data.question || <span className="text-gray-500">Question not set</span>}
@@ -119,7 +119,7 @@ export default function Term(
               name="question"
               autoComplete="off"
               placeholder="Question not set"
-              defaultValue={data.question}
+              defaultValue={data.question || ''}
               className="block w-full bg-gray-800 text-gray-300 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline-none outline-1 focus:outline-blue-500 font-semibold text-sm"
               onChange={(e) => {
                 onChange('question', e.target.value)
@@ -143,7 +143,7 @@ export default function Term(
         {!edit &&
           <>
             <div
-              title={data.answer}
+              title={data.answer || ''}
               className="flex items-center px-1 h-6 transition-colors text-sm text-gray-400 truncate ..."
             >
               {data.answer || <span className="text-gray-500">Answer not set</span>}
@@ -160,7 +160,7 @@ export default function Term(
               name="answer"
               autoComplete="off"
               placeholder="Answer not set"
-              defaultValue={data.answer}
+              defaultValue={data.answer || ''}
               className="block w-full bg-gray-800 text-gray-300 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline-none outline-1 focus:outline-blue-500 text-sm"
               onChange={(e) => {
                 onChange('answer', e.target.value)
