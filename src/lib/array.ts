@@ -12,6 +12,28 @@ export const remove = (arr: any[], val: any) => {
   })
 }
 
+type UpsertType = {
+  id: string | null,
+  [key: string]: any
+}
+
+export const upsertObject = (arr: UpsertType[], val: UpsertType) => {
+  const index = arr.findIndex((item) => item.id === val.id)
+  if (index === -1) {
+    arr.push(val)
+  } else {
+    arr[index] = val
+  }
+
+  return arr
+}
+
+export const removeObject = (arr: UpsertType[], val: UpsertType) => {
+  return arr.filter((value) => {
+    return value.id === val.id
+  })
+}
+
 export const groupByPath = (arr: any[], groupPath: string | string[]) => {
   const tmp = {} as { [key: string]: any }
 

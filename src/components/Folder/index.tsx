@@ -1,6 +1,6 @@
 import Dropdown, { DropdownItemType } from '@components/Dropdown'
-import { ClientFolderType } from '@entities/ClientFolder'
 import SVGThreeDots from '@public/svg/three_dots.svg'
+import ClientFolder from '@entities/ClientFolder'
 import Spinner from '@components/Spinner'
 import { ReactNode } from 'react'
 import Link from 'next/link'
@@ -20,7 +20,7 @@ export default function Folder(
     onDropdownSelect
   }:
   {
-    data: ClientFolderType,
+    data: ClientFolder,
     edit: boolean,
     process: boolean,
     label: ReactNode,
@@ -49,7 +49,7 @@ export default function Folder(
         <>
           <div className="flex items-center truncate">
             <div
-              title={data.name}
+              title={data.name || ''}
               className="px-1 transition-colors group group-hover:text-gray-400 group-active:text-gray-400 font-semibold text-sm truncate ..."
             >
               {data.name}
@@ -102,9 +102,9 @@ export default function Folder(
             type="text"
             name="name"
             autoComplete="off"
-            defaultValue={data.name}
             placeholder="Folder name"
-            className="block w-full bg-gray-800 text-gray-300 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline outline-1 focus:outline-blue-500 font-semibold text-sm"
+            defaultValue={data.name || ''}
+            className="block w-full bg-gray-800 text-gray-300 h-8 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline outline-1 focus:outline-blue-500 font-semibold text-sm"
             onBlur={onSave}
             onChange={(e) => {
               onChange('name', e.target.value)

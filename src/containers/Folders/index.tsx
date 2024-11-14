@@ -1,28 +1,27 @@
 'use client'
 
-// import { DataStateFoldersType, useFolderActions } from '@store/reducers/folders'
 import ClientFolder from '@entities/ClientFolder'
-import { DataStateTermsType } from '@store/reducers/terms'
+import { remove, upsertObject } from '@lib/array'
 import MetaLabel from '@components/MetaLabel'
-import { unique, remove } from '@lib/array'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { FoldersType } from '@store/types'
 import { useSelector} from 'react-redux'
 import Folder from '@components/Folder'
-import { useState, useEffect } from 'react'
-import { actionFetchFolders, actionPutFolders } from '@store/index'
-import { FoldersType } from '@store/types'
+import {
+  actionFetchFolders,
+  actionPutFolder,
+  actionDelFolder,
+  actionUpdateFolder,
+  actionUpdateFolderItem
+} from '@store/index'
 
 export default function Folders() {
   useEffect(actionFetchFolders, [])
 
-
   const router = useRouter()
   const [ originItem, setOriginItem ] = useState<ClientFolder | null>(null)
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
-
-  // const actions = useFolderActions()
-
-  console.log(folders)
 
   return (
     <div>
@@ -31,9 +30,7 @@ export default function Folders() {
 
         <div
           onClick={() => {
-            // const folder = new ClientFolder().serialize()
-            // actions.addFolder({ folder, editUUID: folder.uuid })
-            actionPutFolders(new ClientFolder().serialize())
+            actionPutFolder(new ClientFolder().serialize())
           }}
           className="border border-gray-400 bg-gray-500 w-5 h-5 rounded-full hover:bg-gray-600 active:bg-gray-700 transition-colors hover:cursor-pointer flex items-center justify-center select-none"
         >
@@ -58,62 +55,36 @@ export default function Folders() {
               onDropdownSelect={(id) => {
                 switch (id) {
                   case 1:
-                    setOriginItem({ ...folder } as ClientFolder)
-                    // actions.updateFolder({ editUUID: folder.uuid })
+                    const origin = { ...folder } as ClientFolder
+                    actionUpdateFolder({ editId: folder.id }, () => setOriginItem(origin))
                     break
                   case 2:
                     router.push(`/simulator/${folder.id}`)
                     break
                   case 3:
-                    // actions.updateFolder({
-                    //   processUUIDs: unique([...folders.processUUIDs, folder.uuid]),
-                    // })
-
-                    fetch(`http://localhost:3000/api/folders/${folder.id}`, {
-                      method: 'DELETE',
-                      headers: {'Content-Type': 'application/json'},
-                    }).then(() => {
-                      // actions.updateFolder({
-                      //   processUUIDs: remove(folders.processUUIDs, folder.uuid),
-                      //   items: folders.items.filter((item) => item.uuid !== folder.uuid)
-                      // })
+                    actionDelFolder(folder, () => {
+                      if (originItem && originItem.id === folder.id) {
+                        setOriginItem(null)
+                      }
                     })
                     break
                 }
               }}
               onSave={() => {
-                setOriginItem(null)
-
-                const editFolder = folders.items.find(({id}) => id === folder.id)
-
-                // actions.updateFolder({
-                //   editUUID: null,
-                //   processUUIDs: unique([...folders.processUUIDs, folder.uuid]),
-                // })
-
-                fetch(`http://localhost:3000/api/folders/${folder.id}`, {
-                  method: 'PUT',
-                  body: JSON.stringify(editFolder),
-                  headers: {'Content-Type': 'application/json'},
-                }).then(() => {
-                  // actions.updateFolder({ processUUIDs: remove(folders.processUUIDs, folder.uuid) })
+                actionPutFolder(folder, () => {
+                  actionUpdateFolder({ editId: null, processIds: remove(folders.processIds, folder.id) }, () => {
+                    setOriginItem(null)
+                  })
                 })
               }}
-              onExit={async () => {
-                // actions.updateFolder({
-                //   editUUID: null,
-                //   items: folders.items.map((item) => {
-                //     return item.uuid === originItem?.uuid ? { ...originItem } : item
-                //   })
-                // })
-                setOriginItem(null)
+              onExit={() => {
+                actionUpdateFolder({
+                  editId: null,
+                  items: upsertObject([...folders.items], originItem as ClientFolder) as ClientFolder[]
+                }, () => setOriginItem(null))
               }}
               onChange={(prop, value) => {
-                // actions.updateFolder({
-                //   items: folders.items.map((item) => {
-                //     return item.uuid === folder.uuid ? {...item, [prop]: value } : item
-                //   })
-                // })
+                actionUpdateFolderItem({ ...folder, [prop]: value } as ClientFolder)
               }}
               label={<MetaLabel>{`Terms ${folder.terms.length || 0}`}</MetaLabel>}
             />

@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import ClientFolder from '@entities/ClientFolder'
 import { clientFetch } from '@lib/fetch-client'
-import { unique, remove } from '@lib/array'
+import {unique, remove, upsertObject, removeObject} from '@lib/array'
 import { ConfigType } from '@store/types'
 
 export const fetchFolders = createAsyncThunk(
@@ -15,19 +15,46 @@ export const fetchFolders = createAsyncThunk(
 
 export const putFolder = createAsyncThunk(
   '/put/folder',
-  async (payload: ClientFolder): Promise<ClientFolder | null> => {
+  async (payload: ClientFolder): Promise<ClientFolder> => {
     const res = await clientFetch(`/api/folders/${payload.id}`, {
         method: 'PUT',
-        body: JSON.stringify({
-          name: payload.name,
-        })
+        body: JSON.stringify({ name: payload.name })
       })
 
-    if (res.ok) {
-      return payload
+    if (!res.ok) {
+      throw new Error('Put folder error.', { cause: res.statusText })
     }
 
-    return null
+    return payload
+  }
+)
+
+export const delFolder = createAsyncThunk(
+  '/del/folder',
+  async (payload: ClientFolder): Promise<ClientFolder> => {
+    const res = await clientFetch(`/api/folders/${payload.id}`, { method: 'DELETE' })
+
+    if (!res.ok) {
+      throw new Error('Del folder error.', { cause: res.statusText })
+    }
+
+    return payload
+  }
+)
+
+export type UpdateType = Partial<{ items?: ClientFolder[], editId?: string | null, processIds?: (string)[], process?: boolean }>
+
+export const updateFolder = createAsyncThunk(
+  '/update/folder',
+  async (payload: UpdateType): Promise<UpdateType> => {
+    return payload
+  }
+)
+
+export const updateFolderItem = createAsyncThunk(
+  '/update/folder/item',
+  async (payload: ClientFolder): Promise<ClientFolder> => {
+    return payload
   }
 )
 
@@ -48,26 +75,71 @@ export const folderReducers = (builder: any) => {
       }
     })
 
+  builder
     .addCase(putFolder.pending, (state: ConfigType, action: { meta: { arg: ClientFolder } }) => {
+      const folder = action.meta.arg
+
       state.folders = {
         ...state.folders,
-        editId: action.meta.arg.id,
-        items: [...state.folders.items, action.meta.arg],
-        processIds: unique([...state.folders.processIds, action.meta.arg.id])
+        editId: folder.id,
+        items: upsertObject([...state.folders.items], folder) as ClientFolder[],
+        processIds: unique([...state.folders.processIds, folder.id])
       }
     })
     .addCase(putFolder.rejected, (state: ConfigType, action: { meta: { arg: ClientFolder } }) => {
+      const folder = action.meta.arg
       state.folders = {
         ...state.folders,
         editId: null,
-        items: state.folders.items.filter((folder: ClientFolder) => folder.id === action.meta.arg.id),
-        processIds: remove(state.folders.processIds, action.meta.arg.id)
+        items: removeObject([...state.folders.items], folder) as ClientFolder[],
+        processIds: remove(state.folders.processIds, folder.id)
       }
     })
     .addCase(putFolder.fulfilled, (state: ConfigType, action: { meta: { arg: ClientFolder } }) => {
       state.folders = {
         ...state.folders,
         processIds: remove(state.folders.processIds, action.meta.arg.id)
+      }
+    })
+
+  builder
+    .addCase(delFolder.pending, (state: ConfigType, action: { meta: { arg: ClientFolder } }) => {
+      state.folders = {
+        ...state.folders,
+        items: [...state.folders.items].filter((item) => item.id !== action.meta.arg.id),
+        processIds: unique([...state.folders.processIds, action.meta.arg.id])
+      }
+    })
+    .addCase(delFolder.rejected, (state: ConfigType, action: { meta: { arg: ClientFolder } }) => {
+      state.folders = {
+        ...state.folders,
+        items: [...state.folders.items, action.meta.arg],
+        processIds: remove(state.folders.processIds, action.meta.arg.id)
+      }
+    })
+    .addCase(delFolder.fulfilled, (state: ConfigType, action: { meta: { arg: ClientFolder } }) => {
+      state.folders = {
+        ...state.folders,
+        processIds: remove(state.folders.processIds, action.meta.arg.id)
+      }
+    })
+
+  builder
+    .addCase(updateFolder.fulfilled, (state: ConfigType, action: { meta: { arg: UpdateType }, payload: UpdateType }) => {
+      state.folders = {
+        ...state.folders,
+        items: action.payload.items !== undefined ? action.payload.items : state.folders.items,
+        editId: action.payload.editId !== undefined ? action.payload.editId : state.folders.editId,
+        process: action.payload.process !== undefined ? action.payload.process : state.folders.process,
+        processIds: action.payload.processIds !== undefined ? action.payload.processIds : state.folders.processIds,
+      }
+    })
+
+  builder
+    .addCase(updateFolderItem.fulfilled, (state: ConfigType, action: { meta: { arg: ClientFolder }, payload: ClientFolder }) => {
+      state.folders = {
+        ...state.folders,
+        items: upsertObject([...state.folders.items], action.payload) as ClientFolder[]
       }
     })
 }
