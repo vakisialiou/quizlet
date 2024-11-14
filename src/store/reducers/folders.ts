@@ -13,12 +13,17 @@ export const fetchFolders = createAsyncThunk(
   }
 )
 
-export const putFolder = createAsyncThunk(
-  '/put/folder',
-  async (payload: ClientFolder): Promise<ClientFolder> => {
-    const res = await clientFetch(`/api/folders/${payload.id}`, {
+export type SaveType = {
+  folder: ClientFolder,
+  editId?: string | null,
+}
+
+export const saveFolder = createAsyncThunk(
+  '/save/folder',
+  async (payload: SaveType): Promise<SaveType> => {
+    const res = await clientFetch(`/api/folders/${payload.folder.id}`, {
         method: 'PUT',
-        body: JSON.stringify({ name: payload.name })
+        body: JSON.stringify({ name: payload.folder.name })
       })
 
     if (!res.ok) {
@@ -29,8 +34,8 @@ export const putFolder = createAsyncThunk(
   }
 )
 
-export const delFolder = createAsyncThunk(
-  '/del/folder',
+export const deleteFolder = createAsyncThunk(
+  '/delete/folder',
   async (payload: ClientFolder): Promise<ClientFolder> => {
     const res = await clientFetch(`/api/folders/${payload.id}`, { method: 'DELETE' })
 
@@ -76,17 +81,16 @@ export const folderReducers = (builder: any) => {
     })
 
   builder
-    .addCase(putFolder.pending, (state: ConfigType, action: { meta: { arg: ClientFolder } }) => {
-      const folder = action.meta.arg
-
+    .addCase(saveFolder.pending, (state: ConfigType, action: { meta: { arg: SaveType } }) => {
+      const arg = action.meta.arg
       state.folders = {
         ...state.folders,
-        editId: folder.id,
-        items: upsertObject([...state.folders.items], folder) as ClientFolder[],
-        processIds: unique([...state.folders.processIds, folder.id])
+        processIds: unique([...state.folders.processIds, arg.folder.id]),
+        editId: arg.editId !== undefined ? arg.editId : state.folders.editId,
+        items: upsertObject([...state.folders.items], arg.folder) as ClientFolder[],
       }
     })
-    .addCase(putFolder.rejected, (state: ConfigType, action: { meta: { arg: ClientFolder } }) => {
+    .addCase(saveFolder.rejected, (state: ConfigType, action: { meta: { arg: ClientFolder } }) => {
       const folder = action.meta.arg
       state.folders = {
         ...state.folders,
@@ -95,7 +99,7 @@ export const folderReducers = (builder: any) => {
         processIds: remove(state.folders.processIds, folder.id)
       }
     })
-    .addCase(putFolder.fulfilled, (state: ConfigType, action: { meta: { arg: ClientFolder } }) => {
+    .addCase(saveFolder.fulfilled, (state: ConfigType, action: { meta: { arg: ClientFolder } }) => {
       state.folders = {
         ...state.folders,
         processIds: remove(state.folders.processIds, action.meta.arg.id)
@@ -103,21 +107,21 @@ export const folderReducers = (builder: any) => {
     })
 
   builder
-    .addCase(delFolder.pending, (state: ConfigType, action: { meta: { arg: ClientFolder } }) => {
+    .addCase(deleteFolder.pending, (state: ConfigType, action: { meta: { arg: ClientFolder } }) => {
       state.folders = {
         ...state.folders,
         items: [...state.folders.items].filter((item) => item.id !== action.meta.arg.id),
         processIds: unique([...state.folders.processIds, action.meta.arg.id])
       }
     })
-    .addCase(delFolder.rejected, (state: ConfigType, action: { meta: { arg: ClientFolder } }) => {
+    .addCase(deleteFolder.rejected, (state: ConfigType, action: { meta: { arg: ClientFolder } }) => {
       state.folders = {
         ...state.folders,
         items: [...state.folders.items, action.meta.arg],
         processIds: remove(state.folders.processIds, action.meta.arg.id)
       }
     })
-    .addCase(delFolder.fulfilled, (state: ConfigType, action: { meta: { arg: ClientFolder } }) => {
+    .addCase(deleteFolder.fulfilled, (state: ConfigType, action: { meta: { arg: ClientFolder } }) => {
       state.folders = {
         ...state.folders,
         processIds: remove(state.folders.processIds, action.meta.arg.id)

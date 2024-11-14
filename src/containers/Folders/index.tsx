@@ -9,10 +9,10 @@ import { FoldersType } from '@store/types'
 import { useSelector} from 'react-redux'
 import Folder from '@components/Folder'
 import {
-  actionFetchFolders,
-  actionPutFolder,
-  actionDelFolder,
+  actionSaveFolder,
+  actionDeleteFolder,
   actionUpdateFolder,
+  actionFetchFolders,
   actionUpdateFolderItem
 } from '@store/index'
 
@@ -30,7 +30,8 @@ export default function Folders() {
 
         <div
           onClick={() => {
-            actionPutFolder(new ClientFolder().serialize())
+            const folder = new ClientFolder().serialize()
+            actionSaveFolder({ folder, editId: folder.id })
           }}
           className="border border-gray-400 bg-gray-500 w-5 h-5 rounded-full hover:bg-gray-600 active:bg-gray-700 transition-colors hover:cursor-pointer flex items-center justify-center select-none"
         >
@@ -62,7 +63,7 @@ export default function Folders() {
                     router.push(`/simulator/${folder.id}`)
                     break
                   case 3:
-                    actionDelFolder(folder, () => {
+                    actionDeleteFolder(folder, () => {
                       if (originItem && originItem.id === folder.id) {
                         setOriginItem(null)
                       }
@@ -71,10 +72,8 @@ export default function Folders() {
                 }
               }}
               onSave={() => {
-                actionPutFolder(folder, () => {
-                  actionUpdateFolder({ editId: null, processIds: remove(folders.processIds, folder.id) }, () => {
-                    setOriginItem(null)
-                  })
+                actionSaveFolder({ folder, editId: null }, () => {
+                  setOriginItem(null)
                 })
               }}
               onExit={() => {

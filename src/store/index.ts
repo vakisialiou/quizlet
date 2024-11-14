@@ -58,13 +58,13 @@ export const actionFetchFolders = (callback?: (res: ClientFolder[]) => void): vo
   execAction(action, callback)
 }
 
-export const actionPutFolder = (folder: ClientFolder, callback?: (res: ClientFolder) => void): void => {
-  const action = folders.putFolder(folder)
+export const actionSaveFolder = (folder: folders.SaveType, callback?: (res: folders.SaveType) => void): void => {
+  const action = folders.saveFolder(folder)
   execAction(action, callback)
 }
 
-export const actionDelFolder = (payload: ClientFolder, callback?: (res: ClientFolder) => void): void => {
-  const action = folders.delFolder(payload)
+export const actionDeleteFolder = (payload: ClientFolder, callback?: (res: ClientFolder) => void): void => {
+  const action = folders.deleteFolder(payload)
   execAction(action, callback)
 }
 
