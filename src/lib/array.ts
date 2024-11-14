@@ -7,7 +7,9 @@ export const unique = (arr: any[]) => {
 }
 
 export const remove = (arr: any[], val: any) => {
-  return arr.filter((value: any) => value === val)
+  return arr.filter((value: any) => {
+    return value === val
+  })
 }
 
 export const groupByPath = (arr: any[], groupPath: string | string[]) => {

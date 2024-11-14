@@ -1,70 +1,98 @@
 import ServerFolder from '@entities/ServerFolder'
 import ClientFolder from '@entities/ClientFolder'
+import ClientTerm from '@entities/ClientTerm'
 import { prisma } from '@lib/prisma'
 
 export const findFoldersByUserId = async (userId: string): Promise<ClientFolder[]> => {
   const res = await prisma.folder.findMany({
     where: { userId },
     select: {
-      uuid: true,
+      id: true,
       name: true,
+      terms: {
+        select: {
+          id: true,
+          sort: true,
+          question: true,
+          answer: true,
+        }
+      }
     },
   })
 
-  return res.map(item => {
+  return res.map(folder => {
     return new ClientFolder()
-      .setUUID(item.uuid)
-      .setName(item.name)
+      .setId(folder.id)
+      .setName(folder.name)
+      .setTerms(
+        folder.terms.map(term => {
+          return new ClientTerm(folder.id)
+            .setQuestion(term.question)
+            .setAnswer(term.answer)
+            .setId(term.id)
+            .setSort(term.sort)
+        })
+      )
       .serialize()
   })
 }
 
-export const getFolderByUUID = async (userId: string, uuid: string): Promise<ServerFolder | null> => {
-  const res = await prisma.folder.findUnique({
-    where: { userId, uuid },
+export const getFolderById = async (userId: string, id: string): Promise<ServerFolder | null> => {
+  const folder = await prisma.folder.findUnique({
+    where: { userId, id },
     select: {
       id: true,
-      userId: true,
-      uuid: true,
       name: true,
-      createdAt: true,
-      updatedAt: true
+      terms: {
+        select: {
+          id: true,
+          sort: true,
+          question: true,
+          answer: true,
+        }
+      }
     },
   })
 
-  if (res) {
-    return new ServerFolder()
-      .setId(res.id)
-      .setUUID(res.uuid)
-      .setName(res.name)
-      .setUserId(res.userId)
-      .setCreatedAt(res.createdAt)
-      .setUpdatedAt(res.updatedAt)
+  if (folder) {
+    return new ClientFolder()
+      .setId(folder.id)
+      .setName(folder.name)
+      .setTerms(
+        folder.terms.map(term => {
+          return new ClientTerm(folder.id)
+            .setQuestion(term.question)
+            .setAnswer(term.answer)
+            .setId(term.id)
+            .setSort(term.sort)
+        })
+      )
+      .serialize()
   }
 
   return null
 }
 
-export const upsertFolder = async (folder: ServerFolder): Promise<string | null> => {
+export const upsertFolder = async (userId: string, folder: ClientFolder): Promise<string | null> => {
   const res = await prisma.folder.upsert({
-    where: { uuid: folder.uuid },
+    where: { id: folder.id },
     update: {
       name: folder.name,
-      updatedAt: folder.updatedAt,
+      updatedAt: new Date(),
     },
     create: {
-      uuid: folder.uuid,
+      userId,
+      id: folder.id,
       name: folder.name,
-      userId: folder.userId,
-      createdAt: folder.createdAt,
-      updatedAt: folder.updatedAt
+      createdAt: new Date(),
+      updatedAt: new Date()
     },
   })
 
   return res.id
 }
 
-export const removeFolder = async (uuid: string): Promise<boolean> => {
-  const res = await prisma.folder.delete({ where: { uuid } })
+export const removeFolder = async (id: string): Promise<boolean> => {
+  const res = await prisma.folder.delete({ where: { id } })
   return !!res?.id
 }

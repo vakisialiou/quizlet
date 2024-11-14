@@ -2,6 +2,7 @@ import { AppProvider } from '@app/provider'
 import localFont from 'next/font/local'
 import Header from '@containers/Header'
 import type { Metadata } from 'next'
+import { auth } from '@auth'
 import React from 'react'
 import './globals.css'
 
@@ -30,6 +31,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth()
+
   return (
     <html lang="en">
       <body
@@ -37,7 +40,10 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AppProvider>
-          <Header menuItems={[]} />
+          <Header
+            menuItems={[]}
+            session={session}
+          />
           {children}
         </AppProvider>
       </body>

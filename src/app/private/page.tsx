@@ -1,6 +1,6 @@
 import Folders from '@containers/Folders'
 
-export default async function Page() {
+export default function Page() {
   return (
     <div className="flex flex-col">
       <Folders />

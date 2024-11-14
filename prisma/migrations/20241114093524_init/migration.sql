@@ -67,12 +67,11 @@ CREATE TABLE `VerificationToken` (
 CREATE TABLE `Folder` (
     `id` VARCHAR(191) NOT NULL,
     `userId` VARCHAR(191) NOT NULL,
-    `uuid` VARCHAR(36) NOT NULL,
     `name` VARCHAR(255) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `Folder_uuid_key`(`uuid`),
+    UNIQUE INDEX `Folder_id_key`(`id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -82,13 +81,12 @@ CREATE TABLE `Term` (
     `userId` VARCHAR(191) NOT NULL,
     `folderId` VARCHAR(191) NOT NULL,
     `sort` INTEGER NOT NULL,
-    `uuid` VARCHAR(36) NOT NULL,
     `question` VARCHAR(255) NULL,
     `answer` VARCHAR(255) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `Term_uuid_key`(`uuid`),
+    UNIQUE INDEX `Term_id_key`(`id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

@@ -1,21 +1,29 @@
+import ClientTerm from './ClientTerm'
 import { v4 } from 'uuid'
 
-export type ClientFolderType = {
-  uuid: string | null
-  name: string | null,
-}
-
 export default class ClientFolder {
-  uuid: string | null
+  id: string
   name: string | null
+  terms: ClientTerm[]
 
   constructor() {
-    this.uuid = v4()
+    this.id = v4()
     this.name = null
+    this.terms = []
   }
 
-  setUUID(value: string | null): ClientFolder {
-    this.uuid = value
+  addTerm(term: ClientTerm) {
+    this.terms.push(term)
+    return this
+  }
+
+  setTerms(terms: ClientTerm[]) {
+    this.terms = terms
+    return this
+  }
+
+  setId(value: string): ClientFolder {
+    this.id = value
     return this
   }
 

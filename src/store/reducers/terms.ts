@@ -24,22 +24,6 @@ export type DataStateTermsType = {
   [folderUUID: string]: DataStateTermType
 }
 
-export const createPreloadedTermsState = (terms: ClientTerm[]): DataStateTermsType => {
-  const initialData = {} as DataStateTermsType
-  for (let item of terms) {
-    if (item.folderUUID in initialData) {
-      initialData[item.folderUUID]['items'].push(item)
-    } else {
-      initialData[item.folderUUID] = {
-        items: [item],
-        editUUID: null,
-        processUUIDs: []
-      }
-    }
-  }
-  return initialData
-}
-
 const slice = createSlice({
   name: 'terms',
   initialState: {} as DataStateTermsType,

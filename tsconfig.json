@@ -22,17 +22,17 @@
       }
     ],
     "paths": {
-      "@auth": [
-        "./auth"
-      ],
-      "@config": [
-        "./config"
-      ],
       "@app/*": [
         "./src/app/*"
       ],
       "@lib/*": [
         "./src/lib/*"
+      ],
+      "@auth": [
+        "./src/lib/auth"
+      ],
+      "@config": [
+        "./src/lib/config"
       ],
       "@public/*": [
         "./public/*"

@@ -9,7 +9,7 @@ datasource db {
 }
 
 model User {
-  id            String          @id @default(cuid())
+  id            String          @id @default(uuid())
   name          String?
   username      String?         @unique
   email         String?         @unique
@@ -25,7 +25,7 @@ model User {
 }
 
 model Account {
-  id                       String  @id @default(cuid())
+  id                       String  @id @default(uuid())
   userId                   String  @unique
   type                     String
   provider                 String
@@ -48,7 +48,7 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(cuid())
+  id           String   @id @default(uuid())
   sessionToken String   @unique
   userId       String
   expires      DateTime
@@ -61,7 +61,7 @@ model Session {
 }
 
 model VerificationToken {
-  id         String     @id @default(cuid())
+  id         String     @id @default(uuid())
   identifier String
   token      String
   expires    DateTime
@@ -70,9 +70,8 @@ model VerificationToken {
 }
 
 model Folder {
-  id         String    @id @default(cuid())
+  id         String    @id @default(uuid())
   userId     String
-  uuid       String    @db.VarChar(36)
   name       String?   @db.VarChar(255)
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
@@ -80,15 +79,14 @@ model Folder {
 
   terms     Term[]
 
-  @@unique([uuid])
+  @@unique([id])
 }
 
 model Term {
-  id         String    @id @default(cuid())
+  id         String    @id @default(uuid())
   userId     String
   folderId   String
   sort       Int
-  uuid       String    @db.VarChar(36)
   question   String?   @db.VarChar(255)
   answer     String?   @db.VarChar(255)
   createdAt DateTime   @default(now())
@@ -96,5 +94,5 @@ model Term {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   folder Folder @relation(fields: [folderId], references: [id], onDelete: Cascade)
 
-  @@unique([uuid])
+  @@unique([id])
 }

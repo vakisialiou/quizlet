@@ -4,8 +4,8 @@ import { auth } from '@auth'
 export async function GET() {
   const session = await auth()
   try {
-    const folders = await findFoldersByUserId(session?.user?.id as string)
-    return new Response(JSON.stringify({ folders }), {
+    const items = session?.user?.id ? await findFoldersByUserId(session?.user?.id) : []
+    return new Response(JSON.stringify({ items }), {
       headers: { 'Content-Type': 'application/json' },
       status: 200,
     })

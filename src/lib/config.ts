@@ -4,6 +4,9 @@ export const ENV_PROD = 'prod'
 export const ENV_LOCAL = 'local'
 
 type AppConfig = {
+  server: {
+    baseURL: string
+  },
   db: {
     mysql: {
       port: number,
@@ -26,6 +29,9 @@ type AppConfig = {
 }
 
 export const config: AppConfig = {
+  server: {
+    baseURL: process.env.PUBLIC_BASE_URL || 'http://localhost:3000'
+  },
   oauth: {
     secret: process.env.GOOGLE_CLIENT_ID || '',
     providers: {

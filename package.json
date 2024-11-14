@@ -11,6 +11,7 @@
     "migration:down": "npx tsx -r dotenv/config migration.ts down",
     "migration:add": "npx tsx -r dotenv/config migration.ts add migration",
     "migrate:add": "npx prisma migrate dev --name",
+    "generate": "npx prisma generate",
     "studio": "npx prisma studio"
   },
   "dependencies": {

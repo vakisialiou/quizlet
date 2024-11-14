@@ -1,12 +1,12 @@
 import { v4 } from 'uuid'
 
 export type ServerFolderType = {
-  id: number,
-  userId: number,
+  id?: string | null
   uuid: string
+  userId: string,
   name: string | null,
-  createdAt: Date,
-  updatedAt: Date,
+  createdAt?: Date
+  updatedAt?: Date
 }
 
 export default class ServerFolder {

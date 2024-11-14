@@ -2,7 +2,6 @@ import { cookies } from 'next/headers'
 import { days } from '@lib/time'
 
 const EXP_DAYS = 365
-export const AUTH_TOKEN_ID = 'auth-id'
 
 export enum SameSite {
   LAX = 'lax',
@@ -49,12 +48,4 @@ export const getCookie = async (name: string): Promise<CookieType | null> => {
 
 export const removeCookie = async (name: string): Promise<void> => {
   (await cookies()).delete(name)
-}
-
-export const setCookieTokenId = async (value: string, options: CookieType = {}): Promise<void> => {
-  return setCookie(AUTH_TOKEN_ID, value, options)
-}
-
-export const getCookieTokenId = (): Promise<string | null> => {
-  return getCookie(AUTH_TOKEN_ID).then((res) => res?.value || null)
 }

@@ -1,18 +1,21 @@
 import { removeFolder, upsertFolder } from '@repositories/folders'
-import ServerFolder from '@entities/ServerFolder'
+import ClientFolder from '@entities/ClientFolder'
 import { auth } from '@auth'
 
-export async function PUT(req: Request) {
+export async function PUT(req: Request, { params }: { params: { id: string } }) {
   const session = await auth()
+  if (!session?.user?.id) {
+    return new Response(null, { status: 401 })
+  }
+
   try {
     const body = await req.json()
-    const folder = new ServerFolder()
-    folder
-      .setUserId(session?.user?.id as string)
-      .setUUID(body.uuid)
-      .setName(body.name)
 
-    await upsertFolder(folder)
+    await upsertFolder(session?.user?.id, {
+      id: params.id,
+      name: body.name,
+    } as ClientFolder)
+
     return new Response(null, { status: 200 })
 
   } catch (error) {

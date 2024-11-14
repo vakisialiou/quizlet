@@ -30,6 +30,8 @@ export default function Dropdown(
     children,
     selected,
     disabled = false,
+    className = '',
+    classNameMenu = '',
     placement = Placement.bottomEnd,
     offsetOptions = 0,
     items = [],
@@ -40,10 +42,12 @@ export default function Dropdown(
     children: ReactNode,
     selected?: string | number,
     disabled?: boolean,
+    className?: string,
+    classNameMenu?: string,
     placement?: Placement,
     offsetOptions?: number,
     items: DropdownItemType[],
-    onClick: (e: BaseSyntheticEvent) => void,
+    onClick?: ((e: BaseSyntheticEvent) => void),
     onSelect: (id: string | number) => void,
   }
 ) {
@@ -104,17 +108,19 @@ export default function Dropdown(
       ref={ref}
       onClick={onClick}
       className={clsx('inline-block text-left hover:bg-gray-800', {
-        ['disabled']: disabled
+        ['disabled']: disabled,
       })}
     >
       <div
         onClick={toggleDropdown}
-        className="flex items-center select-none group cursor-pointer pr-1"
+        className={clsx('flex p-1 items-center select-none group cursor-pointer', {
+          [className]: className,
+        })}
       >
         {children}
 
         <svg
-          className="w-3 h-3 group-aria-[]:group:text-gray-500 group-active:text-gray-400 transition-colors"
+          className="w-3 h-3 group-aria-[]:group:text-gray-500 group-active:text-gray-400 transition-colors mx-1"
           stroke="currentColor"
           viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
@@ -132,7 +138,9 @@ export default function Dropdown(
         createPortal(
           <div
             ref={refMenu}
-            className="fixed z-10 mt-1 border border-gray-600 bg-black rounded shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none select-none"
+            className={clsx('fixed z-10 mt-1 border border-gray-600 bg-black rounded shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none select-none', {
+              [classNameMenu]: classNameMenu
+            })}
           >
             <div className="py-1">
               {items.map((item: DropdownItemType) => {
