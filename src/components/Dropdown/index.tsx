@@ -107,13 +107,13 @@ export default function Dropdown(
     <div
       ref={ref}
       onClick={onClick}
-      className={clsx('inline-block text-left hover:bg-gray-800', {
+      className={clsx('flex items-center text-left hover:bg-gray-800', {
         ['disabled']: disabled,
       })}
     >
       <div
         onClick={toggleDropdown}
-        className={clsx('flex p-1 items-center select-none group cursor-pointer', {
+        className={clsx('flex items-center select-none group cursor-pointer', {
           [className]: className,
         })}
       >

@@ -1,14 +1,8 @@
-import { DataStateSimulatorsType } from '@store/reducers/simulators'
+import { SimulatorsType, SimulatorStatus } from '@store/initial-state'
 
-export enum SimulatorStatus {
-  PROCESSING = 'processing',
-  FINISHING = 'finishing',
-  WAITING = 'waiting'
-}
-
-export const getSimulatorStatus = (simulators: DataStateSimulatorsType, folderUUID: string): SimulatorStatus => {
-  if (folderUUID in simulators) {
-    return simulators[folderUUID].status || SimulatorStatus.WAITING
+export const getSimulatorStatus = (simulators: SimulatorsType, folderId: string): SimulatorStatus => {
+  if (folderId in simulators) {
+    return simulators[folderId].status || SimulatorStatus.WAITING
   }
 
   return SimulatorStatus.WAITING

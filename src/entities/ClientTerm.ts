@@ -25,7 +25,7 @@ export default class ClientTerm {
     return this
   }
 
-  setFolderUUID(value: string): ClientTerm {
+  setFolderId(value: string): ClientTerm {
     this.folderId = value
     return this
   }

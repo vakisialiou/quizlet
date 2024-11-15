@@ -1,3 +1,4 @@
+import { getInitialState } from '@store/initial-state'
 import { AppProvider } from '@app/provider'
 import localFont from 'next/font/local'
 import Header from '@containers/Header'
@@ -32,6 +33,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth()
+  const initialState = await getInitialState()
 
   return (
     <html lang="en">
@@ -39,7 +41,7 @@ export default async function RootLayout({
         suppressHydrationWarning={true}
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AppProvider>
+        <AppProvider initialState={initialState}>
           <Header
             menuItems={[]}
             session={session}

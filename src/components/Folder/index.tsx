@@ -104,7 +104,7 @@ export default function Folder(
             autoComplete="off"
             placeholder="Folder name"
             defaultValue={data.name || ''}
-            className="block w-full bg-gray-800 text-gray-300 h-8 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline outline-1 focus:outline-blue-500 font-semibold text-sm"
+            className="block w-full bg-gray-800 text-gray-300 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline outline-1 focus:outline-blue-500 font-semibold text-sm"
             onBlur={onSave}
             onChange={(e) => {
               onChange('name', e.target.value)

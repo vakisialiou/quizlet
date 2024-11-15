@@ -1,11 +1,11 @@
 'use client'
 
+import { FoldersType } from '@store/initial-state'
 import ClientFolder from '@entities/ClientFolder'
-import { remove, upsertObject } from '@lib/array'
 import MetaLabel from '@components/MetaLabel'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { FoldersType } from '@store/types'
+import { upsertObject } from '@lib/array'
 import { useSelector} from 'react-redux'
 import Folder from '@components/Folder'
 import {
@@ -45,7 +45,7 @@ export default function Folders() {
             <Folder
               data={folder}
               key={folder.id}
-              href={`/folder/${folder.id}`}
+              href={`/private/folder/${folder.id}`}
               edit={folder.id === folders.editId}
               process={folders.processIds.includes(folder.id)}
               dropdownItems={[
@@ -56,11 +56,10 @@ export default function Folders() {
               onDropdownSelect={(id) => {
                 switch (id) {
                   case 1:
-                    const origin = { ...folder } as ClientFolder
-                    actionUpdateFolder({ editId: folder.id }, () => setOriginItem(origin))
+                    actionUpdateFolder({ editId: folder.id }, () => setOriginItem(folder))
                     break
                   case 2:
-                    router.push(`/simulator/${folder.id}`)
+                    router.push(`/private/simulator/${folder.id}`)
                     break
                   case 3:
                     actionDeleteFolder(folder, () => {

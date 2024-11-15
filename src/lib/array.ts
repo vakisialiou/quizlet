@@ -8,7 +8,7 @@ export const unique = (arr: any[]) => {
 
 export const remove = (arr: any[], val: any) => {
   return arr.filter((value: any) => {
-    return value === val
+    return value !== val
   })
 }
 
@@ -30,7 +30,7 @@ export const upsertObject = (arr: UpsertType[], val: UpsertType) => {
 
 export const removeObject = (arr: UpsertType[], val: UpsertType) => {
   return arr.filter((value) => {
-    return value.id === val.id
+    return value.id !== val.id
   })
 }
 
@@ -45,4 +45,8 @@ export const groupByPath = (arr: any[], groupPath: string | string[]) => {
     tmp[key].push(value)
   }
   return tmp
+}
+
+export const shuffle = (arr: any[]): any[] => {
+  return arr.sort(() => Math.random() - 0.5)
 }

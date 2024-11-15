@@ -42,7 +42,7 @@ export default function Header({ menuItems = [], session = null }: { menuItems: 
             )
           })}
         </div>
-        <div className="flex flex-1 justify-end">
+        <div className="flex flex-1 justify-end h-8">
           {session &&
             <ButtonAccount
               session={session}
@@ -51,7 +51,7 @@ export default function Header({ menuItems = [], session = null }: { menuItems: 
 
           {!session &&
             <div
-              className="text-sm font-semibold leading-6 text-gray-300 cursor-pointer hover:text-white"
+              className="text-sm font-semibold leading-6 text-gray-300 cursor-pointer hover:text-white flex items-center"
               onClick={() => signIn('google')}
             >
               Log in

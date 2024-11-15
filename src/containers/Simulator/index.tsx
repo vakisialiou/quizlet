@@ -1,52 +1,56 @@
 'use client'
 
-import {DataStateSimulatorsType, useSimulatorActions} from '@store/reducers/simulators'
-import {getSimulatorStatus, SimulatorStatus} from '@containers/Simulator/status'
-import { filterActiveTerm, filterTerms } from '@containers/Simulator/filter'
-import {getAllTermItems} from '@containers/Simulator/helpers'
-import {DataStateFoldersType} from '@store/reducers/folders'
-import {DataStateTermsType} from '@store/reducers/terms'
 import SVGRightArrow from '@public/svg/rightarrow.svg'
 import SVGLoopBack from '@public/svg/loop_back.svg'
 import { useEffect, useMemo, useRef } from 'react'
-import { randomArrayElement } from '@lib/random'
+import RoundInfo from '@components/RoundInfo'
+import CardEmpty from '@components/CardEmpty'
 import {useSelector} from 'react-redux'
 import Button from '@components/Button'
+import { shuffle } from '@lib/array'
 import Card from '@components/Card'
-import CardEmpty from '@components/CardEmpty'
 import Link from 'next/link'
+import {
+  actionContinueSimulators,
+  actionRememberSimulators,
+  actionRestartSimulators,
+  actionFetchSimulators,
+  actionStartSimulators,
+  actionBackSimulators,
+} from '@store/index'
+import {
+  FoldersType,
+  SimulatorsType,
+  SimulatorStatus
+} from '@store/initial-state'
 
-export default function Simulator({ folderUUID }: { folderUUID: string }) {
-  const actions = useSimulatorActions()
+export default function Simulator({ folderId }: { folderId: string }) {
+  useEffect(actionFetchSimulators, [])
 
-  const simulators = useSelector(({ simulators }: { simulators: DataStateSimulatorsType }) => simulators)
-  const folders = useSelector(({ folders }: { folders: DataStateFoldersType }) => folders)
-  const terms = useSelector(({ terms }: { terms: DataStateTermsType }) => terms)
+  const simulator = useSelector(({ simulators }: { simulators: SimulatorsType }) => simulators[folderId]) || {
+    status: SimulatorStatus.WAITING,
+    termId: null,
+    terms: [],
+    historyIds: [],
+    rememberIds: [],
+    continueIds: []
+  }
 
-  const allTermItems = getAllTermItems(terms, folderUUID)
+  const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
 
   const folder = useMemo(() => {
-    return folders.items.find(({ uuid }) => uuid === folderUUID)
-  }, [folders, folderUUID])
+    return folders.items.find(({ id }) => id === folderId)
+  }, [folders, folderId])
 
-  const { activeTerm, termItems } = useMemo(() => {
-    const termItems = filterTerms(allTermItems, simulators[folderUUID])
-    return {
-      termItems,
-      activeTerm: termItems.find((item) => {
-        return item.uuid === simulators[folderUUID]?.termUUID
-      }) || null
-    }
-  }, [folders, simulators])
-
-  const status = getSimulatorStatus(simulators, folderUUID)
-  const tailTermItems = filterActiveTerm(termItems, activeTerm?.uuid)
+  const activeTerm = useMemo(() => {
+    return (folder?.terms || []).find(({ id }) => id === simulator.termId)
+  }, [folder, simulator.termId])
 
   const ref = useRef<HTMLDivElement|null>(null)
   const refIntervalId = useRef<NodeJS.Timeout|number|undefined>(undefined)
 
   useEffect(() => {
-    if (status === SimulatorStatus.FINISHING && simulators[folderUUID].continueUUIDs.length > 0) {
+    if (simulator.status === SimulatorStatus.FINISHING && simulator.continueIds.length > 0) {
       let i = 0
       refIntervalId.current = setInterval(() => {
         i++
@@ -57,14 +61,14 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
 
         if (i >= 5) {
           clearInterval(refIntervalId.current)
-          actions.restart({ folderUUID })
+          actionRestartSimulators({ folderId })
         }
       }, 1000)
       return
     }
 
     clearInterval(refIntervalId.current)
-  }, [status])
+  }, [simulator.status])
 
   return (
     <div
@@ -87,11 +91,11 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
       <div
         className="flex items-center justify-center w-full h-14"
       >
-        {(status === SimulatorStatus.PROCESSING && simulators[folderUUID].historyUUIDs.length > 0) &&
+        {(simulator.status === SimulatorStatus.PROCESSING && simulator.historyIds.length > 0) &&
           <div
             className="flex items-center justify-center rounded-full bg-gray-900 hover:bg-gray-800 cursor-pointer w-8 h-8"
             onClick={() => {
-              actions.back({ folderUUID })
+              actionBackSimulators({ folderId })
             }}
           >
             <SVGLoopBack
@@ -103,7 +107,7 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
         }
       </div>
 
-      {status === SimulatorStatus.WAITING &&
+      {simulator.status === SimulatorStatus.WAITING &&
         <div className="flex justify-center w-full">
           <CardEmpty>
             <div className="text-lg">
@@ -112,9 +116,9 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
 
             <Button
               onClick={() => {
-                if (allTermItems.length > 0) {
-                  const termItem = randomArrayElement(allTermItems)
-                  actions.start({folderUUID, termUUID: termItem.uuid})
+                const items = [...folder?.terms || []]
+                if (items.length > 0) {
+                  actionStartSimulators({ folderId, items: shuffle(items) })
                 }
               }}
             >
@@ -124,10 +128,10 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
         </div>
       }
 
-      {status === SimulatorStatus.FINISHING &&
+      {simulator.status === SimulatorStatus.FINISHING &&
         <div className="flex justify-center w-full">
           <CardEmpty>
-            {simulators[folderUUID].continueUUIDs.length === 0 &&
+            {simulator.continueIds.length === 0 &&
               <>
                 <div className="text-lg">
                   Every thinks is done!
@@ -136,9 +140,9 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
                 <div className="flex gap-2 w-full items-center justify-center">
                   <Button
                     onClick={() => {
-                      if (allTermItems.length > 0) {
-                        const termItem = randomArrayElement(allTermItems)
-                        actions.start({folderUUID, termUUID: termItem.uuid})
+                      const items = [...folder?.terms || []]
+                      if (items.length > 0) {
+                        actionStartSimulators({ folderId, items: shuffle(items) })
                       }
                     }}
                   >
@@ -148,7 +152,7 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
               </>
             }
 
-            {simulators[folderUUID].continueUUIDs.length > 0 &&
+            {simulator.continueIds.length > 0 &&
               <>
                 <div className="text-lg">
                   Prepare to continue.
@@ -163,35 +167,41 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
         </div>
       }
 
-      {status === SimulatorStatus.PROCESSING && activeTerm &&
+      {simulator.status === SimulatorStatus.PROCESSING && activeTerm &&
 
-          <div className="flex items-center justify-between gap-4 w-full">
-            <div className="flex justify-center w-full">
-              <div className="flex rounded-full items-center justify-center bg-gray-900 border border-gray-600 w-36 h-36">
-                <div className="flex flex-col items-center text-lg">
-                  Remembered
-                  <span>{simulators[folderUUID]?.rememberUUIDs.length || 0}</span>
-                </div>
-              </div>
-            </div>
+          <div className="flex items-center justify-center gap-4 w-full">
+
             <div className="flex flex-col gap-4">
+
+              <div className="flex items-center justify-around w-full">
+                <RoundInfo
+                  title="Total"
+                  value={simulator.terms.length}
+                />
+
+                <RoundInfo
+                  title="Call"
+                  value={simulator.terms.length - simulator.continueIds.length - simulator.rememberIds.length - 1}
+                />
+
+                <RoundInfo
+                  title="Done"
+                  value={simulator.rememberIds.length}
+                />
+              </div>
+
               <Card
-                key={activeTerm?.uuid}
-                answer={activeTerm?.answer}
-                question={activeTerm?.question}
+                key={activeTerm.id}
+                answer={activeTerm.answer || ''}
+                question={activeTerm.question || ''}
               />
 
-              <div className="flex gap-4 justify-between grid grid-cols-2">
+              <div className="gap-4 justify-between grid grid-cols-2">
                 <div>
                   <Button
                     className="flex items-center justify-center"
                     onClick={() => {
-                      if (tailTermItems.length === 0) {
-                        actions.rememberAndFinish({ folderUUID })
-                      } else {
-                        const termItem = randomArrayElement(tailTermItems)
-                        actions.remember({ folderUUID, termUUID: termItem.uuid })
-                      }
+                      actionRememberSimulators({folderId})
                     }}
                   >
                     Remembered
@@ -201,12 +211,7 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
                   <Button
                     className="flex items-center justify-center"
                     onClick={() => {
-                      if (tailTermItems.length === 0) {
-                        actions.continueAndFinish({ folderUUID })
-                      } else {
-                        const termItem = randomArrayElement(tailTermItems)
-                        actions.continue({ folderUUID, termUUID: termItem.uuid })
-                      }
+                      actionContinueSimulators({folderId})
                     }}
                   >
                     Continue
@@ -214,17 +219,7 @@ export default function Simulator({ folderUUID }: { folderUUID: string }) {
                 </div>
               </div>
             </div>
-            <div className="flex justify-center w-full">
-              <div
-                className="flex rounded-full items-center justify-center bg-gray-900 border border-gray-600 w-36 h-36"
-              >
-                <div className="flex flex-col items-center text-lg">
-                  Waiting
-                  <span>{tailTermItems.length} / {allTermItems.length}</span>
-                </div>
-              </div>
-            </div>
-        </div>
+          </div>
       }
 
     </div>

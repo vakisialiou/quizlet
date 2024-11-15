@@ -1,28 +1,36 @@
 'use client'
 
-import { DataStateTermsType, useTermActions } from '@store/reducers/terms'
-import { DataStateFoldersType } from '@store/reducers/folders'
+import { FoldersType, TermsType } from '@store/initial-state'
 import SVGRightArrow from '@public//svg/rightarrow.svg'
+import { useEffect, useMemo, useState } from 'react'
 import ClientTerm from '@entities/ClientTerm'
-import { unique, remove } from '@lib/array'
 import { useSelector } from 'react-redux'
-import { useMemo, useState } from 'react'
 import Term from '@components/Term'
 import Link from 'next/link'
+import {
+  actionDeleteTerm,
+  actionFetchFolders,
+  actionSaveTerm,
+  actionUpdateTerm,
+  actionUpdateTermItem
+} from '@store/index'
 
-export default function Terms({ folderUUID }: { folderUUID: string }) {
+export default function Terms({ folderId }: { folderId: string }) {
+  useEffect(actionFetchFolders, [])
+
   const [ originItem, setOriginItem ] = useState<ClientTerm | null>(null)
+  const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
+  const terms = useSelector(({ terms }: { terms: TermsType }) => terms)
 
-  const actions = useTermActions()
-  const terms = useSelector(({ terms }: { terms: DataStateTermsType }) => terms[folderUUID])
-  const folders = useSelector(({ folders }: { folders: DataStateFoldersType }) => folders)
-  const folder = useMemo(() => folders.items.find((item) => item.uuid === folderUUID), [folderUUID])
+  const folder = useMemo(() => {
+    return folders.items.find(({ id }) => id === folderId)
+  }, [folders.items, folderId])
 
   return (
     <div>
       <div className="flex px-4 gap-2 items-center justify-between">
         <div className="flex items-center text-gray-400 font-semibold gap-1">
-          <Link href="/" className="text-gray-400 hover:text-gray-500">
+          <Link href="/private" className="text-gray-400 hover:text-gray-500">
             Folders
           </Link>
 
@@ -37,8 +45,8 @@ export default function Terms({ folderUUID }: { folderUUID: string }) {
 
         <div
           onClick={() => {
-            const term = new ClientTerm(folderUUID).serialize()
-            actions.addTerm({ term, editUUID: term.uuid })
+            const term = new ClientTerm(folderId).serialize()
+            actionSaveTerm({ term, editId: term.id })
           }}
           className="border border-gray-400 bg-gray-500 w-5 h-5 rounded-full hover:bg-gray-600 active:bg-gray-700 transition-colors hover:cursor-pointer flex items-center justify-center select-none"
         >
@@ -46,74 +54,44 @@ export default function Terms({ folderUUID }: { folderUUID: string }) {
         </div>
       </div>
 
-      {terms &&
+      {folder &&
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-4">
-          {terms.items.map((term) => {
+          {folder.terms.map((term) => {
             return (
               <Term
                 data={term}
-                key={term.uuid}
-                edit={term.uuid === terms.editUUID}
-                process={terms.processUUIDs.includes(term.uuid)}
+                key={term.id}
+                edit={term.id === terms.editId}
+                process={terms.processIds.includes(term.id)}
                 onSave={() => {
-                  setOriginItem(null)
-
-                  const editTerm = terms.items.find(({uuid}) => uuid === term.uuid)
-
-                  actions.updateTerm({
-                    folderUUID,
-                    editUUID: null,
-                    processUUIDs: unique([...terms.processUUIDs, term.uuid]),
-                  })
-
-                  fetch(`http://localhost:3000/api/terms/${term.uuid}`, {
-                    method: 'PUT',
-                    body: JSON.stringify(editTerm),
-                    headers: {'Content-Type': 'application/json'},
-                  }).then(() => {
-                    actions.updateTerm({ folderUUID, processUUIDs: remove(terms.processUUIDs, term.uuid) })
+                  actionSaveTerm({ term, editId: null }, () => {
+                    if (originItem) {
+                      setOriginItem(null)
+                    }
                   })
                 }}
                 onExit={async () => {
-                  actions.updateTerm({
-                    folderUUID,
-                    editUUID: null,
-                    items: terms.items.map((item) => {
-                      return item.uuid === originItem?.uuid ? { ...originItem } : item
-                    })
+                  actionUpdateTerm({ editId: null }, () => {
+                    if (originItem) {
+                      actionUpdateTermItem(originItem, () => {
+                        setOriginItem(null)
+                      })
+                    }
                   })
-                  setOriginItem(null)
                 }}
                 onEdit={() => {
-                  setOriginItem({ ...term })
-                  actions.updateTerm({
-                    folderUUID,
-                    editUUID: term.uuid
+                  actionUpdateTerm({ editId: term.id }, () => {
+                    setOriginItem(term)
                   })
                 }}
                 onChange={(prop, value) => {
-                  actions.updateTerm({
-                    folderUUID,
-                    items: terms.items.map((item) => {
-                      return item.uuid === term.uuid ? {...item, [prop]: value} : item
-                    })
-                  })
+                  actionUpdateTermItem({ ...term, [prop]: value } as ClientTerm)
                 }}
                 onRemove={() => {
-                  actions.updateTerm({
-                    folderUUID,
-                    processUUIDs: unique([...terms.processUUIDs, term.uuid]),
-                  })
-
-                  fetch(`http://localhost:3000/api/terms/${term.uuid}`, {
-                    method: 'DELETE',
-                    headers: {'Content-Type': 'application/json'},
-                  }).then(() => {
-                    actions.updateTerm({
-                      folderUUID,
-                      processUUIDs: remove(terms.processUUIDs, term.uuid),
-                      items: terms.items.filter((item) => item.uuid !== term.uuid)
-                    })
+                  actionDeleteTerm(term, () => {
+                    if (originItem && originItem.id === folder.id) {
+                      setOriginItem(null)
+                    }
                   })
                 }}
               />
