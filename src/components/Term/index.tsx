@@ -120,7 +120,7 @@ export default function Term(
               autoComplete="off"
               placeholder="Question not set"
               defaultValue={data.question || ''}
-              className="block w-full bg-gray-800 text-gray-300 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline-none outline-1 focus:outline-blue-500 font-semibold text-sm"
+              className="block w-full bg-gray-800 text-gray-300 h-6 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline-none outline-1 focus:outline-blue-500 font-semibold text-sm"
               onChange={(e) => {
                 onChange('question', e.target.value)
               }}
@@ -161,7 +161,7 @@ export default function Term(
               autoComplete="off"
               placeholder="Answer not set"
               defaultValue={data.answer || ''}
-              className="block w-full bg-gray-800 text-gray-300 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline-none outline-1 focus:outline-blue-500 text-sm"
+              className="block w-full bg-gray-800 text-gray-300 h-6 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline-none outline-1 focus:outline-blue-500 text-sm"
               onChange={(e) => {
                 onChange('answer', e.target.value)
               }}

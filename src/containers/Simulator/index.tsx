@@ -1,15 +1,14 @@
 'use client'
 
-import SVGRightArrow from '@public/svg/rightarrow.svg'
 import SVGLoopBack from '@public/svg/loop_back.svg'
 import { useEffect, useMemo, useRef } from 'react'
+import Breadcrumbs from '@components/Breadcrumbs'
 import RoundInfo from '@components/RoundInfo'
 import CardEmpty from '@components/CardEmpty'
 import {useSelector} from 'react-redux'
 import Button from '@components/Button'
 import { shuffle } from '@lib/array'
 import Card from '@components/Card'
-import Link from 'next/link'
 import {
   actionContinueSimulators,
   actionRememberSimulators,
@@ -74,19 +73,13 @@ export default function Simulator({ folderId }: { folderId: string }) {
     <div
       className="flex flex-col px-4 gap-2"
     >
-      <div className="flex items-center text-gray-400 font-semibold gap-1">
-        <Link href="/" className="text-gray-400 hover:text-gray-500">
-          Folders
-        </Link>
-
-        <SVGRightArrow
-          width={24}
-          height={24}
-          className="text-gray-600"
-        />
-
-        <span className="text-gray-600">{folder?.name}</span>
-      </div>
+      <Breadcrumbs
+        items={[
+          { id: 1, name: 'Home', href: '/' },
+          { id: 2, name: 'Folders', href: '/private' },
+          { id: 3, name: folder?.name },
+        ]}
+      />
 
       <div
         className="flex items-center justify-center w-full h-14"

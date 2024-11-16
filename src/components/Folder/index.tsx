@@ -1,6 +1,7 @@
 import Dropdown, { DropdownItemType } from '@components/Dropdown'
 import SVGThreeDots from '@public/svg/three_dots.svg'
 import ClientFolder from '@entities/ClientFolder'
+import SVGPlay from '@public/svg/play.svg'
 import Spinner from '@components/Spinner'
 import { ReactNode } from 'react'
 import Link from 'next/link'
@@ -12,7 +13,8 @@ export default function Folder(
     edit = false,
     process = false,
     label,
-    href,
+    playHref,
+    editHref,
     onSave,
     onExit,
     onChange,
@@ -24,7 +26,8 @@ export default function Folder(
     edit: boolean,
     process: boolean,
     label: ReactNode,
-    href: string,
+    playHref: string,
+    editHref: string,
     onSave: () => void,
     onExit: () => void,
     onChange: (prop: string, value: string) => void,
@@ -33,24 +36,53 @@ export default function Folder(
   }
 ) {
   return (
-    <Link
-      href={href}
-      className={clsx('transition-colors group border border-gray-500 rounded w-full bg-gray-900 flex justify-between gap-2 p-4 select-none', {
-        ['hover:border-gray-600']: !edit,
-        ['hover:cursor-pointer']: !edit,
-      })}
-      onClick={(e) => {
-        if (edit) {
-          e.preventDefault()
-        }
-      }}
+    <div
+      className={clsx('border border-gray-500 rounded w-full bg-gray-900 flex justify-between select-none')}
     >
       {!edit &&
         <>
-          <div className="flex items-center truncate">
-            <div
-              title={data.name || ''}
-              className="px-1 transition-colors group group-hover:text-gray-400 group-active:text-gray-400 font-semibold text-sm truncate ..."
+          <Link
+            href={playHref}
+            className={clsx('transition-colors h-full w-20 flex justify-center items-center group', {
+              ['hover:border-gray-600']: !edit,
+              ['hover:cursor-pointer']: !edit,
+            })}
+            onClick={(e) => {
+              if (edit) {
+                e.preventDefault()
+              }
+            }}
+          >
+            <SVGPlay
+              width={24}
+              height={24}
+              className="text-gray-100 group-hover:text-gray-400"
+            />
+          </Link>
+          <div className="divide-x divide-gray-500 h-full flex">
+            <div className="h-full"></div>
+            <div className="h-full"></div>
+          </div>
+        </>
+      }
+      <Link
+        href={editHref}
+        className={clsx('transition-colors group w-full flex justify-between gap-2 p-4', {
+          ['hover:border-gray-600']: !edit,
+          ['hover:cursor-pointer']: !edit,
+        })}
+        onClick={(e) => {
+          if (edit) {
+            e.preventDefault()
+          }
+        }}
+      >
+        {!edit &&
+          <>
+            <div className="flex items-center truncate">
+              <div
+                title={data.name || ''}
+                className="px-1 transition-colors group group-hover:text-gray-400 group-active:text-gray-400 font-semibold text-sm truncate ..."
             >
               {data.name}
             </div>
@@ -104,7 +136,7 @@ export default function Folder(
             autoComplete="off"
             placeholder="Folder name"
             defaultValue={data.name || ''}
-            className="block w-full bg-gray-800 text-gray-300 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline outline-1 focus:outline-blue-500 font-semibold text-sm"
+            className="block w-full bg-gray-800 text-gray-300 h-6 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline outline-1 focus:outline-blue-500 font-semibold text-sm"
             onBlur={onSave}
             onChange={(e) => {
               onChange('name', e.target.value)
@@ -122,7 +154,7 @@ export default function Folder(
           />
         </div>
       }
-
-    </Link>
+      </Link>
+    </div>
   )
 }

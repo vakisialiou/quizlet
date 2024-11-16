@@ -1,12 +1,15 @@
 'use client'
 
 import { FoldersType, TermsType } from '@store/initial-state'
-import SVGRightArrow from '@public//svg/rightarrow.svg'
 import { useEffect, useMemo, useState } from 'react'
+import ButtonSquare from '@components/ButtonSquare'
+import Breadcrumbs from '@components/Breadcrumbs'
 import ClientTerm from '@entities/ClientTerm'
+import { useRouter } from 'next/navigation'
+import SVGPlus from '@public/svg/plus.svg'
+import SVGPlay from '@public/svg/play.svg'
 import { useSelector } from 'react-redux'
 import Term from '@components/Term'
-import Link from 'next/link'
 import {
   actionDeleteTerm,
   actionFetchFolders,
@@ -17,6 +20,8 @@ import {
 
 export default function Terms({ folderId }: { folderId: string }) {
   useEffect(actionFetchFolders, [])
+
+  const router = useRouter()
 
   const [ originItem, setOriginItem ] = useState<ClientTerm | null>(null)
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
@@ -29,40 +34,43 @@ export default function Terms({ folderId }: { folderId: string }) {
   return (
     <div>
       <div className="flex px-4 gap-2 items-center justify-between">
-        <div className="flex items-center text-gray-400 font-semibold gap-1">
-          <Link href="/private" className="text-gray-400 hover:text-gray-500">
-            Folders
-          </Link>
+        <Breadcrumbs
+          items={[
+            {id: 1, name: 'Home', href: '/'},
+            {id: 2, name: 'Folders', href: '/private'},
+            {id: 3, name: folder?.name },
+          ]}
+        />
 
-          <SVGRightArrow
-            width={24}
-            height={24}
-            className="text-gray-600"
+        <div className="flex gap-2 items-center">
+          <ButtonSquare
+            icon={SVGPlus}
+            onClick={() => {
+              const term = new ClientTerm(folderId).serialize()
+              actionSaveTerm({term, editId: term.id})
+            }}
           />
-
-          <span className="text-gray-600">{folder?.name}</span>
-        </div>
-
-        <div
-          onClick={() => {
-            const term = new ClientTerm(folderId).serialize()
-            actionSaveTerm({ term, editId: term.id })
-          }}
-          className="border border-gray-400 bg-gray-500 w-5 h-5 rounded-full hover:bg-gray-600 active:bg-gray-700 transition-colors hover:cursor-pointer flex items-center justify-center select-none"
-        >
-          +
+          <ButtonSquare
+            icon={SVGPlay}
+            onClick={() => {
+              if (folder) {
+                router.push(`/private/simulator/${folder.id}`)
+              }
+            }}
+          />
         </div>
       </div>
 
-      {folder &&
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-4">
-          {folder.terms.map((term) => {
-            return (
-              <Term
-                data={term}
-                key={term.id}
-                edit={term.id === terms.editId}
-                process={terms.processIds.includes(term.id)}
+        {folder &&
+          <div
+            className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-4">
+            {folder.terms.map((term) => {
+              return (
+                <Term
+                  data={term}
+                  key={term.id}
+                  edit={term.id === terms.editId}
+                  process={terms.processIds.includes(term.id)}
                 onSave={() => {
                   actionSaveTerm({ term, editId: null }, () => {
                     if (originItem) {
