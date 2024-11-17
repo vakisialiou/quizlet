@@ -3,7 +3,7 @@
 import { FoldersType, TermsType } from '@store/initial-state'
 import { useEffect, useMemo, useState } from 'react'
 import ButtonSquare from '@components/ButtonSquare'
-import Breadcrumbs from '@components/Breadcrumbs'
+import HeaderPage from '@containers/HeaderPage'
 import ClientTerm from '@entities/ClientTerm'
 import { useRouter } from 'next/navigation'
 import SVGPlus from '@public/svg/plus.svg'
@@ -33,33 +33,29 @@ export default function Terms({ folderId }: { folderId: string }) {
 
   return (
     <div>
-      <div className="flex px-4 gap-2 items-center justify-between">
-        <Breadcrumbs
-          items={[
-            {id: 1, name: 'Home', href: '/'},
-            {id: 2, name: 'Folders', href: '/private'},
-            {id: 3, name: folder?.name },
-          ]}
+      <HeaderPage
+        breadcrumbs={[
+          {id: 1, name: 'Home', href: '/'},
+          {id: 2, name: 'Folders', href: '/private'},
+          {id: 3, name: folder?.name },
+        ]}
+      >
+        <ButtonSquare
+          icon={SVGPlus}
+          onClick={() => {
+            const term = new ClientTerm(folderId).serialize()
+            actionSaveTerm({term, editId: term.id})
+          }}
         />
-
-        <div className="flex gap-2 items-center">
-          <ButtonSquare
-            icon={SVGPlus}
-            onClick={() => {
-              const term = new ClientTerm(folderId).serialize()
-              actionSaveTerm({term, editId: term.id})
-            }}
-          />
-          <ButtonSquare
-            icon={SVGPlay}
-            onClick={() => {
-              if (folder) {
-                router.push(`/private/simulator/${folder.id}`)
-              }
-            }}
-          />
-        </div>
-      </div>
+        <ButtonSquare
+          icon={SVGPlay}
+          onClick={() => {
+            if (folder) {
+              router.push(`/private/simulator/${folder.id}`)
+            }
+          }}
+        />
+      </HeaderPage>
 
         {folder &&
           <div

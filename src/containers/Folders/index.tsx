@@ -3,7 +3,7 @@
 import ButtonSquare from '@components/ButtonSquare'
 import { FoldersType } from '@store/initial-state'
 import ClientFolder from '@entities/ClientFolder'
-import Breadcrumbs from '@components/Breadcrumbs'
+import HeaderPage from '@containers/HeaderPage'
 import MetaLabel from '@components/MetaLabel'
 import { useState, useEffect } from 'react'
 import SVGPlus from '@public/svg/plus.svg'
@@ -26,14 +26,12 @@ export default function Folders() {
 
   return (
     <div>
-      <div className="flex px-4 gap-2 items-center justify-between">
-        <Breadcrumbs
-          items={[
-            { id: 1, name: 'Home', href: '/' },
-            { id: 2, name: 'Folders' },
-          ]}
-        />
-
+      <HeaderPage
+        breadcrumbs={[
+          { id: 1, name: 'Home', href: '/' },
+          { id: 2, name: 'Folders' },
+        ]}
+      >
         <ButtonSquare
           icon={SVGPlus}
           onClick={() => {
@@ -41,7 +39,7 @@ export default function Folders() {
             actionSaveFolder({ folder, editId: folder.id })
           }}
         />
-      </div>
+      </HeaderPage>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-4">
         {folders.items.map((folder) => {

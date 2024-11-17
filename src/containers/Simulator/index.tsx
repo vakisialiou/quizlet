@@ -1,10 +1,11 @@
 'use client'
 
+import { filterFolders } from '@containers/Simulator/filters'
 import SVGLoopBack from '@public/svg/loop_back.svg'
 import { useEffect, useMemo, useRef } from 'react'
-import Breadcrumbs from '@components/Breadcrumbs'
-import RoundInfo from '@components/RoundInfo'
+import HeaderPage from '@containers/HeaderPage'
 import CardEmpty from '@components/CardEmpty'
+import RoundInfo from '@components/RoundInfo'
 import {useSelector} from 'react-redux'
 import Button from '@components/Button'
 import { shuffle } from '@lib/array'
@@ -22,6 +23,7 @@ import {
   SimulatorsType,
   SimulatorStatus
 } from '@store/initial-state'
+import clsx from 'clsx'
 
 export default function Simulator({ folderId }: { folderId: string }) {
   useEffect(actionFetchSimulators, [])
@@ -55,7 +57,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
         i++
 
         if (ref.current) {
-          ref.current.innerText = `${5 - i}`
+          ref.current.innerText = `${5 - i} sec`
         }
 
         if (i >= 5) {
@@ -73,50 +75,59 @@ export default function Simulator({ folderId }: { folderId: string }) {
     <div
       className="flex flex-col px-4 gap-2"
     >
-      <Breadcrumbs
-        items={[
-          { id: 1, name: 'Home', href: '/' },
-          { id: 2, name: 'Folders', href: '/private' },
-          { id: 3, name: folder?.name },
+      <HeaderPage
+        breadcrumbs={[
+          {id: 1, name: 'Home', href: '/'},
+          {id: 2, name: 'Folders', href: '/private'},
+          {id: 3, name: folder?.name},
         ]}
       />
 
-      <div
-        className="flex items-center justify-center w-full h-14"
-      >
-        {(simulator.status === SimulatorStatus.PROCESSING && simulator.historyIds.length > 0) &&
-          <div
-            className="flex items-center justify-center rounded-full bg-gray-900 hover:bg-gray-800 cursor-pointer w-8 h-8"
-            onClick={() => {
-              actionBackSimulators({ folderId })
-            }}
-          >
-            <SVGLoopBack
-              width={24}
-              height={24}
-              className="text-gray-600"
-            />
-          </div>
-        }
+      <div className="flex flex-col w-full">
+        <div className="flex items-center justify-center select-none gap-2">
+          <RoundInfo
+            title="Terms"
+            value={simulator.terms.length}
+          />
+
+          <RoundInfo
+            title="Queue"
+            value={Math.max(simulator.terms.length - simulator.continueIds.length - simulator.rememberIds.length - 1, 0)}
+          />
+
+          <RoundInfo
+            title="Done"
+            value={simulator.rememberIds.length}
+          />
+
+          <RoundInfo
+            title="Time"
+            value="00:00"
+          />
+        </div>
       </div>
 
       {simulator.status === SimulatorStatus.WAITING &&
         <div className="flex justify-center w-full">
           <CardEmpty>
-            <div className="text-lg">
-              Are you ready?
-            </div>
+            <div className="flex flex-col justify-center text-center gap-2">
+              <div className="text-gray-300 text-lg">It's time to learn!</div>
 
-            <Button
-              onClick={() => {
-                const items = [...folder?.terms || []]
-                if (items.length > 0) {
-                  actionStartSimulators({ folderId, items: shuffle(items) })
-                }
-              }}
-            >
-              Start learn
-            </Button>
+              <br/>
+
+              <div className="text-gray-500 text-sm">Ready to get started?</div>
+
+              <Button
+                onClick={() => {
+                  const items = filterFolders(folder)
+                  if (items.length > 0) {
+                    actionStartSimulators({folderId, items: shuffle(items)})
+                  }
+                }}
+              >
+                Ready
+              </Button>
+            </div>
           </CardEmpty>
         </div>
       }
@@ -125,96 +136,87 @@ export default function Simulator({ folderId }: { folderId: string }) {
         <div className="flex justify-center w-full">
           <CardEmpty>
             {simulator.continueIds.length === 0 &&
-              <>
-                <div className="text-lg">
-                  Every thinks is done!
-                </div>
+              <div className="flex flex-col justify-center text-center gap-2">
+                <div className="text-gray-300 text-lg">Training completed!</div>
 
-                <div className="flex gap-2 w-full items-center justify-center">
-                  <Button
-                    onClick={() => {
-                      const items = [...folder?.terms || []]
-                      if (items.length > 0) {
-                        actionStartSimulators({ folderId, items: shuffle(items) })
-                      }
-                    }}
-                  >
-                    Start again
-                  </Button>
-                </div>
-              </>
+                <br/>
+
+                <div className="text-gray-500 text-sm">Ready to get started?</div>
+
+                <Button
+                  onClick={() => {
+                    const items = filterFolders(folder)
+                    if (items.length > 0) {
+                      actionStartSimulators({folderId, items: shuffle(items)})
+                    }
+                  }}
+                >
+                  Ready
+                </Button>
+              </div>
             }
 
             {simulator.continueIds.length > 0 &&
-              <>
-                <div className="text-lg">
-                  Prepare to continue.
+              <div className="flex flex-col justify-center text-center gap-2">
+                <div className="text-gray-300 text-lg">
+                  Prepare yourself to move forward.
                 </div>
 
-                <div ref={ref}>
-                  5
+                <div className="text-gray-500 text-lg" ref={ref}>
+                  5 sec
                 </div>
-              </>
+              </div>
             }
           </CardEmpty>
         </div>
       }
 
       {simulator.status === SimulatorStatus.PROCESSING && activeTerm &&
+        <div className="flex items-center justify-center gap-4 w-full">
+          <div className="flex flex-col gap-4">
+            <Card
+              key={activeTerm.id}
+              answer={activeTerm.answer || ''}
+              question={activeTerm.question || ''}
+            />
 
-          <div className="flex items-center justify-center gap-4 w-full">
-
-            <div className="flex flex-col gap-4">
-
-              <div className="flex items-center justify-around w-full">
-                <RoundInfo
-                  title="Total"
-                  value={simulator.terms.length}
+            <div className="gap-2 flex justify-between">
+              <Button
+                disabled={simulator.historyIds.length === 0}
+                onClick={() => {
+                  actionBackSimulators({folderId})
+                }}
+              >
+                <SVGLoopBack
+                  width={24}
+                  height={24}
+                  className={clsx('text-gray-400', {
+                    ['text-gray-600']: simulator.historyIds.length === 0
+                  })}
                 />
+              </Button>
 
-                <RoundInfo
-                  title="Call"
-                  value={simulator.terms.length - simulator.continueIds.length - simulator.rememberIds.length - 1}
-                />
+              <Button
+                className="w-28"
+                onClick={() => {
+                  actionRememberSimulators({folderId})
+                }}
+              >
+                Done
+              </Button>
 
-                <RoundInfo
-                  title="Done"
-                  value={simulator.rememberIds.length}
-                />
-              </div>
-
-              <Card
-                key={activeTerm.id}
-                answer={activeTerm.answer || ''}
-                question={activeTerm.question || ''}
-              />
-
-              <div className="gap-4 justify-between grid grid-cols-2">
-                <div>
-                  <Button
-                    className="flex items-center justify-center"
-                    onClick={() => {
-                      actionRememberSimulators({folderId})
-                    }}
-                  >
-                    Remembered
-                  </Button>
-                </div>
-                <div>
-                  <Button
-                    className="flex items-center justify-center"
-                    onClick={() => {
-                      actionContinueSimulators({folderId})
-                    }}
-                  >
-                    Continue
-                  </Button>
-                </div>
-              </div>
+              <Button
+                className="w-28"
+                onClick={() => {
+                  actionContinueSimulators({folderId})
+                }}
+              >
+                Next
+              </Button>
             </div>
           </div>
+        </div>
       }
-
     </div>
   )
 }
