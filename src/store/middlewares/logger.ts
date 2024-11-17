@@ -1,7 +1,7 @@
 import { Middleware } from 'redux'
 
 export const loggerMiddleware: Middleware = store => next => action => {
-  // @ts-ignore
+  // @ts-expect-error "Unknown action type"
   console.group(action.type)
   console.info('dispatching', action)
 

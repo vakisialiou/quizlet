@@ -76,7 +76,7 @@ export default function Dropdown(
       document.removeEventListener('mousedown', closeDropdown)
     }
     return () => document.removeEventListener('mousedown', closeDropdown)
-  }, [isOpen])
+  }, [closeDropdown, isOpen])
 
   useLayoutEffect(() => {
     if (isOpen) {
@@ -101,7 +101,7 @@ export default function Dropdown(
         cleanup()
       }
     }
-  }, [isOpen])
+  }, [offsetOptions, placement, isOpen])
 
   return (
     <div

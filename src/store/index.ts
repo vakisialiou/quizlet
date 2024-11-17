@@ -1,12 +1,11 @@
 import { configureStore, createReducer, EnhancedStore } from '@reduxjs/toolkit'
+import { ConfigType, SimulatorsType } from '@store/initial-state'
 import { loggerMiddleware } from '@store/middlewares/logger'
 import * as simulators from '@store/reducers/simulators'
 import * as folders from '@store/reducers/folders'
 import ClientFolder from '@entities/ClientFolder'
-import {ConfigType, SimulatorsType} from '@store/initial-state'
 import * as terms from '@store/reducers/terms'
-import ClientTerm from "@entities/ClientTerm";
-import {PayloadStart, startSimulators} from "@store/reducers/simulators";
+import ClientTerm from '@entities/ClientTerm'
 
 const DEBUG = false
 
@@ -46,7 +45,9 @@ const getStore = (): EnhancedStore => {
   return window.__store__
 }
 
-const execAction = (action: any, callback?: (res: any) => any): void => {
+type CallbackType<T> = (res: T) => void;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const execAction = <T>(action: any, callback?: CallbackType<T>): void => {
   getStore().dispatch(action).unwrap().then(callback)
 }
 

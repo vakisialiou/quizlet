@@ -60,6 +60,7 @@ export const updateTermItem = createAsyncThunk(
   }
 )
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const termReducers = (builder: any) => {
   builder
     .addCase(saveTerm.pending, (state: ConfigType, action: { meta: { arg: SaveType } }) => {

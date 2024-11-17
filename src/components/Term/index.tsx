@@ -34,7 +34,7 @@ export default function Term(
     if (ref.current && !ref.current.contains(event.target as HTMLDivElement)) {
       onSave()
     }
-  }, [data])
+  }, [onSave])
 
   useEffect(() => {
     if (edit) {
@@ -45,7 +45,7 @@ export default function Term(
     return () => {
       document.removeEventListener('mousedown', finishEdit)
     }
-  }, [edit, data])
+  }, [finishEdit, edit, data])
 
   return (
     <div

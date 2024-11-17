@@ -1,7 +1,7 @@
-import { ReactNode } from 'react'
+import { ReactNode, CSSProperties } from 'react'
 import clsx from 'clsx'
 
-export default function CardEmpty({ children, style, className = '' }: { children?: ReactNode, className?: string, style?: {} }) {
+export default function CardEmpty({ children, style, className = '' }: { children?: ReactNode, className?: string, style?: CSSProperties }) {
   return (
     <div
       style={style}

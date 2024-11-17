@@ -59,6 +59,7 @@ export const backSimulators = createAsyncThunk(
   }
 )
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const simulatorReducers = (builder: any) => {
   builder
     .addCase(fetchSimulators.fulfilled, (state: ConfigType, action: { payload: SimulatorsType }) => {

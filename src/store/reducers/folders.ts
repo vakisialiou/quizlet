@@ -63,6 +63,7 @@ export const updateFolderItem = createAsyncThunk(
   }
 )
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const folderReducers = (builder: any) => {
   builder
     .addCase(fetchFolders.pending, (state: ConfigType) => {

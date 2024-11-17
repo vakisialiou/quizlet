@@ -75,7 +75,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
     return () => {
       clearInterval(refIntervalId.current)
     }
-  }, [simulator.status])
+  }, [folderId, simulator.continueIds.length, simulator.status])
 
   const refTimer = useRef<HTMLDivElement|null>(null)
   const refTimerIntervalId = useRef<NodeJS.Timeout|number|undefined>(undefined)
@@ -147,7 +147,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
         <div className="flex justify-center w-full">
           <CardEmpty>
             <div className="flex flex-col justify-center text-center gap-2">
-              <div className="text-gray-300 text-lg">It's time to learn!</div>
+              <div className="text-gray-300 text-lg">Time to learn!</div>
 
               <br/>
 

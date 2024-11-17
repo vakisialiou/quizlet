@@ -6,10 +6,10 @@ import path from 'path'
 
 const pool = mysql2.createPool({
   host: config.db.mysql.host,
-  user: config.db.mysql.user,
+  user: config.db.mysql.username,
   password: config.db.mysql.password,
   database: config.db.mysql.database,
   connectionLimit: config.db.mysql.connectionLimit,
 })
 
-migration.init(pool, path.resolve('migrations'))
+migration.init(pool, path.resolve('prisma/migrations'))

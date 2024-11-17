@@ -27,8 +27,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 
     return new Response(null, { status: 200 })
 
-  } catch (error) {
-    console.log(error)
+  } catch {
     return new Response(null, { status: 500 })
   }
 }
@@ -47,7 +46,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     const isRemoved = await removeTerm(id)
     return new Response(null, { status: isRemoved ? 200 : 400 })
 
-  } catch (error) {
+  } catch {
     return new Response(null, { status: 500 })
   }
 }
