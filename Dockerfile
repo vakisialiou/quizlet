@@ -32,5 +32,4 @@ COPY --from=builder /app /app
 EXPOSE 3000
 
 # Step 11: Command to run the application
-CMD yarn migration:up && yarn start
-#CMD ["yarn", "start"]
+CMD ["yarn", "start"]
