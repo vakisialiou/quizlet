@@ -45,6 +45,8 @@ docker build -t nextjs .
 
 # PRODUCTION
 docker swarm init
+# or
+docker swarm init --advertise-addr 104.131.51.32
 docker service create --name nextjs-service -p 3000:3000 nextjs
 # check
 docker service ls
