@@ -67,38 +67,38 @@ export default function Terms({ folderId }: { folderId: string }) {
                   key={term.id}
                   edit={term.id === terms.editId}
                   process={terms.processIds.includes(term.id)}
-                onSave={() => {
-                  actionSaveTerm({ term, editId: null }, () => {
-                    if (originItem) {
-                      setOriginItem(null)
-                    }
-                  })
-                }}
-                onExit={async () => {
-                  actionUpdateTerm({ editId: null }, () => {
-                    if (originItem) {
-                      actionUpdateTermItem(originItem, () => {
+                  onSave={() => {
+                    actionSaveTerm({ term, editId: null }, () => {
+                      if (originItem) {
                         setOriginItem(null)
-                      })
-                    }
-                  })
-                }}
-                onEdit={() => {
-                  actionUpdateTerm({ editId: term.id }, () => {
-                    setOriginItem(term)
-                  })
-                }}
-                onChange={(prop, value) => {
-                  actionUpdateTermItem({ ...term, [prop]: value } as ClientTerm)
-                }}
-                onRemove={() => {
-                  actionDeleteTerm(term, () => {
-                    if (originItem && originItem.id === folder.id) {
-                      setOriginItem(null)
-                    }
-                  })
-                }}
-              />
+                      }
+                    })
+                  }}
+                  onExit={async () => {
+                    actionUpdateTerm({ editId: null }, () => {
+                      if (originItem) {
+                        actionUpdateTermItem(originItem, () => {
+                          setOriginItem(null)
+                        })
+                      }
+                    })
+                  }}
+                  onEdit={() => {
+                    actionUpdateTerm({ editId: term.id }, () => {
+                      setOriginItem(term)
+                    })
+                  }}
+                  onChange={(prop, value) => {
+                    actionUpdateTermItem({ ...term, [prop]: value } as ClientTerm)
+                  }}
+                  onRemove={() => {
+                    actionDeleteTerm(term, () => {
+                      if (originItem && originItem.id === folder.id) {
+                        setOriginItem(null)
+                      }
+                    })
+                  }}
+                />
             )
           })}
         </div>

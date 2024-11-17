@@ -82,7 +82,7 @@ export default function Folder(
             <div className="flex items-center w-full max-w-full overflow-hidden">
               <div
                 title={data.name || ''}
-                className="px-1 group-hover:text-gray-400 group-active:text-gray-400 font-semibold text-sm truncate ..."
+                className="px-1 content-center group-hover:text-gray-400 group-active:text-gray-400 font-semibold text-sm truncate ..."
               >
                 {data.name}
               </div>

@@ -62,7 +62,7 @@ export default function Term(
           <>
             <div
               title={data.question || ''}
-              className="inline items-center px-1 h-6 text-gray-400 font-semibold text-sm truncate ..."
+              className="inline content-center px-1 h-6 text-gray-400 font-semibold text-sm truncate ..."
             >
               {data.question || <span className="text-gray-500">Question not set</span>}
             </div>
@@ -144,7 +144,7 @@ export default function Term(
           <>
             <div
               title={data.answer || ''}
-              className="inline items-center px-1 h-6 text-sm text-gray-400 truncate ..."
+              className="inline content-center px-1 h-6 text-sm text-gray-400 truncate ..."
             >
               {data.answer || <span className="text-gray-500">Answer not set</span>}
             </div>
