@@ -5,7 +5,7 @@ export default function CardEmpty({ children, style, className = '' }: { childre
   return (
     <div
       style={style}
-      className={clsx('flex flex-col w-72 h-96 gap-4 items-center justify-center p-6 border border-gray-600 rounded bg-gray-900', {
+      className={clsx('flex flex-col w-72 h-96 gap-4 items-center justify-center p-6 border border-gray-600 bg-gray-900', {
         [className]: className
       })}
     >

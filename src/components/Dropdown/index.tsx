@@ -138,7 +138,7 @@ export default function Dropdown(
         createPortal(
           <div
             ref={refMenu}
-            className={clsx('fixed z-10 mt-1 border border-gray-600 bg-black rounded shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none select-none', {
+            className={clsx('fixed z-10 mt-1 border border-gray-600 bg-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none select-none', {
               [classNameMenu]: classNameMenu
             })}
           >

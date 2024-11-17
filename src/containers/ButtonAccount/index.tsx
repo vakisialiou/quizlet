@@ -5,7 +5,7 @@ import {Session} from 'next-auth'
 export default function ButtonAccount({ session }: { session: Session }) {
   return (
     <Dropdown
-      className="p-2"
+      className="p-2 border border-gray-700"
       classNameMenu="min-w-40"
       items={[
         { id: 1, name: 'Log Out' }

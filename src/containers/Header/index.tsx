@@ -1,6 +1,8 @@
 'use client'
 
+import SVGGoogle from '@public/svg/painted/google.svg'
 import ButtonAccount from '@containers/ButtonAccount'
+import Button, { Skin } from '@components/Button'
 import { signIn } from 'next-auth/react'
 import { Session } from 'next-auth'
 import Image from 'next/image'
@@ -17,7 +19,7 @@ type MenuItemsType = MenuItemType[]
 export default function Header({ menuItems = [], session = null }: { menuItems: MenuItemsType, session: Session | null }) {
   return (
     <header>
-      <nav className="mx-auto flex items-center justify-between p-6 px-8 gap-x-12">
+      <nav className="mx-auto flex items-center justify-between p-2 md:p-4">
         <Link href="/" className="-m-1.5 p-2.5">
           <span className="sr-only">Quizlet</span>
           <Image
@@ -42,7 +44,7 @@ export default function Header({ menuItems = [], session = null }: { menuItems: 
             )
           })}
         </div>
-        <div className="flex flex-1 justify-end h-8">
+        <div className="flex flex-1 justify-end">
           {session &&
             <ButtonAccount
               session={session}
@@ -50,12 +52,17 @@ export default function Header({ menuItems = [], session = null }: { menuItems: 
           }
 
           {!session &&
-            <div
-              className="text-sm font-semibold leading-6 text-gray-300 cursor-pointer hover:text-white flex items-center"
+            <Button
+              className="px-4 gap-2 text-nowrap"
+              skin={Skin.WHITE_100}
               onClick={() => signIn('google')}
             >
-              Log in
-            </div>
+              <SVGGoogle
+                width={16}
+                height={16}
+              />
+              Sign in with Google
+            </Button>
           }
         </div>
       </nav>

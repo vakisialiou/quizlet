@@ -59,7 +59,7 @@ export default function Terms({ folderId }: { folderId: string }) {
 
         {folder &&
           <div
-            className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-4">
+            className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-2 md:p-4">
             {folder.terms.map((term) => {
               return (
                 <Term

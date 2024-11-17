@@ -1,5 +1,6 @@
 import ClientFolder from '@entities/ClientFolder'
 import ClientTerm from '@entities/ClientTerm'
+import { Session } from 'next-auth'
 
 export enum SimulatorStatus {
   PROCESSING = 'processing',
@@ -9,6 +10,7 @@ export enum SimulatorStatus {
 }
 
 export type SimulatorType = {
+  timestamp: number | null,
   status: SimulatorStatus,
   termId: string | null,
   rememberIds: string[],
@@ -36,10 +38,11 @@ export type TermsType = {
 export type ConfigType = {
   simulators: SimulatorsType,
   folders: FoldersType,
-  terms: TermsType
+  terms: TermsType,
+  session: Session | null,
 }
 
-export const getInitialState = async (): Promise<ConfigType> => {
+export const getInitialState = async ({ session }: { session: Session | null }): Promise<ConfigType> => {
   return {
     folders: {
       items: [],
@@ -51,6 +54,7 @@ export const getInitialState = async (): Promise<ConfigType> => {
       editId: null,
       processIds: []
     },
-    simulators: {}
+    simulators: {},
+    session
   }
 }

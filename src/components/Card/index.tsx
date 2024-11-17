@@ -19,10 +19,10 @@ export default function Card({ question, answer, back = false }: { question: str
           ['card__inner_back']: isBackSideVisible
         })}
       >
-        <div className="card__front absolute w-full h-full flex items-center justify-center p-6 border border-gray-600 rounded bg-gray-900">
+        <div className="card__front absolute w-full h-full flex items-center justify-center p-6 border border-gray-600 bg-gray-900">
           <p className="text-gray-500 group-hover:text-gray-400 transition-colors font-semibold text-lg">{question}</p>
         </div>
-        <div className="card__back absolute w-full h-full flex items-center justify-center p-6 border border-gray-600 rounded bg-gray-700">
+        <div className="card__back absolute w-full h-full flex items-center justify-center p-6 border border-gray-600 bg-gray-700">
           <p className="text-gray-500 group-hover:text-gray-300 transition-colors font-semibold text-lg">{answer}</p>
         </div>
       </div>

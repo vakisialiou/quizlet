@@ -1,11 +1,13 @@
 'use client'
 
+import { PAUSE_SECONDS } from '@containers/Simulator/constants'
 import { filterFolders } from '@containers/Simulator/filters'
 import SVGLoopBack from '@public/svg/loop_back.svg'
 import { useEffect, useMemo, useRef } from 'react'
 import HeaderPage from '@containers/HeaderPage'
 import CardEmpty from '@components/CardEmpty'
 import RoundInfo from '@components/RoundInfo'
+import { getDuration } from '@lib/date'
 import {useSelector} from 'react-redux'
 import Button from '@components/Button'
 import { shuffle } from '@lib/array'
@@ -30,6 +32,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
 
   const simulator = useSelector(({ simulators }: { simulators: SimulatorsType }) => simulators[folderId]) || {
     status: SimulatorStatus.WAITING,
+    timestamp: null,
     termId: null,
     terms: [],
     historyIds: [],
@@ -57,10 +60,10 @@ export default function Simulator({ folderId }: { folderId: string }) {
         i++
 
         if (ref.current) {
-          ref.current.innerText = `${5 - i} sec`
+          ref.current.innerText = `${PAUSE_SECONDS - i} sec`
         }
 
-        if (i >= 5) {
+        if (i >= PAUSE_SECONDS) {
           clearInterval(refIntervalId.current)
           actionRestartSimulators({ folderId })
         }
@@ -69,11 +72,44 @@ export default function Simulator({ folderId }: { folderId: string }) {
     }
 
     clearInterval(refIntervalId.current)
+    return () => {
+      clearInterval(refIntervalId.current)
+    }
   }, [simulator.status])
+
+  const refTimer = useRef<HTMLDivElement|null>(null)
+  const refTimerIntervalId = useRef<NodeJS.Timeout|number|undefined>(undefined)
+
+  useEffect(() => {
+    clearInterval(refTimerIntervalId.current)
+    refTimerIntervalId.current = setInterval(() => {
+      if (simulator.status === SimulatorStatus.WAITING) {
+        return
+      }
+
+      if (simulator.status === SimulatorStatus.FINISHING) {
+        return
+      }
+
+      if (!refTimer.current) {
+        return
+      }
+
+      if (simulator.timestamp) {
+        refTimer.current.innerText = getDuration(simulator.timestamp, Date.now())
+      } else {
+        refTimer.current.innerText = '00:00:00'
+      }
+    }, 1000)
+
+    return () => {
+      clearInterval(refTimerIntervalId.current)
+    }
+  }, [simulator.status, simulator.timestamp])
 
   return (
     <div
-      className="flex flex-col px-4 gap-2"
+      className="flex flex-col px-2 md:px-4 gap-4"
     >
       <HeaderPage
         breadcrumbs={[
@@ -102,7 +138,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
 
           <RoundInfo
             title="Time"
-            value="00:00"
+            value={<span ref={refTimer}>00:00:00</span>}
           />
         </div>
       </div>
@@ -163,7 +199,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
                 </div>
 
                 <div className="text-gray-500 text-lg" ref={ref}>
-                  5 sec
+                  {PAUSE_SECONDS} sec
                 </div>
               </div>
             }

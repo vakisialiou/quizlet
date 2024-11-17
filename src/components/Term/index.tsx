@@ -50,19 +50,19 @@ export default function Term(
   return (
     <div
       ref={ref}
-      className={clsx('transition-colors border border-gray-500 rounded w-full bg-gray-900 flex flex-col gap-2 p-4 select-none')}
+      className={clsx('border border-gray-500 w-full bg-gray-900 flex flex-col gap-2 p-2 select-none overflow-hidden')}
       onClick={(e) => {
         if (edit) {
           e.preventDefault()
         }
       }}
     >
-      <div className="flex justify-between w-full gap-2">
+      <div className="flex justify-between gap-2 w-full max-w-full overflow-hidden">
         {!edit &&
           <>
             <div
               title={data.question || ''}
-              className="flex items-center px-1 h-6 transition-colors text-gray-400 font-semibold text-sm truncate ..."
+              className="inline items-center px-1 h-6 text-gray-400 font-semibold text-sm truncate ..."
             >
               {data.question || <span className="text-gray-500">Question not set</span>}
             </div>
@@ -111,7 +111,7 @@ export default function Term(
 
         {edit &&
           <div
-            className="transition-colors w-full"
+            className="w-full"
           >
             <input
               autoFocus
@@ -139,12 +139,12 @@ export default function Term(
         }
       </div>
 
-      <div className="flex justify-between w-full gap-2">
+      <div className="flex justify-between gap-2 w-full max-w-full overflow-hidden">
         {!edit &&
           <>
             <div
               title={data.answer || ''}
-              className="flex items-center px-1 h-6 transition-colors text-sm text-gray-400 truncate ..."
+              className="inline items-center px-1 h-6 text-sm text-gray-400 truncate ..."
             >
               {data.answer || <span className="text-gray-500">Answer not set</span>}
             </div>
@@ -153,7 +153,7 @@ export default function Term(
 
         {edit &&
           <div
-            className="transition-colors w-full"
+            className="w-full"
           >
             <input
               type="text"

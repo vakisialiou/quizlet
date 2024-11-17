@@ -33,13 +33,13 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth()
-  const initialState = await getInitialState()
+  const initialState = await getInitialState({ session })
 
   return (
     <html lang="en">
       <body
         suppressHydrationWarning={true}
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-w-80`}
       >
         <AppProvider initialState={initialState}>
           <Header

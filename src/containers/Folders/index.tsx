@@ -41,7 +41,7 @@ export default function Folders() {
         />
       </HeaderPage>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-4">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-2 md:p-4">
         {folders.items.map((folder) => {
           return (
             <Folder
