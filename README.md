@@ -53,12 +53,16 @@ docker service ls
 docker service ps nextjs-service
 # scale
 docker service scale nextjs-service=3
-#remove
+# remove
 docker service rm nextjs-service
+# update
+docker service update --force nextjs-service
 
 # DEVELOPMENT
 docker run --net=host -d --name=nextjs --restart unless-stopped --memory=1024m nextjs
 
 # Remove all images
 docker system prune -a --volumes
+# Clear all unused images
+docker image prune -f
 ```

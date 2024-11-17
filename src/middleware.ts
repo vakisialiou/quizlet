@@ -3,7 +3,6 @@ import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
 export async function middleware(req: NextRequest) {
-  console.log(req.nextUrl.pathname)
   if (req.nextUrl.pathname.startsWith('/private')) {
     return await privateMiddleware(req)
   }
