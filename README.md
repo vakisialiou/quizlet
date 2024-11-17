@@ -56,4 +56,7 @@ docker service rm nextjs-service
 
 # DEVELOPMENT
 docker run --net=host -d --name=nextjs --restart unless-stopped --memory=1024m nextjs
+
+# Remove all images
+docker system prune -a --volumes
 ```
