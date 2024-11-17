@@ -19,6 +19,7 @@ type AppConfig = {
   },
   oauth: {
     secret: string,
+    redirectURL: string,
     providers: {
       google: {
         clientId: string,
@@ -30,10 +31,11 @@ type AppConfig = {
 
 export const config: AppConfig = {
   server: {
-    baseURL: process.env.PUBLIC_BASE_URL || 'http://localhost:3000'
+    baseURL: process.env.PUBLIC_BASE_URL || ''
   },
   oauth: {
     secret: process.env.GOOGLE_CLIENT_ID || '',
+    redirectURL: process.env.NEXTAUTH_URL || '',
     providers: {
       google: {
         clientId: process.env.GOOGLE_CLIENT_ID || '',

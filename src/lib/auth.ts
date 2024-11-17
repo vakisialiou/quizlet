@@ -7,6 +7,7 @@ import { config } from '@config'
 export const { auth, handlers } = NextAuth({
   adapter: PrismaAdapter(prisma),
   secret: config.oauth.secret,
+  redirectProxyUrl: `${config.oauth.redirectURL}/api/auth/callback/google`,
   providers: [
     GoogleProvider(config.oauth.providers.google),
   ],
