@@ -65,4 +65,7 @@ docker run --net=host -d --name=app --restart unless-stopped --memory=1024m app
 docker system prune -a --volumes
 # Clear all unused images
 docker image prune -f
+
+
+certbot --nginx --non-interactive --agree-tos --email admin@quizerplay.com -d quizerplay.com
 ```

@@ -6,8 +6,7 @@ services:
       dockerfile: ./docker/Dockerfile
     ports:
       - "3000:3000"
-    environment:
-      NODE_ENV: production
+    restart: always
     networks:
       - app-network
 
@@ -22,10 +21,19 @@ services:
       - next
     networks:
       - app-network
-    volumes:
-      - ./docker/cert.sh:/usr/local/bin/cert.sh
-      - ./docker/nginx.conf:/etc/nginx/nginx.conf
 
+  certbot:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    depends_on:
+      - nginx
+    networks:
+      - app-network
 networks:
   app-network:
     driver: bridge

@@ -1,11 +1,6 @@
 FROM nginx:stable
 
-RUN apt-get update && \
-    apt-get install -y python3-certbot-nginx && \
-    rm -rf /var/lib/apt/lists/*
-
-COPY ./docker/nginx /etc/nginx/sites-available/default
-
-RUN certbot --nginx --non-interactive --agree-tos --email admin@quizerplay.com -d quizerplay.com
+COPY ./docker/settings-domain.conf /etc/nginx/sites-available/default
+RUN ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
 
 CMD ["nginx", "-g", "daemon off;"]
