@@ -1,10 +1,12 @@
 
-export const ENV_DEV = 'dev'
-export const ENV_PROD = 'prod'
-export const ENV_LOCAL = 'local'
+export enum ENV {
+  DEV = 'development',
+  PROD = 'production',
+}
 
 type AppConfig = {
   server: {
+    env: ENV,
     baseURL: string
   },
   db: {
@@ -31,7 +33,8 @@ type AppConfig = {
 
 export const config: AppConfig = {
   server: {
-    baseURL: process.env.PUBLIC_BASE_URL || ''
+    baseURL: process.env.PUBLIC_BASE_URL || '',
+    env: process.env.NODE_ENV === ENV.PROD ? ENV.PROD : ENV.DEV,
   },
   oauth: {
     secret: process.env.AUTH_SECRET || '',

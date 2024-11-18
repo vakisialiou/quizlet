@@ -1,13 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server'
+import {NextRequest, NextResponse} from 'next/server'
 import { getToken } from 'next-auth/jwt'
-import { cookies } from 'next/headers'
-import { config } from '@config'
+import { config, ENV } from '@config'
 
 export async function privateMiddleware(req: NextRequest) {
-  console.log('privateMiddleware config', config)
-  console.log('cookies', (await cookies()).getAll())
-  const token = await getToken({ req, secret: config.oauth.secret, secureCookie: true })
-  console.log('privateMiddleware token', token)
+  const token = await getToken({ req, secret: config.oauth.secret, secureCookie: config.server.env === ENV.PROD, raw: true })
 
   if (!token) {
     return NextResponse.redirect(new URL('/', req.url))
@@ -18,9 +14,7 @@ export async function privateMiddleware(req: NextRequest) {
 
 
 export async function privateApiMiddleware(req: NextRequest) {
-  console.log('privateMiddleware config', config)
-  const token = await getToken({ req, secret: config.oauth.secret, secureCookie: true })
-  console.log('privateMiddleware token', token)
+  const token = await getToken({ req, secret: config.oauth.secret, secureCookie: config.server.env === ENV.PROD, raw: true })
 
   if (!token) {
     return new NextResponse(null, { status: 401 })
