@@ -3,7 +3,9 @@ import { getToken } from 'next-auth/jwt'
 import { config } from '@config'
 
 export async function privateMiddleware(req: NextRequest) {
+  console.log('privateMiddleware config', config)
   const token = await getToken({ req, secret: config.oauth.secret })
+  console.log('privateMiddleware token', token)
 
   if (!token) {
     return NextResponse.redirect(new URL('/login', req.url))
@@ -14,7 +16,9 @@ export async function privateMiddleware(req: NextRequest) {
 
 
 export async function privateApiMiddleware(req: NextRequest) {
+  console.log('privateMiddleware config', config)
   const token = await getToken({ req, secret: config.oauth.secret })
+  console.log('privateMiddleware token', token)
 
   if (!token) {
     return new NextResponse(null, { status: 401 })
