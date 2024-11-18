@@ -17,8 +17,8 @@ services:
       - "443:443"
     restart: always
     volumes:
-      - ./docker/nginx/domain.conf/:/etc/nginx/conf.d/:ro
-      - ./docker/certbot/www/:/var/www/certbot/:ro
+      - ./docker/nginx/:/etc/nginx/conf.d/
+      - ./docker/certbot/www/:/var/www/certbot/
     depends_on:
       - next
     networks:
@@ -27,8 +27,8 @@ services:
   certbot:
     image: certbot/certbot:latest
     volumes:
-      - ./docker/certbot/www/:/var/www/certbot/:rw
-      - ./docker/certbot/conf/:/etc/letsencrypt/:rw
+      - ./docker/certbot/www/:/var/www/certbot/
+      - ./docker/certbot/conf/:/etc/letsencrypt/
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     networks:
       - app-network
