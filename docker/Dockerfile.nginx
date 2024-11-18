@@ -1,6 +1,6 @@
 FROM nginx:stable
 
-COPY ./docker/settings-domain.conf /etc/nginx/sites-available/default
+COPY ./docker/domain.conf /etc/nginx/sites-available/default
 RUN ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
 
 CMD ["nginx", "-g", "daemon off;"]
