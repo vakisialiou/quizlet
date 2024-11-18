@@ -8,6 +8,7 @@ export const { auth, handlers } = NextAuth({
   adapter: PrismaAdapter(prisma),
   secret: config.oauth.secret,
   redirectProxyUrl: `${config.oauth.redirectURL}/api/auth/callback/google`,
+  trustHost: true,
   providers: [
     GoogleProvider(config.oauth.providers.google),
   ],
