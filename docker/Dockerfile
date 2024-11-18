@@ -11,7 +11,7 @@ COPY package.json yarn.lock ./
 RUN yarn install
 
 # Step 5: Copy the rest of the application code
-COPY . .
+COPY ./ /app
 
 # Step 6: Build the application
 RUN yarn generate

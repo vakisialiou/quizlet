@@ -1,4 +1,6 @@
 node_modules
+letsencrypt
+docker-compose.yml
 *.log
 .git
 .next
