@@ -34,7 +34,7 @@ export const config: AppConfig = {
     baseURL: process.env.PUBLIC_BASE_URL || ''
   },
   oauth: {
-    secret: process.env.GOOGLE_CLIENT_ID || '',
+    secret: process.env.AUTH_SECRET || '',
     redirectURL: process.env.NEXTAUTH_URL || '',
     providers: {
       google: {
