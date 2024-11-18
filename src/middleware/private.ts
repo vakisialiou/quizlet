@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getToken } from 'next-auth/jwt'
+import { cookies } from 'next/headers'
 import { config } from '@config'
 
 export async function privateMiddleware(req: NextRequest) {
   console.log('privateMiddleware config', config)
+  console.log('cookies', (await cookies()).getAll())
   const token = await getToken({ req, secret: config.oauth.secret })
   console.log('privateMiddleware token', token)
 

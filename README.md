@@ -41,25 +41,25 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ```bash
 
 # BUILD
-docker build -t nextjs .
+docker build -t app .
 
 # PRODUCTION
 docker swarm init
 # or
 docker swarm init --advertise-addr 104.131.51.32
-docker service create --name nextjs-service -p 3000:3000 nextjs
+docker service create --name s-app -p 3000:3000 app
 # check
 docker service ls
-docker service ps nextjs-service
+docker service ps s-app
 # scale
-docker service scale nextjs-service=3
+docker service scale s-app=3
 # remove
-docker service rm nextjs-service
+docker service rm s-app
 # update
-docker service update --force nextjs-service
+docker service update --force s-app
 
 # DEVELOPMENT
-docker run --net=host -d --name=nextjs --restart unless-stopped --memory=1024m nextjs
+docker run --net=host -d --name=app --restart unless-stopped --memory=1024m app
 
 # Remove all images
 docker system prune -a --volumes
