@@ -35,8 +35,18 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
+### Docker deployment
 
-### Docker run
+```bash
+# move to app directory
+cd /srv/quizlet
+# run script to generate SSL
+./entrypoint-certbot.sh
+# build and run all containers
+docker-compose up -d
+```
+
+### Docker example commands
 
 ```bash
 

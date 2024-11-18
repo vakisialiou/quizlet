@@ -10,11 +10,13 @@ COPY package.json yarn.lock ./
 # Step 4: Install dependencies
 RUN yarn install
 
+COPY prisma/schema.prisma ./prisma/schema.prisma
+
+RUN npx prisma generate || true
 # Step 5: Copy the rest of the application code
 COPY ./ /app
 
 # Step 6: Build the application
-RUN yarn generate
 RUN yarn build
 
 # Step 10: Expose the port your app will run on
