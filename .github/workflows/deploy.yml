@@ -27,7 +27,6 @@ jobs:
         run: |
           rsync -avz --exclude '.git' ./ root@104.131.51.32:/srv/quizlet
 
-      # 4. Деплой
       - name: Deploy application
         run: |
           ssh root@104.131.51.32 << 'EOF'
@@ -38,4 +37,16 @@ jobs:
 
           # Перезапуск сервиса
           docker service update --force app_next
+          EOF
+
+      - name: Check if Docker container is running
+        run: |
+          ssh root@104.131.51.32 << 'EOF'
+          docker ps -a
+          EOF
+
+      - name: Check Docker service status
+        run: |
+          ssh root@104.131.51.32 << 'EOF'
+          docker service ps app_next
           EOF
