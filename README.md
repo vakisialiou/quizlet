@@ -40,6 +40,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ```bash
 # move to app directory
 cd /srv/quizlet
+
+# create next build
+docker build -t next:latest -f .
+
 # run script to generate SSL
 ./entrypoint-certbot.sh
 # build and run all containers
