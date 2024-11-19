@@ -17,7 +17,11 @@ jobs:
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          ssh-known-hosts: ${{ secrets.KNOWN_HOSTS }}
+
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 104.131.51.32 >> ~/.ssh/known_hosts
 
       - name: Copy repository to server
         run: |
