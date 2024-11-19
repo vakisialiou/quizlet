@@ -30,7 +30,7 @@ jobs:
       # 4. Деплой
       - name: Deploy application
         run: |
-          ssh user@your-server-ip << 'EOF'
+          ssh root@104.131.51.32 << 'EOF'
           cd /srv/quizlet
 
           # Пересборка Docker-образа
