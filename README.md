@@ -44,6 +44,8 @@ cd /srv/quizlet
 ./entrypoint-certbot.sh
 # build and run all containers
 docker-compose up -d
+# remove all containers
+docker-compose down --volumes --remove-orphans
 ```
 
 ### Docker example commands
@@ -51,25 +53,27 @@ docker-compose up -d
 ```bash
 
 # BUILD
-docker build -t app .
+docker build -t next .
+docker-compose build
 
 # PRODUCTION
 docker swarm init
 # or
 docker swarm init --advertise-addr 104.131.51.32
-docker service create --name s-app -p 3000:3000 app
+docker stack deploy -c docker-compose.yml app
+
 # check
 docker service ls
-docker service ps s-app
+docker service ps snext
 # scale
-docker service scale s-app=3
+docker service scale snext=3
 # remove
-docker service rm s-app
+docker service rm snext
 # update
-docker service update --force s-app
+docker service update --force snext
 
 # DEVELOPMENT
-docker run --net=host -d --name=app --restart unless-stopped --memory=1024m app
+docker run --net=host -d --name=next --restart unless-stopped --memory=1024m next
 
 # Remove all images
 docker system prune -a --volumes
