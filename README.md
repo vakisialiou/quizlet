@@ -41,28 +41,28 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 # move to app directory
 cd /srv/quizlet
 
-# create next build
-docker build -t next:latest -f .
-
 # run script to generate SSL
 ./entrypoint-certbot.sh
-# build and run all containers
+
+# create next build from Dockerfile because we use next:latest inside docker-compose.yml
+docker build -t next:latest .
+
+# ------------------ Way 1 (swarm). -----------------------------
+# swarm init and bind IP
+docker swarm init --advertise-addr 104.131.51.32
+# build and run containers
+docker stack deploy -c docker-compose.yml app
+
+# ------------------ Way 2 (compose). ---------------------------
+# build and run containers
 docker-compose up -d
-# remove all containers
-docker-compose down --volumes --remove-orphans
 ```
 
 ### Docker example commands
 
 ```bash
-
-# BUILD
 docker build -t next .
-docker-compose build
 
-# PRODUCTION
-docker swarm init
-# or
 docker swarm init --advertise-addr 104.131.51.32
 docker stack deploy -c docker-compose.yml app
 
@@ -84,6 +84,10 @@ docker system prune -a --volumes
 # Clear all unused images
 docker image prune -f
 
-
-certbot --nginx --non-interactive --agree-tos --email admin@quizerplay.com -d quizerplay.com
+# build
+docker-compose build
+# build and run all containers
+docker-compose up -d
+# remove all containers
+docker-compose down --volumes --remove-orphans
 ```
