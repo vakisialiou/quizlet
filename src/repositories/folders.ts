@@ -1,3 +1,4 @@
+import ClientSimulator, { SimulatorStatus } from '@entities/ClientSimulator'
 import ClientFolder from '@entities/ClientFolder'
 import ClientTerm from '@entities/ClientTerm'
 import { prisma, Folder } from '@lib/prisma'
@@ -12,8 +13,22 @@ export const findFoldersByUserId = async (userId: string): Promise<ClientFolder[
         select: {
           id: true,
           sort: true,
-          question: true,
           answer: true,
+          question: true,
+          association: true,
+        }
+      },
+      simulators: {
+        select: {
+          id: true,
+          termId: true,
+          active: true,
+          status: true,
+          folderId: true,
+          termIds: true,
+          historyIds: true,
+          continueIds: true,
+          rememberIds: true
         }
       }
     },
@@ -26,10 +41,28 @@ export const findFoldersByUserId = async (userId: string): Promise<ClientFolder[
       .setTerms(
         folder.terms.map(term => {
           return new ClientTerm(folder.id)
-            .setQuestion(term.question)
-            .setAnswer(term.answer)
             .setId(term.id)
             .setSort(term.sort)
+            .setAnswer(term.answer)
+            .setQuestion(term.question)
+            .setAssociation(term.association)
+        })
+      )
+      .setSimulators(
+        folder.simulators.map(simulator => {
+          const termIds = Array.isArray(simulator.termIds) ? simulator.termIds as string[] : []
+          const historyIds = Array.isArray(simulator.historyIds) ? simulator.historyIds as string[] : []
+          const continueIds = Array.isArray(simulator.continueIds) ? simulator.continueIds as string[] : []
+          const rememberIds = Array.isArray(simulator.rememberIds) ? simulator.rememberIds as string[] : []
+
+          return new ClientSimulator(simulator.folderId, simulator.status as SimulatorStatus)
+            .setId(simulator.id)
+            .setTermId(simulator.termId)
+            .setActive(simulator.active)
+            .setTermIds(termIds)
+            .setHistoryIds(historyIds)
+            .setContinueIds(continueIds)
+            .setRememberIds(rememberIds)
         })
       )
       .serialize()
@@ -46,8 +79,22 @@ export const getFolderById = async (userId: string, id: string): Promise<ClientF
         select: {
           id: true,
           sort: true,
-          question: true,
           answer: true,
+          question: true,
+          association: true,
+        }
+      },
+      simulators: {
+        select: {
+          id: true,
+          termId: true,
+          active: true,
+          status: true,
+          folderId: true,
+          termIds: true,
+          historyIds: true,
+          continueIds: true,
+          rememberIds: true
         }
       }
     },
@@ -60,10 +107,28 @@ export const getFolderById = async (userId: string, id: string): Promise<ClientF
       .setTerms(
         folder.terms.map(term => {
           return new ClientTerm(folder.id)
-            .setQuestion(term.question)
-            .setAnswer(term.answer)
             .setId(term.id)
             .setSort(term.sort)
+            .setAnswer(term.answer)
+            .setQuestion(term.question)
+            .setAssociation(term.association)
+        })
+      )
+      .setSimulators(
+        folder.simulators.map(simulator => {
+          const termIds = Array.isArray(simulator.termIds) ? simulator.termIds as string[] : []
+          const historyIds = Array.isArray(simulator.historyIds) ? simulator.historyIds as string[] : []
+          const continueIds = Array.isArray(simulator.continueIds) ? simulator.continueIds as string[] : []
+          const rememberIds = Array.isArray(simulator.rememberIds) ? simulator.rememberIds as string[] : []
+
+          return new ClientSimulator(simulator.folderId, simulator.status as SimulatorStatus)
+            .setId(simulator.id)
+            .setTermId(simulator.termId)
+            .setActive(simulator.active)
+            .setTermIds(termIds)
+            .setHistoryIds(historyIds)
+            .setContinueIds(continueIds)
+            .setRememberIds(rememberIds)
         })
       )
       .serialize()

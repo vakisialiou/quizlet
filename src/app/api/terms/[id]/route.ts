@@ -21,8 +21,9 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
       userId,
       sort: body.sort,
       answer: body.answer,
-      question: body.question,
       folderId: body.folderId,
+      question: body.question,
+      association: body.association,
     } as Term)
 
     return new Response(null, { status: 200 })

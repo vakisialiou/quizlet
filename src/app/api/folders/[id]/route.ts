@@ -2,6 +2,28 @@ import { removeFolder, upsertFolder, getFolderById } from '@repositories/folders
 import { Folder } from '@lib/prisma'
 import { auth } from '@auth'
 
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const session = await auth()
+  const userId = session?.user?.id as string
+
+  if (!userId) {
+    return new Response(null, { status: 401 })
+  }
+
+  const { id } = await params
+
+  try {
+    const folder = await getFolderById(userId, id)
+    return new Response(JSON.stringify({ folder }), {
+      headers: { 'Content-Type': 'application/json' },
+      status: 200,
+    })
+
+  } catch {
+    return new Response(null, { status: 500 })
+  }
+}
+
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth()
   const userId = session?.user?.id as string

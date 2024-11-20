@@ -3,6 +3,7 @@
 # dependencies
 /node_modules
 /docker/certbot
+
 /.pnp
 .pnp.js
 .yarn/install-state.gz

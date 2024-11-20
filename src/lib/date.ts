@@ -4,8 +4,12 @@ import duration from 'dayjs/plugin/duration'
 
 dayjs.extend(duration)
 
-export const getDuration = (timestampA: ConfigType, timestampB: ConfigType, formatStr = 'HH:mm:ss'): string => {
+export const calcDuration = (timestampA: ConfigType, timestampB: ConfigType, formatStr = 'HH:mm:ss'): string => {
   timestampA = dayjs(timestampA)
   timestampB = dayjs(timestampB)
-  return dayjs.duration(timestampB.diff(timestampA)).format(formatStr)
+  return getDuration(timestampB.diff(timestampA), formatStr)
+}
+
+export const getDuration = (time: number, formatStr = 'HH:mm:ss'): string => {
+  return dayjs.duration(time).format(formatStr)
 }

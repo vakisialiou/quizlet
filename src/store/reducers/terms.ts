@@ -19,6 +19,7 @@ export const saveTerm = createAsyncThunk(
         sort: payload.term.sort,
         answer: payload.term.answer,
         question: payload.term.question,
+        association: payload.term.association,
         folderId: payload.term.folderId,
       })
     })

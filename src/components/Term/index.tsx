@@ -50,7 +50,7 @@ export default function Term(
   return (
     <div
       ref={ref}
-      className={clsx('border border-gray-500 w-full bg-gray-900 flex flex-col gap-2 p-2 select-none overflow-hidden')}
+      className={clsx('border border-gray-500 w-full bg-gray-900 flex flex-col gap-0.5 p-2 select-none overflow-hidden')}
       onClick={(e) => {
         if (edit) {
           e.preventDefault()
@@ -139,16 +139,14 @@ export default function Term(
         }
       </div>
 
-      <div className="flex justify-between gap-2 w-full max-w-full overflow-hidden">
+      <div className="flex w-full max-w-full overflow-hidden">
         {!edit &&
-          <>
-            <div
-              title={data.answer || ''}
-              className="inline content-center px-1 h-6 text-sm text-gray-400 truncate ..."
-            >
-              {data.answer || <span className="text-gray-500">Answer not set</span>}
-            </div>
-          </>
+          <div
+            title={data.answer || ''}
+            className="inline content-center px-1 h-6 text-sm text-gray-400 truncate ..."
+          >
+            {data.answer || <span className="text-gray-500">Answer not set</span>}
+          </div>
         }
 
         {edit &&
@@ -164,6 +162,45 @@ export default function Term(
               className="block w-full bg-gray-800 text-gray-300 h-6 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline-none outline-1 focus:outline-blue-500 text-sm"
               onChange={(e) => {
                 onChange('answer', e.target.value)
+              }}
+              onKeyUp={(e) => {
+                switch (e.keyCode) {
+                  case 13:
+                    onSave()
+                    break
+                  case 27:
+                    onExit()
+                    break
+                }
+              }}
+            />
+          </div>
+        }
+      </div>
+
+      <div className="flex w-full max-w-full overflow-hidden">
+        {!edit &&
+          <div
+            title={data.association || ''}
+            className="inline content-center px-1 h-6 text-sm text-gray-400 truncate ..."
+          >
+            {data.association || <span className="text-gray-500">Association not set</span>}
+          </div>
+        }
+
+        {edit &&
+          <div
+            className="w-full"
+          >
+            <input
+              type="text"
+              name="association"
+              autoComplete="off"
+              placeholder="Association not set"
+              defaultValue={data.association || ''}
+              className="block w-full bg-gray-800 text-gray-300 h-6 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline-none outline-1 focus:outline-blue-500 text-sm"
+              onChange={(e) => {
+                onChange('association', e.target.value)
               }}
               onKeyUp={(e) => {
                 switch (e.keyCode) {

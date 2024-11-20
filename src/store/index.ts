@@ -1,11 +1,20 @@
 import { configureStore, createReducer, EnhancedStore } from '@reduxjs/toolkit'
-import { ConfigType, SimulatorsType } from '@store/initial-state'
+import ClientFolder, { ClientFolderData } from '@entities/ClientFolder'
 import { loggerMiddleware } from '@store/middlewares/logger'
 import * as simulators from '@store/reducers/simulators'
 import * as folders from '@store/reducers/folders'
-import ClientFolder from '@entities/ClientFolder'
+import { ConfigType } from '@store/initial-state'
 import * as terms from '@store/reducers/terms'
 import ClientTerm from '@entities/ClientTerm'
+import {
+  PayloadFetch,
+  PayloadBack,
+  PayloadContinue,
+  PayloadRemember,
+  PayloadRestart,
+  PayloadStart,
+  UpsertSimulatorsIds
+} from '@store/reducers/simulators'
 
 const DEBUG = false
 
@@ -97,33 +106,33 @@ export const actionUpdateTermItem = (payload: ClientTerm, callback?: (res: Clien
   execAction(action, callback)
 }
 
-export const actionFetchSimulators = (callback?: (res: SimulatorsType[]) => void): void => {
-  const action = simulators.fetchSimulators()
+export const actionFetchSimulators = (payload: PayloadFetch, callback?: (res: ClientFolderData) => void): void => {
+  const action = simulators.fetchSimulators(payload)
   execAction(action, callback)
 }
 
-export const actionStartSimulators = (payload: simulators.PayloadStart, callback?: (res: SimulatorsType[]) => void): void => {
+export const actionStartSimulators = (payload: PayloadStart, callback?: (res: UpsertSimulatorsIds) => void): void => {
   const action = simulators.startSimulators(payload)
   execAction(action, callback)
 }
 
 
-export const actionContinueSimulators = (payload: simulators.PayloadContinue, callback?: (res: SimulatorsType[]) => void): void => {
+export const actionContinueSimulators = (payload: PayloadContinue, callback?: (res: UpsertSimulatorsIds) => void): void => {
   const action = simulators.continueSimulators(payload)
   execAction(action, callback)
 }
 
-export const actionRememberSimulators = (payload: simulators.PayloadRemember, callback?: (res: SimulatorsType[]) => void): void => {
+export const actionRememberSimulators = (payload: PayloadRemember, callback?: (res: UpsertSimulatorsIds) => void): void => {
   const action = simulators.rememberSimulators(payload)
   execAction(action, callback)
 }
 
-export const actionRestartSimulators = (payload: simulators.PayloadRestart, callback?: (res: SimulatorsType[]) => void): void => {
+export const actionRestartSimulators = (payload: PayloadRestart, callback?: (res: UpsertSimulatorsIds) => void): void => {
   const action = simulators.restartSimulators(payload)
   execAction(action, callback)
 }
 
-export const actionBackSimulators = (payload: simulators.PayloadBack, callback?: (res: SimulatorsType[]) => void): void => {
+export const actionBackSimulators = (payload: PayloadBack, callback?: (res: UpsertSimulatorsIds) => void): void => {
   const action = simulators.backSimulators(payload)
   execAction(action, callback)
 }

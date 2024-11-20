@@ -15,6 +15,7 @@ model User {
   email         String?         @unique
   emailVerified DateTime?
   image         String?
+  simulators    Simulator[]
   accounts      Account[]
   sessions      Session[]
   folders       Folder[]
@@ -26,7 +27,7 @@ model User {
 
 model Account {
   id                       String  @id @default(uuid())
-  userId                   String  @unique
+  userId                   String  @db.VarChar(36)
   type                     String
   provider                 String
   providerAccountId        String
@@ -44,13 +45,12 @@ model Account {
   updatedAt DateTime @updatedAt
 
   @@unique([provider, providerAccountId])
-  @@index([userId])
 }
 
 model Session {
   id           String   @id @default(uuid())
   sessionToken String   @unique
-  userId       String
+  userId       String   @db.VarChar(36)
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id])
 
@@ -70,27 +70,50 @@ model VerificationToken {
 }
 
 model Folder {
-  id         String    @id @default(uuid())
-  userId     String
-  name       String?   @db.VarChar(255)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id         String     @id @default(uuid())
+  userId     String     @db.VarChar(36)
+  name       String?    @db.VarChar(255)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  terms     Term[]
+  terms          Term[]
+  simulators     Simulator[]
 
   @@unique([id])
 }
 
 model Term {
-  id         String    @id @default(uuid())
-  userId     String
-  folderId   String
-  sort       Int
-  question   String?   @db.VarChar(255)
-  answer     String?   @db.VarChar(255)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id          String     @id @default(uuid())
+  userId      String     @db.VarChar(36)
+  folderId    String     @db.VarChar(36)
+  sort        Int
+  question    String?    @db.VarChar(255)
+  answer      String?    @db.VarChar(255)
+  association String?    @db.VarChar(255)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folder Folder @relation(fields: [folderId], references: [id], onDelete: Cascade)
+
+  @@unique([id])
+}
+
+model Simulator {
+  id          String     @id @default(uuid())
+  userId      String     @db.VarChar(36)
+  folderId    String     @db.VarChar(36)
+  active      Boolean
+  duration    Int?
+  status      String     @db.VarChar(20)
+  termId      String?    @db.VarChar(36)
+  termIds     Json
+  rememberIds Json
+  continueIds Json
+  historyIds  Json
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   folder Folder @relation(fields: [folderId], references: [id], onDelete: Cascade)
 

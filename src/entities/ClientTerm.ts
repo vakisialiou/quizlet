@@ -1,18 +1,29 @@
 import { v4 } from 'uuid'
 
+export type ClientTermData = {
+  id: string
+  sort: number
+  folderId: string
+  answer: string | null
+  question: string | null
+  association: string | null
+}
+
 export default class ClientTerm {
   id: string
   sort: number
   folderId: string
-  question: string | null
   answer: string | null
+  question: string | null
+  association: string | null
 
   constructor(folderId = '') {
     this.sort = 0
     this.id = v4()
     this.folderId = folderId
-    this.question = null
     this.answer = null
+    this.question = null
+    this.association = null
   }
 
   setSort(value: number): ClientTerm {
@@ -30,13 +41,18 @@ export default class ClientTerm {
     return this
   }
 
+  setAnswer(value: string | null): ClientTerm {
+    this.answer = value
+    return this
+  }
+
   setQuestion(value: string | null): ClientTerm {
     this.question = value
     return this
   }
 
-  setAnswer(value: string | null): ClientTerm {
-    this.answer = value
+  setAssociation(value: string | null): ClientTerm {
+    this.association = value
     return this
   }
 

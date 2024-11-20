@@ -7,9 +7,10 @@ export const findTermsByUserId = async (userId: string): Promise<Term[]> => {
     select: {
       id: true,
       sort: true,
-      question: true,
       answer: true,
       folderId: true,
+      question: true,
+      association: true,
     },
   })
 
@@ -19,18 +20,20 @@ export const findTermsByUserId = async (userId: string): Promise<Term[]> => {
       .setSort(term.sort)
       .setAnswer(term.answer)
       .setQuestion(term.question)
+      .setAssociation(term.association)
       .serialize()
   })
 }
 
-export const findTermsByFolderId = async (folderId: string): Promise<ClientTerm[]> => {
+export const findTermsByFolderId = async (userId: string, folderId: string): Promise<ClientTerm[]> => {
   const res = await prisma.term.findMany({
-    where: { folderId },
+    where: { userId, folderId },
     select: {
       id: true,
       sort: true,
-      question: true,
       answer: true,
+      question: true,
+      association: true,
       folderId: true,
     },
   })
@@ -41,6 +44,7 @@ export const findTermsByFolderId = async (folderId: string): Promise<ClientTerm[
       .setSort(term.sort)
       .setAnswer(term.answer)
       .setQuestion(term.question)
+      .setAssociation(term.association)
       .serialize()
   })
 }
@@ -51,8 +55,9 @@ export const getTermById = async (userId: string, id: string): Promise<ClientTer
     select: {
       id: true,
       sort: true,
-      question: true,
       answer: true,
+      question: true,
+      association: true,
       folderId: true,
     },
   })
@@ -63,6 +68,7 @@ export const getTermById = async (userId: string, id: string): Promise<ClientTer
       .setSort(term.sort)
       .setAnswer(term.answer)
       .setQuestion(term.question)
+      .setAssociation(term.association)
       .serialize()
   })
 }
@@ -74,6 +80,7 @@ export const upsertTerm = async (term: Term): Promise<string | null> => {
       sort: term.sort,
       answer: term.answer,
       question: term.question,
+      association: term.association,
       updatedAt: term.updatedAt || new Date(),
     },
     create: {
@@ -81,7 +88,7 @@ export const upsertTerm = async (term: Term): Promise<string | null> => {
       sort: term.sort,
       userId: term.userId as string,
       answer: term.answer,
-      question: term.question,
+      association: term.association,
       folderId: term.folderId as string,
       createdAt: term.createdAt || new Date(),
       updatedAt: term.updatedAt || new Date()

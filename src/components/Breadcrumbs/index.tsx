@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 export type BreadcrumbItem = {
   name?: string | null | undefined,
-  href?: string
+  href?: string | null | undefined,
   id: number
 }
 
@@ -23,7 +23,7 @@ export default function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
                 <span
                   className="truncate ..."
                 >
-                  {item.name || 'unknown'}
+                  {item.name}
                 </span>
               </div>
             </div>
@@ -38,10 +38,10 @@ export default function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
               >
                 <Link
                   href={item.href}
-                  title={item.name || 'unknown'}
+                  title={item.name || ''}
                   className="flex items-center text-gray-400 hover:text-gray-500 overflow-hidden"
                 >
-                  <span className="truncate ...">{item.name || 'unknown'}</span>
+                  <span className="truncate ...">{item.name}</span>
                 </Link>
               </div>
             }
@@ -52,10 +52,10 @@ export default function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
               >
                 <div className="flex items-center text-gray-600 overflow-hidden">
                   <span
-                    title={item.name || 'unknown'}
+                    title={item.name || ''}
                     className="truncate ..."
                   >
-                    {item.name || 'unknown'}
+                    {item.name}
                   </span>
                 </div>
               </div>

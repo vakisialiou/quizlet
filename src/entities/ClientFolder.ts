@@ -1,15 +1,25 @@
-import ClientTerm from './ClientTerm'
+import ClientSimulator, { ClientSimulatorData } from './ClientSimulator'
+import ClientTerm, { ClientTermData } from './ClientTerm'
 import { v4 } from 'uuid'
+
+export type ClientFolderData = {
+  id: string
+  name: string | null
+  terms: ClientTermData[]
+  simulators: ClientSimulatorData[]
+}
 
 export default class ClientFolder {
   id: string
   name: string | null
   terms: ClientTerm[]
+  simulators: ClientSimulator[]
 
   constructor() {
     this.id = v4()
     this.name = null
     this.terms = []
+    this.simulators = []
   }
 
   addTerm(term: ClientTerm) {
@@ -19,6 +29,16 @@ export default class ClientFolder {
 
   setTerms(terms: ClientTerm[]) {
     this.terms = terms
+    return this
+  }
+
+  addSimulator(simulator: ClientSimulator) {
+    this.simulators.push(simulator)
+    return this
+  }
+
+  setSimulators(simulators: ClientSimulator[]) {
+    this.simulators = simulators
     return this
   }
 
