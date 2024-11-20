@@ -33,7 +33,7 @@ jobs:
           cd /srv/quizlet
 
           # Пересборка Docker-образа
-          docker build -t next:latest .
+          docker build --no-cache -t next:latest .
 
           # Перезапуск сервиса
           docker service update --force app_next
