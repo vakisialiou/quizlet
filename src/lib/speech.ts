@@ -27,6 +27,7 @@ export default class TextToSpeech {
   private voice: SpeechSynthesisVoice | null
   private rate: number
   private volume: number
+  private lang: string | null
 
   constructor() {
     if (!window.speechSynthesis) {
@@ -42,6 +43,8 @@ export default class TextToSpeech {
     this.rate = 1
     // (0.1 - quiet, 1 - loud)
     this.volume = 1
+
+    this.lang = 'en-GB'
   }
 
   hasVoice() {
@@ -65,6 +68,11 @@ export default class TextToSpeech {
     return this
   }
 
+  setLang(lang: string | null) {
+    this.lang = lang
+    return this
+  }
+
   setRate(rate: number) {
     this.rate = rate
     return this
@@ -81,6 +89,10 @@ export default class TextToSpeech {
     }
 
     const utterance = new SpeechSynthesisUtterance(text)
+
+    if (this.lang) {
+      utterance.lang = this.lang
+    }
 
     if (this.voice) {
       utterance.voice = this.voice

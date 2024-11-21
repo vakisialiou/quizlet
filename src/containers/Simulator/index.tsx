@@ -110,7 +110,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
                     const item = voices.find((item) => item.lang === lang)
 
                     if (text) {
-                      speech.stop().setVoice(item?.name || lang).speak(text)
+                      speech.stop().setLang(lang).setVoice(item?.name || lang).speak(text)
                     }
                   }
               }
