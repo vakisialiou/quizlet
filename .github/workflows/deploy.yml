@@ -27,17 +27,17 @@ jobs:
         run: |
           rsync -avz --exclude '.git' ./ root@104.131.51.32:/srv/quizlet
 
-      - name: Deploy application
+      - name: Build Docker image
         run: |
           ssh root@104.131.51.32 << 'EOF'
           cd /srv/quizlet
+          docker build -t next:latest . || { echo 'Docker build failed'; exit 1; }
+          EOF
 
-          # Пересборка Docker-образа
-          docker build -t next:latest .
-
-          # Перезапуск сервиса
-          docker service update --image next:latest app_next
-
+      - name: Deploy application
+        run: |
+          ssh root@104.131.51.32 << 'EOF'
+          docker service update --image next:latest app_next || { echo 'Service update failed'; exit 1; }
           EOF
 
       - name: Finishing deploy application
