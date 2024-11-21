@@ -1,6 +1,6 @@
 import Dropdown, { DropdownItemType } from '@components/Dropdown'
+import { ClientFolderData } from '@entities/ClientFolder'
 import SVGThreeDots from '@public/svg/three_dots.svg'
-import ClientFolder from '@entities/ClientFolder'
 import SVGPlay from '@public/svg/play.svg'
 import Spinner from '@components/Spinner'
 import { ReactNode } from 'react'
@@ -22,7 +22,7 @@ export default function Folder(
     onDropdownSelect
   }:
   {
-    data: ClientFolder,
+    data: ClientFolderData,
     edit: boolean,
     process: boolean,
     label: ReactNode,

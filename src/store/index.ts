@@ -1,11 +1,11 @@
 import { configureStore, createReducer, EnhancedStore } from '@reduxjs/toolkit'
-import ClientFolder, { ClientFolderData } from '@entities/ClientFolder'
 import { loggerMiddleware } from '@store/middlewares/logger'
+import { ClientFolderData } from '@entities/ClientFolder'
 import * as simulators from '@store/reducers/simulators'
+import { ClientTermData } from '@entities/ClientTerm'
 import * as folders from '@store/reducers/folders'
 import { ConfigType } from '@store/initial-state'
 import * as terms from '@store/reducers/terms'
-import ClientTerm from '@entities/ClientTerm'
 import {
   PayloadFetch,
   PayloadBack,
@@ -60,7 +60,7 @@ const execAction = <T>(action: any, callback?: CallbackType<T>): void => {
   getStore().dispatch(action).unwrap().then(callback)
 }
 
-export const actionFetchFolders = (callback?: (res: ClientFolder[]) => void): void => {
+export const actionFetchFolders = (callback?: (res: ClientFolderData[]) => void): void => {
   const action = folders.fetchFolders()
   execAction(action, callback)
 }
@@ -70,7 +70,7 @@ export const actionSaveFolder = (payload: folders.SaveType, callback?: (res: fol
   execAction(action, callback)
 }
 
-export const actionDeleteFolder = (payload: ClientFolder, callback?: (res: ClientFolder) => void): void => {
+export const actionDeleteFolder = (payload: ClientFolderData, callback?: (res: ClientFolderData) => void): void => {
   const action = folders.deleteFolder(payload)
   execAction(action, callback)
 }
@@ -80,7 +80,7 @@ export const actionUpdateFolder = (payload: folders.UpdateType, callback?: (res:
   execAction(action, callback)
 }
 
-export const actionUpdateFolderItem = (payload: ClientFolder, callback?: (res: ClientFolder) => void): void => {
+export const actionUpdateFolderItem = (payload: ClientFolderData, callback?: (res: ClientFolderData) => void): void => {
   const action = folders.updateFolderItem(payload)
   execAction(action, callback)
 }
@@ -91,7 +91,7 @@ export const actionSaveTerm = (payload: terms.SaveType, callback?: (res: terms.S
   execAction(action, callback)
 }
 
-export const actionDeleteTerm = (payload: ClientTerm, callback?: (res: ClientTerm) => void): void => {
+export const actionDeleteTerm = (payload: ClientTermData, callback?: (res: ClientTermData) => void): void => {
   const action = terms.deleteTerm(payload)
   execAction(action, callback)
 }
@@ -101,7 +101,7 @@ export const actionUpdateTerm = (payload: terms.UpdateType, callback?: (res: ter
   execAction(action, callback)
 }
 
-export const actionUpdateTermItem = (payload: ClientTerm, callback?: (res: ClientTerm) => void): void => {
+export const actionUpdateTermItem = (payload: ClientTermData, callback?: (res: ClientTermData) => void): void => {
   const action = terms.updateTermItem(payload)
   execAction(action, callback)
 }

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 import SVGThreeDots from '@public/svg/three_dots.svg'
-import ClientTerm from '@entities/ClientTerm'
+import { ClientTermData } from '@entities/ClientTerm'
 import Dropdown from '@components/Dropdown'
 import Spinner from '@components/Spinner'
 import clsx from 'clsx'
@@ -17,7 +17,7 @@ export default function Term(
     onChange
   }:
   {
-    data: ClientTerm,
+    data: ClientTermData,
     edit: boolean,
     process: boolean,
     onEdit: () => void,

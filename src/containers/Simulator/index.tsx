@@ -16,7 +16,10 @@ export default function Simulator({ folderId }: { folderId: string }) {
     return folders.items.find(({ id }) => id === folderId)
   }, [folders.items, folderId])
 
-  const simulators = folder?.simulators || []
+  const simulators = useMemo(() => {
+    return folder?.simulators || []
+  }, [folder?.simulators])
+
   const simulator = useMemo(() => {
     return simulators.find(({ active }) => active)
   }, [simulators])

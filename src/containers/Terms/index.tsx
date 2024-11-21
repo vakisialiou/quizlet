@@ -1,10 +1,10 @@
 'use client'
 
+import ClientTerm, { ClientTermData } from '@entities/ClientTerm'
 import { FoldersType, TermsType } from '@store/initial-state'
 import { useEffect, useMemo, useState } from 'react'
 import ButtonSquare from '@components/ButtonSquare'
 import HeaderPage from '@containers/HeaderPage'
-import ClientTerm from '@entities/ClientTerm'
 import { useRouter } from 'next/navigation'
 import SVGPlus from '@public/svg/plus.svg'
 import SVGPlay from '@public/svg/play.svg'
@@ -23,7 +23,7 @@ export default function Terms({ folderId }: { folderId: string }) {
 
   const router = useRouter()
 
-  const [ originItem, setOriginItem ] = useState<ClientTerm | null>(null)
+  const [ originItem, setOriginItem ] = useState<ClientTermData | null>(null)
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
   const terms = useSelector(({ terms }: { terms: TermsType }) => terms)
 

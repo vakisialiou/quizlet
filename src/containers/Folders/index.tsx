@@ -1,8 +1,8 @@
 'use client'
 
+import ClientFolder, { ClientFolderData } from '@entities/ClientFolder'
 import ButtonSquare from '@components/ButtonSquare'
 import { FoldersType } from '@store/initial-state'
-import ClientFolder from '@entities/ClientFolder'
 import HeaderPage from '@containers/HeaderPage'
 import MetaLabel from '@components/MetaLabel'
 import { useState, useEffect } from 'react'
@@ -21,7 +21,7 @@ import {
 export default function Folders() {
   useEffect(actionFetchFolders, [])
 
-  const [ originItem, setOriginItem ] = useState<ClientFolder | null>(null)
+  const [ originItem, setOriginItem ] = useState<ClientFolderData | null>(null)
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
 
   return (
@@ -77,11 +77,11 @@ export default function Folders() {
               onExit={() => {
                 actionUpdateFolder({
                   editId: null,
-                  items: upsertObject([...folders.items], originItem as ClientFolder) as ClientFolder[]
+                  items: upsertObject([...folders.items], originItem as ClientFolderData)
                 }, () => setOriginItem(null))
               }}
               onChange={(prop, value) => {
-                actionUpdateFolderItem({ ...folder, [prop]: value } as ClientFolder)
+                actionUpdateFolderItem({ ...folder, [prop]: value })
               }}
               label={<MetaLabel>{`Terms ${folder.terms.length || 0}`}</MetaLabel>}
             />
