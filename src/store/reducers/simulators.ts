@@ -22,7 +22,13 @@ export type UpsertSimulatorsIds = (string | null)[]
 
 export const fetchSimulators = createAsyncThunk(
   '/fetch/simulators',
-  async (payload: PayloadFetch): Promise<ClientFolderData> => {
+  async (payload: PayloadFetch, api): Promise<ClientFolderData> => {
+    const state = api.getState() as ConfigType
+    let folder = state.folders.items.find((item) => item.id === payload.folderId)
+    if (folder) {
+      return JSON.parse(JSON.stringify(folder))
+    }
+
     return await clientFetch(`/api/folders/${payload.folderId}`)
       .then((res) => res.json())
       .then((json) => {
@@ -110,7 +116,47 @@ export const simulatorReducers = (builder: any) => {
       state.folders = { ...state.folders, process: true }
     })
     .addCase(fetchSimulators.fulfilled, (state: ConfigType, action: { payload: ClientFolderData, meta: { arg: PayloadFetch } }) => {
-      state.folders.items = upsertObject([...state.folders.items], action.payload)
+      const folder = { ...action.payload }
+      const actualTermIds = folder.terms.map(({ id }) => id)
+
+      state.folders.items = upsertObject([...state.folders.items], folder)
+
+      // Some terms can have been deleted. In that case have to clear all removed terms from simulator.
+      state.folders = updateActiveSimulator(state.folders, action.meta.arg.folderId, (simulator) => {
+        const termIds = simulator.termIds.filter((id) => actualTermIds.includes(id))
+
+        if (termIds.length === 0) {
+          return { ...simulator, active: false, needUpdate: true }
+        }
+
+        let historyIds = simulator.historyIds.filter((id) => actualTermIds.includes(id))
+        let continueIds = simulator.continueIds.filter((id) => actualTermIds.includes(id))
+        let rememberIds = simulator.rememberIds.filter((id) => actualTermIds.includes(id))
+
+        if (simulator.termId) {
+          if (!actualTermIds.includes(simulator.termId)) {
+            const historyIndex = historyIds.findLastIndex(() => true)
+            if (historyIndex !== -1) {
+              simulator.termId = historyIds.splice(historyIndex, 1)[0]
+              continueIds = continueIds.filter((uuid) => uuid !== simulator.termId)
+              rememberIds = rememberIds.filter((uuid) => uuid !== simulator.termId)
+            } else {
+              simulator.termId = null
+              simulator.status = SimulatorStatus.DONE
+            }
+          }
+        }
+
+        return {
+          ...simulator,
+          termIds,
+          historyIds,
+          continueIds,
+          rememberIds,
+          needUpdate: true,
+        }
+      })
+
       state.folders = { ...state.folders, process: false }
     })
     .addCase(fetchSimulators.rejected, (state: ConfigType) => {

@@ -7,14 +7,14 @@ export default async function Page() {
   return (
     <div className="flex flex-col items-center justify-center w-full h-80">
       {session &&
-        <div className="flex flex-col justify-center items-center text-center">
-          Create folder to start <br/>learn new terms!
+        <div className="flex flex-col gap-8 justify-center items-center text-center">
+          <div className="text-xl font-bold">Create folder to start <br/>learn new terms!</div>
 
           <Link
             href="/private"
             className="text-gray-400 underline hover:text-gray-500"
           >
-            My folders
+            Go to folders 👉🏼
           </Link>
         </div>
       }
