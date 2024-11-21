@@ -1,12 +1,18 @@
 'use client'
 
+import { actionBackSimulators, actionDeactivateSimulators, actionFetchSimulators } from '@store/index'
+import { DefaultAnswerLang, DefaultQuestionLang } from '@entities/ClientTerm'
+import React, { useEffect, useMemo, useState, useCallback, } from 'react'
 import { ClientSimulatorData } from '@entities/ClientSimulator'
-import { actionFetchSimulators } from '@store/index'
+import { RollbackData } from '@containers/Simulator/Card'
 import { FoldersType } from '@store/initial-state'
+import SingleQueueStart from './SingleQueueStart'
 import HeaderPage from '@containers/HeaderPage'
-import { useEffect, useMemo } from 'react'
+import PanelControls from './PanelControls'
 import {useSelector} from 'react-redux'
 import SingleQueue from './SingleQueue'
+import TextToSpeech from '@lib/speech'
+import PanelInfo from './PanelInfo'
 
 export default function Simulator({ folderId }: { folderId: string }) {
   useEffect(() => actionFetchSimulators({ folderId }), [folderId])
@@ -24,13 +30,26 @@ export default function Simulator({ folderId }: { folderId: string }) {
     return simulators.find(({ active }) => active)
   }, [simulators])
 
-  const ready = folder && simulator
+  const [rollbackData, setRollbackData] = useState<RollbackData | null>(null)
+
+  const updateVisibleSideCallback = useCallback((data: RollbackData) => {
+    setRollbackData(data)
+  }, [])
+
+  const speech = useMemo(() => {
+    return typeof(window) === 'object' ? new TextToSpeech() : null
+  }, [])
+
+  if (speech && !speech.hasVoice()) {
+    speech.loadVoices()
+  }
 
   return (
     <div
-      className="flex flex-col px-2 md:px-4 gap-4"
+      className="w-full flex flex-col px-2 md:px-4 gap-8 items-center"
     >
       <HeaderPage
+        process={folders.process}
         breadcrumbs={[
           {id: 1, name: 'Home', href: '/'},
           {id: 2, name: 'Folders', href: '/private'},
@@ -38,27 +57,65 @@ export default function Simulator({ folderId }: { folderId: string }) {
         ]}
       />
 
-      {folders.process &&
-        <div>Skeleton</div>
-      }
+      <div className="grid grid-cols-7 gap-1">
+        <div className="flex flex-col gap-4 w-72 col-span-6">
+          <PanelInfo
+            simulator={simulator}
+            process={folders.process}
+          />
 
-      {!folders.process &&
-        <>
-          {!ready &&
-            <div>
-              Something went wrong while processing.
-            </div>
+          {!simulator &&
+            <SingleQueueStart
+              folder={folder}
+              process={folders.process}
+            />
           }
 
-          {ready &&
+          {(folder && simulator) &&
             <SingleQueue
               folder={folder}
               simulator={simulator as ClientSimulatorData}
+              onRoll={updateVisibleSideCallback}
             />
           }
-        </>
-      }
+        </div>
+        <div className="w-full pt-16 mt-4">
+          <PanelControls
+            simulator={simulator}
+            process={folders.process}
+            options={{
+              sound: {
+                disabled: !speech || !rollbackData
+              }
+            }}
+            onClick={(controlName) => {
+              if (!folder) {
+                return
+              }
 
+              switch (controlName) {
+                case 'deactivate':
+                  actionDeactivateSimulators({ folderId: folder.id })
+                  break
+                case 'back':
+                  actionBackSimulators({ folderId: folder.id })
+                  break
+                case 'sound':
+                  if (simulator && rollbackData && speech) {
+                    const text = rollbackData.isBackSide ? rollbackData.term.answer : rollbackData.term.question
+                    const lang = rollbackData.isBackSide
+                      ? (rollbackData.term.answerLang || DefaultAnswerLang)
+                      : (rollbackData.term.questionLang || DefaultQuestionLang)
+
+                    if (text) {
+                      speech.stop().setVoice(lang).speak(text)
+                    }
+                  }
+              }
+            }}
+          />
+        </div>
+      </div>
     </div>
   )
 }

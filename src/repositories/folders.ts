@@ -15,6 +15,8 @@ export const findFoldersByUserId = async (userId: string): Promise<ClientFolder[
           sort: true,
           answer: true,
           question: true,
+          answerLang: true,
+          questionLang: true,
           association: true,
         }
       },
@@ -45,6 +47,8 @@ export const findFoldersByUserId = async (userId: string): Promise<ClientFolder[
             .setSort(term.sort)
             .setAnswer(term.answer)
             .setQuestion(term.question)
+            .setAnswerLang(term.answerLang)
+            .setQuestionLang(term.questionLang)
             .setAssociation(term.association)
         })
       )
@@ -81,6 +85,8 @@ export const getFolderById = async (userId: string, id: string): Promise<ClientF
           sort: true,
           answer: true,
           question: true,
+          answerLang: true,
+          questionLang: true,
           association: true,
         }
       },
@@ -111,6 +117,8 @@ export const getFolderById = async (userId: string, id: string): Promise<ClientF
             .setSort(term.sort)
             .setAnswer(term.answer)
             .setQuestion(term.question)
+            .setAnswerLang(term.answerLang)
+            .setQuestionLang(term.questionLang)
             .setAssociation(term.association)
         })
       )

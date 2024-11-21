@@ -1,11 +1,16 @@
 import { v4 } from 'uuid'
 
+export const DefaultAnswerLang = 'en-GB'
+export const DefaultQuestionLang = 'ru-RU'
+
 export type ClientTermData = {
   id: string
   sort: number
   folderId: string
   answer: string | null
+  answerLang: string | null
   question: string | null
+  questionLang: string | null
   association: string | null
 }
 
@@ -14,7 +19,9 @@ export default class ClientTerm {
   sort: number
   folderId: string
   answer: string | null
+  answerLang: string | null
   question: string | null
+  questionLang: string | null
   association: string | null
 
   constructor(folderId = '') {
@@ -22,7 +29,9 @@ export default class ClientTerm {
     this.id = v4()
     this.folderId = folderId
     this.answer = null
+    this.answerLang = null
     this.question = null
+    this.questionLang = null
     this.association = null
   }
 
@@ -46,8 +55,18 @@ export default class ClientTerm {
     return this
   }
 
+  setAnswerLang(value: string | null): ClientTerm {
+    this.answerLang = value
+    return this
+  }
+
   setQuestion(value: string | null): ClientTerm {
     this.question = value
+    return this
+  }
+
+  setQuestionLang(value: string | null): ClientTerm {
+    this.questionLang = value
     return this
   }
 

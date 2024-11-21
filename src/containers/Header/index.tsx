@@ -2,7 +2,7 @@
 
 import SVGGoogle from '@public/svg/painted/google.svg'
 import ButtonAccount from '@containers/ButtonAccount'
-import Button, { Skin } from '@components/Button'
+import Button, { ButtonSkin } from '@components/Button'
 import { signIn } from 'next-auth/react'
 import { Session } from 'next-auth'
 import Image from 'next/image'
@@ -54,7 +54,7 @@ export default function Header({ menuItems = [], session = null }: { menuItems: 
           {!session &&
             <Button
               className="px-4 gap-2 text-nowrap"
-              skin={Skin.WHITE_100}
+              skin={ButtonSkin.WHITE_100}
               onClick={() => signIn('google')}
             >
               <SVGGoogle

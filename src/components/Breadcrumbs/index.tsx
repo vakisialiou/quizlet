@@ -1,5 +1,5 @@
 import SVGRightArrow from '@public/svg/rightarrow.svg'
-import { Fragment } from 'react'
+import React, { Fragment } from 'react'
 import Link from 'next/link'
 
 export type BreadcrumbItem = {
@@ -8,10 +8,24 @@ export type BreadcrumbItem = {
   id: number
 }
 
-export default function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
+export default function Breadcrumbs({ process = false, items }: { process?: boolean, items: BreadcrumbItem[] }) {
+  const lastIndex = items.findLastIndex(() => true)
   return (
     <div className="flex items-center text-gray-400 font-semibold gap-1 w-full overflow-hidden">
       {items.map((item, index) => {
+        if (process) {
+          return (
+            <div
+              key={item.id}
+              className="animate-pulse flex gap-1"
+            >
+              <div className="h-4 w-16 bg-slate-700"/>
+              {lastIndex !== index &&
+                <div className="h-4 w-4 bg-slate-700"/>
+              }
+            </div>
+          )
+        }
         if (items[index + 1] === undefined) {
           return (
             <div
@@ -61,14 +75,14 @@ export default function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
               </div>
             }
 
-                <SVGRightArrow
-                  width={24}
-                  height={24}
-                  className="text-gray-500 rotate-180 min-w-[24px] min-h-[24px]"
-                />
-              </Fragment>
-              )
-            })}
-          </div>
+            <SVGRightArrow
+              width={24}
+              height={24}
+              className="text-gray-500 rotate-180 min-w-[24px] min-h-[24px]"
+            />
+          </Fragment>
         )
-      }
+      })}
+    </div>
+  )
+}

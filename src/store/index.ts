@@ -13,7 +13,8 @@ import {
   PayloadRemember,
   PayloadRestart,
   PayloadStart,
-  UpsertSimulatorsIds
+  PayloadDeactivate,
+  UpsertSimulatorsIds,
 } from '@store/reducers/simulators'
 
 const DEBUG = false
@@ -134,5 +135,10 @@ export const actionRestartSimulators = (payload: PayloadRestart, callback?: (res
 
 export const actionBackSimulators = (payload: PayloadBack, callback?: (res: UpsertSimulatorsIds) => void): void => {
   const action = simulators.backSimulators(payload)
+  execAction(action, callback)
+}
+
+export const actionDeactivateSimulators = (payload: PayloadDeactivate, callback?: (res: UpsertSimulatorsIds) => void): void => {
+  const action = simulators.deactivateSimulators(payload)
   execAction(action, callback)
 }

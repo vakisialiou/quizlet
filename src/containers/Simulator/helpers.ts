@@ -77,6 +77,7 @@ export const createActiveSimulator = (folders: FoldersType, folderId: string): F
   }
 
   const curr = new ClientSimulator(folderId, SimulatorStatus.WAITING).setActive(true).serialize()
+  console.log('curr', curr)
   if (prev.folderIndex !== -1) {
     folders.items[prev.folderIndex].simulators.push(curr)
   }

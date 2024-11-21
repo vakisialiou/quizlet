@@ -25,7 +25,7 @@ export const getInitialState = async ({ session }: { session: Session | null }):
     folders: {
       items: [],
       editId: null,
-      process: false,
+      process: true,
       processIds: []
     },
     terms: {

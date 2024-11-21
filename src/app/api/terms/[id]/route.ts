@@ -23,6 +23,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
       answer: body.answer,
       folderId: body.folderId,
       question: body.question,
+      answerLang: body.answerLang,
+      questionLang: body.questionLang,
       association: body.association,
     } as Term)
 

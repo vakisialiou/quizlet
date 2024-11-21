@@ -9,7 +9,6 @@ import {
   createActiveSimulator,
   updateActiveSimulator,
   updateSimulatorById,
-  findActiveSimulator,
   addRememberIds,
   addContinueId,
   addHistoryId,
@@ -93,6 +92,17 @@ export const backSimulators = createAsyncThunk(
   }
 )
 
+export type PayloadDeactivate = { folderId: string }
+
+export const deactivateSimulators = createAsyncThunk(
+  '/deactivate/simulators',
+  async (payload: PayloadDeactivate, api): Promise<UpsertSimulatorsIds> => {
+    const state = api.getState() as ConfigType
+    const simulators = findNeedUpdateSimulators(state.folders, payload.folderId)
+    return await upsert(simulators)
+  }
+)
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const simulatorReducers = (builder: any) => {
   builder
@@ -100,14 +110,7 @@ export const simulatorReducers = (builder: any) => {
       state.folders = { ...state.folders, process: true }
     })
     .addCase(fetchSimulators.fulfilled, (state: ConfigType, action: { payload: ClientFolderData, meta: { arg: PayloadFetch } }) => {
-      const { folderId } = action.meta.arg
       state.folders.items = upsertObject([...state.folders.items], action.payload)
-
-      const { simulator } = findActiveSimulator(state.folders, folderId)
-      if (!simulator) {
-        state.folders = createActiveSimulator(state.folders, folderId)
-      }
-
       state.folders = { ...state.folders, process: false }
     })
     .addCase(fetchSimulators.rejected, (state: ConfigType) => {
@@ -194,7 +197,7 @@ export const simulatorReducers = (builder: any) => {
             ...simulator,
             termId: null,
             needUpdate: true,
-            status: SimulatorStatus.FINISHING,
+            status: simulator.continueIds.length === 0 ? SimulatorStatus.DONE : SimulatorStatus.FINISHING,
             historyIds: addHistoryId(simulator.historyIds, simulator.termId),
             rememberIds: addRememberIds(simulator.rememberIds, simulator.termId),
           }
@@ -276,6 +279,22 @@ export const simulatorReducers = (builder: any) => {
       })
     })
     .addCase(backSimulators.fulfilled, (state: ConfigType, action: { payload: UpsertSimulatorsIds, meta: { arg: PayloadBack } }) => {
+      for (const id in action.payload) {
+        state.folders = updateSimulatorById(state.folders, action.meta.arg.folderId, id, (simulator) => {
+          return { ...simulator, needUpdate: false }
+        })
+      }
+    })
+
+  builder
+    .addCase(deactivateSimulators.pending, (state: ConfigType, action: { meta: { arg: PayloadDeactivate } }) => {
+      const { folderId } = action.meta.arg
+
+      state.folders = updateActiveSimulator(state.folders, folderId, (simulator) => {
+        return { ...simulator, active: false, needUpdate: true }
+      })
+    })
+    .addCase(deactivateSimulators.fulfilled, (state: ConfigType, action: { payload: UpsertSimulatorsIds, meta: { arg: PayloadDeactivate } }) => {
       for (const id in action.payload) {
         state.folders = updateSimulatorById(state.folders, action.meta.arg.folderId, id, (simulator) => {
           return { ...simulator, needUpdate: false }
