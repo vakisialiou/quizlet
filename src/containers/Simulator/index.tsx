@@ -9,17 +9,17 @@ import {useSelector} from 'react-redux'
 import SingleQueue from './SingleQueue'
 
 export default function Simulator({ folderId }: { folderId: string }) {
-  useEffect(() => actionFetchSimulators({ folderId }), [])
+  useEffect(() => actionFetchSimulators({ folderId }), [folderId])
 
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
   const folder = useMemo(() => {
     return folders.items.find(({ id }) => id === folderId)
-  }, [folders.process, folders.items, folderId])
+  }, [folders.items, folderId])
 
   const simulators = folder?.simulators || []
   const simulator = useMemo(() => {
     return simulators.find(({ active }) => active)
-  }, [folders.process, simulators])
+  }, [simulators])
 
   const ready = folder && simulator
 

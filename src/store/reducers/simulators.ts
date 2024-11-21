@@ -130,7 +130,7 @@ export const simulatorReducers = (builder: any) => {
       })
     })
     .addCase(startSimulators.fulfilled, (state: ConfigType, action: { payload: UpsertSimulatorsIds, meta: { arg: PayloadStart } }) => {
-      for (let id in action.payload) {
+      for (const id in action.payload) {
         state.folders = updateSimulatorById(state.folders, action.meta.arg.folderId, id, (simulator) => {
           return { ...simulator, needUpdate: false }
         })
@@ -170,7 +170,7 @@ export const simulatorReducers = (builder: any) => {
       })
     })
     .addCase(continueSimulators.fulfilled, (state: ConfigType, action: { payload: UpsertSimulatorsIds, meta: { arg: PayloadContinue } }) => {
-      for (let id in action.payload) {
+      for (const id in action.payload) {
         state.folders = updateSimulatorById(state.folders, action.meta.arg.folderId, id, (simulator) => {
           return { ...simulator, needUpdate: false }
         })
@@ -210,7 +210,7 @@ export const simulatorReducers = (builder: any) => {
       })
     })
     .addCase(rememberSimulators.fulfilled, (state: ConfigType, action: { payload: UpsertSimulatorsIds, meta: { arg: PayloadRemember } }) => {
-      for (let id in action.payload) {
+      for (const id in action.payload) {
         state.folders = updateSimulatorById(state.folders, action.meta.arg.folderId, id, (simulator) => {
           return { ...simulator, needUpdate: false }
         })
@@ -246,7 +246,7 @@ export const simulatorReducers = (builder: any) => {
       })
     })
     .addCase(restartSimulators.fulfilled, (state: ConfigType, action: { payload: UpsertSimulatorsIds, meta: { arg: PayloadRestart } }) => {
-      for (let id in action.payload) {
+      for (const id in action.payload) {
         state.folders = updateSimulatorById(state.folders, action.meta.arg.folderId, id, (simulator) => {
           return { ...simulator, needUpdate: false }
         })
@@ -276,7 +276,7 @@ export const simulatorReducers = (builder: any) => {
       })
     })
     .addCase(backSimulators.fulfilled, (state: ConfigType, action: { payload: UpsertSimulatorsIds, meta: { arg: PayloadBack } }) => {
-      for (let id in action.payload) {
+      for (const id in action.payload) {
         state.folders = updateSimulatorById(state.folders, action.meta.arg.folderId, id, (simulator) => {
           return { ...simulator, needUpdate: false }
         })
