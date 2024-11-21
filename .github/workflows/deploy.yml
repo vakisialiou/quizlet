@@ -32,21 +32,21 @@ jobs:
           ssh root@104.131.51.32 << 'EOF'
           cd /srv/quizlet
 
+          TAG=$(date +%Y%m%d%H%M)
           # Пересборка Docker-образа
-          docker build --no-cache -t next:latest .
+          docker build -t next:$TAG .
 
           # Перезапуск сервиса
-          docker service update --force app_next
+          docker service update --image next:$TAG app_next
+
           EOF
 
-      - name: Check if Docker container is running
+      - name: Finishing deploy application
         run: |
           ssh root@104.131.51.32 << 'EOF'
+          docker image prune -f
+
           docker ps -a
-          EOF
 
-      - name: Check Docker service status
-        run: |
-          ssh root@104.131.51.32 << 'EOF'
           docker service ps app_next
           EOF
