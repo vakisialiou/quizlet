@@ -30,26 +30,13 @@ jobs:
           git pull origin master
           EOF
 
-      - name: Set up tag
-        id: tag
-        run: echo "TAG=$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
-
       - name: Build Docker image
         run: |
           ssh root@104.131.51.32 << 'EOF'
           cd /srv/quizlet
           docker build -t next:$TAG . || { echo 'Docker build failed'; exit 1; }
-          EOF
-        env:
-          TAG: ${{ env.TAG }}
-
-      - name: Deploy application
-        run: |
-          ssh root@104.131.51.32 << 'EOF'
           docker service update --image next:$TAG app_next || { echo 'Service update failed'; exit 1; }
           EOF
-        env:
-          TAG: ${{ env.TAG }}
 
       - name: Finishing deploy application
         run: |
