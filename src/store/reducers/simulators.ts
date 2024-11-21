@@ -24,7 +24,7 @@ export const fetchSimulators = createAsyncThunk(
   '/fetch/simulators',
   async (payload: PayloadFetch, api): Promise<ClientFolderData> => {
     const state = api.getState() as ConfigType
-    let folder = state.folders.items.find((item) => item.id === payload.folderId)
+    const folder = state.folders.items.find((item) => item.id === payload.folderId)
     if (folder) {
       return JSON.parse(JSON.stringify(folder))
     }
@@ -129,7 +129,7 @@ export const simulatorReducers = (builder: any) => {
           return { ...simulator, active: false, needUpdate: true }
         }
 
-        let historyIds = simulator.historyIds.filter((id) => actualTermIds.includes(id))
+        const historyIds = simulator.historyIds.filter((id) => actualTermIds.includes(id))
         let continueIds = simulator.continueIds.filter((id) => actualTermIds.includes(id))
         let rememberIds = simulator.rememberIds.filter((id) => actualTermIds.includes(id))
 
