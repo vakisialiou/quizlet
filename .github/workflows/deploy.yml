@@ -32,19 +32,20 @@ jobs:
           ssh root@104.131.51.32 << 'EOF'
           cd /srv/quizlet
 
-          TAG=$(date +%Y%m%d%H%M)
           # Пересборка Docker-образа
-          docker build -t next:$TAG .
+          docker build -t next:latest .
 
           # Перезапуск сервиса
-          docker service update --image next:$TAG app_next
+          docker service update --image next:latest app_next
 
           EOF
 
       - name: Finishing deploy application
         run: |
           ssh root@104.131.51.32 << 'EOF'
-          docker image prune -f
+
+          docker system prune -f
+          echo "Docker system prune completed."
 
           docker ps -a
 

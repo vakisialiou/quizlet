@@ -14,7 +14,7 @@ export default async function Page() {
             href="/private"
             className="text-gray-400 underline hover:text-gray-500"
           >
-            My folders
+            My folders!
           </Link>
         </div>
       }

@@ -83,6 +83,12 @@ docker run --net=host -d --name=next --restart unless-stopped --memory=1024m nex
 docker system prune -a --volumes
 # Clear all unused images
 docker image prune -f
+# Clear all unused resources
+docker system prune
+# List unused containers
+docker ps -a -f "status=exited"
+# List unlinked containers
+docker images -f "dangling=true"
 
 # build
 docker-compose build
