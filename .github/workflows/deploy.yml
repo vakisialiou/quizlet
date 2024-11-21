@@ -34,7 +34,11 @@ jobs:
         run: |
           ssh root@104.131.51.32 << 'EOF'
           cd /srv/quizlet
+
+          TAG=$(date +%Y%m%d%H%M)
+
           docker build -t next:$TAG . || { echo 'Docker build failed'; exit 1; }
+
           docker service update --image next:$TAG app_next || { echo 'Service update failed'; exit 1; }
           EOF
 
