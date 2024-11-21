@@ -12,7 +12,9 @@ RUN yarn install
 
 COPY prisma/schema.prisma ./prisma/schema.prisma
 
+RUN npx next telemetry disable || true
 RUN npx prisma generate || true
+
 # Step 5: Copy the rest of the application code
 COPY ./ /app
 
