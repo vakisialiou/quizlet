@@ -6,12 +6,12 @@ import React, { useEffect, useMemo, useState, useCallback, } from 'react'
 import { ClientSimulatorData } from '@entities/ClientSimulator'
 import { RollbackData } from '@containers/Simulator/Card'
 import { FoldersType } from '@store/initial-state'
+import TextToSpeech, { voices } from '@lib/speech'
 import SingleQueueStart from './SingleQueueStart'
 import HeaderPage from '@containers/HeaderPage'
 import PanelControls from './PanelControls'
 import {useSelector} from 'react-redux'
 import SingleQueue from './SingleQueue'
-import TextToSpeech from '@lib/speech'
 import PanelInfo from './PanelInfo'
 
 export default function Simulator({ folderId }: { folderId: string }) {
@@ -107,8 +107,10 @@ export default function Simulator({ folderId }: { folderId: string }) {
                       ? (rollbackData.term.answerLang || DefaultAnswerLang)
                       : (rollbackData.term.questionLang || DefaultQuestionLang)
 
+                    const item = voices.find((item) => item.lang === lang)
+
                     if (text) {
-                      speech.stop().setVoice(lang).speak(text)
+                      speech.stop().setVoice(item?.name || lang).speak(text)
                     }
                   }
               }

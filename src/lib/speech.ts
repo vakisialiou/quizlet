@@ -2,8 +2,8 @@
 export const voices = [
   {"name":"Google Deutsch","lang":"de-DE"},
   {"name":"Google US English","lang":"en-US"},
-  {"name":"Google UK English Female","lang":"en-GB"},
   {"name":"Google UK English Male","lang":"en-GB"},
+  {"name":"Google UK English Female","lang":"en-GB"},
   {"name":"Google español","lang":"es-ES"},
   {"name":"Google español de Estados Unidos","lang":"es-US"},
   {"name":"Google français","lang":"fr-FR"},
