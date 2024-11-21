@@ -23,11 +23,11 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H 104.131.51.32 >> ~/.ssh/known_hosts
 
-      - name: Copy repository to server
+      - name: Pull repository to server
         run: |
           ssh root@104.131.51.32 << 'EOF'
           cd /srv/quizlet
-          git clone git@github.com:vakisialiou/quizlet.git
+          git pull origin master
           EOF
 
       - name: Build Docker image
