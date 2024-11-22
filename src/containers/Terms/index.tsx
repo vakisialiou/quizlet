@@ -2,13 +2,16 @@
 
 import ClientTerm, { ClientTermData } from '@entities/ClientTerm'
 import { FoldersType, TermsType } from '@store/initial-state'
+import Button, { ButtonSkin } from '@components/Button'
 import { useEffect, useMemo, useState } from 'react'
 import ButtonSquare from '@components/ButtonSquare'
 import HeaderPage from '@containers/HeaderPage'
 import { useRouter } from 'next/navigation'
+import SVGBack from '@public/svg/back.svg'
 import SVGPlus from '@public/svg/plus.svg'
 import SVGPlay from '@public/svg/play.svg'
 import { useSelector } from 'react-redux'
+import Dialog from '@components/Dialog'
 import Term from '@components/Term'
 import {
   actionDeleteTerm,
@@ -27,6 +30,8 @@ export default function Terms({ folderId }: { folderId: string }) {
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
   const terms = useSelector(({ terms }: { terms: TermsType }) => terms)
 
+  const [removeTerm, setRemoveTerm] = useState<ClientTermData | null>(null)
+
   const folder = useMemo(() => {
     return folders.items.find(({ id }) => id === folderId)
   }, [folders.items, folderId])
@@ -34,74 +39,105 @@ export default function Terms({ folderId }: { folderId: string }) {
   return (
     <div>
       <HeaderPage
-        breadcrumbs={[
-          {id: 1, name: 'Home', href: '/'},
-          {id: 2, name: 'Folders', href: '/private'},
-          {id: 3, name: folder?.name },
-        ]}
-      >
-        <ButtonSquare
-          icon={SVGPlus}
-          onClick={() => {
-            const term = new ClientTerm(folderId).serialize()
-            actionSaveTerm({term, editId: term.id})
-          }}
-        />
-        <ButtonSquare
-          icon={SVGPlay}
-          onClick={() => {
-            if (folder) {
-              router.push(`/private/simulator/${folder.id}`)
-            }
-          }}
-        />
-      </HeaderPage>
+        left={
+          <ButtonSquare
+            icon={SVGBack}
+            onClick={() => router.back()}
+          />
+        }
+        right={(
+          <>
+            <ButtonSquare
+              bordered
+              icon={SVGPlus}
+              onClick={() => {
+                const term = new ClientTerm(folderId).serialize()
+                actionSaveTerm({term, editId: term.id})
+              }}
+            />
+            <ButtonSquare
+              bordered
+              icon={SVGPlay}
+              onClick={() => {
+                if (folder) {
+                  router.push(`/private/simulator/${folder.id}`)
+                }
+              }}
+            />
+          </>
+        )}
+      />
 
-        {folder &&
-          <div
-            className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-2 md:p-4">
-            {folder.terms.map((term) => {
-              return (
-                <Term
-                  data={term}
-                  key={term.id}
-                  edit={term.id === terms.editId}
-                  process={terms.processIds.includes(term.id)}
-                  onSave={() => {
-                    actionSaveTerm({ term, editId: null }, () => {
-                      if (originItem) {
+      {folder &&
+        <div
+          className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-2 md:p-4"
+        >
+          {folder.terms.map((term) => {
+            return (
+              <Term
+                data={term}
+                key={term.id}
+                edit={term.id === terms.editId}
+                process={terms.processIds.includes(term.id)}
+                onSave={() => {
+                  actionSaveTerm({ term, editId: null }, () => {
+                    if (originItem) {
+                      setOriginItem(null)
+                    }
+                  })
+                }}
+                onExit={async () => {
+                  actionUpdateTerm({ editId: null }, () => {
+                    if (originItem) {
+                      actionUpdateTermItem(originItem, () => {
                         setOriginItem(null)
-                      }
-                    })
-                  }}
-                  onExit={async () => {
-                    actionUpdateTerm({ editId: null }, () => {
-                      if (originItem) {
-                        actionUpdateTermItem(originItem, () => {
-                          setOriginItem(null)
-                        })
-                      }
-                    })
-                  }}
-                  onEdit={() => {
-                    actionUpdateTerm({ editId: term.id }, () => {
-                      setOriginItem(term)
-                    })
-                  }}
-                  onChange={(prop, value) => {
-                    actionUpdateTermItem({ ...term, [prop]: value } as ClientTerm)
-                  }}
-                  onRemove={() => {
-                    actionDeleteTerm(term, () => {
-                      if (originItem && originItem.id === folder.id) {
-                        setOriginItem(null)
-                      }
-                    })
-                  }}
-                />
+                      })
+                    }
+                  })
+                }}
+                onEdit={() => {
+                  actionUpdateTerm({ editId: term.id }, () => {
+                    setOriginItem(term)
+                  })
+                }}
+                onChange={(prop, value) => {
+                  actionUpdateTermItem({ ...term, [prop]: value } as ClientTerm)
+                }}
+                onRemove={() => setRemoveTerm(term)}
+              />
             )
           })}
         </div>
+      }
+
+      {removeTerm &&
+        <Dialog
+          title={removeTerm.question || removeTerm.answer || 'Term empty'}
+          text="Are you sure you want to remove this term?"
+        >
+          <Button
+            className="w-28"
+            skin={ButtonSkin.GRAY_500}
+            onClick={() => {
+              actionDeleteTerm(removeTerm, () => {
+                setRemoveTerm(null)
+                if (originItem && originItem.id === removeTerm.id) {
+                  setOriginItem(null)
+                }
+              })
+            }}
+          >
+            Remove
+          </Button>
+
+          <Button
+            className="w-28"
+            skin={ButtonSkin.WHITE_100}
+            onClick={() => setRemoveTerm(null)}
+          >
+            Cancel
+          </Button>
+        </Dialog>
       }
     </div>
   )

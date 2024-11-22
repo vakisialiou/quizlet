@@ -1,29 +1,63 @@
-import { ClientSimulatorData } from '@entities/ClientSimulator'
+import { ClientSimulatorData, SimulatorStatus } from '@entities/ClientSimulator'
 import RoundInfo from '@components/RoundInfo'
+import { useRef, useEffect } from 'react'
 import { getDuration } from '@lib/date'
 import clsx from 'clsx'
-import React from "react";
 
 export default function PanelInfo(
   { process = false, simulator, className = '' }:
   { process?: boolean, simulator?: ClientSimulatorData | null, className?: string }
 ) {
+
+  const refTimer = useRef<HTMLDivElement|null>(null)
+  const refTimerIntervalId = useRef<NodeJS.Timeout|number|undefined>(undefined)
+  const refTimerDuration = useRef<number>(0)
+
+  useEffect(() => {
+    clearInterval(refTimerIntervalId.current)
+    refTimerIntervalId.current = setInterval(() => {
+      if (!simulator?.status) {
+        refTimerDuration.current = 0
+      }
+
+      if (simulator?.status === SimulatorStatus.WAITING) {
+        return
+      }
+
+      if (simulator?.status === SimulatorStatus.FINISHING) {
+        return
+      }
+
+      if (!refTimer.current) {
+        return
+      }
+
+      refTimerDuration.current += 1000
+      refTimer.current.innerText = getDuration(refTimerDuration.current)
+
+    }, 1000)
+
+    return () => {
+      clearInterval(refTimerIntervalId.current)
+    }
+  }, [simulator?.status])
+
   return (
     <div
-      className={clsx('flex items-center justify-between select-none gap-2 h-16', {
+      className={clsx('flex items-center justify-start select-none gap-2 h-16', {
         [className]: className
       })}
     >
       {(!process && simulator) &&
         <>
           <RoundInfo
-            title="Terms"
+            title="Total"
             value={simulator.termIds.length}
           />
 
           <RoundInfo
-            title="Queue"
-            value={Math.max(simulator.termIds.length - simulator.continueIds.length - simulator.rememberIds.length - 1, 0)}
+            title="Wait"
+            value={Math.max(simulator.termIds.length - simulator.continueIds.length - simulator.rememberIds.length, 0)}
           />
 
           <RoundInfo
@@ -33,7 +67,7 @@ export default function PanelInfo(
 
           <RoundInfo
             title="Time"
-            value={getDuration(simulator.duration)}
+            value={<span ref={refTimer}>00:00:00</span>}
           />
         </>
       }

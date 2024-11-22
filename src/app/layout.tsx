@@ -43,7 +43,10 @@ export default async function RootLayout({
       >
         <AppProvider initialState={initialState}>
           <Header
-            menuItems={[]}
+            menuItems={[
+              {id: 1, name: 'Home', href: '/'},
+              {id: 2, name: 'Folders', href: `/private`},
+            ]}
             session={session}
           />
           {children}

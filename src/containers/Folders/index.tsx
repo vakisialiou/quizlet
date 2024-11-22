@@ -1,14 +1,18 @@
 'use client'
 
 import ClientFolder, { ClientFolderData } from '@entities/ClientFolder'
+import Button, { ButtonSkin } from '@components/Button'
 import ButtonSquare from '@components/ButtonSquare'
 import { FoldersType } from '@store/initial-state'
 import HeaderPage from '@containers/HeaderPage'
 import MetaLabel from '@components/MetaLabel'
+import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import SVGPlus from '@public/svg/plus.svg'
+import SVGBack from '@public/svg/back.svg'
 import { upsertObject } from '@lib/array'
 import { useSelector} from 'react-redux'
+import Dialog from '@components/Dialog'
 import Folder from '@components/Folder'
 import {
   actionSaveFolder,
@@ -19,27 +23,35 @@ import {
 } from '@store/index'
 
 export default function Folders() {
+  const router = useRouter()
+
   useEffect(actionFetchFolders, [])
 
   const [ originItem, setOriginItem ] = useState<ClientFolderData | null>(null)
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
 
+  const [removeFolder, setRemoveFolder] = useState<ClientFolderData | null>(null)
+
   return (
     <div>
       <HeaderPage
-        breadcrumbs={[
-          { id: 1, name: 'Home', href: '/' },
-          { id: 2, name: 'Folders' },
-        ]}
-      >
-        <ButtonSquare
-          icon={SVGPlus}
-          onClick={() => {
-            const folder = new ClientFolder().serialize()
-            actionSaveFolder({ folder, editId: folder.id })
-          }}
-        />
-      </HeaderPage>
+        left={
+          <ButtonSquare
+            icon={SVGBack}
+            onClick={() => router.back()}
+          />
+        }
+        right={
+          <ButtonSquare
+            bordered
+            icon={SVGPlus}
+            onClick={() => {
+              const folder = new ClientFolder().serialize()
+              actionSaveFolder({ folder, editId: folder.id })
+            }}
+          />
+        }
+      />
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-2 md:p-4">
         {folders.items.map((folder) => {
@@ -61,11 +73,7 @@ export default function Folders() {
                     actionUpdateFolder({ editId: folder.id }, () => setOriginItem(folder))
                     break
                   case 2:
-                    actionDeleteFolder(folder, () => {
-                      if (originItem && originItem.id === folder.id) {
-                        setOriginItem(null)
-                      }
-                    })
+                    setRemoveFolder(folder)
                     break
                 }
               }}
@@ -88,6 +96,36 @@ export default function Folders() {
           )
         })}
       </div>
+
+      {removeFolder &&
+        <Dialog
+          title={removeFolder.name || 'Folder No Name'}
+          text="Are you sure you want to remove this folder?"
+        >
+          <Button
+            className="w-28"
+            skin={ButtonSkin.GRAY_500}
+            onClick={() => {
+              actionDeleteFolder(removeFolder, () => {
+                setRemoveFolder(null)
+                if (originItem && originItem.id === removeFolder.id) {
+                  setOriginItem(null)
+                }
+              })
+            }}
+          >
+            Remove
+          </Button>
+
+          <Button
+            className="w-28"
+            skin={ButtonSkin.WHITE_100}
+            onClick={() => setRemoveFolder(null)}
+          >
+            Cancel
+          </Button>
+        </Dialog>
+      }
     </div>
   )
 }

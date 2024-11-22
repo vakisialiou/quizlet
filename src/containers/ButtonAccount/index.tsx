@@ -6,7 +6,7 @@ import Image from 'next/image'
 export default function ButtonAccount({ session }: { session: Session }) {
   return (
     <Dropdown
-      className="p-2 border border-gray-700"
+      className="p-2"
       classNameMenu="min-w-40"
       items={[
         { id: 1, name: 'Log Out' }

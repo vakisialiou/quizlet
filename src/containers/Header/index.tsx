@@ -1,15 +1,17 @@
 'use client'
 
+import Button, { ButtonSkin } from '@components/Button'
 import SVGGoogle from '@public/svg/painted/google.svg'
 import ButtonAccount from '@containers/ButtonAccount'
-import Button, { ButtonSkin } from '@components/Button'
+import { usePathname } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { Session } from 'next-auth'
 import Image from 'next/image'
 import Link from 'next/link'
+import clsx from 'clsx'
 
 type MenuItemType = {
-  id: string,
+  id: string | number,
   href: string,
   name: string,
 }
@@ -17,9 +19,11 @@ type MenuItemType = {
 type MenuItemsType = MenuItemType[]
 
 export default function Header({ menuItems = [], session = null }: { menuItems: MenuItemsType, session: Session | null }) {
+  const pathname = usePathname()
+
   return (
     <header>
-      <nav className="mx-auto flex items-center justify-between p-2 md:p-4">
+      <nav className="mx-auto flex items-center justify-between p-2 md:p-4 gap-4">
         <Link href="/" className="-m-1.5 p-2.5">
           <span className="sr-only">Quizlet</span>
           <Image
@@ -31,13 +35,15 @@ export default function Header({ menuItems = [], session = null }: { menuItems: 
           />
         </Link>
 
-        <div className="flex gap-x-12">
+        <div className="flex">
           {menuItems.map((item) => {
             return (
               <Link
                 key={item.id}
                 href={item.href}
-                className="text-sm font-semibold leading-6 text-gray-300"
+                className={clsx('text-sm font-semibold leading-6 text-gray-300 hover:text-gray-100 active:text-gray-100/70 px-3 py-2', {
+                  ['underline underline-offset-4 pointer-events-none']: item.href === pathname,
+                })}
               >
                 {item.name}
               </Link>

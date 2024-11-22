@@ -1,14 +1,28 @@
-import Breadcrumbs, { BreadcrumbItem } from '@components/Breadcrumbs'
 import { ReactNode } from 'react'
 
-export default function HeaderPage({ process = false, breadcrumbs, children }: { process?: boolean, breadcrumbs: BreadcrumbItem[], children?: ReactNode }) {
+export default function HeaderPage(
+  { left, right, title }:
+  { left?: ReactNode, right?: ReactNode, title?: string | null }
+) {
   return (
-    <div className="w-full flex gap-2 items-center justify-between h-8 px-2 md:px-4">
-      <Breadcrumbs process={process} items={breadcrumbs} />
+    <div className="w-full flex gap-4 items-center justify-between h-16 p-2 md:px-4">
 
-      {children &&
+      <div className="flex gap-2 items-center">
+        {left}
+      </div>
+
+      {title &&
+        <div className="overflow-hidden w-full max-w-full">
+          <div className="flex gap-2 items-center justify-center w-full">
+            <span className="truncate ...">{title}</span>
+          </div>
+        </div>
+      }
+
+
+      {right &&
         <div className="flex gap-2 items-center">
-          {children}
+          {right}
         </div>
       }
     </div>

@@ -1,20 +1,31 @@
 'use client'
 
-import { actionBackSimulators, actionDeactivateSimulators, actionFetchSimulators } from '@store/index'
-import { DefaultAnswerLang, DefaultQuestionLang } from '@entities/ClientTerm'
+import { DefaultAnswerLang, DefaultQuestionLang} from '@entities/ClientTerm'
 import React, { useEffect, useMemo, useState, useCallback, } from 'react'
 import { ClientSimulatorData } from '@entities/ClientSimulator'
 import { RollbackData } from '@containers/Simulator/Card'
+import Button, { ButtonSkin } from '@components/Button'
+import Dialog, { DialogType } from '@components/Dialog'
+import ButtonSquare from '@components/ButtonSquare'
 import { FoldersType } from '@store/initial-state'
 import TextToSpeech, { voices } from '@lib/speech'
 import SingleQueueStart from './SingleQueueStart'
 import HeaderPage from '@containers/HeaderPage'
 import PanelControls from './PanelControls'
-import {useSelector} from 'react-redux'
+import { useRouter } from 'next/navigation'
+import SVGBack from '@public/svg/back.svg'
+import { useSelector } from 'react-redux'
 import SingleQueue from './SingleQueue'
 import PanelInfo from './PanelInfo'
+import {
+  actionDeactivateSimulators,
+  actionFetchSimulators,
+  actionBackSimulators
+} from '@store/index'
 
 export default function Simulator({ folderId }: { folderId: string }) {
+  const router = useRouter()
+
   useEffect(() => actionFetchSimulators({ folderId }), [folderId])
 
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
@@ -44,17 +55,20 @@ export default function Simulator({ folderId }: { folderId: string }) {
     speech.loadVoices()
   }
 
+  const [stopFolderId, setStopFolderId] = useState<string | null>(null)
+
   return (
     <div
-      className="w-full flex flex-col px-2 md:px-4 gap-8 items-center"
+      className="w-full flex flex-col px-2 md:px-4 gap-4 items-center"
     >
       <HeaderPage
-        process={folders.process}
-        breadcrumbs={[
-          {id: 1, name: 'Home', href: '/'},
-          {id: 2, name: 'Folders', href: '/private'},
-          {id: 3, name: folder?.name},
-        ]}
+        title={folder?.name}
+        left={
+          <ButtonSquare
+            icon={SVGBack}
+            onClick={() => router.back()}
+          />
+        }
       />
 
       <div className="grid grid-cols-7 gap-1">
@@ -95,7 +109,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
 
               switch (controlName) {
                 case 'deactivate':
-                  actionDeactivateSimulators({ folderId: folder.id })
+                  setStopFolderId(folder.id)
                   break
                 case 'back':
                   actionBackSimulators({ folderId: folder.id })
@@ -118,6 +132,34 @@ export default function Simulator({ folderId }: { folderId: string }) {
           />
         </div>
       </div>
+
+      {stopFolderId &&
+        <Dialog
+          title="Stopping"
+          text="Are you sure you want to stop?"
+          type={DialogType.warning}
+        >
+          <Button
+            className="w-28"
+            skin={ButtonSkin.GRAY_500}
+            onClick={() => {
+              actionDeactivateSimulators({ folderId: stopFolderId }, () => {
+                setStopFolderId(null)
+              })
+            }}
+          >
+            Approve
+          </Button>
+
+          <Button
+            className="w-28"
+            skin={ButtonSkin.WHITE_100}
+            onClick={() => setStopFolderId(null)}
+          >
+            Cancel
+          </Button>
+        </Dialog>
+      }
     </div>
   )
 }
