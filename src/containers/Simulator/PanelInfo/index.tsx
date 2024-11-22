@@ -44,7 +44,7 @@ export default function PanelInfo(
 
   return (
     <div
-      className={clsx('flex items-center justify-start select-none gap-2 h-16', {
+      className={clsx('flex items-center justify-between select-none gap-2 h-16', {
         [className]: className
       })}
     >
