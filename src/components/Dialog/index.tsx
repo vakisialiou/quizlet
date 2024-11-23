@@ -76,7 +76,7 @@ export default function Dialog(
             </div>
 
             {children &&
-              <div className="bg-gray-50 px-4 py-3 flex justify-end sm:px-6 gap-2">
+              <div className="bg-gray-50 px-4 py-3 flex justify-center md:justify-end sm:px-6 gap-2">
                 {children}
               </div>
             }

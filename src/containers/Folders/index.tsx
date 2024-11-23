@@ -4,12 +4,10 @@ import ClientFolder, { ClientFolderData } from '@entities/ClientFolder'
 import Button, { ButtonSkin } from '@components/Button'
 import ButtonSquare from '@components/ButtonSquare'
 import { FoldersType } from '@store/initial-state'
-import HeaderPage from '@containers/HeaderPage'
+import ContentPage from '@containers/ContentPage'
 import MetaLabel from '@components/MetaLabel'
-import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import SVGPlus from '@public/svg/plus.svg'
-import SVGBack from '@public/svg/back.svg'
 import { upsertObject } from '@lib/array'
 import { useSelector} from 'react-redux'
 import Dialog from '@components/Dialog'
@@ -23,7 +21,6 @@ import {
 } from '@store/index'
 
 export default function Folders() {
-  const router = useRouter()
 
   useEffect(actionFetchFolders, [])
 
@@ -33,27 +30,22 @@ export default function Folders() {
   const [removeFolder, setRemoveFolder] = useState<ClientFolderData | null>(null)
 
   return (
-    <div>
-      <HeaderPage
-        left={
-          <ButtonSquare
-            icon={SVGBack}
-            onClick={() => router.back()}
-          />
-        }
-        right={
-          <ButtonSquare
-            bordered
-            icon={SVGPlus}
-            onClick={() => {
-              const folder = new ClientFolder().serialize()
-              actionSaveFolder({ folder, editId: folder.id })
-            }}
-          />
-        }
-      />
-
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-2 md:p-4">
+    <ContentPage
+      backURL="/"
+      title="Folder list"
+      rightControls={(
+        <ButtonSquare
+          bordered
+          icon={SVGPlus}
+          onClick={() => {
+            const folder = new ClientFolder().serialize()
+            actionSaveFolder({folder, editId: folder.id})
+          }}
+        />
+      )}
+    >
+      <div
+        className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-2 md:p-4">
         {folders.items.map((folder) => {
           return (
             <Folder
@@ -70,7 +62,7 @@ export default function Folders() {
               onDropdownSelect={(id) => {
                 switch (id) {
                   case 1:
-                    actionUpdateFolder({ editId: folder.id }, () => setOriginItem(folder))
+                    actionUpdateFolder({editId: folder.id}, () => setOriginItem(folder))
                     break
                   case 2:
                     setRemoveFolder(folder)
@@ -78,7 +70,7 @@ export default function Folders() {
                 }
               }}
               onSave={() => {
-                actionSaveFolder({ folder, editId: null }, () => {
+                actionSaveFolder({folder, editId: null}, () => {
                   setOriginItem(null)
                 })
               }}
@@ -89,7 +81,7 @@ export default function Folders() {
                 }, () => setOriginItem(null))
               }}
               onChange={(prop, value) => {
-                actionUpdateFolderItem({ ...folder, [prop]: value })
+                actionUpdateFolderItem({...folder, [prop]: value})
               }}
               label={<MetaLabel>{`Terms ${folder.terms.length || 0}`}</MetaLabel>}
             />
@@ -126,6 +118,6 @@ export default function Folders() {
           </Button>
         </Dialog>
       }
-    </div>
+    </ContentPage>
   )
 }

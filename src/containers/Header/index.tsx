@@ -8,24 +8,24 @@ import { signIn } from 'next-auth/react'
 import { Session } from 'next-auth'
 import Image from 'next/image'
 import Link from 'next/link'
+import { memo } from 'react'
 import clsx from 'clsx'
 
-type MenuItemType = {
-  id: string | number,
-  href: string,
-  name: string,
-  private?: boolean
-}
-
-type MenuItemsType = MenuItemType[]
-
-export default function Header({ menuItems = [], session = null }: { menuItems: MenuItemsType, session: Session | null }) {
+function Header(
+  { session = null, className = '' }:
+  { session: Session | null, className?: string }
+) {
   const pathname = usePathname()
   const router = useRouter()
 
+  const menuItems = [
+    {id: 1, name: 'Home', href: '/'},
+    {id: 2, name: 'Folders', href: `/private`, private: true},
+  ]
+
   return (
-    <header>
-      <nav className="mx-auto flex items-center justify-between p-2 md:p-4 gap-4">
+    <header className={className}>
+      <nav className="mx-auto flex items-center justify-between h-14 px-2 md:h-16 md:p-4 gap-4 bg-gray-900/50">
         <Link href="/" className="-m-1.5 p-2.5">
           <span className="sr-only">Quizlet</span>
           <Image
@@ -48,8 +48,8 @@ export default function Header({ menuItems = [], session = null }: { menuItems: 
                 <div
                   key={item.id}
                   onClick={() => router.push(item.href)}
-                  className={clsx('text-sm font-semibold leading-6 text-gray-300 hover:text-gray-100 active:text-gray-100/70 px-3 py-2', {
-                    ['underline underline-offset-4 pointer-events-none']: item.href === pathname,
+                  className={clsx('cursor-pointer text-sm font-semibold leading-6 text-gray-300 hover:text-gray-400 active:text-gray-400/70 px-3 py-2', {
+                    ['underline underline-offset-4 pointer-events-none text-gray-400']: item.href === pathname,
                   })}
                 >
                   {item.name}
@@ -61,8 +61,8 @@ export default function Header({ menuItems = [], session = null }: { menuItems: 
               <Link
                 key={item.id}
                 href={item.href}
-                className={clsx('text-sm font-semibold leading-6 text-gray-300 hover:text-gray-100 active:text-gray-100/70 px-3 py-2', {
-                  ['underline underline-offset-4 pointer-events-none']: item.href === pathname,
+                className={clsx('cursor-pointer text-sm font-semibold leading-6 text-gray-300 hover:text-gray-400 active:text-gray-400/70 px-3 py-2', {
+                  ['underline underline-offset-4 pointer-events-none text-gray-400']: item.href === pathname,
                 })}
               >
                 {item.name}
@@ -96,3 +96,5 @@ export default function Header({ menuItems = [], session = null }: { menuItems: 
     </header>
   )
 }
+
+export default memo(Header)

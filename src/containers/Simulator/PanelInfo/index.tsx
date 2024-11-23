@@ -40,7 +40,7 @@ export default function PanelInfo(
 
   return (
     <div
-      className={clsx('flex items-center justify-between select-none gap-2 h-16', {
+      className={clsx('flex items-center justify-between select-none gap-2', {
         [className]: className
       })}
     >
@@ -71,7 +71,7 @@ export default function PanelInfo(
       {(process || !simulator) &&
         <>
           <div
-            className="bg-gray-900 border border-gray-600 w-16 h-16 rounded-full flex items-center justify-center">
+            className="bg-gray-900 border border-gray-600 w-20 h-20 rounded-full flex items-center justify-center">
             <div className="animate-pulse flex flex-col items-center justify-center gap-2">
               <div className="h-1.5 w-10 bg-slate-700"/>
               <div className="h-1.5 w-8 bg-slate-700"/>
@@ -79,7 +79,7 @@ export default function PanelInfo(
           </div>
 
           <div
-            className="bg-gray-900 border border-gray-600 w-16 h-16 rounded-full flex items-center justify-center">
+            className="bg-gray-900 border border-gray-600 w-20 h-20 rounded-full flex items-center justify-center">
             <div className="animate-pulse flex flex-col items-center justify-center gap-2">
               <div className="h-1.5 w-10 bg-slate-700"/>
               <div className="h-1.5 w-8 bg-slate-700"/>
@@ -87,7 +87,7 @@ export default function PanelInfo(
           </div>
 
           <div
-            className="bg-gray-900 border border-gray-600 w-16 h-16 rounded-full flex items-center justify-center">
+            className="bg-gray-900 border border-gray-600 w-20 h-20 rounded-full flex items-center justify-center">
             <div className="animate-pulse flex flex-col items-center justify-center gap-2">
               <div className="h-1.5 w-10 bg-slate-700"/>
               <div className="h-1.5 w-8 bg-slate-700"/>
@@ -95,7 +95,7 @@ export default function PanelInfo(
           </div>
 
           <div
-            className="bg-gray-900 border border-gray-600 w-16 h-16 rounded-full flex items-center justify-center">
+            className="bg-gray-900 border border-gray-600 w-20 h-20 rounded-full flex items-center justify-center">
             <div className="animate-pulse flex flex-col items-center justify-center gap-2">
               <div className="h-1.5 w-10 bg-slate-700"/>
               <div className="h-1.5 w-8 bg-slate-700"/>

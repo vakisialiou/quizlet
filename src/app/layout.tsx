@@ -41,14 +41,10 @@ export default async function RootLayout({
     <html lang="en">
       <body
         suppressHydrationWarning={true}
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-w-80`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-w-80 h-screen overflow-hidden`}
       >
         <AppProvider initialState={initialState}>
           <Header
-            menuItems={[
-              {id: 1, name: 'Home', href: '/'},
-              {id: 2, name: 'Folders', href: `/private`, private: true},
-            ]}
             session={session}
           />
           {children}

@@ -5,9 +5,8 @@ import { FoldersType, TermsType } from '@store/initial-state'
 import Button, { ButtonSkin } from '@components/Button'
 import { useEffect, useMemo, useState } from 'react'
 import ButtonSquare from '@components/ButtonSquare'
-import HeaderPage from '@containers/HeaderPage'
+import ContentPage from '@containers/ContentPage'
 import { useRouter } from 'next/navigation'
-import SVGBack from '@public/svg/back.svg'
 import SVGPlus from '@public/svg/plus.svg'
 import SVGPlay from '@public/svg/play.svg'
 import { useSelector } from 'react-redux'
@@ -37,37 +36,31 @@ export default function Terms({ folderId }: { folderId: string }) {
   }, [folders.items, folderId])
 
   return (
-    <div>
-      <HeaderPage
-        left={
+    <ContentPage
+      backURL="/private"
+      title={folder?.name}
+      rightControls={(
+        <>
           <ButtonSquare
-            icon={SVGBack}
-            onClick={() => router.back()}
+            bordered
+            icon={SVGPlus}
+            onClick={() => {
+              const term = new ClientTerm(folderId).serialize()
+              actionSaveTerm({term, editId: term.id})
+            }}
           />
-        }
-        right={(
-          <>
-            <ButtonSquare
-              bordered
-              icon={SVGPlus}
-              onClick={() => {
-                const term = new ClientTerm(folderId).serialize()
-                actionSaveTerm({term, editId: term.id})
-              }}
-            />
-            <ButtonSquare
-              bordered
-              icon={SVGPlay}
-              onClick={() => {
-                if (folder) {
-                  router.push(`/private/simulator/${folder.id}`)
-                }
-              }}
-            />
-          </>
-        )}
-      />
-
+          <ButtonSquare
+            bordered
+            icon={SVGPlay}
+            onClick={() => {
+              if (folder) {
+                router.push(`/private/simulator/${folder.id}`)
+              }
+            }}
+          />
+        </>
+      )}
+    >
       {folder &&
         <div
           className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-2 md:p-4"
@@ -139,6 +132,6 @@ export default function Terms({ folderId }: { folderId: string }) {
           </Button>
         </Dialog>
       }
-    </div>
+    </ContentPage>
   )
 }
