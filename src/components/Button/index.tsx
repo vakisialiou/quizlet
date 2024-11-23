@@ -14,8 +14,24 @@ export enum ButtonSize {
 }
 
 export default function Button(
-  { children, onClick, className, disabled = false, size = ButtonSize.H11, skin = ButtonSkin.GRAY_500 }:
-  { children: React.ReactNode, onClick: (e: BaseSyntheticEvent) => void, className?: string, disabled?: boolean, size?: ButtonSize, skin?: ButtonSkin },
+  {
+    children,
+    onClick,
+    className,
+    active = false,
+    disabled = false,
+    size = ButtonSize.H11,
+    skin = ButtonSkin.GRAY_500
+  }:
+  {
+    children: React.ReactNode,
+    onClick: (e: BaseSyntheticEvent) => void,
+    className?: string,
+    active?: boolean,
+    disabled?: boolean,
+    size?: ButtonSize,
+    skin?: ButtonSkin
+  },
 ) {
 
   return (
@@ -27,14 +43,17 @@ export default function Button(
         'cursor-not-allowed': disabled,
         'cursor-pointer': !disabled,
 
+        'border-green-900 text-gray-100 bg-green-700 hover:bg-green-800 active:bg-green-900': skin === ButtonSkin.GREEN_500 && !disabled && !active,
+        'border-green-600 text-gray-100 bg-green-700 hover:bg-green-800 active:bg-green-900': skin === ButtonSkin.GREEN_500 && !disabled && active,
         'border-gray-700 text-gray-500 bg-green-950': skin === ButtonSkin.GREEN_500 && disabled,
-        'border-green-900 text-gray-100 bg-green-700 hover:bg-green-800 active:bg-green-900': skin === ButtonSkin.GREEN_500 && !disabled,
 
+        'border-gray-500 text-gray-300 bg-gray-800 hover:bg-gray-700 active:bg-gray-600': skin === ButtonSkin.GRAY_500 && !disabled && !active,
+        'border-gray-300 text-gray-300 bg-gray-800 hover:bg-gray-700 active:bg-gray-600': skin === ButtonSkin.GRAY_500 && !disabled && active,
         'border-gray-700 text-gray-500 bg-gray-950': skin === ButtonSkin.GRAY_500 && disabled,
-        'border-gray-500 text-gray-300 bg-gray-800 hover:bg-gray-700 active:bg-gray-600': skin === ButtonSkin.GRAY_500 && !disabled,
 
+        'border-gray-200 text-gray-800 bg-white hover:bg-gray-200 active:bg-gray-300': skin === ButtonSkin.WHITE_100 && !disabled && !active,
+        'border-gray-400 text-gray-800 bg-white hover:bg-gray-200 active:bg-gray-300': skin === ButtonSkin.WHITE_100 && !disabled && active,
         'border-gray-300 text-gray-600 bg-gray-300': skin === ButtonSkin.WHITE_100 && disabled,
-        'border-gray-200 text-gray-800 bg-white hover:bg-gray-200 active:bg-gray-300': skin === ButtonSkin.WHITE_100 && !disabled,
 
         'h-12 min-w-12 text-lg': size === ButtonSize.H12,
         'h-11 min-w-11 text-lg': size === ButtonSize.H11,

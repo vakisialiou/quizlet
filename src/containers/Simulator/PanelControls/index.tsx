@@ -2,18 +2,21 @@ import { ClientSimulatorData, SimulatorStatus } from '@entities/ClientSimulator'
 import SVGPanelClose from '@public/svg/panel_close.svg'
 import SVGLoopBack from '@public/svg/loop_back.svg'
 import SVGMuteOn from '@public/svg/mute_ipo_on.svg'
+import SVGHelp from '@public/svg/help.svg'
 import Button from '@components/Button'
 import React from 'react'
 import clsx from 'clsx'
 
 export type PanelControlOption = {
-  disabled: boolean
+  disabled?: boolean,
+  active?: boolean
 }
 
 export type PanelControlOptions = {
   deactivate?: PanelControlOption,
   sound?: PanelControlOption
   back?: PanelControlOption,
+  help?: PanelControlOption,
 }
 
 export default function PanelControls(
@@ -34,13 +37,20 @@ export default function PanelControls(
 ) {
   const controls = {
     deactivate: {
-     disabled: !simulator || options.deactivate?.disabled || simulator.status === SimulatorStatus.WAITING
+     disabled: !simulator || options.deactivate?.disabled || simulator.status === SimulatorStatus.WAITING,
+     active: !!options.deactivate?.active
     },
     back: {
-      disabled: !simulator || options.back?.disabled || (simulator.status !== SimulatorStatus.PROCESSING || simulator.historyIds.length === 0)
+      disabled: !simulator || options.back?.disabled || (simulator.status !== SimulatorStatus.PROCESSING || simulator.historyIds.length === 0),
+      active: !!options.back?.active
     },
     sound: {
-      disabled: !simulator || options.sound?.disabled || simulator.status !== SimulatorStatus.PROCESSING
+      disabled: !simulator || options.sound?.disabled || simulator.status !== SimulatorStatus.PROCESSING,
+      active: !!options.sound?.active
+    },
+    help: {
+      disabled: !simulator || options.help?.disabled || simulator.status !== SimulatorStatus.PROCESSING,
+      active: !!options.help?.active
     }
   }
 
@@ -48,11 +58,12 @@ export default function PanelControls(
 
   return (
     <div
-      className={clsx('flex flex-col items-center gap-1', {
+      className={clsx('flex flex-col items-center gap-2', {
         [className]: className
       })}
     >
       <Button
+        active={controls.deactivate.active}
         disabled={process || controls.deactivate.disabled}
         onClick={() => onClick('deactivate')}
       >
@@ -74,6 +85,7 @@ export default function PanelControls(
       </Button>
 
       <Button
+        active={controls.back.active}
         disabled={process || controls.back.disabled}
         onClick={() => onClick('back')}
       >
@@ -95,6 +107,29 @@ export default function PanelControls(
       </Button>
 
       <Button
+        active={controls.help.active}
+        disabled={process || controls.help.disabled}
+        onClick={() => onClick('help')}
+      >
+        {!showSkeleton &&
+          <SVGHelp
+            width={24}
+            height={24}
+            className={clsx('text-gray-400', {
+              ['text-gray-600']: controls.help.disabled
+            })}
+          />
+        }
+
+        {showSkeleton &&
+          <div className="animate-pulse flex">
+            <div className="h-6 w-6 bg-slate-700" />
+          </div>
+        }
+      </Button>
+
+      <Button
+        active={controls.sound.active}
         disabled={process || controls.sound.disabled}
         onClick={() => onClick('sound')}
       >

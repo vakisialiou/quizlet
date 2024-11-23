@@ -50,19 +50,11 @@ function Card(
           <p className="text-gray-500 group-hover:text-gray-400 transition-colors font-semibold text-lg text-center">
             {faceSide.text}
           </p>
-
-          {faceSide.association &&
-            <p className="text-gray-600 font-semibold text-sm text-center">{faceSide.association}</p>
-          }
         </div>
         <div className="card__back absolute w-full h-full flex flex-col gap-4 items-center justify-center p-6 border border-gray-800 bg-gray-900">
           <p className="text-gray-600 group-hover:text-gray-500 transition-colors font-semibold text-lg text-center">
             {backSide.text}
           </p>
-
-          {backSide.association &&
-            <p className="text-gray-600 font-semibold text-sm text-center">{backSide.association}</p>
-          }
         </div>
       </div>
     </div>

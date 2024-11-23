@@ -6,6 +6,7 @@ import { ClientSimulatorData } from '@entities/ClientSimulator'
 import { RollbackData } from '@containers/Simulator/Card'
 import Button, { ButtonSkin } from '@components/Button'
 import Dialog, { DialogType } from '@components/Dialog'
+import CardEmpty from '@containers/Simulator/CardEmpty'
 import ButtonSquare from '@components/ButtonSquare'
 import { FoldersType } from '@store/initial-state'
 import TextToSpeech, { voices } from '@lib/speech'
@@ -57,6 +58,12 @@ export default function Simulator({ folderId }: { folderId: string }) {
 
   const [stopFolderId, setStopFolderId] = useState<string | null>(null)
 
+  const [showHelp, setShowHelp] = useState(false)
+
+  const association = rollbackData?.backSide
+      ? rollbackData?.backSide?.association
+      : rollbackData?.faceSide?.association
+
   return (
     <div
       className="w-full flex flex-col px-2 md:px-4 gap-4 items-center"
@@ -85,13 +92,23 @@ export default function Simulator({ folderId }: { folderId: string }) {
             />
           }
 
-          {(folder && simulator) &&
-            <SingleQueue
-              folder={folder}
-              onRoll={updateVisibleSideCallback}
-              simulator={simulator as ClientSimulatorData}
-            />
-          }
+          <div className="relative">
+            {(folder && simulator) &&
+              <SingleQueue
+                folder={folder}
+                onRoll={updateVisibleSideCallback}
+                simulator={simulator as ClientSimulatorData}
+              />
+            }
+
+            {showHelp &&
+              <CardEmpty className="absolute left-0 top-0">
+                <div className="text-gray-600 font-semibold text-sm">
+                  {association}
+                </div>
+              </CardEmpty>
+            }
+          </div>
         </div>
         <div className="w-full pt-16 mt-4">
           <PanelControls
@@ -100,6 +117,10 @@ export default function Simulator({ folderId }: { folderId: string }) {
             options={{
               sound: {
                 disabled: !speech || !rollbackData
+              },
+              help: {
+                disabled: !association,
+                active: showHelp
               }
             }}
             onClick={(controlName) => {
@@ -113,6 +134,9 @@ export default function Simulator({ folderId }: { folderId: string }) {
                   break
                 case 'back':
                   actionBackSimulators({ folderId: folder.id })
+                  break
+                case 'help':
+                  setShowHelp((prevState) => !prevState)
                   break
                 case 'sound':
                   if (simulator && rollbackData && speech) {
@@ -131,6 +155,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
                       speech.stop().setLang(lang).setVoice(item?.name || lang).speak(text)
                     }
                   }
+                  break
               }
             }}
           />
