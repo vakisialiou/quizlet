@@ -102,7 +102,11 @@ export default function Simulator({ folderId }: { folderId: string }) {
             }
 
             {showHelp &&
-              <CardEmpty className="absolute left-0 top-0">
+              <CardEmpty
+                active
+                className="absolute left-0 top-0 h-full"
+                onClick={() => setShowHelp(false)}
+              >
                 <div className="text-gray-600 font-semibold text-sm">
                   {association}
                 </div>
@@ -116,7 +120,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
             process={folders.process}
             options={{
               sound: {
-                disabled: !speech || !rollbackData
+                disabled: !speech || !rollbackData || showHelp
               },
               help: {
                 disabled: !association,

@@ -70,7 +70,7 @@ function SingleQueue(
               className="w-36"
               skin={ButtonSkin.GREEN_500}
               onClick={() => {
-                actionRememberSimulators({folderId: folder.id})
+                actionRememberSimulators({ folderId: folder.id })
               }}
             >
               Remember
@@ -80,7 +80,7 @@ function SingleQueue(
               className="w-36"
               skin={ButtonSkin.WHITE_100}
               onClick={() => {
-                actionContinueSimulators({folderId: folder.id})
+                actionContinueSimulators({ folderId: folder.id })
               }}
             >
               Continue
