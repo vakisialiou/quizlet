@@ -104,7 +104,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
             {showHelp &&
               <CardEmpty
                 active
-                className="absolute left-0 top-0 h-full"
+                className="absolute left-0 top-0 h-full cursor-pointer"
                 onClick={() => setShowHelp(false)}
               >
                 <div className="text-gray-600 font-semibold text-sm">
