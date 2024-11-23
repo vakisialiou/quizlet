@@ -27,12 +27,12 @@ function SingleQueue(
   }, [folder, simulator.termId])
 
   const faceSide = {
-    association: activeTerm?.association,
     text: simulator.settings.inverted ? activeTerm?.answer : activeTerm?.question,
     lang: simulator.settings.inverted ? activeTerm?.answerLang : activeTerm?.questionLang
   }
 
   const backSide = {
+    association: activeTerm?.association,
     text: simulator.settings.inverted ? activeTerm?.question : activeTerm?.answer,
     lang: simulator.settings.inverted ? activeTerm?.questionLang : activeTerm?.answerLang
   }

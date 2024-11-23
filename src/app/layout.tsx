@@ -47,7 +47,7 @@ export default async function RootLayout({
           <Header
             menuItems={[
               {id: 1, name: 'Home', href: '/'},
-              {id: 2, name: 'Folders', href: `/private`},
+              {id: 2, name: 'Folders', href: `/private`, private: true},
             ]}
             session={session}
           />
