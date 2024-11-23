@@ -20,6 +20,7 @@ model User {
   sessions      Session[]
   folders       Folder[]
   terms         Term[]
+  settings      Settings[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -109,10 +110,11 @@ model Simulator {
   duration    Int?
   status      String     @db.VarChar(20)
   termId      String?    @db.VarChar(36)
-  termIds     Json
-  rememberIds Json
-  continueIds Json
-  historyIds  Json
+  termIds     Json       @default("[]")
+  rememberIds Json       @default("[]")
+  continueIds Json       @default("[]")
+  historyIds  Json       @default("[]")
+  settings    Json       @default("{}")
 
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
@@ -120,4 +122,16 @@ model Simulator {
   folder Folder @relation(fields: [folderId], references: [id], onDelete: Cascade)
 
   @@unique([id])
+}
+
+model Settings {
+  id          String     @id @default(uuid())
+  userId      String     @db.VarChar(36)
+  simulator   Json
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([id])
+  @@unique([userId])
 }

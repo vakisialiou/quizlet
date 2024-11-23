@@ -1,7 +1,7 @@
-import ClientTerm from '@entities/ClientTerm'
+import ClientTerm, { ClientTermData } from '@entities/ClientTerm'
 import { prisma, Term } from '@lib/prisma'
 
-export const findTermsByUserId = async (userId: string): Promise<Term[]> => {
+export const findTermsByUserId = async (userId: string): Promise<ClientTermData[]> => {
   const res = await prisma.term.findMany({
     where: { userId },
     select: {
@@ -29,7 +29,7 @@ export const findTermsByUserId = async (userId: string): Promise<Term[]> => {
   })
 }
 
-export const findTermsByFolderId = async (userId: string, folderId: string): Promise<ClientTerm[]> => {
+export const findTermsByFolderId = async (userId: string, folderId: string): Promise<ClientTermData[]> => {
   const res = await prisma.term.findMany({
     where: { userId, folderId },
     select: {
@@ -57,7 +57,7 @@ export const findTermsByFolderId = async (userId: string, folderId: string): Pro
   })
 }
 
-export const getTermById = async (userId: string, id: string): Promise<ClientTerm[]> => {
+export const getTermById = async (userId: string, id: string): Promise<ClientTermData[]> => {
   const res = await prisma.term.findMany({
     where: { userId, id },
     select: {

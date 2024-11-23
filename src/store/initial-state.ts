@@ -1,4 +1,4 @@
-
+import ClientSettings, { ClientSettingsData } from '@entities/ClientSettings'
 import { ClientFolderData } from '@entities/ClientFolder'
 import { Session } from 'next-auth'
 
@@ -18,9 +18,13 @@ export type ConfigType = {
   folders: FoldersType,
   terms: TermsType,
   session: Session | null,
+  settings: ClientSettingsData
 }
 
-export const getInitialState = async ({ session }: { session: Session | null }): Promise<ConfigType> => {
+export const getInitialState = async (
+  { session, settings }:
+  { session: Session | null, settings: ClientSettingsData | null }
+): Promise<ConfigType> => {
   return {
     folders: {
       items: [],
@@ -32,6 +36,7 @@ export const getInitialState = async ({ session }: { session: Session | null }):
       editId: null,
       processIds: []
     },
+    settings: new ClientSettings().setSimulator(settings?.simulator || null).serialize(),
     session
   }
 }

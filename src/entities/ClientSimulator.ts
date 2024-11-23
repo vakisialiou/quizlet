@@ -1,5 +1,7 @@
 import { v4 } from 'uuid'
 
+import ClientSettingsSimulator, { ClientSettingsSimulatorData } from '@entities/ClientSettingsSimulator'
+
 export enum SimulatorStatus {
   PROCESSING = 'processing',
   FINISHING = 'finishing',
@@ -19,6 +21,7 @@ export type ClientSimulatorData = {
   continueIds: string[]
   historyIds: string[]
   needUpdate: boolean
+  settings: ClientSettingsSimulatorData
 }
 
 export default class ClientSimulator {
@@ -33,6 +36,7 @@ export default class ClientSimulator {
   continueIds: string[]
   historyIds: string[]
   needUpdate: boolean
+  settings: ClientSettingsSimulatorData
 
   constructor(folderId: string, status: SimulatorStatus) {
     this.id = v4()
@@ -46,6 +50,7 @@ export default class ClientSimulator {
     this.rememberIds = []
     this.continueIds = []
     this.needUpdate = false
+    this.settings = new ClientSettingsSimulator()
   }
 
   setId(value: string): ClientSimulator {
@@ -147,6 +152,11 @@ export default class ClientSimulator {
     if (index !== -1) {
       this.continueIds.splice(index, 1)
     }
+    return this
+  }
+
+  setSettings(value: Partial<ClientSettingsSimulatorData>): ClientSimulator {
+    this.settings = { ...this.settings, ...value }
     return this
   }
 

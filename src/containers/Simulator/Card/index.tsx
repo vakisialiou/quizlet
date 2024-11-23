@@ -1,19 +1,26 @@
-import { ClientTermData } from '@entities/ClientTerm'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, memo } from 'react'
 import clsx from 'clsx'
 import './style.css'
 
+export type CardSideInfo = {
+  text?: string | null,
+  lang?: string | null,
+  association?: string | null,
+}
+
 export type RollbackData = {
-  term: ClientTermData,
   isBackSide: boolean
+  faceSide: CardSideInfo,
+  backSide: CardSideInfo,
 }
 export type onRollCallback = (data: RollbackData) => void
 
-export default function Card(
-  { term, back = false, onRoll }:
+function Card(
+  { faceSide, backSide, back = false, onRoll }:
   {
-    back?: boolean,
-    term: ClientTermData,
+    back?: boolean
+    faceSide: CardSideInfo,
+    backSide: CardSideInfo,
     onRoll?: onRollCallback
   }
 ) {
@@ -21,9 +28,9 @@ export default function Card(
 
   useEffect(() => {
     if (onRoll) {
-      onRoll({ term, isBackSide: isBackSideVisible })
+      onRoll({ faceSide, backSide, isBackSide: isBackSideVisible })
     }
-  }, [onRoll, term, isBackSideVisible])
+  }, [onRoll, faceSide, backSide, isBackSideVisible])
 
   return (
     <div
@@ -40,20 +47,26 @@ export default function Card(
         })}
       >
         <div className="card__front absolute w-full h-full flex flex-col gap-4 items-center justify-center p-6 border border-gray-600 bg-gray-900">
-          <p className="text-gray-500 group-hover:text-gray-400 transition-colors font-semibold text-lg">
-            {term.question}
+          <p className="text-gray-500 group-hover:text-gray-400 transition-colors font-semibold text-lg text-center">
+            {faceSide.text}
           </p>
 
-          {term.association &&
-            <p className="text-gray-600 font-semibold text-sm text-center">{term.association}</p>
+          {faceSide.association &&
+            <p className="text-gray-600 font-semibold text-sm text-center">{faceSide.association}</p>
           }
         </div>
-        <div className="card__back absolute w-full h-full flex items-center justify-center p-6 border border-gray-800 bg-gray-900">
-          <p className="text-gray-600 group-hover:text-gray-500 transition-colors font-semibold text-lg">
-            {term.answer}
+        <div className="card__back absolute w-full h-full flex flex-col gap-4 items-center justify-center p-6 border border-gray-800 bg-gray-900">
+          <p className="text-gray-600 group-hover:text-gray-500 transition-colors font-semibold text-lg text-center">
+            {backSide.text}
           </p>
+
+          {backSide.association &&
+            <p className="text-gray-600 font-semibold text-sm text-center">{backSide.association}</p>
+          }
         </div>
       </div>
     </div>
   )
 }
+
+export default memo(Card)

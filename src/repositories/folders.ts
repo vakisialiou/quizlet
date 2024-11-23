@@ -1,9 +1,10 @@
+import { ClientSettingsSimulatorData } from '@entities/ClientSettingsSimulator'
 import ClientSimulator, { SimulatorStatus } from '@entities/ClientSimulator'
-import ClientFolder from '@entities/ClientFolder'
+import ClientFolder, { ClientFolderData } from '@entities/ClientFolder'
 import ClientTerm from '@entities/ClientTerm'
 import { prisma, Folder } from '@lib/prisma'
 
-export const findFoldersByUserId = async (userId: string): Promise<ClientFolder[]> => {
+export const findFoldersByUserId = async (userId: string): Promise<ClientFolderData[]> => {
   const res = await prisma.folder.findMany({
     where: { userId },
     select: {
@@ -30,7 +31,8 @@ export const findFoldersByUserId = async (userId: string): Promise<ClientFolder[
           termIds: true,
           historyIds: true,
           continueIds: true,
-          rememberIds: true
+          rememberIds: true,
+          settings: true
         }
       }
     },
@@ -67,13 +69,14 @@ export const findFoldersByUserId = async (userId: string): Promise<ClientFolder[
             .setHistoryIds(historyIds)
             .setContinueIds(continueIds)
             .setRememberIds(rememberIds)
+            .setSettings(simulator.settings as ClientSettingsSimulatorData)
         })
       )
       .serialize()
   })
 }
 
-export const getFolderById = async (userId: string, id: string): Promise<ClientFolder | null> => {
+export const getFolderById = async (userId: string, id: string): Promise<ClientFolderData | null> => {
   const folder = await prisma.folder.findUnique({
     where: { userId, id },
     select: {
@@ -100,7 +103,8 @@ export const getFolderById = async (userId: string, id: string): Promise<ClientF
           termIds: true,
           historyIds: true,
           continueIds: true,
-          rememberIds: true
+          rememberIds: true,
+          settings: true
         }
       }
     },
@@ -137,6 +141,7 @@ export const getFolderById = async (userId: string, id: string): Promise<ClientF
             .setHistoryIds(historyIds)
             .setContinueIds(continueIds)
             .setRememberIds(rememberIds)
+            .setSettings(simulator.settings as ClientSettingsSimulatorData)
         })
       )
       .serialize()
@@ -147,7 +152,7 @@ export const getFolderById = async (userId: string, id: string): Promise<ClientF
 
 export const upsertFolder = async (userId: string, folder: Folder): Promise<string | null> => {
   const res = await prisma.folder.upsert({
-    where: { id: folder.id },
+    where: { userId, id: folder.id },
     update: {
       name: folder.name,
       updatedAt: new Date(),
@@ -164,7 +169,7 @@ export const upsertFolder = async (userId: string, folder: Folder): Promise<stri
   return res.id
 }
 
-export const removeFolder = async (id: string): Promise<boolean> => {
-  const res = await prisma.folder.delete({ where: { id } })
+export const removeFolder = async (userId: string, id: string): Promise<boolean> => {
+  const res = await prisma.folder.delete({ where: { userId, id } })
   return !!res?.id
 }

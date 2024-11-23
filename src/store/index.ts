@@ -2,6 +2,7 @@ import { configureStore, createReducer, EnhancedStore } from '@reduxjs/toolkit'
 import { loggerMiddleware } from '@store/middlewares/logger'
 import { ClientFolderData } from '@entities/ClientFolder'
 import * as simulators from '@store/reducers/simulators'
+import * as settings from '@store/reducers/settings'
 import { ClientTermData } from '@entities/ClientTerm'
 import * as folders from '@store/reducers/folders'
 import { ConfigType } from '@store/initial-state'
@@ -30,6 +31,7 @@ function renderStore(initialState?: ConfigType): EnhancedStore {
     preloadedState: initialState,
     reducer: createReducer(initialState, (builder) => {
       simulators.simulatorReducers(builder)
+      settings.simulatorReducers(builder)
       folders.folderReducers(builder)
       terms.termReducers(builder)
     }),
@@ -140,5 +142,10 @@ export const actionBackSimulators = (payload: PayloadBack, callback?: (res: Upse
 
 export const actionDeactivateSimulators = (payload: PayloadDeactivate, callback?: (res: UpsertSimulatorsIds) => void): void => {
   const action = simulators.deactivateSimulators(payload)
+  execAction(action, callback)
+}
+
+export const actionUpdateSettingsSimulator = (payload: settings.PayloadUpdate, callback?: (res: boolean) => void): void => {
+  const action = settings.updateSettingsSimulator(payload)
   execAction(action, callback)
 }

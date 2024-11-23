@@ -20,11 +20,7 @@ export default function PanelInfo(
         refTimerDuration.current = 0
       }
 
-      if (simulator?.status === SimulatorStatus.WAITING) {
-        return
-      }
-
-      if (simulator?.status === SimulatorStatus.FINISHING) {
+      if (simulator?.status && [SimulatorStatus.WAITING, SimulatorStatus.FINISHING, SimulatorStatus.DONE].includes(simulator?.status)) {
         return
       }
 

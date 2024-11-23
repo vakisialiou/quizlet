@@ -13,7 +13,7 @@ export default function HeaderPage(
 
       {title &&
         <div className="overflow-hidden w-full max-w-full">
-          <div className="flex gap-2 items-center justify-start w-full">
+          <div className="flex gap-2 items-center justify-start w-full pr-2">
             <span className="truncate ...">{title}</span>
           </div>
         </div>

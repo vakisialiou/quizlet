@@ -52,7 +52,7 @@ export default class ClientFolder {
     return this
   }
 
-  serialize() {
+  serialize(): ClientFolderData {
     return JSON.parse(JSON.stringify(this))
   }
 }

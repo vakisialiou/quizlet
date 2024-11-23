@@ -88,8 +88,8 @@ export default function Simulator({ folderId }: { folderId: string }) {
           {(folder && simulator) &&
             <SingleQueue
               folder={folder}
-              simulator={simulator as ClientSimulatorData}
               onRoll={updateVisibleSideCallback}
+              simulator={simulator as ClientSimulatorData}
             />
           }
         </div>
@@ -116,10 +116,14 @@ export default function Simulator({ folderId }: { folderId: string }) {
                   break
                 case 'sound':
                   if (simulator && rollbackData && speech) {
-                    const text = rollbackData.isBackSide ? rollbackData.term.answer : rollbackData.term.question
+
+                    const text = rollbackData.isBackSide
+                      ? rollbackData.backSide.text
+                      : rollbackData.faceSide.text
+
                     const lang = rollbackData.isBackSide
-                      ? (rollbackData.term.answerLang || DefaultAnswerLang)
-                      : (rollbackData.term.questionLang || DefaultQuestionLang)
+                      ? (rollbackData.backSide.lang || DefaultAnswerLang)
+                      : (rollbackData.faceSide.lang || DefaultQuestionLang)
 
                     const item = voices.find((item) => item.lang === lang)
 

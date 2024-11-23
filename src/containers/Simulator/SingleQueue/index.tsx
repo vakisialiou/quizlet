@@ -5,13 +5,13 @@ import SingleQueueDone from '@containers/Simulator/SingleQueueDone'
 import Card, { onRollCallback } from '@containers/Simulator/Card'
 import {ClientFolderData} from '@entities/ClientFolder'
 import Button, { ButtonSkin } from '@components/Button'
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 import {
   actionContinueSimulators,
   actionRememberSimulators,
 } from '@store/index'
 
-export default function SingleQueue(
+function SingleQueue(
   {
     onRoll,
     folder,
@@ -25,6 +25,17 @@ export default function SingleQueue(
   const activeTerm = useMemo(() => {
     return (folder?.terms || []).find(({ id }) => id === simulator.termId)
   }, [folder, simulator.termId])
+
+  const faceSide = {
+    association: activeTerm?.association,
+    text: simulator.settings.inverted ? activeTerm?.answer : activeTerm?.question,
+    lang: simulator.settings.inverted ? activeTerm?.answerLang : activeTerm?.questionLang
+  }
+
+  const backSide = {
+    text: simulator.settings.inverted ? activeTerm?.question : activeTerm?.answer,
+    lang: simulator.settings.inverted ? activeTerm?.questionLang : activeTerm?.answerLang
+  }
 
   return (
     <div className="flex flex-col gap-2">
@@ -46,7 +57,12 @@ export default function SingleQueue(
 
       {simulator.status === SimulatorStatus.PROCESSING && activeTerm &&
         <>
-          <Card onRoll={onRoll} key={activeTerm.id} term={activeTerm} />
+          <Card
+            onRoll={onRoll}
+            key={activeTerm.id}
+            faceSide={faceSide}
+            backSide={backSide}
+          />
 
           <div className="gap-2 flex justify-between">
             <Button
@@ -74,3 +90,5 @@ export default function SingleQueue(
     </div>
   )
 }
+
+export default memo(SingleQueue)

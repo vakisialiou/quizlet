@@ -29,26 +29,30 @@ export default function Dropdown(
   {
     children,
     selected,
+    caret = false,
     disabled = false,
     className = '',
     classNameMenu = '',
+    menu,
     placement = Placement.bottomEnd,
     offsetOptions = 0,
     items = [],
     onSelect,
-    onClick
+    onClick,
   }:
   {
+    menu?: ReactNode,
     children: ReactNode,
     selected?: string | number,
+    caret?: boolean,
     disabled?: boolean,
     className?: string,
     classNameMenu?: string,
     placement?: Placement,
     offsetOptions?: number,
-    items: DropdownItemType[],
+    items?: DropdownItemType[],
     onClick?: ((e: BaseSyntheticEvent) => void),
-    onSelect: (id: string | number) => void,
+    onSelect?: (id: string | number) => void,
   }
 ) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -109,29 +113,32 @@ export default function Dropdown(
       onClick={onClick}
       className={clsx('flex items-center text-left hover:bg-gray-800', {
         ['disabled']: disabled,
+        ['bg-gray-800']: isOpen
       })}
     >
       <div
         onClick={toggleDropdown}
-        className={clsx('flex items-center select-none group cursor-pointer', {
+        className={clsx('flex items-center justify-between select-none group cursor-pointer w-full', {
           [className]: className,
         })}
       >
         {children}
 
-        <svg
-          className="w-3 h-3 group-aria-[]:group:text-gray-500 group-active:text-gray-400 transition-colors mx-1"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1"
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
+        {caret &&
+          <svg
+            className="w-3 h-3 group-aria-[]:group:text-gray-500 group-active:text-gray-400 transition-colors mx-1"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="1"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        }
       </div>
 
       {isOpen &&
@@ -142,28 +149,34 @@ export default function Dropdown(
               [classNameMenu]: classNameMenu
             })}
           >
-            <div className="py-1">
-              {items.map((item: DropdownItemType) => {
-                return (
-                  <div
-                    key={item.id}
-                    className={clsx('block px-4 py-2 text-sm text-gray-400 transition-colors', {
-                      ['bg-gray-900']: item.id === selected,
-                      ['disabled pointer-events-none']: item.disabled,
-                      ['text-gray-700']: item.disabled,
-                      ['hover:bg-gray-900 active:bg-gray-800 cursor-pointer']: !item.disabled,
-                      [item.className || '']: item.className
-                    })}
-                    onClick={() => {
-                      setIsOpen(false)
-                      onSelect(item.id)
-                    }}
-                  >
-                    {item.name}
-                  </div>
-                )
-              })}
-            </div>
+            {items.length > 0 &&
+              <div className="py-1">
+                {items.map((item: DropdownItemType) => {
+                  return (
+                    <div
+                      key={item.id}
+                      className={clsx('block px-4 py-2 text-sm text-gray-400 transition-colors', {
+                        ['bg-gray-900']: item.id === selected,
+                        ['disabled pointer-events-none']: item.disabled,
+                        ['text-gray-700']: item.disabled,
+                        ['hover:bg-gray-900 active:bg-gray-800 cursor-pointer']: !item.disabled,
+                        [item.className || '']: item.className
+                      })}
+                      onClick={() => {
+                        setIsOpen(false)
+                        if (onSelect) {
+                          onSelect(item.id)
+                        }
+                      }}
+                    >
+                      {item.name}
+                    </div>
+                  )
+                })}
+              </div>
+            }
+
+            {menu}
           </div>,
           document.body
         )

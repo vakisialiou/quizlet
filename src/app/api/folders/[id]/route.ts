@@ -41,7 +41,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 
     return new Response(null, { status: 200 })
 
-  } catch {
+  } catch (e) {
+    console.log(e)
     return new Response(null, { status: 500 })
   }
 }
@@ -55,13 +56,8 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     return new Response(null, { status: 401 })
   }
 
-  const folder = await getFolderById(userId, id)
-  if (!folder) {
-    return new Response(null, { status: 400 })
-  }
-
   try {
-    const isRemoved = await removeFolder(id)
+    const isRemoved = await removeFolder(userId, id)
     return new Response(null, { status: isRemoved ? 200 : 400 })
 
   } catch {

@@ -1,4 +1,5 @@
-import { ClientSimulatorData, SimulatorStatus } from '@entities/ClientSimulator'
+import { SimulatorStatus } from '@entities/ClientSimulator'
+import { upsertSimulators } from '@store/fetch/simulators'
 import { ClientFolderData } from '@entities/ClientFolder'
 import { ConfigType } from '@store/initial-state'
 import { createAsyncThunk } from '@reduxjs/toolkit'
@@ -50,7 +51,7 @@ export const startSimulators = createAsyncThunk(
   async (payload: PayloadStart, api): Promise<UpsertSimulatorsIds> => {
     const state = api.getState() as ConfigType
     const simulators = findNeedUpdateSimulators(state.folders, payload.folderId)
-    return await upsert(simulators)
+    return await upsertSimulators(simulators)
   }
 )
 
@@ -61,7 +62,7 @@ export const continueSimulators = createAsyncThunk(
   async (payload: PayloadContinue, api): Promise<UpsertSimulatorsIds> => {
     const state = api.getState() as ConfigType
     const simulators = findNeedUpdateSimulators(state.folders, payload.folderId)
-    return await upsert(simulators)
+    return await upsertSimulators(simulators)
   }
 )
 
@@ -72,7 +73,7 @@ export const rememberSimulators = createAsyncThunk(
   async (payload: PayloadRemember, api): Promise<UpsertSimulatorsIds> => {
     const state = api.getState() as ConfigType
     const simulators = findNeedUpdateSimulators(state.folders, payload.folderId)
-    return await upsert(simulators)
+    return await upsertSimulators(simulators)
   }
 )
 
@@ -83,7 +84,7 @@ export const restartSimulators = createAsyncThunk(
   async (payload: PayloadRestart, api): Promise<UpsertSimulatorsIds> => {
     const state = api.getState() as ConfigType
     const simulators = findNeedUpdateSimulators(state.folders, payload.folderId)
-    return await upsert(simulators)
+    return await upsertSimulators(simulators)
   }
 )
 
@@ -94,7 +95,7 @@ export const backSimulators = createAsyncThunk(
   async (payload: PayloadBack, api): Promise<UpsertSimulatorsIds> => {
     const state = api.getState() as ConfigType
     const simulators = findNeedUpdateSimulators(state.folders, payload.folderId)
-    return await upsert(simulators)
+    return await upsertSimulators(simulators)
   }
 )
 
@@ -105,7 +106,7 @@ export const deactivateSimulators = createAsyncThunk(
   async (payload: PayloadDeactivate, api): Promise<UpsertSimulatorsIds> => {
     const state = api.getState() as ConfigType
     const simulators = findNeedUpdateSimulators(state.folders, payload.folderId)
-    return await upsert(simulators)
+    return await upsertSimulators(simulators)
   }
 )
 
@@ -175,6 +176,7 @@ export const simulatorReducers = (builder: any) => {
           needUpdate: true,
           termId: termIds[0],
           status: SimulatorStatus.PROCESSING,
+          settings: { ...state.settings.simulator }
         }
       })
     })
@@ -347,15 +349,4 @@ export const simulatorReducers = (builder: any) => {
         })
       }
     })
-}
-
-async function upsert(simulators: ClientSimulatorData[]): Promise<UpsertSimulatorsIds> {
-  const promises = simulators.map(async (simulator) => {
-    const res = await clientFetch(`/api/simulators/${simulator.id}`, {
-      method: 'PUT',
-      body: JSON.stringify(simulator)
-    })
-    return res.ok ? simulator.id : null
-  })
-  return (await Promise.all(promises)).filter((id) => id)
 }

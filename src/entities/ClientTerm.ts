@@ -75,7 +75,7 @@ export default class ClientTerm {
     return this
   }
 
-  serialize() {
+  serialize(): ClientTermData {
     return JSON.parse(JSON.stringify(this))
   }
 }

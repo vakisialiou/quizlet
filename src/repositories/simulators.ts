@@ -1,4 +1,5 @@
 import ClientSimulator, { ClientSimulatorData, SimulatorStatus } from '@entities/ClientSimulator'
+import { ClientSettingsSimulatorData } from '@entities/ClientSettingsSimulator'
 import { prisma, Simulator } from '@lib/prisma'
 
 export const findSimulatorsByFolderId = async (userId: string, folderId: string): Promise<ClientSimulatorData[]> => {
@@ -13,7 +14,8 @@ export const findSimulatorsByFolderId = async (userId: string, folderId: string)
       termIds: true,
       historyIds: true,
       continueIds: true,
-      rememberIds: true
+      rememberIds: true,
+      settings: true
     },
   })
 
@@ -31,6 +33,7 @@ export const findSimulatorsByFolderId = async (userId: string, folderId: string)
       .setHistoryIds(historyIds)
       .setContinueIds(continueIds)
       .setRememberIds(rememberIds)
+      .setSettings(simulator.settings as ClientSettingsSimulatorData)
       .serialize()
   })
 }
@@ -40,6 +43,7 @@ export const upsertSimulator = async (simulator: Simulator): Promise<string | nu
   const historyIds = Array.isArray(simulator.historyIds) ? simulator.historyIds : []
   const continueIds = Array.isArray(simulator.continueIds) ? simulator.continueIds : []
   const rememberIds = Array.isArray(simulator.rememberIds) ? simulator.rememberIds : []
+  const settings = simulator.settings || {}
   const res = await prisma.simulator.upsert({
     where: { id: simulator.id },
     update: {
@@ -47,6 +51,7 @@ export const upsertSimulator = async (simulator: Simulator): Promise<string | nu
       historyIds,
       continueIds,
       rememberIds,
+      settings,
       termId: simulator.termId,
       active: simulator.active,
       status: simulator.status,
@@ -57,6 +62,7 @@ export const upsertSimulator = async (simulator: Simulator): Promise<string | nu
       historyIds,
       continueIds,
       rememberIds,
+      settings,
       id: simulator.id,
       userId: simulator.userId,
       termId: simulator.termId,

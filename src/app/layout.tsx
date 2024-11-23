@@ -1,4 +1,5 @@
 import { getInitialState } from '@store/initial-state'
+import { getSettings } from '@repositories/settings'
 import { AppProvider } from '@app/provider'
 import localFont from 'next/font/local'
 import Header from '@containers/Header'
@@ -33,7 +34,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth()
-  const initialState = await getInitialState({ session })
+  const settings = await getSettings(session?.user?.id || '')
+  const initialState = await getInitialState({ session, settings })
 
   return (
     <html lang="en">

@@ -7,7 +7,11 @@ export async function middleware(req: NextRequest) {
     return await privateMiddleware(req)
   }
 
-  if (req.nextUrl.pathname.startsWith('/api/folders') || req.nextUrl.pathname.startsWith('/api/terms')) {
+  if (
+    req.nextUrl.pathname.startsWith('/api/folders')
+    || req.nextUrl.pathname.startsWith('/api/terms')
+    || req.nextUrl.pathname.startsWith('/api/settings')
+  ) {
     return await privateApiMiddleware(req)
   }
 
@@ -15,5 +19,12 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/private', '/api/folders', '/api/folders/:uuid', '/api/folders/:uuid/terms', '/api/terms/:uuid'],
+  matcher: [
+    '/private',
+    '/api/folders',
+    '/api/folders/:uuid',
+    '/api/folders/:uuid/terms',
+    '/api/terms/:uuid',
+    '/api/settings/simulator'
+  ],
 }
