@@ -52,11 +52,11 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
           </div>
         </div>
 
-        <div className="flex flex-col px-4 py-2 bg-gray-900/70">
+        <div className="flex flex-col px-4 py-4 bg-gray-900/70">
           <Account session={session}/>
         </div>
 
-        <div className="h-full flex flex-col bg-gray-900/50 py-2">
+        <div className="h-full flex flex-col bg-gray-900/50">
           {menuItems.map((item) => {
             if (item.private && !session) {
               return
@@ -67,7 +67,7 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
                 <div
                   key={item.id}
                   onClick={() => router.push(item.href)}
-                  className={clsx('cursor-pointer text-sm font-semibold leading-6 text-gray-300 hover:bg-gray-900 hover:text-gray-400 active:text-gray-400/70 px-3 py-2', {
+                  className={clsx('cursor-pointer text-sm font-semibold leading-6 text-gray-300 hover:bg-gray-900 hover:text-gray-400 active:text-gray-400/70 px-3 py-3', {
                     ['pointer-events-none bg-gray-800 text-gray-400']: item.href === pathname,
                   })}
                 >
@@ -80,7 +80,7 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
               <Link
                 key={item.id}
                 href={item.href}
-                className={clsx('cursor-pointer text-sm font-semibold leading-6 text-gray-300 hover:bg-gray-900 hover:text-gray-400 active:text-gray-400/70 px-3 py-2', {
+                className={clsx('cursor-pointer text-sm font-semibold leading-6 text-gray-300 hover:bg-gray-900 hover:text-gray-400 active:text-gray-400/70 px-3 py-3', {
                   ['pointer-events-none bg-gray-800 text-gray-400']: item.href === pathname,
                 })}
               >
