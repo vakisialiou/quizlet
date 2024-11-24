@@ -5,7 +5,7 @@ export default function HeaderPage(
   { left?: ReactNode, right?: ReactNode, title?: string | null }
 ) {
   return (
-    <div className="w-full flex gap-4 items-center justify-between p-2 md:px-4 border-b border-gray-800 bg-gray-900/20">
+    <div className="w-full flex gap-4 items-center justify-between p-4 border-b border-gray-800 bg-gray-900/20">
 
       <div className="flex gap-2 items-center">
         {left}
@@ -18,7 +18,6 @@ export default function HeaderPage(
           </div>
         </div>
       }
-
 
       {right &&
         <div className="flex gap-2 items-center">

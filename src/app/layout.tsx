@@ -2,7 +2,6 @@ import { getInitialState } from '@store/initial-state'
 import { getSettings } from '@repositories/settings'
 import { AppProvider } from '@app/provider'
 import localFont from 'next/font/local'
-import Header from '@containers/Header'
 import type { Metadata } from 'next'
 import { auth } from '@auth'
 import React from 'react'
@@ -44,9 +43,6 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-w-80 h-screen overflow-hidden`}
       >
         <AppProvider initialState={initialState}>
-          <Header
-            session={session}
-          />
           {children}
         </AppProvider>
       </body>

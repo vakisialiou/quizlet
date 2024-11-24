@@ -43,19 +43,19 @@ export default function Terms({ folderId }: { folderId: string }) {
         <>
           <ButtonSquare
             bordered
-            icon={SVGPlus}
-            onClick={() => {
-              const term = new ClientTerm(folderId).serialize()
-              actionSaveTerm({term, editId: term.id})
-            }}
-          />
-          <ButtonSquare
-            bordered
             icon={SVGPlay}
             onClick={() => {
               if (folder) {
                 router.push(`/private/simulator/${folder.id}`)
               }
+            }}
+          />
+          <ButtonSquare
+            bordered
+            icon={SVGPlus}
+            onClick={() => {
+              const term = new ClientTerm(folderId).serialize()
+              actionSaveTerm({term, editId: term.id})
             }}
           />
         </>

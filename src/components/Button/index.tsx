@@ -11,6 +11,7 @@ export enum ButtonSize {
   H12 = 12,
   H11 = 11,
   H10 = 10,
+  H06 = 6
 }
 
 export default function Button(
@@ -58,6 +59,7 @@ export default function Button(
         'h-12 min-w-12 text-lg': size === ButtonSize.H12,
         'h-11 min-w-11 text-lg': size === ButtonSize.H11,
         'h-10 min-w-10 text-base': size === ButtonSize.H10,
+        'h-6 min-w-6 text-xs': size === ButtonSize.H06,
       })}
     >
       {children}

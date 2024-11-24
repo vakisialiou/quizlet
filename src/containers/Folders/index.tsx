@@ -32,7 +32,7 @@ export default function Folders() {
   return (
     <ContentPage
       backURL="/"
-      title="Folder list"
+      title="Folders"
       rightControls={(
         <ButtonSquare
           bordered
