@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { ReactNode, useState } from 'react'
 import SVGBack from '@public/svg/back.svg'
 import NavMenu from '@containers/NavMenu'
+import clsx from 'clsx'
 
 export default function ContentPage(
   {
@@ -13,6 +14,7 @@ export default function ContentPage(
     leftControls,
     rightControls,
     backURL = null,
+    hideHeader = false,
   }:
   {
     children: ReactNode,
@@ -20,41 +22,49 @@ export default function ContentPage(
     leftControls?: ReactNode,
     rightControls?: ReactNode,
     backURL?: string | null,
+    hideHeader?: boolean,
   }) {
   const router = useRouter()
   const [opened, setOpened] = useState(false)
 
   return (
     <>
-      <HeaderPage
-        title={title}
-        left={
-          <>
-            <ButtonSquare
-              size={24}
-              icon={SVGCollapseMenu}
-              onClick={() => setOpened(true)}
-            />
-            {leftControls}
-          </>
-        }
-        right={(
-          <>
-            {backURL &&
+      {!hideHeader &&
+        <HeaderPage
+          title={title}
+          left={
+            <>
               <ButtonSquare
-                bordered
                 size={24}
-                icon={SVGBack}
-                onClick={() => router.push(backURL)}
+                icon={SVGCollapseMenu}
+                onClick={() => setOpened(true)}
               />
-            }
+              {leftControls}
+            </>
+          }
+          right={(
+            <>
+              {backURL &&
+                <ButtonSquare
+                  bordered
+                  size={24}
+                  icon={SVGBack}
+                  onClick={() => router.push(backURL)}
+                />
+              }
 
-            {rightControls}
-          </>
-        )}
-      />
+              {rightControls}
+            </>
+          )}
+        />
+      }
 
-      <div className="h-[calc(100vh-4rem)] overflow-y-auto">
+      <div
+        className={clsx('overflow-y-auto', {
+          ['h-[calc(100vh-4rem)]']: !hideHeader,
+          ['h-screen']: hideHeader
+        })}
+      >
         {children}
       </div>
 

@@ -38,7 +38,7 @@ export default function Button(
   return (
     <div
       onClick={onClick}
-      className={clsx('border select-none flex items-center justify-center', {
+      className={clsx('border select-none flex items-center justify-center rounded-3xl', {
         [className || '']: className,
         'pointer-events-none': disabled,
         'cursor-not-allowed': disabled,
