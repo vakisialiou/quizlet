@@ -31,22 +31,24 @@ function Landing() {
         }}
       >
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="flex flex-col gap-8 text-center text-white px-6">
-            <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-4">
-              Обучение на 100%
+          <div
+            className="absolute top-4 right-4 text-white bg-yellow-500 text-sm font-bold px-4 py-1 rounded-full"
+          >
+            Beta
+          </div>
+
+          <div className="flex flex-col text-center text-white px-6 max-w-[900px]">
+            <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-8">
+              Изучайте и играйте
             </h1>
-            <div
-              className="absolute top-4 right-4 text-white bg-yellow-500 text-sm font-bold px-4 py-1 rounded-full"
-            >
-              Beta
-            </div>
-            <p className="text-lg md:text-xl mb-6">
-              Создавайте модули, папки и карточки для эффективного
-              <br/>
-              запоминания на платформе
-              <br/>
-              <span className="font-bold">{appName}</span>!
+            <p className="text-lg md:text-xl mb-4">
+              Создавайте карточки для быстрого и эффективного запоминания терминов.
             </p>
+
+            <p className="text-lg md:text-xl mb-8">
+              Используйте симуляторы и играйте — так обучение станет увлекательным и результативным.
+            </p>
+
             <div className="flex justify-center">
               <Button
                 className="px-6 gap-2 font-medium"
@@ -78,8 +80,8 @@ function Landing() {
       </header>
 
       <section id="features" className="py-20 bg-white text-gray-700">
-        <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+        <div className="flex flex-col items-center max-w-6xl mx-auto px-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 max-w-[320px] md:max-w-full">
             Лучшая платформа для вас!
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
