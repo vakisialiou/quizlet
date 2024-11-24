@@ -4,7 +4,7 @@
   "description": "Создавайте модули и карточки для эффективного обучения с симуляторами. Автоматические ассоциации и награды помогут вам учиться быстрее и достигать результатов.",
   "background_color": "#0a0a0a",
   "theme_color": "#ededed",
-  "start_url": ".",
+  "start_url": "/",
   "lang": "ru",
   "display": "standalone",
   "orientation": "portrait",
