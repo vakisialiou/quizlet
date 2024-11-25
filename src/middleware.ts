@@ -10,24 +10,27 @@ const LOCALES_PATTERN = `^/(${[...locales].join('|')})`
 const intlMiddleware = createMiddleware(routing)
 
 export async function middleware(req: NextRequest) {
+  // /api маршруты без локализации поэтому сначала проверяем эти маршруты.
+  const originPathname = req.nextUrl.pathname
+  if (
+    originPathname.startsWith('/api/folders')
+    || originPathname.startsWith('/api/terms')
+    || originPathname.startsWith('/api/settings')
+    || originPathname.startsWith('/api/simulator')
+  ) {
+    return await privateApiMiddleware(req)
+  }
+
+  // Убираем локаль из пути, если она есть
   const intlResponse = intlMiddleware(req)
   if (intlResponse) {
     return intlResponse
   }
 
-  // Убираем локаль из пути, если она есть
-  const pathname = req.nextUrl.pathname.replace(new RegExp(LOCALES_PATTERN), '')
+  const pathname = originPathname.replace(new RegExp(LOCALES_PATTERN), '')
 
   if (pathname.startsWith('/private')) {
     return await privateMiddleware(req)
-  }
-
-  if (
-    pathname.startsWith('/api/folders')
-    || pathname.startsWith('/api/terms')
-    || pathname.startsWith('/api/settings')
-  ) {
-    return await privateApiMiddleware(req)
   }
 
   return NextResponse.next()
@@ -36,14 +39,16 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     '/',
-    // '/(ru|en)/:path*',
-    '/(ru|en)(!/api)(/.*|)',
+    // '/(ru|en)(!/api)(/.*|)',
+    '/(ru|en)/private/:path*',
 
     '/private',
     '/api/folders',
     '/api/folders/:id',
     '/api/folders/:id/terms',
     '/api/terms/:id',
-    '/api/settings/simulator'
+    '/api/settings/simulator',
+    '/api/simulator',
+    '/api/simulator/:id',
   ],
 }

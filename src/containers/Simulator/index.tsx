@@ -4,7 +4,7 @@ import { DefaultAnswerLang, DefaultQuestionLang} from '@entities/ClientTerm'
 import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import { ClientSimulatorData } from '@entities/ClientSimulator'
 import { RollbackData } from '@containers/Simulator/Card'
-import Button, { ButtonSkin } from '@components/Button'
+import Button, {ButtonSize, ButtonSkin} from '@components/Button'
 import Dialog, { DialogType } from '@components/Dialog'
 import CardEmpty from '@containers/Simulator/CardEmpty'
 import ButtonSquare from '@components/ButtonSquare'
@@ -20,8 +20,10 @@ import SingleQueue from './SingleQueue'
 import PanelInfo from './PanelInfo'
 import {
   actionDeactivateSimulators,
+  actionRememberSimulators,
+  actionContinueSimulators,
   actionFetchSimulators,
-  actionBackSimulators
+  actionBackSimulators,
 } from '@store/index'
 
 export default function Simulator({ folderId }: { folderId: string }) {
@@ -66,6 +68,8 @@ export default function Simulator({ folderId }: { folderId: string }) {
 
   return (
     <ContentPage
+      showHeader
+      showFooter
       title={folder?.name}
       rightControls={(
         <ButtonSquare
@@ -76,6 +80,39 @@ export default function Simulator({ folderId }: { folderId: string }) {
             }
           }}
         />
+      )}
+      footer={(
+        <div className="flex w-full justify-center">
+          <div className="flex gap-2 w-full max-w-96">
+            <Button
+              className="w-1/2"
+              size={ButtonSize.H10}
+              skin={ButtonSkin.GREEN_500}
+              disabled={!folder}
+              onClick={() => {
+                if (folder) {
+                  actionRememberSimulators({folderId: folder.id})
+                }
+              }}
+            >
+              Remember
+            </Button>
+
+            <Button
+              className="w-1/2"
+              size={ButtonSize.H10}
+              skin={ButtonSkin.WHITE_100}
+              disabled={!folder}
+              onClick={() => {
+                if (folder) {
+                  actionContinueSimulators({folderId: folder.id})
+                }
+              }}
+            >
+              Continue
+            </Button>
+          </div>
+        </div>
       )}
     >
       <div

@@ -2,10 +2,10 @@ import { ReactNode } from 'react'
 
 export default function HeaderPage(
   { left, right, title }:
-  { left?: ReactNode, right?: ReactNode, title?: string | null }
+  { left?: ReactNode, right?: ReactNode, title?: ReactNode }
 ) {
   return (
-    <div className="w-full flex gap-4 items-center justify-between p-4 border-b border-gray-800 bg-gray-900/20">
+    <div className="w-full h-14 px-4 flex gap-4 items-center justify-between bg-gray-900/20 relative">
 
       <div className="flex gap-2 items-center">
         {left}
@@ -24,6 +24,8 @@ export default function HeaderPage(
           {right}
         </div>
       }
+
+      <div className="w-full h-[1px] bg-gray-700 absolute bottom-0 left-0" />
     </div>
   )
 }

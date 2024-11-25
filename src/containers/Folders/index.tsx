@@ -1,22 +1,21 @@
 'use client'
 
-import ClientFolder, { ClientFolderData } from '@entities/ClientFolder'
-import Button, { ButtonSkin } from '@components/Button'
-import ButtonSquare from '@components/ButtonSquare'
-import { FoldersType } from '@store/initial-state'
+import ClientFolder, {ClientFolderData} from '@entities/ClientFolder'
+import Button, {ButtonSize, ButtonSkin} from '@components/Button'
+import {FoldersType} from '@store/initial-state'
 import ContentPage from '@containers/ContentPage'
 import MetaLabel from '@components/MetaLabel'
-import { useState, useEffect } from 'react'
+import {useEffect, useState} from 'react'
 import SVGPlus from '@public/svg/plus.svg'
-import { upsertObject } from '@lib/array'
-import { useSelector} from 'react-redux'
+import {upsertObject} from '@lib/array'
+import {useSelector} from 'react-redux'
 import Dialog from '@components/Dialog'
 import Folder from '@components/Folder'
 import {
-  actionSaveFolder,
   actionDeleteFolder,
-  actionUpdateFolder,
   actionFetchFolders,
+  actionSaveFolder,
+  actionUpdateFolder,
   actionUpdateFolderItem
 } from '@store/index'
 
@@ -30,16 +29,29 @@ export default function Folders() {
 
   return (
     <ContentPage
-      title="Folders"
-      rightControls={(
-        <ButtonSquare
-          bordered
-          icon={SVGPlus}
-          onClick={() => {
-            const folder = new ClientFolder().serialize()
-            actionSaveFolder({folder, editId: folder.id})
-          }}
-        />
+      showHeader
+      showFooter
+      title="Collections"
+      footer={(
+        <div className="flex w-full justify-center">
+          <Button
+            size={ButtonSize.H10}
+            skin={ButtonSkin.WHITE_100}
+            className="w-full md:w-44 gap-1"
+            onClick={() => {
+              const folder = new ClientFolder().serialize()
+              actionSaveFolder({folder, editId: folder.id})
+            }}
+          >
+            <SVGPlus
+              width={28}
+              height={28}
+              className="text-gray-700"
+            />
+
+            Create
+          </Button>
+        </div>
       )}
     >
       <div

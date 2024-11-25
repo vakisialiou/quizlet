@@ -3,13 +3,8 @@ import SingleQueueFinish from '@containers/Simulator/SingleQueueFinish'
 import SingleQueueStart from '@containers/Simulator/SingleQueueStart'
 import SingleQueueDone from '@containers/Simulator/SingleQueueDone'
 import Card, { onRollCallback } from '@containers/Simulator/Card'
-import {ClientFolderData} from '@entities/ClientFolder'
-import Button, { ButtonSkin } from '@components/Button'
+import { ClientFolderData } from '@entities/ClientFolder'
 import { useMemo, memo } from 'react'
-import {
-  actionContinueSimulators,
-  actionRememberSimulators,
-} from '@store/index'
 
 function SingleQueue(
   {
@@ -64,28 +59,6 @@ function SingleQueue(
             faceSide={faceSide}
             backSide={backSide}
           />
-
-          <div className="gap-2 flex justify-between">
-            <Button
-              className="w-36"
-              skin={ButtonSkin.GREEN_500}
-              onClick={() => {
-                actionRememberSimulators({ folderId: folder.id })
-              }}
-            >
-              Remember
-            </Button>
-
-            <Button
-              className="w-36"
-              skin={ButtonSkin.WHITE_100}
-              onClick={() => {
-                actionContinueSimulators({ folderId: folder.id })
-              }}
-            >
-              Continue
-            </Button>
-          </div>
         </>
       }
     </div>

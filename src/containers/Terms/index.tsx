@@ -1,15 +1,16 @@
 'use client'
 
-import ClientTerm, { ClientTermData } from '@entities/ClientTerm'
-import { FoldersType, TermsType } from '@store/initial-state'
-import Button, { ButtonSkin } from '@components/Button'
-import { useEffect, useMemo, useState } from 'react'
+import Button, {ButtonSize, ButtonSkin} from '@components/Button'
+import ClientTerm, {ClientTermData} from '@entities/ClientTerm'
+import {FoldersType, TermsType} from '@store/initial-state'
+import React, {useEffect, useMemo, useState} from 'react'
 import ButtonSquare from '@components/ButtonSquare'
 import ContentPage from '@containers/ContentPage'
+import SVGBack from '@public/svg/back.svg'
 import SVGPlus from '@public/svg/plus.svg'
 import SVGPlay from '@public/svg/play.svg'
-import { useRouter } from '@i18n/routing'
-import { useSelector } from 'react-redux'
+import {useRouter} from '@i18n/routing'
+import {useSelector} from 'react-redux'
 import Dialog from '@components/Dialog'
 import Term from '@components/Term'
 import {
@@ -37,27 +38,55 @@ export default function Terms({ folderId }: { folderId: string }) {
 
   return (
     <ContentPage
+      showHeader
+      showFooter
       title={folder?.name}
       rightControls={(
-        <>
-          <ButtonSquare
-            bordered
-            icon={SVGPlay}
-            onClick={() => {
-              if (folder) {
-                router.push(`/private/simulator/${folder.id}`)
-              }
-            }}
-          />
-          <ButtonSquare
-            bordered
-            icon={SVGPlus}
-            onClick={() => {
-              const term = new ClientTerm(folderId).serialize()
-              actionSaveTerm({term, editId: term.id})
-            }}
-          />
-        </>
+        <ButtonSquare
+          icon={SVGBack}
+          onClick={() => {
+            router.push(`/private`)
+          }}
+        />
+      )}
+      footer={(
+        <div className="flex w-full justify-center text-center">
+          <div className="flex gap-2 w-full max-w-96">
+            <Button
+              size={ButtonSize.H10}
+              skin={ButtonSkin.WHITE_100}
+              className="w-1/2 gap-1"
+              onClick={() => {
+                const term = new ClientTerm(folderId).serialize()
+                actionSaveTerm({term, editId: term.id})
+              }}
+            >
+              <SVGPlus
+                width={28}
+                height={28}
+                className="text-gray-700"
+              />
+              Create
+            </Button>
+            <Button
+              size={ButtonSize.H10}
+              skin={ButtonSkin.GREEN_500}
+              className="w-1/2 gap-1"
+              onClick={() => {
+                if (folder) {
+                  router.push(`/private/simulator/${folder.id}`)
+                }
+              }}
+            >
+              <SVGPlay
+                width={28}
+                height={28}
+                className="text-gray-100"
+              />
+              Play
+            </Button>
+          </div>
+        </div>
       )}
     >
       {folder &&

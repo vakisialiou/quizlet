@@ -8,23 +8,34 @@ import clsx from 'clsx'
 export default function ContentPage(
   {
     title,
+    footer,
     children,
     leftControls,
     rightControls,
-    hideHeader = false,
+    showHeader = false,
+    showFooter = false,
   }:
   {
+    title?: ReactNode
+    footer?: ReactNode,
     children: ReactNode,
-    title?: string | null
     leftControls?: ReactNode,
     rightControls?: ReactNode,
-    hideHeader?: boolean,
+    showHeader?: boolean,
+    showFooter?: boolean,
   }) {
   const [opened, setOpened] = useState(false)
+  let contentHeight = 0
+  if (showHeader) {
+    contentHeight += 56
+  }
+  if (showFooter) {
+    contentHeight += 56
+  }
 
   return (
     <>
-      {!hideHeader &&
+      {showHeader &&
         <HeaderPage
           title={title}
           left={
@@ -42,18 +53,25 @@ export default function ContentPage(
       }
 
       <div
-        className={clsx('overflow-y-auto', {
-          ['h-[calc(100vh-4rem)]']: !hideHeader,
-          ['h-screen']: hideHeader
+        className={clsx(`overflow-y-auto`, {
+          [`h-[calc(100vh-${contentHeight}px)]`]: contentHeight > 0,
+          ['h-screen']: contentHeight === 0
         })}
       >
         {children}
       </div>
 
+      {showFooter &&
+        <div className="w-full h-14 px-2 flex gap-2 items-center justify-between bg-gray-900/20 relative">
+          <div className="w-full h-[1px] bg-gray-700 absolute top-0 left-0"/>
+          {footer}
+        </div>
+      }
+
       {opened &&
-       <NavMenu
-        onClose={() => setOpened((prevState) => !prevState)}
-       />
+        <NavMenu
+          onClose={() => setOpened((prevState) => !prevState)}
+        />
       }
     </>
   )

@@ -1,3 +1,9 @@
 User-agent: *
-Allow: /
+Allow: /en
+Allow: /ru
+Disallow: /en/private/
+Disallow: /ru/private/
+Disallow: /en/api/
+Disallow: /ru/api/
 Disallow: /private/
+Disallow: /api/
