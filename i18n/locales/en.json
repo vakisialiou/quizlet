@@ -1,0 +1,43 @@
+{
+  "Metadata": {
+    "title": "QuizerPlay - Structure knowledge, learn with simulators and flashcards for memorization",
+    "keywords": "Quizlet alternative, learning, simulators for memorization, study flashcards, AI associations, learning motivation, learning flexibility, gamification of education, effective simulators, AI support, best memorization methods",
+    "description": "Create modules and flashcards for effective learning with simulators. Automatic associations and rewards will help you learn faster and achieve results."
+  },
+  "Landing": {
+    "mainTitle": "Learn and Play",
+    "mainDesc1": "Create flashcards for fast and effective memorization of terms.",
+    "mainDesc2": "Use simulators and play — this will make learning engaging and effective.",
+    "mainButtonSignIn": "Start with Google",
+    "mainButtonGoTo": "Start learning now",
+
+    "section1Title": "The Best Platform for You!",
+    "section1Block1Title": "Flexibility",
+    "section1Block1Text": "Organize your knowledge with modules and folders.",
+    "section1Block2Title": "Effective Simulators",
+    "section1Block2Text": "Practice questions and answers until they're automatic.",
+    "section1Block3Title": "Gamification",
+    "section1Block3Text": "Earn medals for successfully completing simulations.",
+    "section1Block4Title": "AI Associations",
+    "section1Block4Text": "Create your own or generate them automatically (premium).",
+    "section1Block5Title": "Multi-level Motivation",
+    "section1Block5Text": "Bronze for the first success, gold for complete mastery.",
+    "section1Block6Title": "Versatility",
+    "section1Block6Text": "Support for web, web extension, Android, and iOS applications.",
+
+    "section2Title": "The Learning Process on {appName} in Three Steps",
+    "section2Block1Title": "Step 1: Create the Structure",
+    "section2Block1Text": "Create modules and folders to organize your materials.",
+    "section2Block2Title": "Step 2: Choose a Simulator",
+    "section2Block2Text": "Pick the right simulator: Flashcard or Input, Direct or Inverse.",
+    "section2Block3Title": "Step 3: Earn Rewards",
+    "section2Block3Text": "Get rewards for completing simulations and improve your knowledge.",
+
+    "section3Title": "Achieve Results Faster with {appName}!",
+    "section3Text": "Forget about chaotic learning — organize your knowledge, complete simulations, and motivate yourself with rewards.",
+    "section3ButtonSignIn": "Continue with Google",
+    "section3ButtonGoTo": "Continue learning",
+
+    "footer": "© 2024. All rights reserved. {appName} Learning Platform."
+  }
+}

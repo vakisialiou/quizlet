@@ -3,11 +3,13 @@
 import Button, { ButtonSkin, ButtonSize } from '@components/Button'
 import SVGGoogle from '@public/svg/painted/google.svg'
 import ContentPage from '@containers/ContentPage'
-import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
+import { useRouter } from '@i18n/routing'
 import { useSelector } from 'react-redux'
 import { signIn } from 'next-auth/react'
 import { Session } from 'next-auth'
 import { memo } from 'react'
+
 import clsx from 'clsx'
 
 function Landing() {
@@ -15,6 +17,8 @@ function Landing() {
   const session = useSelector(({ session }: { session: Session | null }) => session)
 
   const appName = 'QuizerPlay'
+
+  const t = useTranslations('Landing')
 
   return (
     <ContentPage
@@ -39,14 +43,14 @@ function Landing() {
 
           <div className="flex flex-col text-center text-white px-6 max-w-[900px]">
             <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-8">
-              Изучайте и играйте
+              {t('mainTitle')}
             </h1>
             <p className="text-lg md:text-xl mb-4">
-              Создавайте карточки для быстрого и эффективного запоминания терминов.
+              {t('mainDesc1')}
             </p>
 
             <p className="text-lg md:text-xl mb-8">
-              Используйте симуляторы и играйте — так обучение станет увлекательным и результативным.
+              {t('mainDesc2')}
             </p>
 
             <div className="flex justify-center">
@@ -54,9 +58,9 @@ function Landing() {
                 className="px-6 gap-2 font-medium"
                 size={ButtonSize.H12}
                 skin={ButtonSkin.WHITE_100}
-                onClick={() => {
+                onClick={async () => {
                   if (!session) {
-                    signIn('google')
+                    await signIn('google')
                   } else {
                     route.push('/private')
                   }
@@ -68,11 +72,11 @@ function Landing() {
                       width={24}
                       height={24}
                     />
-                    Начать с Google
+                    {t('mainButtonSignIn')}
                   </>
                 }
 
-                {session && 'Начать обучение сейчас'}
+                {session && t('mainButtonGoTo')}
               </Button>
             </div>
           </div>
@@ -82,32 +86,32 @@ function Landing() {
       <section id="features" className="py-20 bg-white text-gray-700">
         <div className="flex flex-col items-center max-w-6xl mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 max-w-[320px] md:max-w-full">
-            Лучшая платформа для вас!
+            {t('section1Title')}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="p-6 bg-gray-50 shadow-md rounded-lg">
-              <h3 className="text-xl font-semibold mb-4">Гибкость</h3>
-              <p>Структурируйте знания с помощью модулей и папок.</p>
+              <h3 className="text-xl font-semibold mb-4">{t('section1Block1Title')}</h3>
+              <p>{t('section1Block1Text')}</p>
             </div>
             <div className="p-6 bg-gray-50 shadow-md rounded-lg">
-              <h3 className="text-xl font-semibold mb-4">Эффективные симуляторы</h3>
-              <p>Отработайте вопросы и ответы до автоматизма.</p>
+              <h3 className="text-xl font-semibold mb-4">{t('section1Block2Title')}</h3>
+              <p>{t('section1Block2Text')}</p>
             </div>
             <div className="p-6 bg-gray-50 shadow-md rounded-lg">
-              <h3 className="text-xl font-semibold mb-4">Геймификация</h3>
-              <p>Зарабатывайте медали за успешное прохождение симуляций.</p>
+              <h3 className="text-xl font-semibold mb-4">{t('section1Block3Title')}</h3>
+              <p>{t('section1Block3Text')}</p>
             </div>
             <div className="p-6 bg-gray-50 shadow-md rounded-lg">
-              <h3 className="text-xl font-semibold mb-4">Ассоциации AI</h3>
-              <p>Создавайте свои или генерируйте автоматически (премиум).</p>
+              <h3 className="text-xl font-semibold mb-4">{t('section1Block4Title')}</h3>
+              <p>{t('section1Block4Text')}</p>
             </div>
             <div className="p-6 bg-gray-50 shadow-md rounded-lg">
-              <h3 className="text-xl font-semibold mb-4">Многоуровневая мотивация</h3>
-              <p>Бронза за первый успех, золото за полное освоение.</p>
+              <h3 className="text-xl font-semibold mb-4">{t('section1Block5Title')}</h3>
+              <p>{t('section1Block5Text')}</p>
             </div>
             <div className="p-6 bg-gray-50 shadow-md rounded-lg">
-              <h3 className="text-xl font-semibold mb-4">Универсальность</h3>
-              <p>Поддержка web, web-extension, android, ios приложений.</p>
+              <h3 className="text-xl font-semibold mb-4">{t('section1Block6Title')}</h3>
+              <p>{t('section1Block6Text')}</p>
             </div>
           </div>
         </div>
@@ -116,27 +120,25 @@ function Landing() {
       <section
         id="how-it-works"
         className="relative bg-fixed bg-cover"
-        style={{
-          backgroundImage: `url('/images/bg-how-it-works.avif')`,
-          backgroundPosition: 'center'
-        }}
+        style={{ backgroundImage: `url('/images/bg-how-it-works.avif')`, backgroundPosition: 'center' }}
       >
         <div className="bg-black bg-opacity-70 py-36 px-6">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">Учебный процесс на {appName} в три
-              шага</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
+              {t('section2Title', { appName })}
+            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 text-gray-400">
               <div className="p-6 bg-gray-900/50 border border-gray-400/50 shadow-lg rounded-lg">
-                <h3 className="text-xl font-semibold mb-4">Шаг 1: Создание структуры</h3>
-                <p>Создайте модуль и папки для структурирования материалов.</p>
+                <h3 className="text-xl font-semibold mb-4">{t('section2Block1Title')}</h3>
+                <p>{t('section2Block1Text')}</p>
               </div>
               <div className="p-6 bg-gray-900/50 border border-gray-400/50 shadow-lg rounded-lg">
-                <h3 className="text-xl font-semibold mb-4">Шаг 2: Выбор симулятора</h3>
-                <p>Выбирайте подходящий симулятор: Flashcard или Input, Direct или Inverse.</p>
+                <h3 className="text-xl font-semibold mb-4">{t('section2Block2Title')}</h3>
+                <p>{t('section2Block2Text')}</p>
               </div>
               <div className="p-6 bg-gray-900/50 border border-gray-400/50 shadow-lg rounded-lg">
-                <h3 className="text-xl font-semibold mb-4">Шаг 3: Получение наград</h3>
-                <p>Получайте награды за прохождение и совершенствуйте знания.</p>
+                <h3 className="text-xl font-semibold mb-4">{t('section2Block3Title')}</h3>
+                <p>{t('section2Block3Text')}</p>
               </div>
             </div>
           </div>
@@ -145,21 +147,20 @@ function Landing() {
 
       <section id="cta" className="py-20 bg-gradient-to-r from-blue-500 to-blue-600 text-white">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-8">
-            Достигайте результатов быстрее с {appName}!
-          </h2>
-          <p className="text-lg md:text-xl mb-8">
-            Забудьте про хаотичное обучение — структурируйте знания,
-            проходите симуляции, мотивируйте себя наградами.
-          </p>
+          <h2 className="text-3xl md:text-4xl font-bold mb-8">{t('section3Title', { appName })}</h2>
+          <p className="text-lg md:text-xl mb-8">{t('section3Text')}</p>
 
           <div className="flex justify-center gap-8">
             <Button
               className="px-6 gap-2 font-medium"
               size={ButtonSize.H12}
               skin={ButtonSkin.WHITE_100}
-              onClick={() => {
-
+              onClick={async () => {
+                if (!session) {
+                  await signIn('google')
+                } else {
+                  route.push('/private')
+                }
               }}
             >
               {!session &&
@@ -168,11 +169,11 @@ function Landing() {
                     width={24}
                     height={24}
                   />
-                  Продолжить с Google
+                  {t('section3ButtonSignIn')}
                 </>
               }
 
-              {session && 'Продолжить обучение'}
+              {session && t('section3ButtonGoTo')}
             </Button>
           </div>
         </div>
@@ -180,7 +181,7 @@ function Landing() {
 
       <footer className="bg-gray-900 text-gray-400 py-6">
         <div className="max-w-6xl mx-auto text-center">
-          <p>© 2024. Все права защищены. Платформа {appName} для Обучения.</p>
+          <p>{t('footer', { appName })}</p>
         </div>
       </footer>
     </ContentPage>

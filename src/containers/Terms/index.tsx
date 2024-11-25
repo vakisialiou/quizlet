@@ -6,9 +6,9 @@ import Button, { ButtonSkin } from '@components/Button'
 import { useEffect, useMemo, useState } from 'react'
 import ButtonSquare from '@components/ButtonSquare'
 import ContentPage from '@containers/ContentPage'
-import { useRouter } from 'next/navigation'
 import SVGPlus from '@public/svg/plus.svg'
 import SVGPlay from '@public/svg/play.svg'
+import { useRouter } from '@i18n/routing'
 import { useSelector } from 'react-redux'
 import Dialog from '@components/Dialog'
 import Term from '@components/Term'
@@ -37,7 +37,6 @@ export default function Terms({ folderId }: { folderId: string }) {
 
   return (
     <ContentPage
-      backURL="/private"
       title={folder?.name}
       rightControls={(
         <>

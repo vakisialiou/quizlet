@@ -1,6 +1,6 @@
 import SVGRightArrow from '@public/svg/rightarrow.svg'
 import React, { Fragment } from 'react'
-import Link from 'next/link'
+import { Link } from '@i18n/routing'
 
 export type BreadcrumbItem = {
   name?: string | null | undefined,

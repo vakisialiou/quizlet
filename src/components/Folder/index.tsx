@@ -3,8 +3,8 @@ import { ClientFolderData } from '@entities/ClientFolder'
 import SVGThreeDots from '@public/svg/three_dots.svg'
 import SVGPlay from '@public/svg/play.svg'
 import Spinner from '@components/Spinner'
+import { Link } from '@i18n/routing'
 import { ReactNode } from 'react'
-import Link from 'next/link'
 import clsx from 'clsx'
 
 export default function Folder(

@@ -21,7 +21,6 @@ import {
 } from '@store/index'
 
 export default function Folders() {
-
   useEffect(actionFetchFolders, [])
 
   const [ originItem, setOriginItem ] = useState<ClientFolderData | null>(null)
@@ -31,7 +30,6 @@ export default function Folders() {
 
   return (
     <ContentPage
-      backURL="/"
       title="Folders"
       rightControls={(
         <ButtonSquare

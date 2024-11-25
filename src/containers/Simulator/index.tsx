@@ -7,12 +7,15 @@ import { RollbackData } from '@containers/Simulator/Card'
 import Button, { ButtonSkin } from '@components/Button'
 import Dialog, { DialogType } from '@components/Dialog'
 import CardEmpty from '@containers/Simulator/CardEmpty'
+import ButtonSquare from '@components/ButtonSquare'
 import { FoldersType } from '@store/initial-state'
 import TextToSpeech, { voices } from '@lib/speech'
 import ContentPage from '@containers/ContentPage'
 import SingleQueueStart from './SingleQueueStart'
 import PanelControls from './PanelControls'
+import SVGBack from '@public/svg/back.svg'
 import { useSelector } from 'react-redux'
+import { useRouter } from '@i18n/routing'
 import SingleQueue from './SingleQueue'
 import PanelInfo from './PanelInfo'
 import {
@@ -22,6 +25,8 @@ import {
 } from '@store/index'
 
 export default function Simulator({ folderId }: { folderId: string }) {
+  const router = useRouter()
+
   useEffect(() => actionFetchSimulators({ folderId }), [folderId])
 
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
@@ -62,7 +67,16 @@ export default function Simulator({ folderId }: { folderId: string }) {
   return (
     <ContentPage
       title={folder?.name}
-      backURL={folder ? `/private/folder/${folder.id}` : `/private/folder`}
+      rightControls={(
+        <ButtonSquare
+          icon={SVGBack}
+          onClick={() => {
+            if (folder) {
+              router.push(`/private/folder/${folder?.id}`)
+            }
+          }}
+        />
+      )}
     >
       <div
         className="w-full flex flex-col items-center"

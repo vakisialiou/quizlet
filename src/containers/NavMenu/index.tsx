@@ -1,11 +1,10 @@
+import { Link, useRouter, usePathname } from '@i18n/routing'
 import SVGPanelClose from '@public/svg/panel_close.svg'
-import { usePathname, useRouter } from 'next/navigation'
 import ButtonSquare from '@components/ButtonSquare'
 import { useSelector } from 'react-redux'
 import Account from '@containers/Account'
 import { Session } from 'next-auth'
 import Image from 'next/image'
-import Link from 'next/link'
 import clsx from 'clsx'
 
 export default function NavMenu({ onClose }: { onClose: () => void }) {
@@ -30,7 +29,7 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
 
         <div className="flex flex-col border-b border-gray-700 p-4 bg-gray-900/70">
           <div className="h-8 flex justify-between">
-            <Link href="/" className="flex gap-4 items-center">
+            <div className="flex gap-4 items-center">
               <Image
                 priority
                 alt="Logo"
@@ -42,7 +41,7 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
               <span className="text-xl font-bold">
                 QuizerPlay
               </span>
-            </Link>
+            </div>
 
             <ButtonSquare
               icon={SVGPanelClose}
