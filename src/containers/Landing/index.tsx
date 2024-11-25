@@ -1,17 +1,17 @@
 'use client'
 
+import { useRouter, getPathname, LanguageEnums } from '@i18n/routing'
 import Button, { ButtonSkin, ButtonSize } from '@components/Button'
 import SVGGoogle from '@public/svg/painted/google.svg'
 import ContentPage from '@containers/ContentPage'
 import { useTranslations } from 'next-intl'
-import { useRouter } from '@i18n/routing'
 import { useSelector } from 'react-redux'
 import { signIn } from 'next-auth/react'
 import { Session } from 'next-auth'
 import { memo } from 'react'
 import clsx from 'clsx'
 
-function Landing() {
+function Landing({ locale }: { locale: LanguageEnums }) {
   const route = useRouter()
   const session = useSelector(({ session }: { session: Session | null }) => session)
 
@@ -69,7 +69,12 @@ function Landing() {
                 <Button
                   size={ButtonSize.H12}
                   skin={ButtonSkin.WHITE_100}
-                  onClick={async () => await signIn('google')}
+                  onClick={async () => {
+                    await signIn('google', {
+                      redirect: true,
+                      redirectTo: getPathname({ href: '/private', locale })
+                    })
+                  }}
                   className="px-6 gap-2 font-medium text-nowrap"
                 >
                   <SVGGoogle
@@ -181,7 +186,12 @@ function Landing() {
                   size={ButtonSize.H12}
                   skin={ButtonSkin.WHITE_100}
                   className="px-6 gap-2 font-medium"
-                  onClick={async () => await signIn('google')}
+                  onClick={async () => {
+                    await signIn('google', {
+                      redirect: true,
+                      redirectTo: getPathname({ href: '/private', locale })
+                    })
+                  }}
                 >
                   <SVGGoogle
                     width={24}
