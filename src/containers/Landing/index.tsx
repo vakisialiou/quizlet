@@ -21,7 +21,7 @@ function Landing() {
 
   return (
     <ContentPage
-      hideHeader={!session}
+      showHeader={!!session}
     >
       <header
         className={clsx('relative bg-cover bg-fixed', {
