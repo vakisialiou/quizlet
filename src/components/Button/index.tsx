@@ -52,7 +52,7 @@ export default function Button(
         'border-gray-300 text-gray-300 bg-gray-800 hover:bg-gray-700 active:bg-gray-600': skin === ButtonSkin.GRAY_500 && !disabled && active,
         'border-gray-700 text-gray-500 bg-gray-950': skin === ButtonSkin.GRAY_500 && disabled,
 
-        'border-gray-900 text-gray-900 bg-white hover:bg-gray-200 active:bg-gray-300': skin === ButtonSkin.WHITE_100 && !disabled && !active,
+        'border-gray-900/10 text-gray-900 bg-white hover:bg-gray-200 active:bg-gray-300': skin === ButtonSkin.WHITE_100 && !disabled && !active,
         'border-gray-400 text-gray-800 bg-white hover:bg-gray-200 active:bg-gray-300': skin === ButtonSkin.WHITE_100 && !disabled && active,
         'border-gray-300 text-gray-600 bg-gray-300': skin === ButtonSkin.WHITE_100 && disabled,
 

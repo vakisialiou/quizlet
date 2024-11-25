@@ -27,10 +27,10 @@ export default function ContentPage(
   const [opened, setOpened] = useState(false)
   let contentHeight = 0
   if (showHeader) {
-    contentHeight += 56
+    contentHeight += 4
   }
   if (showFooter) {
-    contentHeight += 56
+    contentHeight += 4
   }
 
   return (
@@ -54,7 +54,8 @@ export default function ContentPage(
 
       <div
         className={clsx(`overflow-y-auto`, {
-          [`h-[calc(100vh-${contentHeight}px)]`]: contentHeight > 0,
+          [`h-[calc(100vh-56px)]`]: (showHeader && !showFooter) || (!showHeader && showFooter),
+          [`h-[calc(100vh-112px)]`]: showHeader && showHeader,
           ['h-screen']: contentHeight === 0
         })}
       >
