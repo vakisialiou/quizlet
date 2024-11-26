@@ -67,7 +67,7 @@ export default async function RootLayout({
   const messages = await getMessages({ locale })
 
   return (
-    <html lang={locale}>
+    <html lang={locale} translate="no">
     <body
       suppressHydrationWarning={true}
       className={`${geistSans.variable} ${geistMono.variable} antialiased min-w-80 h-screen overflow-hidden`}

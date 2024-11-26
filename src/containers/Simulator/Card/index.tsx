@@ -46,15 +46,15 @@ function Card(
           ['card__inner_back']: isBackSideVisible
         })}
       >
-        <div className="card__front absolute w-full h-full flex flex-col gap-4 items-center justify-center p-6 border border-gray-600 bg-gray-900">
-          <p className="text-gray-500 group-hover:text-gray-400 transition-colors font-semibold text-lg text-center">
+        <div className="card__front absolute w-full h-full flex flex-col gap-4 items-center justify-center p-6 border border-gray-500/50 bg-gray-900/90">
+          <p className="text-gray-500 group-hover:text-gray-400 transition-colors font-semibold text-xl text-center">
             {faceSide.text}
           </p>
         </div>
         <div
-          className="card__back absolute w-full h-full flex flex-col gap-4 items-center justify-center p-6 border border-gray-800 bg-gray-900">
+          className="card__back absolute w-full h-full flex flex-col gap-4 items-center justify-center p-6 border border-gray-500/10 bg-gray-900/80">
           <p
-            className="text-gray-600 group-hover:text-gray-500 transition-colors font-semibold text-lg text-center">
+            className="text-gray-600 group-hover:text-gray-500 transition-colors font-semibold text-xl text-center">
             {backSide.text}
           </p>
         </div>

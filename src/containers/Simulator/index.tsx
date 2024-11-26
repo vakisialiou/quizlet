@@ -1,8 +1,8 @@
 'use client'
 
 import { ClientSimulatorData, SimulatorStatus } from '@entities/ClientSimulator'
+import React, { useEffect, useMemo, useState, useCallback, useRef } from 'react'
 import { DefaultAnswerLang, DefaultQuestionLang} from '@entities/ClientTerm'
-import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import { RollbackData } from '@containers/Simulator/Card'
 import Button, { ButtonSkin } from '@components/Button'
 import Dialog, { DialogType } from '@components/Dialog'
@@ -62,12 +62,17 @@ export default function Simulator({ folderId }: { folderId: string }) {
 
   const [showHelp, setShowHelp] = useState(false)
 
+  const showHelpRef = useRef(showHelp)
+  useEffect(() => {
+    showHelpRef.current = showHelp
+  }, [showHelp])
+
   // Сбросить активную подсказку если изменился термин.
   useEffect(() => {
-    if (showHelp) {
+    if (showHelpRef.current) {
       setShowHelp(false)
     }
-  }, [showHelp, simulator?.termId])
+  }, [simulator?.termId])
 
   const association = rollbackData?.backSide
       ? rollbackData?.backSide?.association
@@ -152,10 +157,12 @@ export default function Simulator({ folderId }: { folderId: string }) {
                 {showHelp &&
                   <CardEmpty
                     active
-                    className="absolute left-0 top-0 h-full cursor-pointer"
-                    onClick={() => setShowHelp(false)}
+                    className="absolute left-0 top-0 h-full cursor-pointer p-4"
+                    onClick={() => {
+                      setShowHelp(false)
+                    }}
                   >
-                    <div className="text-gray-600 font-semibold text-sm">
+                    <div className="text-gray-600 font-semibold text-lg">
                       {association}
                     </div>
                   </CardEmpty>

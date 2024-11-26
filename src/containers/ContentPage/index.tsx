@@ -1,9 +1,10 @@
+import { ReactNode, useState, useLayoutEffect } from 'react'
 import SVGCollapseMenu from '@public/svg/collapsemenu.svg'
 import ButtonSquare from '@components/ButtonSquare'
 import HeaderPage from '@containers/HeaderPage'
-import { ReactNode, useState } from 'react'
 import NavMenu from '@containers/NavMenu'
 import clsx from 'clsx'
+import './style.css'
 
 export default function ContentPage(
   {
@@ -26,6 +27,19 @@ export default function ContentPage(
   }) {
   const [opened, setOpened] = useState(false)
 
+  useLayoutEffect(() => {
+    const updateHeight = () => {
+      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`)
+    }
+
+    updateHeight()
+    window.addEventListener('resize', updateHeight)
+
+    return () => {
+      window.removeEventListener('resize', updateHeight)
+    }
+  }, [])
+
   return (
     <>
       {showHeader &&
@@ -47,9 +61,9 @@ export default function ContentPage(
 
       <div
         className={clsx(`overflow-y-auto`, {
-          [`h-[calc(100vh-64px)]`]: (showHeader && !showFooter) || (!showHeader && showFooter),
-          [`h-[calc(100vh-128px)]`]: showHeader && showHeader,
-          ['h-screen']: !showHeader && !showFooter
+          [`h-[calc(var(--vh)*100-64px)]`]: (showHeader && !showFooter) || (!showHeader && showFooter),
+          [`h-[calc(var(--vh)*100-128px)]`]: showHeader && showHeader,
+          ['h-[calc(var(--vh)*100)]']: !showHeader && !showFooter
         })}
       >
         {children}

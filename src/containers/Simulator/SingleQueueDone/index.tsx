@@ -82,8 +82,8 @@ export default function SingleQueueDone(
     >
       <div
         ref={ref}
+        className="fixed"
         data-attr="container"
-        className={`fixed`}
         style={{width: 'inherit', height: 'inherit'}}
       >
         {tiles.map(({duration, delay, directionX, directionY}, index) => {
