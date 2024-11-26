@@ -4,7 +4,7 @@ import { ClientSimulatorData, SimulatorStatus } from '@entities/ClientSimulator'
 import { DefaultAnswerLang, DefaultQuestionLang} from '@entities/ClientTerm'
 import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import { RollbackData } from '@containers/Simulator/Card'
-import Button, {ButtonSize, ButtonSkin} from '@components/Button'
+import Button, { ButtonSkin } from '@components/Button'
 import Dialog, { DialogType } from '@components/Dialog'
 import CardEmpty from '@containers/Simulator/CardEmpty'
 import ButtonSquare from '@components/ButtonSquare'
@@ -93,7 +93,6 @@ export default function Simulator({ folderId }: { folderId: string }) {
           <div className="flex gap-2 w-full max-w-96">
             <Button
               className="w-1/2"
-              size={ButtonSize.H10}
               skin={ButtonSkin.GREEN}
               disabled={!folder || simulator?.status !== SimulatorStatus.PROCESSING}
               onClick={() => {
@@ -107,7 +106,6 @@ export default function Simulator({ folderId }: { folderId: string }) {
 
             <Button
               className="w-1/2"
-              size={ButtonSize.H10}
               skin={ButtonSkin.WHITE}
               disabled={!folder || simulator?.status !== SimulatorStatus.PROCESSING}
               onClick={() => {

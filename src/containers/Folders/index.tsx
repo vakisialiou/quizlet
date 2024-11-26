@@ -1,7 +1,7 @@
 'use client'
 
 import ClientFolder, {ClientFolderData} from '@entities/ClientFolder'
-import Button, {ButtonSize, ButtonSkin} from '@components/Button'
+import Button, { ButtonSkin } from '@components/Button'
 import {FoldersType} from '@store/initial-state'
 import ContentPage from '@containers/ContentPage'
 import MetaLabel from '@components/MetaLabel'
@@ -35,7 +35,6 @@ export default function Folders() {
       footer={(
         <div className="flex w-full justify-center lg:justify-end">
           <Button
-            size={ButtonSize.H12}
             skin={ButtonSkin.WHITE}
             className="w-full lg:w-auto px-8 gap-1"
             onClick={() => {

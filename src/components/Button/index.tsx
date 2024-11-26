@@ -23,7 +23,7 @@ export default function Button(
     shadow = true,
     active = false,
     disabled = false,
-    size = ButtonSize.H11,
+    size = ButtonSize.H12,
     skin = ButtonSkin.GRAY
   }:
   {

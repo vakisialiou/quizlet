@@ -1,10 +1,10 @@
 'use client'
 
 import { useRouter, getPathname, LanguageEnums } from '@i18n/routing'
-import Button, { ButtonSkin, ButtonSize } from '@components/Button'
-import Dropdown from '@components/Dropdown'
+import Button, { ButtonSkin } from '@components/Button'
 import SVGGoogle from '@public/svg/painted/google.svg'
 import ContentPage from '@containers/ContentPage'
+import Dropdown from '@components/Dropdown'
 import { useTranslations } from 'next-intl'
 import { useSelector } from 'react-redux'
 import { signIn } from 'next-auth/react'
@@ -62,7 +62,6 @@ function Landing({ locale }: { locale: LanguageEnums }) {
             <div className="flex flex-col text-center text-white px-6 max-w-[900px]">
               <div className="flex justify-center">
                 <Button
-                  size={ButtonSize.H12}
                   skin={ButtonSkin.WHITE}
                   onClick={() => route.push('/private')}
                   className="px-6 gap-2 font-medium text-nowrap"
@@ -85,7 +84,6 @@ function Landing({ locale }: { locale: LanguageEnums }) {
 
               <div className="flex justify-center">
                 <Button
-                  size={ButtonSize.H12}
                   skin={ButtonSkin.WHITE}
                   onClick={async () => {
                     await signIn('google', {
@@ -201,7 +199,6 @@ function Landing({ locale }: { locale: LanguageEnums }) {
 
               <div className="flex justify-center gap-8">
                 <Button
-                  size={ButtonSize.H12}
                   skin={ButtonSkin.WHITE}
                   className="px-6 gap-2 font-medium"
                   onClick={async () => {

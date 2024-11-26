@@ -1,9 +1,9 @@
 'use client'
 
-import Button, {ButtonSize, ButtonSkin} from '@components/Button'
 import ClientTerm, {ClientTermData} from '@entities/ClientTerm'
-import {FoldersType, TermsType} from '@store/initial-state'
+import { FoldersType, TermsType } from '@store/initial-state'
 import React, {useEffect, useMemo, useState} from 'react'
+import Button, { ButtonSkin } from '@components/Button'
 import ButtonSquare from '@components/ButtonSquare'
 import ContentPage from '@containers/ContentPage'
 import SVGBack from '@public/svg/back.svg'
@@ -53,7 +53,6 @@ export default function Terms({ folderId }: { folderId: string }) {
         <div className="flex w-full justify-center text-center">
           <div className="flex gap-2 w-full max-w-96">
             <Button
-              size={ButtonSize.H12}
               skin={ButtonSkin.WHITE}
               className="w-1/2 gap-1"
               onClick={() => {
@@ -69,8 +68,6 @@ export default function Terms({ folderId }: { folderId: string }) {
               Create
             </Button>
             <Button
-
-              size={ButtonSize.H12}
               skin={ButtonSkin.GREEN}
               className="w-1/2 gap-1"
               onClick={() => {
