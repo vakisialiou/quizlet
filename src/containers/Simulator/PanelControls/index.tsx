@@ -37,7 +37,7 @@ export default function PanelControls(
 ) {
   const controls = {
     deactivate: {
-     disabled: !simulator || options.deactivate?.disabled || simulator.status === SimulatorStatus.WAITING,
+     disabled: !simulator || options.deactivate?.disabled || simulator.status !== SimulatorStatus.PROCESSING,
      active: !!options.deactivate?.active
     },
     back: {
@@ -54,8 +54,6 @@ export default function PanelControls(
     }
   }
 
-  const showSkeleton = process || !simulator
-
   return (
     <div
       className={clsx('flex flex-col items-center gap-2', {
@@ -67,21 +65,13 @@ export default function PanelControls(
         disabled={process || controls.deactivate.disabled}
         onClick={() => onClick('deactivate')}
       >
-        {!showSkeleton &&
-          <SVGPanelClose
-            width={24}
-            height={24}
-            className={clsx('text-gray-400', {
-              ['text-gray-600']: controls.deactivate.disabled
-            })}
-          />
-        }
-
-        {showSkeleton &&
-          <div className="animate-pulse flex">
-            <div className="h-6 w-6 bg-slate-700" />
-          </div>
-        }
+        <SVGPanelClose
+          width={24}
+          height={24}
+          className={clsx('text-gray-400', {
+            ['text-gray-600']: controls.deactivate.disabled
+          })}
+        />
       </Button>
 
       <Button
@@ -89,21 +79,13 @@ export default function PanelControls(
         disabled={process || controls.back.disabled}
         onClick={() => onClick('back')}
       >
-        {!showSkeleton &&
-          <SVGLoopBack
-            width={24}
-            height={24}
-            className={clsx('text-gray-400', {
-              ['text-gray-600']: controls.back.disabled
-            })}
-          />
-        }
-
-        {showSkeleton &&
-          <div className="animate-pulse flex">
-            <div className="h-6 w-6 bg-slate-700" />
-          </div>
-        }
+        <SVGLoopBack
+          width={24}
+          height={24}
+          className={clsx('text-gray-400', {
+            ['text-gray-600']: controls.back.disabled
+          })}
+        />
       </Button>
 
       <Button
@@ -111,21 +93,13 @@ export default function PanelControls(
         disabled={process || controls.help.disabled}
         onClick={() => onClick('help')}
       >
-        {!showSkeleton &&
-          <SVGHelp
-            width={24}
-            height={24}
-            className={clsx('text-gray-400', {
-              ['text-gray-600']: controls.help.disabled
-            })}
-          />
-        }
-
-        {showSkeleton &&
-          <div className="animate-pulse flex">
-            <div className="h-6 w-6 bg-slate-700" />
-          </div>
-        }
+        <SVGHelp
+          width={24}
+          height={24}
+          className={clsx('text-gray-400', {
+            ['text-gray-600']: controls.help.disabled
+          })}
+        />
       </Button>
 
       <Button
@@ -133,21 +107,13 @@ export default function PanelControls(
         disabled={process || controls.sound.disabled}
         onClick={() => onClick('sound')}
       >
-        {!showSkeleton &&
-          <SVGMuteOn
-            width={24}
-            height={24}
-            className={clsx('text-gray-400', {
-              ['text-gray-600']: controls.sound.disabled
-            })}
-          />
-        }
-
-        {showSkeleton &&
-          <div className="animate-pulse flex">
-            <div className="h-6 w-6 bg-slate-700" />
-          </div>
-        }
+        <SVGMuteOn
+          width={24}
+          height={24}
+          className={clsx('text-gray-400', {
+            ['text-gray-600']: controls.sound.disabled
+          })}
+        />
       </Button>
     </div>
   )

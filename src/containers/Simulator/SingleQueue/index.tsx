@@ -3,6 +3,7 @@ import SingleQueueFinish from '@containers/Simulator/SingleQueueFinish'
 import SingleQueueStart from '@containers/Simulator/SingleQueueStart'
 import SingleQueueDone from '@containers/Simulator/SingleQueueDone'
 import Card, { onRollCallback } from '@containers/Simulator/Card'
+import { useEffectTimeout } from '@hooks/useEffectTimeout'
 import { ClientFolderData } from '@entities/ClientFolder'
 import { useMemo, memo } from 'react'
 
@@ -21,6 +22,9 @@ function SingleQueue(
     return (folder?.terms || []).find(({ id }) => id === simulator.termId)
   }, [folder, simulator.termId])
 
+  useEffectTimeout(() => {
+  }, simulator.active, 2000)
+
   const faceSide = {
     association: activeTerm?.association || null,
     text: simulator.settings.inverted ? activeTerm?.answer : activeTerm?.question,
@@ -35,7 +39,6 @@ function SingleQueue(
 
   return (
     <div className="flex flex-col gap-2">
-
       {simulator.status === SimulatorStatus.WAITING &&
         <SingleQueueStart folder={folder} />
       }
@@ -48,18 +51,19 @@ function SingleQueue(
       }
 
       {simulator.status === SimulatorStatus.DONE &&
-        <SingleQueueDone folder={folder} />
+        <SingleQueueDone
+          folder={folder}
+          particlesImage="/images/test-card-1.jpg"
+        />
       }
 
       {simulator.status === SimulatorStatus.PROCESSING && activeTerm &&
-        <>
-          <Card
-            onRoll={onRoll}
-            key={activeTerm.id}
-            faceSide={faceSide}
-            backSide={backSide}
-          />
-        </>
+        <Card
+          onRoll={onRoll}
+          key={activeTerm.id}
+          faceSide={faceSide}
+          backSide={backSide}
+        />
       }
     </div>
   )

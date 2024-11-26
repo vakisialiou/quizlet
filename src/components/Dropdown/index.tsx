@@ -20,9 +20,10 @@ enum Placement {
 
 export type DropdownItemType = {
   id: string | number,
-  name: ReactNode | string,
-  className?: string,
   disabled?: boolean
+  className?: string,
+  name: ReactNode | string,
+  href?: string | null | undefined,
 }
 
 export default function Dropdown(
@@ -152,8 +153,14 @@ export default function Dropdown(
             {items.length > 0 &&
               <div className="py-1">
                 {items.map((item: DropdownItemType) => {
+                  const Component = item.href ? 'a' : 'div'
+                  const attr = {} as { href?: string }
+                  if (item.href) {
+                    attr.href = item.href
+                  }
                   return (
-                    <div
+                    <Component
+                      {...attr}
                       key={item.id}
                       className={clsx('block px-4 py-2 text-sm text-gray-400 transition-colors', {
                         ['bg-gray-900']: item.id === selected,
@@ -170,7 +177,7 @@ export default function Dropdown(
                       }}
                     >
                       {item.name}
-                    </div>
+                    </Component>
                   )
                 })}
               </div>

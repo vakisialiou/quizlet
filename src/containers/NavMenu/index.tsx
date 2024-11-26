@@ -27,8 +27,8 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
       <div
         className="absolute w-full md:w-1/2 lg:w-1/3 xl:w-1/4 2xl:1/5 h-full bg-black border-r border-gray-700 flex flex-col">
 
-        <div className="flex flex-col border-b border-gray-700 p-4 bg-gray-900/70">
-          <div className="h-8 flex justify-between">
+        <div className="flex h-16 px-4 flex-col border-b border-gray-700 p-4 bg-gray-900/70">
+          <div className="flex h-8 justify-between">
             <div className="flex gap-4 items-center">
               <Image
                 priority

@@ -51,8 +51,10 @@ function Card(
             {faceSide.text}
           </p>
         </div>
-        <div className="card__back absolute w-full h-full flex flex-col gap-4 items-center justify-center p-6 border border-gray-800 bg-gray-900">
-          <p className="text-gray-600 group-hover:text-gray-500 transition-colors font-semibold text-lg text-center">
+        <div
+          className="card__back absolute w-full h-full flex flex-col gap-4 items-center justify-center p-6 border border-gray-800 bg-gray-900">
+          <p
+            className="text-gray-600 group-hover:text-gray-500 transition-colors font-semibold text-lg text-center">
             {backSide.text}
           </p>
         </div>

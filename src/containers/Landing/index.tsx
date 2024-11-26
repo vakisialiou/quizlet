@@ -2,6 +2,7 @@
 
 import { useRouter, getPathname, LanguageEnums } from '@i18n/routing'
 import Button, { ButtonSkin, ButtonSize } from '@components/Button'
+import Dropdown from '@components/Dropdown'
 import SVGGoogle from '@public/svg/painted/google.svg'
 import ContentPage from '@containers/ContentPage'
 import { useTranslations } from 'next-intl'
@@ -19,6 +20,13 @@ function Landing({ locale }: { locale: LanguageEnums }) {
 
   const t = useTranslations('Landing')
 
+  const localeDropdownList = [
+    { id: LanguageEnums.EN, name: 'English', href: getPathname({ href: '/', locale: LanguageEnums.EN }) },
+    { id: LanguageEnums.RU, name: 'Русский', href: getPathname({ href: '/', locale: LanguageEnums.RU }) },
+  ]
+
+  const localeDropdownValue = localeDropdownList.find(({ id }) => id === locale)
+
   return (
     <ContentPage
       showHeader={!!session}
@@ -34,8 +42,18 @@ function Landing({ locale }: { locale: LanguageEnums }) {
         }}
       >
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="absolute top-4 right-4">
+            <Dropdown
+              caret
+              items={localeDropdownList}
+              className="py-2 px-2"
+            >
+              {localeDropdownValue?.name || 'Language'}
+            </Dropdown>
+          </div>
+
           <div
-            className="absolute top-4 right-4 text-white bg-yellow-500 text-sm font-bold px-4 py-1 rounded-full"
+            className="absolute top-4 left-4 text-white bg-yellow-500 text-sm font-bold px-4 py-1 rounded-full"
           >
             Beta
           </div>
@@ -45,7 +63,7 @@ function Landing({ locale }: { locale: LanguageEnums }) {
               <div className="flex justify-center">
                 <Button
                   size={ButtonSize.H12}
-                  skin={ButtonSkin.WHITE_100}
+                  skin={ButtonSkin.WHITE}
                   onClick={() => route.push('/private')}
                   className="px-6 gap-2 font-medium text-nowrap"
                 >
@@ -68,7 +86,7 @@ function Landing({ locale }: { locale: LanguageEnums }) {
               <div className="flex justify-center">
                 <Button
                   size={ButtonSize.H12}
-                  skin={ButtonSkin.WHITE_100}
+                  skin={ButtonSkin.WHITE}
                   onClick={async () => {
                     await signIn('google', {
                       redirect: true,
@@ -184,7 +202,7 @@ function Landing({ locale }: { locale: LanguageEnums }) {
               <div className="flex justify-center gap-8">
                 <Button
                   size={ButtonSize.H12}
-                  skin={ButtonSkin.WHITE_100}
+                  skin={ButtonSkin.WHITE}
                   className="px-6 gap-2 font-medium"
                   onClick={async () => {
                     await signIn('google', {

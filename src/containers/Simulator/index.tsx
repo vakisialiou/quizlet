@@ -1,8 +1,8 @@
 'use client'
 
+import { ClientSimulatorData, SimulatorStatus } from '@entities/ClientSimulator'
 import { DefaultAnswerLang, DefaultQuestionLang} from '@entities/ClientTerm'
 import React, { useEffect, useMemo, useState, useCallback } from 'react'
-import { ClientSimulatorData } from '@entities/ClientSimulator'
 import { RollbackData } from '@containers/Simulator/Card'
 import Button, {ButtonSize, ButtonSkin} from '@components/Button'
 import Dialog, { DialogType } from '@components/Dialog'
@@ -62,6 +62,13 @@ export default function Simulator({ folderId }: { folderId: string }) {
 
   const [showHelp, setShowHelp] = useState(false)
 
+  // Сбросить активную подсказку если изменился термин.
+  useEffect(() => {
+    if (showHelp) {
+      setShowHelp(false)
+    }
+  }, [showHelp, simulator?.termId])
+
   const association = rollbackData?.backSide
       ? rollbackData?.backSide?.association
       : rollbackData?.faceSide?.association
@@ -87,8 +94,8 @@ export default function Simulator({ folderId }: { folderId: string }) {
             <Button
               className="w-1/2"
               size={ButtonSize.H10}
-              skin={ButtonSkin.GREEN_500}
-              disabled={!folder}
+              skin={ButtonSkin.GREEN}
+              disabled={!folder || simulator?.status !== SimulatorStatus.PROCESSING}
               onClick={() => {
                 if (folder) {
                   actionRememberSimulators({folderId: folder.id})
@@ -101,8 +108,8 @@ export default function Simulator({ folderId }: { folderId: string }) {
             <Button
               className="w-1/2"
               size={ButtonSize.H10}
-              skin={ButtonSkin.WHITE_100}
-              disabled={!folder}
+              skin={ButtonSkin.WHITE}
+              disabled={!folder || simulator?.status !== SimulatorStatus.PROCESSING}
               onClick={() => {
                 if (folder) {
                   actionContinueSimulators({folderId: folder.id})
@@ -219,7 +226,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
           >
             <Button
               className="w-28"
-              skin={ButtonSkin.GRAY_500}
+              skin={ButtonSkin.GRAY}
               onClick={() => {
                 actionDeactivateSimulators({folderId: stopFolderId}, () => {
                   setStopFolderId(null)
@@ -231,7 +238,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
 
             <Button
               className="w-28"
-              skin={ButtonSkin.WHITE_100}
+              skin={ButtonSkin.WHITE}
               onClick={() => setStopFolderId(null)}
             >
               Cancel

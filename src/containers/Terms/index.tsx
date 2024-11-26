@@ -53,8 +53,8 @@ export default function Terms({ folderId }: { folderId: string }) {
         <div className="flex w-full justify-center text-center">
           <div className="flex gap-2 w-full max-w-96">
             <Button
-              size={ButtonSize.H10}
-              skin={ButtonSkin.WHITE_100}
+              size={ButtonSize.H12}
+              skin={ButtonSkin.WHITE}
               className="w-1/2 gap-1"
               onClick={() => {
                 const term = new ClientTerm(folderId).serialize()
@@ -69,8 +69,9 @@ export default function Terms({ folderId }: { folderId: string }) {
               Create
             </Button>
             <Button
-              size={ButtonSize.H10}
-              skin={ButtonSkin.GREEN_500}
+
+              size={ButtonSize.H12}
+              skin={ButtonSkin.GREEN}
               className="w-1/2 gap-1"
               onClick={() => {
                 if (folder) {
@@ -138,7 +139,7 @@ export default function Terms({ folderId }: { folderId: string }) {
         >
           <Button
             className="w-28"
-            skin={ButtonSkin.GRAY_500}
+            skin={ButtonSkin.GRAY}
             onClick={() => {
               actionDeleteTerm(removeTerm, () => {
                 setRemoveTerm(null)
@@ -153,7 +154,7 @@ export default function Terms({ folderId }: { folderId: string }) {
 
           <Button
             className="w-28"
-            skin={ButtonSkin.WHITE_100}
+            skin={ButtonSkin.WHITE}
             onClick={() => setRemoveTerm(null)}
           >
             Cancel

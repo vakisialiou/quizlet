@@ -2,9 +2,9 @@ import React, { BaseSyntheticEvent } from 'react'
 import clsx from 'clsx'
 
 export enum ButtonSkin {
-  GRAY_500 = 'gray-500',
-  GREEN_500 = 'green-500',
-  WHITE_100 = 'white-100',
+  GRAY = 'gray',
+  GREEN = 'green',
+  WHITE = 'white',
 }
 
 export enum ButtonSize {
@@ -19,15 +19,19 @@ export default function Button(
     children,
     onClick,
     className,
+    border = true,
+    shadow = true,
     active = false,
     disabled = false,
     size = ButtonSize.H11,
-    skin = ButtonSkin.GRAY_500
+    skin = ButtonSkin.GRAY
   }:
   {
     children: React.ReactNode,
     onClick: (e: BaseSyntheticEvent) => void,
     className?: string,
+    border?: boolean,
+    shadow?: boolean,
     active?: boolean,
     disabled?: boolean,
     size?: ButtonSize,
@@ -38,23 +42,24 @@ export default function Button(
   return (
     <div
       onClick={onClick}
-      className={clsx('border select-none flex items-center justify-center', {
+      className={clsx('select-none flex items-center justify-center rounded transition-all', {
         [className || '']: className,
         'pointer-events-none': disabled,
         'cursor-not-allowed': disabled,
         'cursor-pointer': !disabled,
 
-        'border-green-900 text-gray-100 bg-green-700 hover:bg-green-800 active:bg-green-900': skin === ButtonSkin.GREEN_500 && !disabled && !active,
-        'border-green-600 text-gray-100 bg-green-700 hover:bg-green-800 active:bg-green-900': skin === ButtonSkin.GREEN_500 && !disabled && active,
-        'border-gray-700 text-gray-500 bg-green-950': skin === ButtonSkin.GREEN_500 && disabled,
+        'border': border,
+        'shadow-inner': shadow,
+        'border-green-500/50 shadow-white/30 hover:shadow-white/40 text-white bg-green-500/70 hover:bg-green-500/80 active:bg-green-500/90': skin === ButtonSkin.GREEN && !disabled && !active,
+        'border-green-100/50 shadow-white/30 hover:shadow-white/40 text-white bg-green-600/50 hover:bg-green-600/60 active:bg-green-600/70': skin === ButtonSkin.GREEN && !disabled && active,
 
-        'border-gray-500 text-gray-300 bg-gray-800 hover:bg-gray-700 active:bg-gray-600': skin === ButtonSkin.GRAY_500 && !disabled && !active,
-        'border-gray-300 text-gray-300 bg-gray-800 hover:bg-gray-700 active:bg-gray-600': skin === ButtonSkin.GRAY_500 && !disabled && active,
-        'border-gray-700 text-gray-500 bg-gray-950': skin === ButtonSkin.GRAY_500 && disabled,
+        'border-gray-500/50 shadow-gray-400/50 hover:shadow-gray-400/60 text-white bg-gray-600/70 hover:bg-gray-600/80 active:bg-gray-600/90': skin === ButtonSkin.GRAY && !disabled && !active,
+        'border-gray-300/50 shadow-gray-400/50 hover:shadow-gray-400/60 text-white bg-gray-700/50 hover:bg-gray-700/60 active:bg-gray-700/70': skin === ButtonSkin.GRAY && !disabled && active,
 
-        'border-gray-900/10 text-gray-900 bg-white hover:bg-gray-200 active:bg-gray-300': skin === ButtonSkin.WHITE_100 && !disabled && !active,
-        'border-gray-400 text-gray-800 bg-white hover:bg-gray-200 active:bg-gray-300': skin === ButtonSkin.WHITE_100 && !disabled && active,
-        'border-gray-300 text-gray-600 bg-gray-300': skin === ButtonSkin.WHITE_100 && disabled,
+        'border-gray-900/50 shadow-gray-700/50 hover:shadow-gray-700/60 text-gray-900 bg-white hover:bg-white/90 active:bg-white/80': skin === ButtonSkin.WHITE && !disabled && !active,
+        'border-gray-100/50 shadow-gray-700/50 hover:shadow-gray-700/60 text-gray-900 bg-white hover:bg-white/80 active:bg-white/70': skin === ButtonSkin.WHITE && !disabled && active,
+
+        'border-gray-500/50 shadow-none text-gray-500/50 bg-transparent': disabled,
 
         'h-12 min-w-12 text-lg': size === ButtonSize.H12,
         'h-11 min-w-11 text-lg': size === ButtonSize.H11,

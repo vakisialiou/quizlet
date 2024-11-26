@@ -25,13 +25,6 @@ export default function ContentPage(
     showFooter?: boolean,
   }) {
   const [opened, setOpened] = useState(false)
-  let contentHeight = 0
-  if (showHeader) {
-    contentHeight += 4
-  }
-  if (showFooter) {
-    contentHeight += 4
-  }
 
   return (
     <>
@@ -54,16 +47,16 @@ export default function ContentPage(
 
       <div
         className={clsx(`overflow-y-auto`, {
-          [`h-[calc(100vh-56px)]`]: (showHeader && !showFooter) || (!showHeader && showFooter),
-          [`h-[calc(100vh-112px)]`]: showHeader && showHeader,
-          ['h-screen']: contentHeight === 0
+          [`h-[calc(100vh-64px)]`]: (showHeader && !showFooter) || (!showHeader && showFooter),
+          [`h-[calc(100vh-128px)]`]: showHeader && showHeader,
+          ['h-screen']: !showHeader && !showFooter
         })}
       >
         {children}
       </div>
 
       {showFooter &&
-        <div className="w-full h-14 px-2 flex gap-2 items-center justify-between bg-gray-900/20 relative">
+        <div className="w-full h-16 px-2 flex gap-2 items-center justify-between bg-gray-900/20 relative">
           <div className="w-full h-[1px] bg-gray-700 absolute top-0 left-0"/>
           {footer}
         </div>

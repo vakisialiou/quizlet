@@ -38,71 +38,35 @@ export default function PanelInfo(
     }
   }, [simulator?.status])
 
+  const termIds = simulator && !process ? simulator?.termIds : []
+  const continueIds = simulator && !process ? simulator?.continueIds : []
+  const rememberIds = simulator && !process ? simulator?.rememberIds : []
+
   return (
     <div
       className={clsx('flex items-center justify-between select-none gap-2', {
         [className]: className
       })}
     >
-      {(!process && simulator) &&
-        <>
-          <RoundInfo
-            title="Total"
-            value={simulator.termIds.length}
-          />
+      <RoundInfo
+        title="Total"
+        value={termIds.length}
+      />
 
-          <RoundInfo
-            title="Wait"
-            value={Math.max(simulator.termIds.length - simulator.continueIds.length - simulator.rememberIds.length, 0)}
-          />
+      <RoundInfo
+        title="Wait"
+        value={Math.max(termIds.length - continueIds.length - rememberIds.length, 0)}
+      />
 
-          <RoundInfo
-            title="Done"
-            value={simulator.rememberIds.length}
-          />
+      <RoundInfo
+        title="Done"
+        value={rememberIds.length}
+      />
 
-          <RoundInfo
-            title="Time"
-            value={<span ref={refTimer}>00:00:00</span>}
-          />
-        </>
-      }
-
-      {(process || !simulator) &&
-        <>
-          <div
-            className="bg-gray-900 border border-gray-600 w-20 h-20 rounded-full flex items-center justify-center">
-            <div className="animate-pulse flex flex-col items-center justify-center gap-2">
-              <div className="h-1.5 w-10 bg-slate-700"/>
-              <div className="h-1.5 w-8 bg-slate-700"/>
-            </div>
-          </div>
-
-          <div
-            className="bg-gray-900 border border-gray-600 w-20 h-20 rounded-full flex items-center justify-center">
-            <div className="animate-pulse flex flex-col items-center justify-center gap-2">
-              <div className="h-1.5 w-10 bg-slate-700"/>
-              <div className="h-1.5 w-8 bg-slate-700"/>
-            </div>
-          </div>
-
-          <div
-            className="bg-gray-900 border border-gray-600 w-20 h-20 rounded-full flex items-center justify-center">
-            <div className="animate-pulse flex flex-col items-center justify-center gap-2">
-              <div className="h-1.5 w-10 bg-slate-700"/>
-              <div className="h-1.5 w-8 bg-slate-700"/>
-            </div>
-          </div>
-
-          <div
-            className="bg-gray-900 border border-gray-600 w-20 h-20 rounded-full flex items-center justify-center">
-            <div className="animate-pulse flex flex-col items-center justify-center gap-2">
-              <div className="h-1.5 w-10 bg-slate-700"/>
-              <div className="h-1.5 w-8 bg-slate-700"/>
-            </div>
-          </div>
-        </>
-      }
+      <RoundInfo
+        title="Time"
+        value={<span ref={refTimer}>00:00:00</span>}
+      />
     </div>
   )
 }

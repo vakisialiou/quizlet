@@ -33,11 +33,11 @@ export default function Folders() {
       showFooter
       title="Collections"
       footer={(
-        <div className="flex w-full justify-center">
+        <div className="flex w-full justify-center lg:justify-end">
           <Button
-            size={ButtonSize.H10}
-            skin={ButtonSkin.WHITE_100}
-            className="w-full md:w-44 gap-1"
+            size={ButtonSize.H12}
+            skin={ButtonSkin.WHITE}
+            className="w-full lg:w-auto px-8 gap-1"
             onClick={() => {
               const folder = new ClientFolder().serialize()
               actionSaveFolder({folder, editId: folder.id})
@@ -106,7 +106,7 @@ export default function Folders() {
         >
           <Button
             className="w-28"
-            skin={ButtonSkin.GRAY_500}
+            skin={ButtonSkin.GRAY}
             onClick={() => {
               actionDeleteFolder(removeFolder, () => {
                 setRemoveFolder(null)
@@ -121,7 +121,7 @@ export default function Folders() {
 
           <Button
             className="w-28"
-            skin={ButtonSkin.WHITE_100}
+            skin={ButtonSkin.WHITE}
             onClick={() => setRemoveFolder(null)}
           >
             Cancel
