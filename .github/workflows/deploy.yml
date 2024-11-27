@@ -46,6 +46,7 @@ jobs:
         run: |
           ssh root@104.131.51.32 << 'EOF'
 
+          docker images --filter "reference=next" --format "{{.ID}} {{.CreatedAt}}" | sort -rk2 | awk 'NR>3 {print $1}' | xargs -r docker rmi
           docker system prune -f
           echo "Docker system prune completed."
 
