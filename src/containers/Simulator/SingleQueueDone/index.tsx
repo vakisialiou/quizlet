@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, useLayoutEffect, useMemo } from 're
 import { ClientFolderData } from '@entities/ClientFolder'
 import { actionDeactivateSimulators } from '@store/index'
 import CardEmpty from '@containers/Simulator/CardEmpty'
+import clsx from "clsx";
 
 const randFloat = (min: number, max: number) => {
   return Math.random() * (max - min) + min
@@ -78,13 +79,14 @@ export default function SingleQueueDone(
 
   return (
     <CardEmpty
-      className="relative animate-shake4"
+      className={clsx('relative overflow-hidden', {
+        ['overflow-hidden']: !exploded
+      })}
     >
       <div
         ref={ref}
-        className="fixed"
         data-attr="container"
-        style={{width: 'inherit', height: 'inherit'}}
+        className="absolute left-0 top-0 w-full h-full"
       >
         {tiles.map(({duration, delay, directionX, directionY}, index) => {
           const width = containerSize.width / particleColumns

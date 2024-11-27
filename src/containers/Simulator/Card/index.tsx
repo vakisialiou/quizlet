@@ -42,17 +42,17 @@ function Card(
       }}
     >
       <div
-        className={clsx('card__inner relative w-full h-full transition-colors', {
+        className={clsx('card__inner relative w-full h-full transition-colors rounded border border-gray-500/50 bg-gray-500/10 shadow-inner shadow-gray-500/20', {
           ['card__inner_back']: isBackSideVisible
         })}
       >
-        <div className="card__front absolute w-full h-full flex flex-col gap-4 items-center justify-center p-6 border border-gray-500/50 bg-gray-900/90">
+        <div className="card__front absolute w-full h-full flex flex-col gap-4 items-center justify-center p-6 rounded">
           <p className="text-gray-500 group-hover:text-gray-400 transition-colors font-semibold text-xl text-center">
             {faceSide.text}
           </p>
         </div>
         <div
-          className="card__back absolute w-full h-full flex flex-col gap-4 items-center justify-center p-6 border border-gray-500/10 bg-gray-900/80">
+          className="card__back absolute w-full h-full flex flex-col gap-4 items-center justify-center p-6 rounded">
           <p
             className="text-gray-600 group-hover:text-gray-500 transition-colors font-semibold text-xl text-center">
             {backSide.text}

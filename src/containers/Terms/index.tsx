@@ -36,6 +36,8 @@ export default function Terms({ folderId }: { folderId: string }) {
     return folders.items.find(({ id }) => id === folderId)
   }, [folders.items, folderId])
 
+  console.log(folder?.simulators || [])
+
   return (
     <ContentPage
       showHeader

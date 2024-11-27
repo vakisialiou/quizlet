@@ -9,9 +9,9 @@ export default function CardEmpty(
     <div
       style={style}
       onClick={onClick}
-      className={clsx('flex flex-col w-72 h-96 gap-4 items-center justify-center text-center border', {
-        ['bg-gray-800 border-gray-500']: active,
-        ['bg-gray-900 border-gray-700']: !active,
+      className={clsx('flex flex-col w-72 h-96 gap-4 items-center justify-center text-center rounded border border-gray-500/50 bg-gray-500/10 shadow-inner shadow-gray-500/20', {
+        ['border-gray-500']: active,
+        ['border-gray-700']: !active,
         [className]: className
       })}
     >

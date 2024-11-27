@@ -28,12 +28,9 @@ export default function SingleQueueStart(
     >
       {(process || !folder) &&
         <div className="animate-pulse flex w-full">
-          <div className="flex flex-col w-full gap-8 items-center">
-            <div className="h-3 bg-slate-700 w-1/3"></div>
-            <div className="flex flex-col w-full gap-2 items-center">
-              <div className="h-2 bg-slate-700 w-1/2"></div>
-              <div className="h-2 bg-slate-700 w-44"></div>
-            </div>
+          <div className="flex flex-col w-full gap-2 items-center">
+            <div className="h-3 bg-gray-500 opacity-40 w-1/3 rounded"></div>
+            <div className="h-3 bg-gray-500 opacity-40 w-1/2 rounded"></div>
           </div>
         </div>
       }
