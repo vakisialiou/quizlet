@@ -2,6 +2,12 @@ import { v4 } from 'uuid'
 
 import ClientSettingsSimulator, { ClientSettingsSimulatorData } from '@entities/ClientSettingsSimulator'
 
+export enum SimulatorType {
+  FLASHCARD = 'flashcard',
+  INPUT = 'input',
+  PICK = 'pick',
+}
+
 export enum SimulatorStatus {
   PROCESSING = 'processing',
   FINISHING = 'finishing',
@@ -14,7 +20,9 @@ export type ClientSimulatorData = {
   active: boolean
   folderId: string
   duration: number
+  progress: number
   status: SimulatorStatus
+  type: SimulatorType,
   termId: string | null
   termIds: string[]
   rememberIds: string[]
@@ -29,7 +37,9 @@ export default class ClientSimulator {
   active: boolean
   folderId: string
   duration: number
+  progress: number
   status: SimulatorStatus
+  type: SimulatorType
   termId: string | null
   termIds: string[]
   rememberIds: string[]
@@ -43,7 +53,9 @@ export default class ClientSimulator {
     this.active = false
     this.folderId = folderId
     this.duration = 0
+    this.progress = 0
     this.status = status
+    this.type = SimulatorType.FLASHCARD
     this.termId = null
     this.termIds = []
     this.historyIds = []
@@ -70,6 +82,16 @@ export default class ClientSimulator {
 
   setDuration(value: number): ClientSimulator {
     this.duration = value
+    return this
+  }
+
+  setProgress(value: number): ClientSimulator {
+    this.progress = value
+    return this
+  }
+
+  setType(type: SimulatorType): ClientSimulator {
+    this.type = type
     return this
   }
 

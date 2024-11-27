@@ -20,6 +20,7 @@ import {
   actionUpdateTerm,
   actionUpdateTermItem
 } from '@store/index'
+// import Achievement from '@entities/Achievement'
 
 export default function Terms({ folderId }: { folderId: string }) {
   useEffect(actionFetchFolders, [])
@@ -36,7 +37,8 @@ export default function Terms({ folderId }: { folderId: string }) {
     return folders.items.find(({ id }) => id === folderId)
   }, [folders.items, folderId])
 
-  console.log(folder?.simulators || [])
+  // const achievements = new Achievement().calculate(folder?.simulators || [])
+  // console.log(folder?.simulators || [], achievements)
 
   return (
     <ContentPage

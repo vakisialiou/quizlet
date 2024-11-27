@@ -108,7 +108,9 @@ model Simulator {
   folderId    String     @db.VarChar(36)
   active      Boolean
   duration    Int?
+  progress    Int        @default(0)
   status      String     @db.VarChar(20)
+  type        String?    @db.VarChar(20)
   termId      String?    @db.VarChar(36)
   termIds     Json       @default("[]")
   rememberIds Json       @default("[]")
