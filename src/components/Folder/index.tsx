@@ -3,6 +3,7 @@ import { ClientFolderData } from '@entities/ClientFolder'
 import SVGThreeDots from '@public/svg/three_dots.svg'
 import SVGPlay from '@public/svg/play.svg'
 import Spinner from '@components/Spinner'
+import Input from '@components/Input'
 import { Link } from '@i18n/routing'
 import { ReactNode } from 'react'
 import clsx from 'clsx'
@@ -39,9 +40,9 @@ export default function Folder(
 ) {
   return (
     <div
-      className={clsx('border w-full rounded flex justify-between bg-gray-500/10 select-none overflow-hidden', {
-        ['border-gray-500/50 shadow-inner shadow-gray-500/50']: !active,
-        ['border-green-400/40 shadow-inner shadow-green-400/40']: active
+      className={clsx('border w-full rounded flex justify-between border-gray-500 bg-gray-900/50 select-none overflow-hidden', {
+        ['border-gray-500 shadow-inner shadow-gray-500/50']: !active,
+        ['border-blue-500/70 shadow-inner shadow-gray-500/50']: active
       })}
     >
       {!edit &&
@@ -72,7 +73,7 @@ export default function Folder(
       }
       <Link
         href={editHref}
-        className={clsx('group w-full flex justify-between gap-1 p-3 md:p-4 overflow-hidden', {
+        className={clsx('group w-full flex justify-between gap-1 h-8 m-4 overflow-hidden', {
           ['hover:border-gray-600']: !edit,
           ['hover:cursor-pointer']: !edit,
         })}
@@ -112,15 +113,15 @@ export default function Folder(
                 >
                   {!process &&
                     <SVGThreeDots
-                      width={24}
-                      height={24}
+                      width={32}
+                      height={32}
                       className="text-gray-700"
                     />
                   }
 
                   {process &&
-                    <div className="flex items-center justify-center w-6 h-6">
-                      <Spinner/>
+                    <div className="flex items-center justify-center w-8 h-8">
+                      <Spinner  />
                     </div>
                   }
                 </Dropdown>
@@ -134,14 +135,13 @@ export default function Folder(
           <div
             className="group group-hover:text-gray-400 group-active:text-gray-400 w-full"
           >
-            <input
+            <Input
               autoFocus
               type="text"
               name="name"
               autoComplete="off"
               placeholder="Folder name"
               defaultValue={data.name || ''}
-              className="block w-full bg-gray-800 text-gray-300 h-6 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline outline-1 focus:outline-blue-500 font-semibold text-sm"
               onBlur={onSave}
               onChange={(e) => {
                 onChange('name', e.target.value)

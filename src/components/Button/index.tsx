@@ -11,6 +11,7 @@ export enum ButtonSize {
   H12 = 12,
   H11 = 11,
   H10 = 10,
+  H08 = 8,
   H06 = 6
 }
 
@@ -22,6 +23,7 @@ export default function Button(
     border = true,
     shadow = true,
     active = false,
+    rounded = true,
     disabled = false,
     size = ButtonSize.H12,
     skin = ButtonSkin.GRAY
@@ -33,6 +35,7 @@ export default function Button(
     border?: boolean,
     shadow?: boolean,
     active?: boolean,
+    rounded?: boolean,
     disabled?: boolean,
     size?: ButtonSize,
     skin?: ButtonSkin
@@ -42,13 +45,14 @@ export default function Button(
   return (
     <div
       onClick={onClick}
-      className={clsx('select-none flex items-center justify-center rounded transition-all', {
+      className={clsx('select-none flex items-center justify-center transition-all', {
         [className || '']: className,
         'pointer-events-none': disabled,
         'cursor-not-allowed': disabled,
         'cursor-pointer': !disabled,
 
         'border': border,
+        'rounded': rounded,
         'shadow-inner': shadow,
         'border-green-500/50 shadow-white/30 hover:shadow-white/40 text-white bg-green-500/70 hover:bg-green-500/80 active:bg-green-500/90': skin === ButtonSkin.GREEN && !disabled && !active,
         'border-green-100/50 shadow-white/30 hover:shadow-white/40 text-white bg-green-600/50 hover:bg-green-600/60 active:bg-green-600/70': skin === ButtonSkin.GREEN && !disabled && active,
@@ -64,6 +68,7 @@ export default function Button(
         'h-12 min-w-12 text-lg': size === ButtonSize.H12,
         'h-11 min-w-11 text-lg': size === ButtonSize.H11,
         'h-10 min-w-10 text-base': size === ButtonSize.H10,
+        'h-8 min-w-8 text-base': size === ButtonSize.H08,
         'h-6 min-w-6 text-xs': size === ButtonSize.H06,
       })}
     >

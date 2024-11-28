@@ -1,8 +1,11 @@
-import { useCallback, useEffect, useRef } from 'react'
+import {useCallback, useEffect, useMemo, useRef} from 'react'
+import Button, {ButtonSize} from '@components/Button'
 import SVGThreeDots from '@public/svg/three_dots.svg'
-import { ClientTermData } from '@entities/ClientTerm'
+import {ClientTermData} from '@entities/ClientTerm'
 import Dropdown from '@components/Dropdown'
 import Spinner from '@components/Spinner'
+import Input from '@components/Input'
+import {voices} from '@lib/speech'
 import clsx from 'clsx'
 
 export default function Term(
@@ -28,9 +31,14 @@ export default function Term(
   }
 ) {
 
+  const refQuestionLang = useRef<{ element: HTMLDivElement | null, menu: HTMLDivElement | null }>(null)
+  const refAnswerLang = useRef<{ element: HTMLDivElement | null, menu: HTMLDivElement | null }>(null)
   const ref = useRef<HTMLDivElement | null>(null)
 
   const finishEdit = useCallback((event: MouseEvent) => {
+    if (refQuestionLang.current?.menu || refAnswerLang.current?.menu) {
+      return
+    }
     if (ref.current && !ref.current.contains(event.target as HTMLDivElement)) {
       onSave()
     }
@@ -47,10 +55,16 @@ export default function Term(
     }
   }, [finishEdit, edit, data])
 
+  const dropdownLocales = useMemo(() => {
+    return voices.map(({ name, lang }) => {
+      return { id: lang, name, shortName: lang.split('-')[1] }
+    })
+  }, [])
+
   return (
     <div
       ref={ref}
-      className={clsx('border border-gray-500 w-full bg-gray-900 flex flex-col gap-0.5 p-2 select-none overflow-hidden')}
+      className={clsx('border rounded w-full border-gray-500 bg-gray-900/50 flex flex-col gap-0.5 p-4 select-none overflow-hidden shadow-inner shadow-gray-500/50')}
       onClick={(e) => {
         if (edit) {
           e.preventDefault()
@@ -62,7 +76,7 @@ export default function Term(
           <>
             <div
               title={data.question || ''}
-              className="inline content-center px-1 h-6 text-gray-400 font-semibold text-sm truncate ..."
+              className="inline content-center px-[9px] pt-[1px] h-8 text-gray-400 text-sm truncate ..."
             >
               {data.question || <span className="text-gray-500">Question not set</span>}
             </div>
@@ -71,9 +85,7 @@ export default function Term(
 
               <div className="flex gap-2">
                 <Dropdown
-                  onClick={(e) => {
-                    e.preventDefault()
-                  }}
+                  onClick={(e) => e.preventDefault()}
                   items={[
                     {id: 1, name: 'Edit'},
                     {id: 2, name: 'Remove'},
@@ -91,14 +103,14 @@ export default function Term(
                 >
                   {!process &&
                     <SVGThreeDots
-                      width={24}
-                      height={24}
+                      width={32}
+                      height={32}
                       className="text-gray-700"
                     />
                   }
 
                   {process &&
-                    <div className="flex items-center justify-center w-6 h-6">
+                    <div className="flex items-center justify-center w-8 h-8">
                       <Spinner/>
                     </div>
                   }
@@ -111,16 +123,15 @@ export default function Term(
 
         {edit &&
           <div
-            className="w-full"
+            className="flex gap-1 w-full"
           >
-            <input
+            <Input
               autoFocus
               type="text"
               name="question"
               autoComplete="off"
               placeholder="Question not set"
               defaultValue={data.question || ''}
-              className="block w-full bg-gray-800 text-gray-300 h-6 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline-none outline-1 focus:outline-blue-500 font-semibold text-sm"
               onChange={(e) => {
                 onChange('question', e.target.value)
               }}
@@ -135,6 +146,20 @@ export default function Term(
                 }
               }}
             />
+
+            <Dropdown
+              caret
+              ref={refQuestionLang}
+              items={dropdownLocales}
+              onClick={(e) => e.preventDefault()}
+              onSelect={(id) => {
+                onChange('questionLang', id as string)
+              }}
+            >
+              <div className="w-4 mx-2">
+                {dropdownLocales.find(({ id }) => id === data.questionLang)?.shortName}
+              </div>
+            </Dropdown>
           </div>
         }
       </div>
@@ -143,7 +168,7 @@ export default function Term(
         {!edit &&
           <div
             title={data.answer || ''}
-            className="inline content-center px-1 h-6 text-sm text-gray-400 truncate ..."
+            className="inline content-center px-[9px] pt-[1px] h-8 text-sm text-gray-400 truncate ..."
           >
             {data.answer || <span className="text-gray-500">Answer not set</span>}
           </div>
@@ -151,15 +176,14 @@ export default function Term(
 
         {edit &&
           <div
-            className="w-full"
+            className="flex gap-1 w-full"
           >
-            <input
+            <Input
               type="text"
               name="answer"
               autoComplete="off"
               placeholder="Answer not set"
               defaultValue={data.answer || ''}
-              className="block w-full bg-gray-800 text-gray-300 h-6 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline-none outline-1 focus:outline-blue-500 text-sm"
               onChange={(e) => {
                 onChange('answer', e.target.value)
               }}
@@ -174,6 +198,20 @@ export default function Term(
                 }
               }}
             />
+
+            <Dropdown
+              caret
+              ref={refAnswerLang}
+              items={dropdownLocales}
+              onClick={(e) => e.preventDefault()}
+              onSelect={(id) => {
+                onChange('answerLang', id as string)
+              }}
+            >
+              <div className="w-4 mx-2">
+                {dropdownLocales.find(({id}) => id === data.answerLang)?.shortName}
+              </div>
+            </Dropdown>
           </div>
         }
       </div>
@@ -182,7 +220,7 @@ export default function Term(
         {!edit &&
           <div
             title={data.association || ''}
-            className="inline content-center px-1 h-6 text-sm text-gray-400 truncate ..."
+            className="inline content-center px-[9px] pt-[1px] h-8 text-sm text-gray-400 truncate ..."
           >
             {data.association || <span className="text-gray-500">Association not set</span>}
           </div>
@@ -190,15 +228,14 @@ export default function Term(
 
         {edit &&
           <div
-            className="w-full"
+            className="flex gap-1 w-full"
           >
-            <input
+            <Input
               type="text"
               name="association"
               autoComplete="off"
               placeholder="Association not set"
               defaultValue={data.association || ''}
-              className="block w-full bg-gray-800 text-gray-300 h-6 px-1 py-0 placeholder:text-gray-500 sm:text-sm sm:leading-6 outline-none outline-1 focus:outline-blue-500 text-sm"
               onChange={(e) => {
                 onChange('association', e.target.value)
               }}
@@ -213,6 +250,15 @@ export default function Term(
                 }
               }}
             />
+
+            <Button
+              disabled
+              rounded={false}
+              onClick={() => {}}
+              size={ButtonSize.H08}
+            >
+              AI
+            </Button>
           </div>
         }
       </div>

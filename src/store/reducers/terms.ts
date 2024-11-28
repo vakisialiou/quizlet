@@ -18,7 +18,9 @@ export const saveTerm = createAsyncThunk(
       body: JSON.stringify({
         sort: payload.term.sort,
         answer: payload.term.answer,
+        answerLang: payload.term.answerLang,
         question: payload.term.question,
+        questionLang: payload.term.questionLang,
         association: payload.term.association,
         folderId: payload.term.folderId,
       })

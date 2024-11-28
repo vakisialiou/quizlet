@@ -1,5 +1,5 @@
+import { useState, useRef, useEffect, useLayoutEffect, useCallback, useImperativeHandle, forwardRef, ReactNode, BaseSyntheticEvent, Ref } from 'react'
 import { autoUpdate, computePosition, offset, shift, flip, ReferenceElement, ComputePositionConfig, FloatingElement } from '@floating-ui/dom'
-import {useState, useRef, useEffect, useLayoutEffect, useCallback, ReactNode, BaseSyntheticEvent} from 'react'
 import { createPortal } from 'react-dom'
 import clsx from 'clsx'
 
@@ -26,7 +26,7 @@ export type DropdownItemType = {
   href?: string | null | undefined,
 }
 
-export default function Dropdown(
+function Dropdown(
   {
     children,
     selected,
@@ -54,11 +54,15 @@ export default function Dropdown(
     items?: DropdownItemType[],
     onClick?: ((e: BaseSyntheticEvent) => void),
     onSelect?: (id: string | number) => void,
-  }
+  },
+  ref: Ref<{ element: HTMLDivElement | null, menu: HTMLDivElement | null }>
 ) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  const ref = useRef<HTMLDivElement | null>(null)
+
   const refMenu = useRef<HTMLDivElement | null>(null)
+  const refElement = useRef<HTMLDivElement | null>(null)
+
+  useImperativeHandle(ref, () => ({ element: refElement.current, menu: refMenu.current }))
 
   const toggleDropdown = useCallback(() => {
     setIsOpen((prevState) => !prevState)
@@ -69,7 +73,7 @@ export default function Dropdown(
       return
     }
 
-    if (ref.current && !ref.current.contains(event.target as HTMLDivElement)) {
+    if (refElement.current && !refElement.current.contains(event.target as HTMLDivElement)) {
       setIsOpen(false)
     }
   }, [])
@@ -85,7 +89,7 @@ export default function Dropdown(
 
   useLayoutEffect(() => {
     if (isOpen) {
-      const block = ref.current as ReferenceElement
+      const block = refElement.current as ReferenceElement
       const menuBlock = refMenu.current as FloatingElement
       const cleanup = autoUpdate(block, menuBlock, () => {
         const options = {
@@ -110,7 +114,7 @@ export default function Dropdown(
 
   return (
     <div
-      ref={ref}
+      ref={refElement}
       onClick={onClick}
       className={clsx('flex items-center text-left hover:bg-gray-800', {
         ['disabled']: disabled,
@@ -191,3 +195,5 @@ export default function Dropdown(
     </div>
   )
 }
+
+export default forwardRef(Dropdown)
