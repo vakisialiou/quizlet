@@ -24,7 +24,7 @@ export default function SingleQueueStart(
 
   return (
     <CardEmpty
-      className="relative"
+      classNameContent="relative"
     >
       {(process || !folder) &&
         <div className="animate-pulse flex w-full">

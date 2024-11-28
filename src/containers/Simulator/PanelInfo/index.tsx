@@ -17,7 +17,7 @@ export default function PanelInfo(
     clearInterval(refTimerIntervalId.current)
     refTimerIntervalId.current = setInterval(() => {
       if (!simulator?.status) {
-        refTimerDuration.current = 0
+        return
       }
 
       if (simulator?.status && [SimulatorStatus.WAITING, SimulatorStatus.FINISHING, SimulatorStatus.DONE].includes(simulator?.status)) {
@@ -65,7 +65,7 @@ export default function PanelInfo(
 
       <RoundInfo
         title="Time"
-        value={<span ref={refTimer}>00:00:00</span>}
+        value={<span key={simulator?.id || 0} ref={refTimer}>00:00:00</span>}
       />
     </div>
   )

@@ -23,6 +23,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
       active: body.active,
       status: body.status,
       folderId: body.folderId,
+      tracker: body.tracker || {},
+      settings: body.settings || {},
       termIds: Array.isArray(body.termIds) ? body.termIds : [],
       historyIds: Array.isArray(body.historyIds) ? body.historyIds : [],
       continueIds: Array.isArray(body.continueIds) ? body.continueIds : [],

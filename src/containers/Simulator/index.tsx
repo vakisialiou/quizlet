@@ -157,7 +157,8 @@ export default function Simulator({ folderId }: { folderId: string }) {
                 {showHelp &&
                   <CardEmpty
                     active
-                    className="absolute left-0 top-0 h-full cursor-pointer p-4"
+                    className="absolute left-0 top-0"
+                    classNameContent="cursor-pointer p-4"
                     onClick={() => {
                       setShowHelp(false)
                     }}
@@ -200,7 +201,6 @@ export default function Simulator({ folderId }: { folderId: string }) {
                       break
                     case 'sound':
                       if (simulator && rollbackData && speech) {
-
                         const text = rollbackData.isBackSide
                           ? rollbackData.backSide.text
                           : rollbackData.faceSide.text

@@ -1,6 +1,7 @@
 import { v4 } from 'uuid'
 
 import ClientSettingsSimulator, { ClientSettingsSimulatorData } from '@entities/ClientSettingsSimulator'
+import ProgressTracker, { ProgressTrackerData } from '@entities/ProgressTracker'
 
 export enum SimulatorType {
   FLASHCARD = 'flashcard',
@@ -20,7 +21,6 @@ export type ClientSimulatorData = {
   active: boolean
   folderId: string
   duration: number
-  progress: number
   status: SimulatorStatus
   type: SimulatorType,
   termId: string | null
@@ -29,6 +29,7 @@ export type ClientSimulatorData = {
   continueIds: string[]
   historyIds: string[]
   needUpdate: boolean
+  tracker: ProgressTrackerData
   settings: ClientSettingsSimulatorData
 }
 
@@ -37,7 +38,6 @@ export default class ClientSimulator {
   active: boolean
   folderId: string
   duration: number
-  progress: number
   status: SimulatorStatus
   type: SimulatorType
   termId: string | null
@@ -46,6 +46,7 @@ export default class ClientSimulator {
   continueIds: string[]
   historyIds: string[]
   needUpdate: boolean
+  tracker: ProgressTrackerData
   settings: ClientSettingsSimulatorData
 
   constructor(folderId: string, status: SimulatorStatus) {
@@ -53,7 +54,6 @@ export default class ClientSimulator {
     this.active = false
     this.folderId = folderId
     this.duration = 0
-    this.progress = 0
     this.status = status
     this.type = SimulatorType.FLASHCARD
     this.termId = null
@@ -62,7 +62,8 @@ export default class ClientSimulator {
     this.rememberIds = []
     this.continueIds = []
     this.needUpdate = false
-    this.settings = new ClientSettingsSimulator()
+    this.tracker = new ProgressTracker().serialize()
+    this.settings = new ClientSettingsSimulator().serialize()
   }
 
   setId(value: string): ClientSimulator {
@@ -82,11 +83,6 @@ export default class ClientSimulator {
 
   setDuration(value: number): ClientSimulator {
     this.duration = value
-    return this
-  }
-
-  setProgress(value: number): ClientSimulator {
-    this.progress = value
     return this
   }
 
@@ -174,6 +170,11 @@ export default class ClientSimulator {
     if (index !== -1) {
       this.continueIds.splice(index, 1)
     }
+    return this
+  }
+
+  setTracker(value: Partial<ProgressTrackerData>): ClientSimulator {
+    this.tracker = { ...this.tracker, ...value }
     return this
   }
 

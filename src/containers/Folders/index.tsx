@@ -56,10 +56,13 @@ export default function Folders() {
       <div
         className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-2 md:p-4">
         {folders.items.map((folder) => {
+          const hasActiveSimulator = folder.simulators.find(({ active }) => active)
+
           return (
             <Folder
               data={folder}
               key={folder.id}
+              active={!!hasActiveSimulator}
               editHref={`/private/folder/${folder.id}`}
               playHref={`/private/simulator/${folder.id}`}
               edit={folder.id === folders.editId}

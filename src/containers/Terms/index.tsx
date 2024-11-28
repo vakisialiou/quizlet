@@ -5,6 +5,7 @@ import { FoldersType, TermsType } from '@store/initial-state'
 import React, {useEffect, useMemo, useState} from 'react'
 import Button, { ButtonSkin } from '@components/Button'
 import ButtonSquare from '@components/ButtonSquare'
+import Achievements from '@containers/Achievements'
 import ContentPage from '@containers/ContentPage'
 import SVGBack from '@public/svg/back.svg'
 import SVGPlus from '@public/svg/plus.svg'
@@ -20,7 +21,6 @@ import {
   actionUpdateTerm,
   actionUpdateTermItem
 } from '@store/index'
-// import Achievement from '@entities/Achievement'
 
 export default function Terms({ folderId }: { folderId: string }) {
   useEffect(actionFetchFolders, [])
@@ -36,9 +36,6 @@ export default function Terms({ folderId }: { folderId: string }) {
   const folder = useMemo(() => {
     return folders.items.find(({ id }) => id === folderId)
   }, [folders.items, folderId])
-
-  // const achievements = new Achievement().calculate(folder?.simulators || [])
-  // console.log(folder?.simulators || [], achievements)
 
   return (
     <ContentPage
@@ -91,6 +88,10 @@ export default function Terms({ folderId }: { folderId: string }) {
         </div>
       )}
     >
+      <div className="flex w-full items-center justify-center">
+        <Achievements folder={folder} />
+      </div>
+
       {folder &&
         <div
           className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-2 md:p-4"
@@ -103,14 +104,14 @@ export default function Terms({ folderId }: { folderId: string }) {
                 edit={term.id === terms.editId}
                 process={terms.processIds.includes(term.id)}
                 onSave={() => {
-                  actionSaveTerm({ term, editId: null }, () => {
+                  actionSaveTerm({term, editId: null}, () => {
                     if (originItem) {
                       setOriginItem(null)
                     }
                   })
                 }}
                 onExit={async () => {
-                  actionUpdateTerm({ editId: null }, () => {
+                  actionUpdateTerm({editId: null}, () => {
                     if (originItem) {
                       actionUpdateTermItem(originItem, () => {
                         setOriginItem(null)

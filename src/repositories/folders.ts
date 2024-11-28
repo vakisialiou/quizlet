@@ -1,6 +1,7 @@
 import { ClientSettingsSimulatorData } from '@entities/ClientSettingsSimulator'
 import ClientSimulator, { SimulatorStatus } from '@entities/ClientSimulator'
 import ClientFolder, { ClientFolderData } from '@entities/ClientFolder'
+import { ProgressTrackerData } from '@entities/ProgressTracker'
 import ClientTerm from '@entities/ClientTerm'
 import { prisma, Folder } from '@lib/prisma'
 
@@ -32,7 +33,8 @@ export const findFoldersByUserId = async (userId: string): Promise<ClientFolderD
           historyIds: true,
           continueIds: true,
           rememberIds: true,
-          settings: true
+          settings: true,
+          tracker: true
         }
       }
     },
@@ -69,6 +71,7 @@ export const findFoldersByUserId = async (userId: string): Promise<ClientFolderD
             .setHistoryIds(historyIds)
             .setContinueIds(continueIds)
             .setRememberIds(rememberIds)
+            .setTracker(simulator.tracker as ProgressTrackerData)
             .setSettings(simulator.settings as ClientSettingsSimulatorData)
         })
       )
@@ -104,7 +107,8 @@ export const getFolderById = async (userId: string, id: string): Promise<ClientF
           historyIds: true,
           continueIds: true,
           rememberIds: true,
-          settings: true
+          settings: true,
+          tracker: true
         }
       }
     },
@@ -141,6 +145,7 @@ export const getFolderById = async (userId: string, id: string): Promise<ClientF
             .setHistoryIds(historyIds)
             .setContinueIds(continueIds)
             .setRememberIds(rememberIds)
+            .setTracker(simulator.tracker as ProgressTrackerData)
             .setSettings(simulator.settings as ClientSettingsSimulatorData)
         })
       )

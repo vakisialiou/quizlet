@@ -12,6 +12,7 @@ export default function Folder(
     data,
     edit = false,
     process = false,
+    active = false,
     label,
     playHref,
     editHref,
@@ -25,6 +26,7 @@ export default function Folder(
     data: ClientFolderData,
     edit: boolean,
     process: boolean,
+    active: boolean,
     label: ReactNode,
     playHref: string,
     editHref: string,
@@ -37,7 +39,10 @@ export default function Folder(
 ) {
   return (
     <div
-      className={clsx('border border-gray-500 w-full bg-gray-900 flex justify-between select-none overflow-hidden')}
+      className={clsx('border w-full rounded flex justify-between bg-gray-500/10 select-none overflow-hidden', {
+        ['border-gray-500/50 shadow-inner shadow-gray-500/50']: !active,
+        ['border-green-400/40 shadow-inner shadow-green-400/40']: active
+      })}
     >
       {!edit &&
         <>

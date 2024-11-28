@@ -1,6 +1,7 @@
-import {ClientSimulatorData, SimulatorStatus, SimulatorType} from '@entities/ClientSimulator'
+import { ClientSimulatorData, SimulatorStatus, SimulatorType } from '@entities/ClientSimulator'
+import ProgressTracker from '@entities/ProgressTracker'
 
-enum DegreeEnum {
+export enum DegreeEnum {
   preschool = 'preschool',
   primary = 'primary',
   secondary = 'secondary',
@@ -11,7 +12,7 @@ enum DegreeEnum {
   professor = 'professor',
 }
 
-enum MedalEnum {
+export enum MedalEnum {
   bronze = 'bronze',
   silver = 'silver',
   gold = 'gold',
@@ -128,9 +129,10 @@ export default class Achievement {
 
     // Расчет общего взвешенного прогресса
     const totalWeightedProgress = completedSimulators.reduce((accumulator, simulator) => {
+      const progress = new ProgressTracker(simulator).getProgress()
       // Подсчет взвешенного прогресса
       const weight = this.getSimulatorWeight(simulator)
-      return accumulator + (simulator.progress * weight)
+      return accumulator + (progress * weight)
     }, 0)
 
     // Максимально возможный прогресс

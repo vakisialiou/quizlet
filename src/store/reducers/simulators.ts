@@ -1,8 +1,9 @@
+import FlashcardSimulatorTracker from '@entities/FlashcardSimulatorTracker'
 import { SimulatorStatus } from '@entities/ClientSimulator'
 import { upsertSimulators } from '@store/fetch/simulators'
 import { ClientFolderData } from '@entities/ClientFolder'
-import { ConfigType } from '@store/initial-state'
 import { createAsyncThunk } from '@reduxjs/toolkit'
+import { ConfigType } from '@store/initial-state'
 import { clientFetch } from '@lib/fetch-client'
 import { upsertObject } from '@lib/array'
 import {
@@ -193,6 +194,12 @@ export const simulatorReducers = (builder: any) => {
       const { folderId } = action.meta.arg
 
       state.folders = updateActiveSimulator(state.folders, folderId, (simulator) => {
+        const tracker = new FlashcardSimulatorTracker(simulator)
+
+        if (simulator.termId) {
+          tracker.calculate(FlashcardSimulatorTracker.actionContinue, simulator.termId)
+        }
+
         const termIds = [...simulator.termIds].filter((id) => {
           return !simulator.rememberIds.includes(id) && !simulator.continueIds.includes(id)
         })
@@ -205,6 +212,7 @@ export const simulatorReducers = (builder: any) => {
             ...simulator,
             termId: null,
             needUpdate: true,
+            tracker: tracker.serialize(),
             status: SimulatorStatus.FINISHING,
             historyIds: addHistoryId(simulator.historyIds, simulator.termId),
             continueIds: addContinueId(simulator.continueIds, simulator.termId),
@@ -215,6 +223,7 @@ export const simulatorReducers = (builder: any) => {
           ...simulator,
           needUpdate: true,
           termId: nextTermId,
+          tracker: tracker.serialize(),
           historyIds: addHistoryId(simulator.historyIds, simulator.termId),
           continueIds: addContinueId(simulator.continueIds, simulator.termId),
         }
@@ -233,6 +242,12 @@ export const simulatorReducers = (builder: any) => {
       const { folderId } = action.meta.arg
 
       state.folders = updateActiveSimulator(state.folders, folderId, (simulator) => {
+        const tracker = new FlashcardSimulatorTracker(simulator)
+
+        if (simulator.termId) {
+          tracker.calculate(FlashcardSimulatorTracker.actionRemember, simulator.termId)
+        }
+
         const termIds = [...simulator.termIds].filter((id) => {
           return !simulator.rememberIds.includes(id) && !simulator.continueIds.includes(id)
         })
@@ -245,6 +260,7 @@ export const simulatorReducers = (builder: any) => {
             ...simulator,
             termId: null,
             needUpdate: true,
+            tracker: tracker.serialize(),
             status: simulator.continueIds.length === 0 ? SimulatorStatus.DONE : SimulatorStatus.FINISHING,
             historyIds: addHistoryId(simulator.historyIds, simulator.termId),
             rememberIds: addRememberIds(simulator.rememberIds, simulator.termId),
@@ -255,6 +271,7 @@ export const simulatorReducers = (builder: any) => {
           ...simulator,
           needUpdate: true,
           termId: nextTermId,
+          tracker: tracker.serialize(),
           historyIds: addHistoryId(simulator.historyIds, simulator.termId),
           rememberIds: addRememberIds(simulator.rememberIds, simulator.termId),
         }

@@ -39,7 +39,7 @@ export default function SingleQueueDone(
   const tiles = useMemo(() => {
     return Array.from({ length: particlesCount }, () => {
       const duration = randFloat(particlesDuration.min, particlesDuration.max)
-      const delay = randFloat(duration / 4, duration / 2)
+      const delay = randFloat(duration / 10, duration / 2)
       return {
         delay,
         duration: duration - delay,
@@ -59,7 +59,9 @@ export default function SingleQueueDone(
       })
     }
 
-    const timer = setTimeout(() => setExploded(true), particlesDelay)
+    const timer = setTimeout(() => {
+      setExploded(true)
+    }, particlesDelay)
 
     return () => clearTimeout(timer)
   }, [particlesDelay])
@@ -79,14 +81,14 @@ export default function SingleQueueDone(
 
   return (
     <CardEmpty
-      className={clsx('relative overflow-hidden', {
-        ['overflow-hidden']: !exploded
-      })}
+      classNameContent="relative"
     >
       <div
         ref={ref}
         data-attr="container"
-        className="absolute left-0 top-0 w-full h-full"
+        className={clsx('absolute left-0 top-0 w-full h-full', {
+          ['overflow-hidden']: !exploded
+        })}
       >
         {tiles.map(({duration, delay, directionX, directionY}, index) => {
           const width = containerSize.width / particleColumns
@@ -98,7 +100,7 @@ export default function SingleQueueDone(
           return (
             <div
               key={index}
-              className="absolute"
+              className="absolute will-change-contents"
               style={{
                 top: `${top}px`,
                 left: `${left}px`,
