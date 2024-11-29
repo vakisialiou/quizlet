@@ -1,11 +1,13 @@
+import { ClientTermData, DefaultAnswerLang, DefaultQuestionLang, DefaultAssociationLang } from '@entities/ClientTerm'
 import {useCallback, useEffect, useMemo, useRef} from 'react'
+import Dropdown, { DropdownSkin } from '@components/Dropdown'
 import Button, {ButtonSize} from '@components/Button'
 import SVGThreeDots from '@public/svg/three_dots.svg'
-import {ClientTermData} from '@entities/ClientTerm'
-import Dropdown from '@components/Dropdown'
+import RowRead from '@containers/Term/RowRead'
 import Spinner from '@components/Spinner'
 import Input from '@components/Input'
 import {voices} from '@lib/speech'
+
 import clsx from 'clsx'
 
 export default function Term(
@@ -31,12 +33,13 @@ export default function Term(
   }
 ) {
 
+  const refAssociationLang = useRef<{ element: HTMLDivElement | null, menu: HTMLDivElement | null }>(null)
   const refQuestionLang = useRef<{ element: HTMLDivElement | null, menu: HTMLDivElement | null }>(null)
   const refAnswerLang = useRef<{ element: HTMLDivElement | null, menu: HTMLDivElement | null }>(null)
   const ref = useRef<HTMLDivElement | null>(null)
 
   const finishEdit = useCallback((event: MouseEvent) => {
-    if (refQuestionLang.current?.menu || refAnswerLang.current?.menu) {
+    if (refQuestionLang.current?.menu || refAnswerLang.current?.menu || refAssociationLang.current?.menu) {
       return
     }
     if (ref.current && !ref.current.contains(event.target as HTMLDivElement)) {
@@ -57,14 +60,19 @@ export default function Term(
 
   const dropdownLocales = useMemo(() => {
     return voices.map(({ name, lang }) => {
-      return { id: lang, name, shortName: lang.split('-')[1] }
+      return { id: lang, name }
     })
+  }, [])
+
+  const getLocaleShortName = useCallback((lang: string | null, defaultLang: string) => {
+    lang = lang || defaultLang
+    return lang.split('-')[0]
   }, [])
 
   return (
     <div
       ref={ref}
-      className={clsx('border rounded w-full border-gray-500 bg-gray-900/50 flex flex-col gap-0.5 p-4 select-none overflow-hidden shadow-inner shadow-gray-500/50')}
+      className={clsx('border rounded w-full border-gray-500 bg-gray-900/50 flex flex-col gap-1 p-2 select-none overflow-hidden shadow-inner shadow-gray-500/50')}
       onClick={(e) => {
         if (edit) {
           e.preventDefault()
@@ -73,52 +81,44 @@ export default function Term(
     >
       <div className="flex justify-between gap-2 w-full max-w-full overflow-hidden">
         {!edit &&
-          <>
-            <div
-              title={data.question || ''}
-              className="inline content-center px-[9px] pt-[1px] h-8 text-gray-400 text-sm truncate ..."
-            >
-              {data.question || <span className="text-gray-500">Question not set</span>}
-            </div>
-
-            <div className="flex gap-2 items-center">
-
-              <div className="flex gap-2">
-                <Dropdown
-                  onClick={(e) => e.preventDefault()}
-                  items={[
-                    {id: 1, name: 'Edit'},
-                    {id: 2, name: 'Remove'},
-                  ]}
-                  onSelect={(id) => {
-                    switch (id) {
-                      case 1:
-                        onEdit()
-                        break
-                      case 2:
-                        onRemove()
-                        break
-                    }
-                  }}
-                >
-                  {!process &&
-                    <SVGThreeDots
-                      width={32}
-                      height={32}
-                      className="text-gray-700"
-                    />
+          <RowRead
+            value={data.question || ''}
+            placeholder="Question not set"
+            lang={getLocaleShortName(data.questionLang, DefaultQuestionLang)}
+            controls={(
+              <Dropdown
+                onClick={(e) => e.preventDefault()}
+                items={[
+                  {id: 1, name: 'Edit'},
+                  {id: 2, name: 'Remove'},
+                ]}
+                onSelect={(id) => {
+                  switch (id) {
+                    case 1:
+                      onEdit()
+                      break
+                    case 2:
+                      onRemove()
+                      break
                   }
+                }}
+              >
+                {!process &&
+                  <SVGThreeDots
+                    width={32}
+                    height={32}
+                    className="text-gray-700"
+                  />
+                }
 
-                  {process &&
-                    <div className="flex items-center justify-center w-8 h-8">
-                      <Spinner/>
-                    </div>
-                  }
-                </Dropdown>
-
-              </div>
-            </div>
-          </>
+                {process &&
+                  <div className="flex items-center justify-center w-8 h-8">
+                    <Spinner/>
+                  </div>
+                }
+              </Dropdown>
+            )}
+          />
         }
 
         {edit &&
@@ -149,15 +149,17 @@ export default function Term(
 
             <Dropdown
               caret
+              className="px-1"
               ref={refQuestionLang}
               items={dropdownLocales}
+              skin={DropdownSkin.gray}
               onClick={(e) => e.preventDefault()}
               onSelect={(id) => {
                 onChange('questionLang', id as string)
               }}
             >
-              <div className="w-4 mx-2">
-                {dropdownLocales.find(({ id }) => id === data.questionLang)?.shortName}
+              <div className="w-6 min-w-6 text-center text-sm uppercase">
+                {getLocaleShortName(data.questionLang, DefaultQuestionLang)}
               </div>
             </Dropdown>
           </div>
@@ -166,12 +168,11 @@ export default function Term(
 
       <div className="flex w-full max-w-full overflow-hidden">
         {!edit &&
-          <div
-            title={data.answer || ''}
-            className="inline content-center px-[9px] pt-[1px] h-8 text-sm text-gray-400 truncate ..."
-          >
-            {data.answer || <span className="text-gray-500">Answer not set</span>}
-          </div>
+          <RowRead
+            value={data.answer || ''}
+            placeholder="Answer not set"
+            lang={getLocaleShortName(data.answerLang, DefaultAnswerLang)}
+          />
         }
 
         {edit &&
@@ -201,15 +202,17 @@ export default function Term(
 
             <Dropdown
               caret
+              className="px-1"
               ref={refAnswerLang}
               items={dropdownLocales}
+              skin={DropdownSkin.gray}
               onClick={(e) => e.preventDefault()}
               onSelect={(id) => {
                 onChange('answerLang', id as string)
               }}
             >
-              <div className="w-4 mx-2">
-                {dropdownLocales.find(({id}) => id === data.answerLang)?.shortName}
+              <div className="w-6 min-w-6 text-center text-sm uppercase">
+                {getLocaleShortName(data.answerLang, DefaultAnswerLang)}
               </div>
             </Dropdown>
           </div>
@@ -218,12 +221,11 @@ export default function Term(
 
       <div className="flex w-full max-w-full overflow-hidden">
         {!edit &&
-          <div
-            title={data.association || ''}
-            className="inline content-center px-[9px] pt-[1px] h-8 text-sm text-gray-400 truncate ..."
-          >
-            {data.association || <span className="text-gray-500">Association not set</span>}
-          </div>
+          <RowRead
+            value={data.association || ''}
+            placeholder="Association not set"
+            lang={getLocaleShortName(data.associationLang, DefaultAssociationLang)}
+          />
         }
 
         {edit &&
@@ -259,6 +261,22 @@ export default function Term(
             >
               AI
             </Button>
+
+            <Dropdown
+              caret
+              className="px-1"
+              ref={refAssociationLang}
+              items={dropdownLocales}
+              skin={DropdownSkin.gray}
+              onClick={(e) => e.preventDefault()}
+              onSelect={(id) => {
+                onChange('associationLang', id as string)
+              }}
+            >
+              <div className="w-6 min-w-6 text-center text-sm uppercase">
+                {getLocaleShortName(data.associationLang, DefaultAssociationLang)}
+              </div>
+            </Dropdown>
           </div>
         }
       </div>

@@ -1,11 +1,11 @@
 'use client'
 
+import Achievements, { AchievementsSize } from '@containers/Achievements'
 import ClientTerm, {ClientTermData} from '@entities/ClientTerm'
 import { FoldersType, TermsType } from '@store/initial-state'
 import React, {useEffect, useMemo, useState} from 'react'
 import Button, { ButtonSkin } from '@components/Button'
 import ButtonSquare from '@components/ButtonSquare'
-import Achievements from '@containers/Achievements'
 import ContentPage from '@containers/ContentPage'
 import SVGBack from '@public/svg/back.svg'
 import SVGPlus from '@public/svg/plus.svg'
@@ -13,7 +13,7 @@ import SVGPlay from '@public/svg/play.svg'
 import {useRouter} from '@i18n/routing'
 import {useSelector} from 'react-redux'
 import Dialog from '@components/Dialog'
-import Term from '@components/Term'
+import Term from '@containers/Term'
 import {
   actionDeleteTerm,
   actionFetchFolders,
@@ -42,6 +42,14 @@ export default function Terms({ folderId }: { folderId: string }) {
       showHeader
       showFooter
       title={folder?.name}
+      leftControls={(
+        <div className="flex items-center mr-2">
+          <Achievements
+            folder={folder}
+            size={AchievementsSize.sm}
+          />
+        </div>
+      )}
       rightControls={(
         <ButtonSquare
           icon={SVGBack}
@@ -88,10 +96,6 @@ export default function Terms({ folderId }: { folderId: string }) {
         </div>
       )}
     >
-      <div className="flex w-full items-center justify-center">
-        <Achievements folder={folder} />
-      </div>
-
       {folder &&
         <div
           className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-2 md:p-4"

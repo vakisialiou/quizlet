@@ -85,17 +85,18 @@ model Folder {
 }
 
 model Term {
-  id           String     @id @default(uuid())
-  userId       String     @db.VarChar(36)
-  folderId     String     @db.VarChar(36)
-  sort         Int
-  question     String?    @db.VarChar(255)
-  questionLang String?    @db.VarChar(5) @default("ru-RU")
-  answer       String?    @db.VarChar(255)
-  answerLang   String?    @db.VarChar(5) @default("en-GB")
-  association  String?    @db.VarChar(255)
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  id              String     @id @default(uuid())
+  userId          String     @db.VarChar(36)
+  folderId        String     @db.VarChar(36)
+  sort            Int
+  question        String?    @db.VarChar(255)
+  questionLang    String?    @db.VarChar(5) @default("ru-RU")
+  answer          String?    @db.VarChar(255)
+  answerLang      String?    @db.VarChar(5) @default("en-GB")
+  association     String?    @db.VarChar(255)
+  associationLang String?    @db.VarChar(5) @default("en-GB")
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   folder Folder @relation(fields: [folderId], references: [id], onDelete: Cascade)
 

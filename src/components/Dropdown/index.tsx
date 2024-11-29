@@ -26,6 +26,11 @@ export type DropdownItemType = {
   href?: string | null | undefined,
 }
 
+export enum DropdownSkin {
+  gray = 'gray',
+  transparent = 'transparent'
+}
+
 function Dropdown(
   {
     children,
@@ -36,6 +41,7 @@ function Dropdown(
     classNameMenu = '',
     menu,
     placement = Placement.bottomEnd,
+    skin = DropdownSkin.transparent,
     offsetOptions = 0,
     items = [],
     onSelect,
@@ -50,6 +56,7 @@ function Dropdown(
     className?: string,
     classNameMenu?: string,
     placement?: Placement,
+    skin?: DropdownSkin,
     offsetOptions?: number,
     items?: DropdownItemType[],
     onClick?: ((e: BaseSyntheticEvent) => void),
@@ -116,9 +123,13 @@ function Dropdown(
     <div
       ref={refElement}
       onClick={onClick}
-      className={clsx('flex items-center text-left hover:bg-gray-800', {
+      className={clsx('flex items-center text-left', {
         ['disabled']: disabled,
-        ['bg-gray-800']: isOpen
+        ['hover:bg-gray-800']: skin === DropdownSkin.transparent,
+        ['bg-gray-800']: skin === DropdownSkin.transparent && isOpen,
+
+        ['bg-gray-800 hover:bg-gray-800/50']: skin === DropdownSkin.gray,
+        ['bg-gray-800/50']: skin === DropdownSkin.gray && isOpen
       })}
     >
       <div
@@ -131,7 +142,7 @@ function Dropdown(
 
         {caret &&
           <svg
-            className="w-3 h-3 group-aria-[]:group:text-gray-500 group-active:text-gray-400 transition-colors mx-1"
+            className="w-3 h-3 group-aria-[]:group:text-gray-500 group-active:text-gray-400 transition-colors"
             stroke="currentColor"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"

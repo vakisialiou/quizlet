@@ -2,6 +2,7 @@ import { v4 } from 'uuid'
 
 export const DefaultAnswerLang = 'en-GB'
 export const DefaultQuestionLang = 'ru-RU'
+export const DefaultAssociationLang = 'en-GB'
 
 export type ClientTermData = {
   id: string
@@ -12,6 +13,7 @@ export type ClientTermData = {
   question: string | null
   questionLang: string | null
   association: string | null
+  associationLang: string | null
 }
 
 export default class ClientTerm {
@@ -23,6 +25,7 @@ export default class ClientTerm {
   question: string | null
   questionLang: string | null
   association: string | null
+  associationLang: string | null
 
   constructor(folderId = '') {
     this.sort = 0
@@ -33,6 +36,7 @@ export default class ClientTerm {
     this.question = null
     this.questionLang = null
     this.association = null
+    this.associationLang = null
   }
 
   setSort(value: number): ClientTerm {
@@ -72,6 +76,11 @@ export default class ClientTerm {
 
   setAssociation(value: string | null): ClientTerm {
     this.association = value
+    return this
+  }
+
+  setAssociationLang(value: string | null): ClientTerm {
+    this.associationLang = value
     return this
   }
 

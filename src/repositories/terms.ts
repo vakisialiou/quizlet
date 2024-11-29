@@ -7,12 +7,13 @@ export const findTermsByUserId = async (userId: string): Promise<ClientTermData[
     select: {
       id: true,
       sort: true,
-      answer: true,
       folderId: true,
-      question: true,
+      answer: true,
       answerLang: true,
+      question: true,
       questionLang: true,
       association: true,
+      associationLang: true,
     },
   })
 
@@ -21,10 +22,11 @@ export const findTermsByUserId = async (userId: string): Promise<ClientTermData[
       .setId(term.id)
       .setSort(term.sort)
       .setAnswer(term.answer)
-      .setQuestion(term.question)
-      .setAssociation(term.association)
       .setAnswerLang(term.answerLang)
+      .setQuestion(term.question)
       .setQuestionLang(term.questionLang)
+      .setAssociation(term.association)
+      .setAssociationLang(term.associationLang)
       .serialize()
   })
 }
@@ -36,10 +38,11 @@ export const findTermsByFolderId = async (userId: string, folderId: string): Pro
       id: true,
       sort: true,
       answer: true,
-      question: true,
       answerLang: true,
+      question: true,
       questionLang: true,
       association: true,
+      associationLang: true,
       folderId: true,
     },
   })
@@ -49,10 +52,11 @@ export const findTermsByFolderId = async (userId: string, folderId: string): Pro
       .setId(term.id)
       .setSort(term.sort)
       .setAnswer(term.answer)
-      .setQuestion(term.question)
-      .setAssociation(term.association)
       .setAnswerLang(term.answerLang)
+      .setQuestion(term.question)
       .setQuestionLang(term.questionLang)
+      .setAssociation(term.association)
+      .setAssociationLang(term.associationLang)
       .serialize()
   })
 }
@@ -64,10 +68,11 @@ export const getTermById = async (userId: string, id: string): Promise<ClientTer
       id: true,
       sort: true,
       answer: true,
-      question: true,
-      association: true,
       answerLang: true,
+      question: true,
       questionLang: true,
+      association: true,
+      associationLang: true,
       folderId: true,
     },
   })
@@ -77,10 +82,11 @@ export const getTermById = async (userId: string, id: string): Promise<ClientTer
       .setId(term.id)
       .setSort(term.sort)
       .setAnswer(term.answer)
-      .setQuestion(term.question)
-      .setAssociation(term.association)
       .setAnswerLang(term.answerLang)
+      .setQuestion(term.question)
       .setQuestionLang(term.questionLang)
+      .setAssociation(term.association)
+      .setAssociationLang(term.associationLang)
       .serialize()
   })
 }
@@ -95,6 +101,7 @@ export const upsertTerm = async (term: Term): Promise<string | null> => {
       answerLang: term.answerLang,
       questionLang: term.questionLang,
       association: term.association,
+      associationLang: term.associationLang,
       updatedAt: term.updatedAt || new Date(),
     },
     create: {
@@ -102,9 +109,11 @@ export const upsertTerm = async (term: Term): Promise<string | null> => {
       sort: term.sort,
       userId: term.userId as string,
       answer: term.answer,
-      association: term.association,
       answerLang: term.answerLang,
+      question: term.question,
       questionLang: term.questionLang,
+      association: term.association,
+      associationLang: term.associationLang,
       folderId: term.folderId as string,
       createdAt: term.createdAt || new Date(),
       updatedAt: term.updatedAt || new Date()

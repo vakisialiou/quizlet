@@ -16,10 +16,11 @@ export const findFoldersByUserId = async (userId: string): Promise<ClientFolderD
           id: true,
           sort: true,
           answer: true,
-          question: true,
           answerLang: true,
+          question: true,
           questionLang: true,
           association: true,
+          associationLang: true,
         }
       },
       simulators: {
@@ -50,10 +51,11 @@ export const findFoldersByUserId = async (userId: string): Promise<ClientFolderD
             .setId(term.id)
             .setSort(term.sort)
             .setAnswer(term.answer)
-            .setQuestion(term.question)
             .setAnswerLang(term.answerLang)
+            .setQuestion(term.question)
             .setQuestionLang(term.questionLang)
             .setAssociation(term.association)
+            .setAssociationLang(term.associationLang)
         })
       )
       .setSimulators(
@@ -90,10 +92,11 @@ export const getFolderById = async (userId: string, id: string): Promise<ClientF
           id: true,
           sort: true,
           answer: true,
-          question: true,
           answerLang: true,
+          question: true,
           questionLang: true,
           association: true,
+          associationLang: true,
         }
       },
       simulators: {
@@ -124,10 +127,11 @@ export const getFolderById = async (userId: string, id: string): Promise<ClientF
             .setId(term.id)
             .setSort(term.sort)
             .setAnswer(term.answer)
-            .setQuestion(term.question)
             .setAnswerLang(term.answerLang)
+            .setQuestion(term.question)
             .setQuestionLang(term.questionLang)
             .setAssociation(term.association)
+            .setAssociationLang(term.associationLang)
         })
       )
       .setSimulators(

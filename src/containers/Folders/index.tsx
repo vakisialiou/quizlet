@@ -1,16 +1,17 @@
 'use client'
 
-import ClientFolder, {ClientFolderData} from '@entities/ClientFolder'
+import Achievements, { AchievementsSize } from '@containers/Achievements'
+import ClientFolder, { ClientFolderData } from '@entities/ClientFolder'
+import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
 import Button, { ButtonSkin } from '@components/Button'
 import {FoldersType} from '@store/initial-state'
 import ContentPage from '@containers/ContentPage'
-import MetaLabel from '@components/MetaLabel'
 import {useEffect, useState} from 'react'
 import SVGPlus from '@public/svg/plus.svg'
 import {upsertObject} from '@lib/array'
 import {useSelector} from 'react-redux'
 import Dialog from '@components/Dialog'
-import Folder from '@components/Folder'
+import Folder from '@containers/Folder'
 import {
   actionDeleteFolder,
   actionFetchFolders,
@@ -55,14 +56,14 @@ export default function Folders() {
     >
       <div
         className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-2 md:p-4">
-        {folders.items.map((folder) => {
+        {folders.items.map((folder, index) => {
           const hasActiveSimulator = folder.simulators.find(({ active }) => active)
 
           return (
             <Folder
               data={folder}
               key={folder.id}
-              active={!!hasActiveSimulator}
+              number={index + 1}
               editHref={`/private/folder/${folder.id}`}
               playHref={`/private/simulator/${folder.id}`}
               edit={folder.id === folders.editId}
@@ -95,7 +96,20 @@ export default function Folders() {
               onChange={(prop, value) => {
                 actionUpdateFolderItem({...folder, [prop]: value})
               }}
-              label={<MetaLabel>{`Terms ${folder.terms.length || 0}`}</MetaLabel>}
+              medal={(
+                <Achievements
+                  folder={folder}
+                  size={AchievementsSize.sm}
+                />
+              )}
+              label={(
+                <>
+                  {hasActiveSimulator &&
+                    <MetaLabel variant={MetaLabelVariant.green}>Processing...</MetaLabel>
+                  }
+                  <MetaLabel>{`Terms ${folder.terms.length || 0}`}</MetaLabel>
+                </>
+              )}
             />
           )
         })}

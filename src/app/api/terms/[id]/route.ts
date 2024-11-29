@@ -26,6 +26,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
       answerLang: body.answerLang,
       questionLang: body.questionLang,
       association: body.association,
+      associationLang: body.associationLang,
     } as Term)
 
     return new Response(null, { status: 200 })
