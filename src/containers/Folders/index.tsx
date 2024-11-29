@@ -6,7 +6,7 @@ import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
 import Button, { ButtonSkin } from '@components/Button'
 import {FoldersType} from '@store/initial-state'
 import ContentPage from '@containers/ContentPage'
-import {useEffect, useState} from 'react'
+import {useEffect, useMemo, useState} from 'react'
 import SVGPlus from '@public/svg/plus.svg'
 import {upsertObject} from '@lib/array'
 import {useSelector} from 'react-redux'
@@ -25,6 +25,15 @@ export default function Folders() {
 
   const [ originItem, setOriginItem ] = useState<ClientFolderData | null>(null)
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
+
+  const items = useMemo(() => {
+    return [...folders.items || []].sort((a, b) => {
+      if (a.order === b.order) {
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      }
+      return a.order - b.order
+    })
+  }, [folders.items])
 
   const [removeFolder, setRemoveFolder] = useState<ClientFolderData | null>(null)
 
@@ -56,7 +65,7 @@ export default function Folders() {
     >
       <div
         className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-2 md:p-4">
-        {folders.items.map((folder, index) => {
+        {items.map((folder, index) => {
           const hasActiveSimulator = folder.simulators.find(({ active }) => active)
 
           return (
@@ -90,7 +99,7 @@ export default function Folders() {
               onExit={() => {
                 actionUpdateFolder({
                   editId: null,
-                  items: upsertObject([...folders.items], originItem as ClientFolderData)
+                  items: upsertObject([...items], originItem as ClientFolderData)
                 }, () => setOriginItem(null))
               }}
               onChange={(prop, value) => {

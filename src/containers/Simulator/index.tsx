@@ -9,7 +9,7 @@ import Dialog, { DialogType } from '@components/Dialog'
 import CardEmpty from '@containers/Simulator/CardEmpty'
 import ButtonSquare from '@components/ButtonSquare'
 import { FoldersType } from '@store/initial-state'
-import TextToSpeech, { voices } from '@lib/speech'
+import TextToSpeech, {TextToSpeechEvents, voices} from '@lib/speech'
 import ContentPage from '@containers/ContentPage'
 import SingleQueueStart from './SingleQueueStart'
 import PanelControls from './PanelControls'
@@ -54,9 +54,17 @@ export default function Simulator({ folderId }: { folderId: string }) {
     return typeof(window) === 'object' ? new TextToSpeech() : null
   }, [])
 
-  if (speech && !speech.hasVoice()) {
-    speech.loadVoices()
-  }
+  const [ soundPlaying, setSoundPlaying ] = useState(false)
+
+  useEffect(() => {
+    if (speech) {
+      const onEndCallback = () => setSoundPlaying(false)
+      speech.addEventListener(TextToSpeechEvents.end, onEndCallback)
+      return () => {
+        speech.removeEventListener(TextToSpeechEvents.end, onEndCallback)
+      }
+    }
+  }, [speech, setSoundPlaying])
 
   const [stopFolderId, setStopFolderId] = useState<string | null>(null)
 
@@ -177,6 +185,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
                 process={folders.process}
                 options={{
                   sound: {
+                    active: soundPlaying,
                     disabled: !speech || !rollbackData || showHelp
                   },
                   help: {
@@ -201,6 +210,11 @@ export default function Simulator({ folderId }: { folderId: string }) {
                       break
                     case 'sound':
                       if (simulator && rollbackData && speech) {
+                        if (soundPlaying) {
+                          speech.stop()
+                          return
+                        }
+
                         const text = rollbackData.isBackSide
                           ? rollbackData.backSide.text
                           : rollbackData.faceSide.text
@@ -209,9 +223,9 @@ export default function Simulator({ folderId }: { folderId: string }) {
                           ? (rollbackData.backSide.lang || DefaultAnswerLang)
                           : (rollbackData.faceSide.lang || DefaultQuestionLang)
 
-                        const item = voices.find((item) => item.lang === lang)
-
                         if (text) {
+                          setSoundPlaying(true)
+                          const item = voices.find((item) => item.lang === lang)
                           speech.stop().setLang(lang).setVoice(item?.name || lang).speak(text)
                         }
                       }

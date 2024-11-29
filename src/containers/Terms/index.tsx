@@ -1,6 +1,7 @@
 'use client'
 
 import Achievements, { AchievementsSize } from '@containers/Achievements'
+import TextToSpeech, { TextToSpeechEvents, voices } from '@lib/speech'
 import ClientTerm, {ClientTermData} from '@entities/ClientTerm'
 import { FoldersType, TermsType } from '@store/initial-state'
 import React, {useEffect, useMemo, useState} from 'react'
@@ -29,13 +30,40 @@ export default function Terms({ folderId }: { folderId: string }) {
 
   const [ originItem, setOriginItem ] = useState<ClientTermData | null>(null)
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
-  const terms = useSelector(({ terms }: { terms: TermsType }) => terms)
+  const editTermInfo = useSelector(({ terms }: { terms: TermsType }) => terms)
 
   const [removeTerm, setRemoveTerm] = useState<ClientTermData | null>(null)
 
   const folder = useMemo(() => {
     return folders.items.find(({ id }) => id === folderId)
   }, [folders.items, folderId])
+
+  const terms = useMemo(() => {
+    return [...folder?.terms || []].sort((a, b) => {
+      if (a.order === b.order) {
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      }
+      return a.order - b.order
+    })
+  }, [folder?.terms])
+
+  const speech = useMemo(() => {
+    return typeof(window) === 'object' ? new TextToSpeech() : null
+  }, [])
+
+  const [ soundInfo, setSoundInfo ] = useState<{ playingName: string | null, termId: string | null }>({ playingName: null, termId: null })
+
+  useEffect(() => {
+    if (speech) {
+      const onEndCallback = () => {
+        setSoundInfo({ playingName: null, termId: null })
+      }
+      speech.addEventListener(TextToSpeechEvents.end, onEndCallback)
+      return () => {
+        speech.removeEventListener(TextToSpeechEvents.end, onEndCallback)
+      }
+    }
+  }, [speech, setSoundInfo])
 
   return (
     <ContentPage
@@ -65,7 +93,7 @@ export default function Terms({ folderId }: { folderId: string }) {
               skin={ButtonSkin.WHITE}
               className="w-1/2 gap-1"
               onClick={() => {
-                const term = new ClientTerm(folderId).serialize()
+                const term = new ClientTerm(folderId).setOrder(terms.length).serialize()
                 actionSaveTerm({term, editId: term.id})
               }}
             >
@@ -100,13 +128,15 @@ export default function Terms({ folderId }: { folderId: string }) {
         <div
           className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-2 md:p-4"
         >
-          {folder.terms.map((term) => {
+          {terms.map((term, index) => {
             return (
               <Term
                 data={term}
                 key={term.id}
-                edit={term.id === terms.editId}
-                process={terms.processIds.includes(term.id)}
+                number={index + 1}
+                edit={term.id === editTermInfo.editId}
+                process={editTermInfo.processIds.includes(term.id)}
+                soundPlayingName={soundInfo.termId === term.id ? soundInfo.playingName : null}
                 onSave={() => {
                   actionSaveTerm({term, editId: null}, () => {
                     if (originItem) {
@@ -132,6 +162,20 @@ export default function Terms({ folderId }: { folderId: string }) {
                   actionUpdateTermItem({ ...term, [prop]: value } as ClientTerm)
                 }}
                 onRemove={() => setRemoveTerm(term)}
+                onClickSound={({ play, text, name, lang }) => {
+                  if (speech) {
+                    if (!play) {
+                      speech.stop()
+                      return
+                    }
+
+                    if (text && play) {
+                      setSoundInfo({ playingName: name, termId: term.id })
+                      const item = voices.find((item) => item.lang === lang)
+                      speech.stop().setLang(lang).setVoice(item?.name || lang).speak(text)
+                    }
+                  }
+                }}
               />
             )
           })}

@@ -6,7 +6,7 @@ export const findTermsByUserId = async (userId: string): Promise<ClientTermData[
     where: { userId },
     select: {
       id: true,
-      sort: true,
+      order: true,
       folderId: true,
       answer: true,
       answerLang: true,
@@ -14,19 +14,23 @@ export const findTermsByUserId = async (userId: string): Promise<ClientTermData[
       questionLang: true,
       association: true,
       associationLang: true,
+      createdAt: true,
+      updatedAt: true
     },
   })
 
   return res.map(term => {
     return new ClientTerm(term.folderId)
       .setId(term.id)
-      .setSort(term.sort)
+      .setOrder(term.order)
       .setAnswer(term.answer)
       .setAnswerLang(term.answerLang)
       .setQuestion(term.question)
       .setQuestionLang(term.questionLang)
       .setAssociation(term.association)
       .setAssociationLang(term.associationLang)
+      .setCreatedAt(term.createdAt)
+      .setUpdatedAt(term.updatedAt)
       .serialize()
   })
 }
@@ -36,7 +40,7 @@ export const findTermsByFolderId = async (userId: string, folderId: string): Pro
     where: { userId, folderId },
     select: {
       id: true,
-      sort: true,
+      order: true,
       answer: true,
       answerLang: true,
       question: true,
@@ -44,19 +48,23 @@ export const findTermsByFolderId = async (userId: string, folderId: string): Pro
       association: true,
       associationLang: true,
       folderId: true,
+      createdAt: true,
+      updatedAt: true
     },
   })
 
   return res.map(term => {
     return new ClientTerm(term.folderId)
       .setId(term.id)
-      .setSort(term.sort)
+      .setOrder(term.order)
       .setAnswer(term.answer)
       .setAnswerLang(term.answerLang)
       .setQuestion(term.question)
       .setQuestionLang(term.questionLang)
       .setAssociation(term.association)
       .setAssociationLang(term.associationLang)
+      .setCreatedAt(term.createdAt)
+      .setUpdatedAt(term.updatedAt)
       .serialize()
   })
 }
@@ -66,7 +74,7 @@ export const getTermById = async (userId: string, id: string): Promise<ClientTer
     where: { userId, id },
     select: {
       id: true,
-      sort: true,
+      order: true,
       answer: true,
       answerLang: true,
       question: true,
@@ -74,19 +82,23 @@ export const getTermById = async (userId: string, id: string): Promise<ClientTer
       association: true,
       associationLang: true,
       folderId: true,
+      createdAt: true,
+      updatedAt: true
     },
   })
 
   return res.map(term => {
     return new ClientTerm(term.folderId)
       .setId(term.id)
-      .setSort(term.sort)
+      .setOrder(term.order)
       .setAnswer(term.answer)
       .setAnswerLang(term.answerLang)
       .setQuestion(term.question)
       .setQuestionLang(term.questionLang)
       .setAssociation(term.association)
       .setAssociationLang(term.associationLang)
+      .setCreatedAt(term.createdAt)
+      .setUpdatedAt(term.updatedAt)
       .serialize()
   })
 }
@@ -95,7 +107,7 @@ export const upsertTerm = async (term: Term): Promise<string | null> => {
   const res = await prisma.term.upsert({
     where: { id: term.id },
     update: {
-      sort: term.sort,
+      order: term.order,
       answer: term.answer,
       question: term.question,
       answerLang: term.answerLang,
@@ -106,7 +118,7 @@ export const upsertTerm = async (term: Term): Promise<string | null> => {
     },
     create: {
       id: term.id,
-      sort: term.sort,
+      order: term.order,
       userId: term.userId as string,
       answer: term.answer,
       answerLang: term.answerLang,

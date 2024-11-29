@@ -21,15 +21,28 @@ export const voices = [
   {"name":"Google 國語（臺灣）","lang":"zh-TW"}
 ]
 
+export enum TextToSpeechEvents {
+  start = 'start',
+  end = 'end'
+}
+
 export default class TextToSpeech {
-  private synth: SpeechSynthesis
-  private voices: SpeechSynthesisVoice[]
-  private voice: SpeechSynthesisVoice | null
-  private rate: number
-  private volume: number
-  private lang: string | null
+  private synth!: SpeechSynthesis
+  private voices!: SpeechSynthesisVoice[]
+  private voice!: SpeechSynthesisVoice | null
+  private rate!: number
+  private volume!: number
+  private lang!: string | null
+  private events!: { eventName: TextToSpeechEvents, callback: () => void }[]
+  private static inst?: TextToSpeech
 
   constructor() {
+    if (TextToSpeech.inst) {
+      return TextToSpeech.inst
+    }
+
+    TextToSpeech.inst = this
+
     if (!window.speechSynthesis) {
       throw new Error('Ваш браузер не поддерживает SpeechSynthesis.')
     }
@@ -45,19 +58,54 @@ export default class TextToSpeech {
     this.volume = 1
 
     this.lang = 'en-GB'
+
+    this.init()
+
+    this.events = []
+  }
+
+  addEventListener(eventName: TextToSpeechEvents, callback: () => void): TextToSpeech {
+    this.events.push({ eventName, callback })
+    return this
+  }
+
+  removeEventListener(eventName: TextToSpeechEvents, callback: () => void): TextToSpeech {
+    const index = this.events.findIndex((event) => {
+      return event.eventName === eventName && event.callback === callback
+    })
+    if (index !== -1) {
+      this.events.splice(index, 1)
+    }
+    return this
   }
 
   hasVoice() {
     return !!this.voice
   }
 
-  loadVoices() {
+  init() {
     this.voices = this.synth.getVoices()
     if (!this.voices.length) {
       window.speechSynthesis.onvoiceschanged = () => {
         this.voices = this.synth.getVoices()
       }
     }
+
+    let speaking = this.synth.speaking
+    setInterval(() => {
+      if (speaking !== this.synth.speaking) {
+
+        for (const { eventName, callback } of this.events) {
+          if (this.synth.speaking && eventName === TextToSpeechEvents.start) {
+            callback()
+          }
+          if (!this.synth.speaking && eventName === TextToSpeechEvents.end) {
+            callback()
+          }
+        }
+        speaking = this.synth.speaking
+      }
+    }, 1000 / 60)
     return this
   }
 

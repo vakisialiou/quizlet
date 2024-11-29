@@ -37,12 +37,11 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
   try {
     const body = await req.json()
 
-    await upsertFolder(userId, { id, name: body.name } as Folder)
+    await upsertFolder(userId, { id, name: body.name, order: body.order } as Folder)
 
     return new Response(null, { status: 200 })
 
-  } catch (e) {
-    console.log(e)
+  } catch {
     return new Response(null, { status: 500 })
   }
 }

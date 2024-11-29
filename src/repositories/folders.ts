@@ -11,16 +11,21 @@ export const findFoldersByUserId = async (userId: string): Promise<ClientFolderD
     select: {
       id: true,
       name: true,
+      order: true,
+      createdAt: true,
+      updatedAt: true,
       terms: {
         select: {
           id: true,
-          sort: true,
+          order: true,
           answer: true,
           answerLang: true,
           question: true,
           questionLang: true,
           association: true,
           associationLang: true,
+          createdAt: true,
+          updatedAt: true
         }
       },
       simulators: {
@@ -45,17 +50,22 @@ export const findFoldersByUserId = async (userId: string): Promise<ClientFolderD
     return new ClientFolder()
       .setId(folder.id)
       .setName(folder.name)
+      .setOrder(folder.order)
+      .setCreatedAt(folder.createdAt)
+      .setUpdatedAt(folder.updatedAt)
       .setTerms(
         folder.terms.map(term => {
           return new ClientTerm(folder.id)
             .setId(term.id)
-            .setSort(term.sort)
+            .setOrder(term.order)
             .setAnswer(term.answer)
             .setAnswerLang(term.answerLang)
             .setQuestion(term.question)
             .setQuestionLang(term.questionLang)
             .setAssociation(term.association)
             .setAssociationLang(term.associationLang)
+            .setCreatedAt(term.createdAt)
+            .setUpdatedAt(term.updatedAt)
         })
       )
       .setSimulators(
@@ -87,16 +97,21 @@ export const getFolderById = async (userId: string, id: string): Promise<ClientF
     select: {
       id: true,
       name: true,
+      order: true,
+      createdAt: true,
+      updatedAt: true,
       terms: {
         select: {
           id: true,
-          sort: true,
+          order: true,
           answer: true,
           answerLang: true,
           question: true,
           questionLang: true,
           association: true,
           associationLang: true,
+          createdAt: true,
+          updatedAt: true
         }
       },
       simulators: {
@@ -121,17 +136,22 @@ export const getFolderById = async (userId: string, id: string): Promise<ClientF
     return new ClientFolder()
       .setId(folder.id)
       .setName(folder.name)
+      .setOrder(folder.order)
+      .setCreatedAt(folder.createdAt)
+      .setUpdatedAt(folder.updatedAt)
       .setTerms(
         folder.terms.map(term => {
           return new ClientTerm(folder.id)
             .setId(term.id)
-            .setSort(term.sort)
+            .setOrder(term.order)
             .setAnswer(term.answer)
             .setAnswerLang(term.answerLang)
             .setQuestion(term.question)
             .setQuestionLang(term.questionLang)
             .setAssociation(term.association)
             .setAssociationLang(term.associationLang)
+            .setCreatedAt(term.createdAt)
+            .setUpdatedAt(term.updatedAt)
         })
       )
       .setSimulators(
@@ -164,12 +184,14 @@ export const upsertFolder = async (userId: string, folder: Folder): Promise<stri
     where: { userId, id: folder.id },
     update: {
       name: folder.name,
+      order: folder.order,
       updatedAt: new Date(),
     },
     create: {
       userId,
       id: folder.id,
       name: folder.name,
+      order: folder.order,
       createdAt: new Date(),
       updatedAt: new Date()
     },

@@ -23,7 +23,10 @@ export const saveFolder = createAsyncThunk(
   async (payload: SaveType): Promise<SaveType> => {
     const res = await clientFetch(`/api/folders/${payload.folder.id}`, {
         method: 'PUT',
-        body: JSON.stringify({ name: payload.folder.name })
+        body: JSON.stringify({
+          name: payload.folder.name,
+          order: payload.folder.order
+        })
       })
 
     if (!res.ok) {

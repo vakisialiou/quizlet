@@ -1,8 +1,9 @@
 import { ClientSimulatorData, SimulatorStatus } from '@entities/ClientSimulator'
 import SVGPanelClose from '@public/svg/panel_close.svg'
+import SVGMuteOff from '@public/svg/mute_ipo_off.svg'
 import SVGLoopBack from '@public/svg/loop_back.svg'
 import SVGMuteOn from '@public/svg/mute_ipo_on.svg'
-import SVGHelp from '@public/svg/help.svg'
+import SVGQuestion from '@public/svg/question.svg'
 import Button from '@components/Button'
 import React from 'react'
 import clsx from 'clsx'
@@ -28,10 +29,10 @@ export default function PanelControls(
     options = {}
   }:
   {
-    process?: boolean,
-    onClick: (name: string) => void,
-    simulator?: ClientSimulatorData | null,
-    className?: string,
+    process?: boolean
+    onClick: (name: string) => void
+    simulator?: ClientSimulatorData | null
+    className?: string
     options?: Partial<PanelControlOptions>
   }
 ) {
@@ -93,7 +94,7 @@ export default function PanelControls(
         disabled={process || controls.help.disabled}
         onClick={() => onClick('help')}
       >
-        <SVGHelp
+        <SVGQuestion
           width={24}
           height={24}
           className={clsx('text-gray-400', {
@@ -107,13 +108,25 @@ export default function PanelControls(
         disabled={process || controls.sound.disabled}
         onClick={() => onClick('sound')}
       >
-        <SVGMuteOn
-          width={24}
-          height={24}
-          className={clsx('text-gray-400', {
-            ['text-gray-600']: controls.sound.disabled
-          })}
-        />
+        {controls.sound.active &&
+          <SVGMuteOn
+            width={24}
+            height={24}
+            className={clsx('text-gray-400', {
+              ['text-gray-600']: controls.sound.disabled
+            })}
+          />
+        }
+
+        {!controls.sound.active &&
+          <SVGMuteOff
+            width={24}
+            height={24}
+            className={clsx('text-gray-400', {
+              ['text-gray-600']: controls.sound.disabled
+            })}
+          />
+        }
       </Button>
     </div>
   )

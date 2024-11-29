@@ -19,7 +19,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     await upsertTerm({
       id,
       userId,
-      sort: body.sort,
+      order: body.order,
       answer: body.answer,
       folderId: body.folderId,
       question: body.question,

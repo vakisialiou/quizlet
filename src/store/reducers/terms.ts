@@ -16,7 +16,7 @@ export const saveTerm = createAsyncThunk(
     const res = await clientFetch(`/api/terms/${payload.term.id}`, {
       method: 'PUT',
       body: JSON.stringify({
-        sort: payload.term.sort,
+        order: payload.term.order,
         answer: payload.term.answer,
         answerLang: payload.term.answerLang,
         question: payload.term.question,

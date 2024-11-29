@@ -6,7 +6,7 @@ export const DefaultAssociationLang = 'en-GB'
 
 export type ClientTermData = {
   id: string
-  sort: number
+  order: number
   folderId: string
   answer: string | null
   answerLang: string | null
@@ -14,11 +14,13 @@ export type ClientTermData = {
   questionLang: string | null
   association: string | null
   associationLang: string | null
+  createdAt: Date
+  updatedAt: Date
 }
 
 export default class ClientTerm {
   id: string
-  sort: number
+  order: number
   folderId: string
   answer: string | null
   answerLang: string | null
@@ -26,9 +28,11 @@ export default class ClientTerm {
   questionLang: string | null
   association: string | null
   associationLang: string | null
+  createdAt: Date
+  updatedAt: Date
 
   constructor(folderId = '') {
-    this.sort = 0
+    this.order = 0
     this.id = v4()
     this.folderId = folderId
     this.answer = null
@@ -37,10 +41,22 @@ export default class ClientTerm {
     this.questionLang = null
     this.association = null
     this.associationLang = null
+    this.createdAt = new Date()
+    this.updatedAt = new Date()
   }
 
-  setSort(value: number): ClientTerm {
-    this.sort = value
+  setCreatedAt(value: Date): ClientTerm {
+    this.createdAt = value
+    return this
+  }
+
+  setUpdatedAt(value: Date): ClientTerm {
+    this.updatedAt = value
+    return this
+  }
+
+  setOrder(value: number): ClientTerm {
+    this.order = value
     return this
   }
 

@@ -32,7 +32,6 @@ export default function Achievements({ folder, size }: { folder?: ClientFolderDa
   if (!degreeIcon) {
     return
   }
-  console.log(size)
 
   const medalIcon = achievements.medal ? MedalIconMap[achievements.medal] : null
   return (
