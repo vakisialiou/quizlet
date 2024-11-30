@@ -1,10 +1,6 @@
 import { ComponentType, SVGProps } from 'react'
 import clsx from 'clsx'
 
-export enum ButtonSquareSize {
-
-}
-
 export default function ButtonSquare(
   { onClick, icon, bordered = false, size = 32, className = '' }:
   { onClick?: () => void, icon: ComponentType<SVGProps<SVGSVGElement>>, bordered?: boolean, size?: number, className?: string }

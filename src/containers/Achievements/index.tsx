@@ -3,7 +3,7 @@ import { ClientFolderData } from '@entities/ClientFolder'
 import Achievement from '@entities/Achievement'
 import clsx from "clsx";
 
-const DegreeIconMap: Record<DegreeEnum, string> = {
+const DegreeIconMap: Record<DegreeEnum, string> & { default: string }  = {
   [DegreeEnum.preschool]: '🧸',
   [DegreeEnum.primary]: '✏️',
   [DegreeEnum.secondary]: '📚',
@@ -12,12 +12,14 @@ const DegreeIconMap: Record<DegreeEnum, string> = {
   [DegreeEnum.master]: '📜',
   [DegreeEnum.doctor]: '🔬',
   [DegreeEnum.professor]: '👩‍🏫',
+  default: '🔲'
 }
 
-const MedalIconMap: Record<MedalEnum, string> = {
+const MedalIconMap: Record<MedalEnum, string> & { default: string }  = {
   [MedalEnum.bronze]: '🥉',
   [MedalEnum.silver]: '🥈',
   [MedalEnum.gold]: '🥇',
+  default: '⚪'
 }
 
 export enum AchievementsSize {
@@ -28,23 +30,20 @@ export enum AchievementsSize {
 export default function Achievements({ folder, size }: { folder?: ClientFolderData, size?: AchievementsSize }) {
   const achievements = new Achievement().calculate(folder?.simulators || [])
 
-  const degreeIcon = achievements.degree ? DegreeIconMap[achievements.degree] : null
-  if (!degreeIcon) {
-    return
-  }
+  const degreeIcon = achievements.degree ? DegreeIconMap[achievements.degree] : DegreeIconMap.default
+  const medalIcon = achievements.medal ? MedalIconMap[achievements.medal] : MedalIconMap.default
 
-  const medalIcon = achievements.medal ? MedalIconMap[achievements.medal] : null
   return (
-    <div className="flex gap-2 items-center">
-      <div
-        className={clsx('relative flex gap-2', {
-
-        })}
-      >
+    <div
+      className={clsx('flex gap-2 items-center', {
+        ['h-6']: true
+      })}
+    >
+      <div className="relative flex gap-2">
         <div
           className={clsx('flex w-full h-full items-start justify-start', {
             ['text-[36px] leading-[48px]']: size === AchievementsSize.xl,
-            ['text-[24px] leading-[24px]']: size === AchievementsSize.sm,
+            ['text-[16px] leading-[16px]']: size === AchievementsSize.sm,
           })}
         >
           {degreeIcon}
@@ -61,6 +60,10 @@ export default function Achievements({ folder, size }: { folder?: ClientFolderDa
           </div>
         }
       </div>
+
+      <span className="ml-2 text-xs uppercase font-bold text-gray-700">
+        {achievements.degree || 'N/A'}
+      </span>
     </div>
   )
 }

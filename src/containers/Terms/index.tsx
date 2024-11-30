@@ -8,8 +8,8 @@ import React, {useEffect, useMemo, useState} from 'react'
 import Button, { ButtonSkin } from '@components/Button'
 import ButtonSquare from '@components/ButtonSquare'
 import ContentPage from '@containers/ContentPage'
+import SVGFileNew from '@public/svg/file_new.svg'
 import SVGBack from '@public/svg/back.svg'
-import SVGPlus from '@public/svg/plus.svg'
 import SVGPlay from '@public/svg/play.svg'
 import {useRouter} from '@i18n/routing'
 import {useSelector} from 'react-redux'
@@ -22,6 +22,7 @@ import {
   actionUpdateTerm,
   actionUpdateTermItem
 } from '@store/index'
+import Search from "@components/Search";
 
 export default function Terms({ folderId }: { folderId: string }) {
   useEffect(actionFetchFolders, [])
@@ -38,14 +39,25 @@ export default function Terms({ folderId }: { folderId: string }) {
     return folders.items.find(({ id }) => id === folderId)
   }, [folders.items, folderId])
 
+  const [search, setSearch] = useState<string | null>(null)
+
   const terms = useMemo(() => {
-    return [...folder?.terms || []].sort((a, b) => {
+    let rawItems = [...folder?.terms || []]
+    if (search) {
+      rawItems = rawItems.filter(({ question, answer, association }) => {
+        return `${question}`.toLocaleLowerCase().includes(search)
+          || `${answer}`.toLocaleLowerCase().includes(search)
+          || `${association}`.toLocaleLowerCase().includes(search)
+      })
+    }
+
+    return rawItems.sort((a, b) => {
       if (a.order === b.order) {
         return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       }
       return a.order - b.order
     })
-  }, [folder?.terms])
+  }, [folder?.terms, search])
 
   const speech = useMemo(() => {
     return typeof(window) === 'object' ? new TextToSpeech() : null
@@ -97,12 +109,12 @@ export default function Terms({ folderId }: { folderId: string }) {
                 actionSaveTerm({term, editId: term.id})
               }}
             >
-              <SVGPlus
+              <SVGFileNew
                 width={28}
                 height={28}
                 className="text-gray-700"
               />
-              Create
+              Create term
             </Button>
             <Button
               skin={ButtonSkin.GREEN}
@@ -124,6 +136,18 @@ export default function Terms({ folderId }: { folderId: string }) {
         </div>
       )}
     >
+      <Search
+        rounded
+        bordered
+        value={search || ''}
+        className="px-2 pt-2 md:px-4 md:pt-4"
+        placeholder="Search term..."
+        onClear={() => setSearch(null)}
+        onChange={(e) => {
+          setSearch(e.target.value ? `${e.target.value}`.toLocaleLowerCase() : null)
+        }}
+      />
+
       {folder &&
         <div
           className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-2 md:p-4"

@@ -3,21 +3,23 @@
 import Achievements, { AchievementsSize } from '@containers/Achievements'
 import ClientFolder, { ClientFolderData } from '@entities/ClientFolder'
 import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
+import { SimulatorStatus } from '@entities/ClientSimulator'
 import Button, { ButtonSkin } from '@components/Button'
-import {FoldersType} from '@store/initial-state'
+import SVGFolderNew from '@public/svg/new_folder.svg'
+import { useEffect, useMemo, useState } from 'react'
+import { FoldersType } from '@store/initial-state'
 import ContentPage from '@containers/ContentPage'
-import {useEffect, useMemo, useState} from 'react'
-import SVGPlus from '@public/svg/plus.svg'
-import {upsertObject} from '@lib/array'
-import {useSelector} from 'react-redux'
+import { upsertObject } from '@lib/array'
+import { useSelector } from 'react-redux'
 import Dialog from '@components/Dialog'
+import Search from '@components/Search'
 import Folder from '@containers/Folder'
 import {
+  actionUpdateFolderItem,
   actionDeleteFolder,
   actionFetchFolders,
-  actionSaveFolder,
   actionUpdateFolder,
-  actionUpdateFolderItem
+  actionSaveFolder,
 } from '@store/index'
 
 export default function Folders() {
@@ -26,14 +28,20 @@ export default function Folders() {
   const [ originItem, setOriginItem ] = useState<ClientFolderData | null>(null)
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
 
+  const [search, setSearch] = useState<string | null>(null)
+
   const items = useMemo(() => {
-    return [...folders.items || []].sort((a, b) => {
+    let rawItems = [...folders.items || []]
+    if (search) {
+      rawItems = rawItems.filter(({ name }) => `${name}`.toLocaleLowerCase().includes(search))
+    }
+    return rawItems.sort((a, b) => {
       if (a.order === b.order) {
         return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       }
       return a.order - b.order
     })
-  }, [folders.items])
+  }, [folders.items, search])
 
   const [removeFolder, setRemoveFolder] = useState<ClientFolderData | null>(null)
 
@@ -52,30 +60,51 @@ export default function Folders() {
               actionSaveFolder({folder, editId: folder.id})
             }}
           >
-            <SVGPlus
+            <SVGFolderNew
               width={28}
               height={28}
               className="text-gray-700"
             />
 
-            Create
+            Create folder
           </Button>
         </div>
       )}
     >
+      <Search
+        rounded
+        bordered
+        value={search || ''}
+        className="px-2 pt-2 md:px-4 md:pt-4"
+        placeholder="Search folder..."
+        onClear={() => setSearch(null)}
+        onChange={(e) => {
+          setSearch(e.target.value ? `${e.target.value}`.toLocaleLowerCase() : null)
+        }}
+      />
+
       <div
         className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-2 md:p-4">
         {items.map((folder, index) => {
-          const hasActiveSimulator = folder.simulators.find(({ active }) => active)
+          let doneSimulators = 0
+          let hasActiveSimulator = false
+          for (const { active, status } of folder.simulators) {
+            if (active) {
+              hasActiveSimulator = true
+            }
+            if (!active && status === SimulatorStatus.DONE) {
+              doneSimulators++
+            }
+          }
 
           return (
             <Folder
               data={folder}
               key={folder.id}
               number={index + 1}
-              editHref={`/private/folder/${folder.id}`}
-              playHref={`/private/simulator/${folder.id}`}
               edit={folder.id === folders.editId}
+              hrefEdit={`/private/folder/${folder.id}`}
+              hrefPlay={`/private/simulator/${folder.id}`}
               process={folders.processIds.includes(folder.id)}
               dropdownItems={[
                 {id: 1, name: 'Edit'},
@@ -105,17 +134,22 @@ export default function Folders() {
               onChange={(prop, value) => {
                 actionUpdateFolderItem({...folder, [prop]: value})
               }}
-              medal={(
+              achievements={(
                 <Achievements
                   folder={folder}
                   size={AchievementsSize.sm}
                 />
               )}
-              label={(
+              labels={(
                 <>
                   {hasActiveSimulator &&
-                    <MetaLabel variant={MetaLabelVariant.green}>Processing...</MetaLabel>
+                    <MetaLabel variant={MetaLabelVariant.green}>Playing</MetaLabel>
                   }
+
+                  {(!hasActiveSimulator && doneSimulators > 0) &&
+                    <MetaLabel>Attempts {doneSimulators}</MetaLabel>
+                  }
+
                   <MetaLabel>{`Terms ${folder.terms.length || 0}`}</MetaLabel>
                 </>
               )}

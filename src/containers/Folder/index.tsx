@@ -14,10 +14,11 @@ export default function Folder(
     edit = false,
     process = false,
     number,
-    label,
-    medal,
-    playHref,
-    editHref,
+    labels,
+    info,
+    achievements,
+    hrefPlay,
+    hrefEdit,
     onSave,
     onExit,
     onChange,
@@ -28,11 +29,12 @@ export default function Folder(
     data: ClientFolderData,
     edit: boolean,
     process: boolean,
-    medal: ReactNode,
-    label: ReactNode,
+    achievements?: ReactNode,
+    labels?: ReactNode,
+    info?: ReactNode,
     number: number,
-    playHref: string,
-    editHref: string,
+    hrefPlay: string,
+    hrefEdit: string,
     onSave: () => void,
     onExit: () => void,
     onChange: (prop: string, value: string) => void,
@@ -46,38 +48,41 @@ export default function Folder(
         ['border-gray-500 shadow-inner shadow-gray-500/50']: true,
       })}
     >
-      {!edit &&
-        <>
-          <Link
-            href={playHref}
-            className={clsx('relative h-full w-20 min-w-20 flex justify-center items-center group', {
-              ['hover:border-gray-600']: !edit,
-              ['hover:cursor-pointer']: !edit,
-            })}
-            onClick={(e) => {
-              if (edit) {
-                e.preventDefault()
-              }
-            }}
-          >
-            <div className="absolute left-2 top-2 text-xs text-gray-500/90 pointer-events-none">
-              #{number}
-            </div>
-            <SVGPlay
-              width={24}
-              height={24}
-              className="text-gray-400 group-hover:text-gray-500 group-active::text-gray-600 transition-colors"
-            />
-          </Link>
-          <div className="divide-x divide-gray-500 h-full flex">
-            <div className="h-full"></div>
-            <div className="h-full"></div>
+      <div className="flex">
+        <div
+          className="w-20 min-w-20 h-full flex flex-col p-2"
+          onClick={(e) => {
+            if (edit) {
+              e.preventDefault()
+            }
+          }}
+        >
+          <div
+            className="flex items-center h-6 min-h-6 w-full text-xs text-gray-500/90 pointer-events-none">
+            #{number}
           </div>
-        </>
-      }
+
+          <div className="flex items-center justify-center w-full h-full">
+            <Link
+              href={hrefPlay}
+              className={clsx('flex items-center justify-center w-12 h-12 rounded-full transition-all', {
+                ['shadow-inner shadow-gray-300 bg-green-900 hover:shadow-gray-400/80 active:shadow-gray-400/50']: !edit,
+                ['pointer-events-none bg-gray-500/10']: edit,
+              })}
+            >
+              <SVGPlay
+                width={24}
+                height={24}
+                className="text-gray-200"
+              />
+            </Link>
+          </div>
+        </div>
+      </div>
+
       <Link
-        href={editHref}
-        className={clsx('group w-full min-w-0 flex flex-col gap-2 p-2', {
+        href={hrefEdit}
+        className={clsx('relative group w-full min-w-0 flex flex-col justify-between gap-2 p-2', {
           ['hover:border-gray-600']: !edit,
           ['hover:cursor-pointer']: !edit,
         })}
@@ -87,61 +92,63 @@ export default function Folder(
           }
         }}
       >
-        <div className="w-full flex justify-between gap-1 overflow-hidden">
+        {edit &&
+          <div className="absolute left-0 top-0 w-full h-full cursor-default"></div>
+        }
+
+        <div className="flex items-center justify-between w-full">
+          {achievements}
+
+          <Dropdown
+            onClick={(e) => {
+              e.preventDefault()
+            }}
+            items={dropdownItems}
+            onSelect={(id) => {
+              onDropdownSelect(id)
+            }}
+          >
+            {!process &&
+              <SVGThreeDots
+                width={24}
+                height={24}
+                className="text-gray-700"
+              />
+            }
+
+            {process &&
+              <div className="flex items-center justify-center w-6 h-6">
+                <Spinner size={3} />
+              </div>
+            }
+          </Dropdown>
+        </div>
+
+        <div className="w-full flex justify-between gap-1 overflow-hidden z-10">
           {!edit &&
-            <>
-              <div className="flex items-center w-full max-w-full overflow-hidden">
-                <div
-                  title={data.name || ''}
-                  className="px-1 content-center transition-colors text-gray-400 group-hover:text-gray-500 group-active:text-gray-600 font-semibold text-sm truncate ..."
-                >
-                  {data.name}
-                </div>
+            <div className="flex items-center w-full max-w-full overflow-hidden">
+              <div
+                title={data.name || ''}
+                className="content-center transition-colors text-gray-400 group-hover:text-gray-500 group-active:text-gray-600 font-semibold text-sm truncate ..."
+              >
+                {data.name}
               </div>
-
-              <div className="flex gap-2 items-center">
-                <div className="flex gap-2">
-                  <Dropdown
-                    onClick={(e) => {
-                      e.preventDefault()
-                    }}
-                    items={dropdownItems}
-                    onSelect={(id) => {
-                      onDropdownSelect(id)
-                    }}
-                  >
-                    {!process &&
-                      <SVGThreeDots
-                        width={32}
-                        height={32}
-                        className="text-gray-700"
-                      />
-                    }
-
-                    {process &&
-                      <div className="flex items-center justify-center w-8 h-8">
-                        <Spinner/>
-                      </div>
-                    }
-                  </Dropdown>
-
-                </div>
-              </div>
-            </>
+            </div>
           }
 
           {edit &&
             <div
-              className="group group-hover:text-gray-400 group-active:text-gray-400 w-full"
+              className="group group-hover:text-gray-400 group-active:text-gray-400 w-full flex flex-col"
             >
+              <label className="font-semibold text-sm text-gray-600">Enter folder name: </label>
               <Input
                 autoFocus
                 type="text"
                 name="name"
+                onBlur={onSave}
                 autoComplete="off"
                 placeholder="Folder name"
                 defaultValue={data.name || ''}
-                onBlur={onSave}
                 onChange={(e) => {
                   onChange('name', e.target.value)
                 }}
@@ -162,11 +169,11 @@ export default function Folder(
 
         {!edit &&
           <div className="w-full flex justify-between gap-1 overflow-hidden">
-            <div>
-              {medal}
+            <div className="flex gap-2 items-center">
+              {info}
             </div>
             <div className="flex gap-2 items-center">
-              {label}
+              {labels}
             </div>
           </div>
         }
