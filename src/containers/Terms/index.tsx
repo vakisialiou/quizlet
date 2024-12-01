@@ -2,6 +2,7 @@
 
 import Achievements, { AchievementsSize } from '@containers/Achievements'
 import TextToSpeech, { TextToSpeechEvents, voices } from '@lib/speech'
+import { filterFolderTerms } from '@containers/Simulator/helpers'
 import ClientTerm, {ClientTermData} from '@entities/ClientTerm'
 import { FoldersType, TermsType } from '@store/initial-state'
 import React, {useEffect, useMemo, useState} from 'react'
@@ -11,6 +12,7 @@ import ContentPage from '@containers/ContentPage'
 import SVGFileNew from '@public/svg/file_new.svg'
 import SVGBack from '@public/svg/back.svg'
 import SVGPlay from '@public/svg/play.svg'
+import Search from '@components/Search'
 import {useRouter} from '@i18n/routing'
 import {useSelector} from 'react-redux'
 import Dialog from '@components/Dialog'
@@ -22,7 +24,7 @@ import {
   actionUpdateTerm,
   actionUpdateTermItem
 } from '@store/index'
-import Search from "@components/Search";
+import clsx from "clsx";
 
 export default function Terms({ folderId }: { folderId: string }) {
   useEffect(actionFetchFolders, [])
@@ -77,6 +79,10 @@ export default function Terms({ folderId }: { folderId: string }) {
     }
   }, [speech, setSoundInfo])
 
+  const playTerms = useMemo(() => {
+    return filterFolderTerms(folder)
+  }, [folder])
+
   return (
     <ContentPage
       showHeader
@@ -118,6 +124,7 @@ export default function Terms({ folderId }: { folderId: string }) {
             </Button>
             <Button
               skin={ButtonSkin.GREEN}
+              disabled={playTerms.length === 0}
               className="w-1/2 gap-1"
               onClick={() => {
                 if (folder) {
@@ -128,7 +135,9 @@ export default function Terms({ folderId }: { folderId: string }) {
               <SVGPlay
                 width={28}
                 height={28}
-                className="text-gray-100"
+                className={clsx('text-gray-100', {
+                  ['text-gray-500/50']: playTerms.length === 0
+                })}
               />
               Play
             </Button>

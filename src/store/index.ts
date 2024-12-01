@@ -16,6 +16,7 @@ import {
   PayloadStart,
   PayloadDeactivate,
   UpsertSimulatorsIds,
+  PayloadUpdateTracker,
 } from '@store/reducers/simulators'
 
 const DEBUG = false
@@ -119,7 +120,6 @@ export const actionStartSimulators = (payload: PayloadStart, callback?: (res: Up
   execAction(action, callback)
 }
 
-
 export const actionContinueSimulators = (payload: PayloadContinue, callback?: (res: UpsertSimulatorsIds) => void): void => {
   const action = simulators.continueSimulators(payload)
   execAction(action, callback)
@@ -127,6 +127,11 @@ export const actionContinueSimulators = (payload: PayloadContinue, callback?: (r
 
 export const actionRememberSimulators = (payload: PayloadRemember, callback?: (res: UpsertSimulatorsIds) => void): void => {
   const action = simulators.rememberSimulators(payload)
+  execAction(action, callback)
+}
+
+export const actionUpdateTracker = (payload: PayloadUpdateTracker, callback?: (res: PayloadUpdateTracker) => void): void => {
+  const action = simulators.updateTracker(payload)
   execAction(action, callback)
 }
 

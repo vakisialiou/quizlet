@@ -1,4 +1,4 @@
-import FlashcardSimulatorTracker from '@entities/FlashcardSimulatorTracker'
+import SimulatorTracker, { SimulatorTrackerAction } from '@entities/SimulatorTracker'
 import { SimulatorStatus } from '@entities/ClientSimulator'
 import { upsertSimulators } from '@store/fetch/simulators'
 import { ClientFolderData } from '@entities/ClientFolder'
@@ -64,6 +64,15 @@ export const continueSimulators = createAsyncThunk(
     const state = api.getState() as ConfigType
     const simulators = findNeedUpdateSimulators(state.folders, payload.folderId)
     return await upsertSimulators(simulators)
+  }
+)
+
+export type PayloadUpdateTracker = { folderId: string, trackerAction: SimulatorTrackerAction }
+
+export const updateTracker = createAsyncThunk(
+  '/update/tracker',
+  async (payload: PayloadUpdateTracker): Promise<PayloadUpdateTracker> => {
+    return payload
   }
 )
 
@@ -194,12 +203,6 @@ export const simulatorReducers = (builder: any) => {
       const { folderId } = action.meta.arg
 
       state.folders = updateActiveSimulator(state.folders, folderId, (simulator) => {
-        const tracker = new FlashcardSimulatorTracker(simulator)
-
-        if (simulator.termId) {
-          tracker.calculate(FlashcardSimulatorTracker.actionContinue, simulator.termId)
-        }
-
         const termIds = [...simulator.termIds].filter((id) => {
           return !simulator.rememberIds.includes(id) && !simulator.continueIds.includes(id)
         })
@@ -212,7 +215,6 @@ export const simulatorReducers = (builder: any) => {
             ...simulator,
             termId: null,
             needUpdate: true,
-            tracker: tracker.serialize(),
             status: SimulatorStatus.FINISHING,
             historyIds: addHistoryId(simulator.historyIds, simulator.termId),
             continueIds: addContinueId(simulator.continueIds, simulator.termId),
@@ -223,7 +225,6 @@ export const simulatorReducers = (builder: any) => {
           ...simulator,
           needUpdate: true,
           termId: nextTermId,
-          tracker: tracker.serialize(),
           historyIds: addHistoryId(simulator.historyIds, simulator.termId),
           continueIds: addContinueId(simulator.continueIds, simulator.termId),
         }
@@ -238,16 +239,29 @@ export const simulatorReducers = (builder: any) => {
     })
 
   builder
+    .addCase(updateTracker.pending, (state: ConfigType, action: { meta: { arg: PayloadUpdateTracker } }) => {
+      const { folderId, trackerAction } = action.meta.arg
+
+      state.folders = updateActiveSimulator(state.folders, folderId, (simulator) => {
+        const tracker = new SimulatorTracker(simulator)
+
+        if (simulator.termId) {
+          tracker.calculate(trackerAction, simulator.termId)
+        }
+
+        return {
+          ...simulator,
+          needUpdate: true,
+          tracker: tracker.serialize(),
+        }
+      })
+    })
+
+  builder
     .addCase(rememberSimulators.pending, (state: ConfigType, action: { meta: { arg: PayloadRemember } }) => {
       const { folderId } = action.meta.arg
 
       state.folders = updateActiveSimulator(state.folders, folderId, (simulator) => {
-        const tracker = new FlashcardSimulatorTracker(simulator)
-
-        if (simulator.termId) {
-          tracker.calculate(FlashcardSimulatorTracker.actionRemember, simulator.termId)
-        }
-
         const termIds = [...simulator.termIds].filter((id) => {
           return !simulator.rememberIds.includes(id) && !simulator.continueIds.includes(id)
         })
@@ -260,7 +274,6 @@ export const simulatorReducers = (builder: any) => {
             ...simulator,
             termId: null,
             needUpdate: true,
-            tracker: tracker.serialize(),
             status: simulator.continueIds.length === 0 ? SimulatorStatus.DONE : SimulatorStatus.FINISHING,
             historyIds: addHistoryId(simulator.historyIds, simulator.termId),
             rememberIds: addRememberIds(simulator.rememberIds, simulator.termId),
@@ -271,7 +284,6 @@ export const simulatorReducers = (builder: any) => {
           ...simulator,
           needUpdate: true,
           termId: nextTermId,
-          tracker: tracker.serialize(),
           historyIds: addHistoryId(simulator.historyIds, simulator.termId),
           rememberIds: addRememberIds(simulator.rememberIds, simulator.termId),
         }

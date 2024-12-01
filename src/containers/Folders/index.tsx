@@ -21,6 +21,7 @@ import {
   actionUpdateFolder,
   actionSaveFolder,
 } from '@store/index'
+import {filterFolderTerms} from "@containers/Simulator/helpers";
 
 export default function Folders() {
   useEffect(actionFetchFolders, [])
@@ -97,6 +98,8 @@ export default function Folders() {
             }
           }
 
+          const playTerms = filterFolderTerms(folder)
+
           return (
             <Folder
               data={folder}
@@ -105,6 +108,7 @@ export default function Folders() {
               edit={folder.id === folders.editId}
               hrefEdit={`/private/folder/${folder.id}`}
               hrefPlay={`/private/simulator/${folder.id}`}
+              disablePlay={playTerms.length === 0}
               process={folders.processIds.includes(folder.id)}
               dropdownItems={[
                 {id: 1, name: 'Edit'},
@@ -136,7 +140,9 @@ export default function Folders() {
               }}
               achievements={(
                 <Achievements
+                  showDegree
                   folder={folder}
+                  className="text-[10px]"
                   size={AchievementsSize.sm}
                 />
               )}

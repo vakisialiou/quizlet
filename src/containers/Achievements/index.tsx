@@ -27,7 +27,7 @@ export enum AchievementsSize {
   sm = 'sm'
 }
 
-export default function Achievements({ folder, size }: { folder?: ClientFolderData, size?: AchievementsSize }) {
+export default function Achievements({ folder, size, className = '', showDegree }: { folder?: ClientFolderData, size?: AchievementsSize, className?: string, showDegree?: boolean }) {
   const achievements = new Achievement().calculate(folder?.simulators || [])
 
   const degreeIcon = achievements.degree ? DegreeIconMap[achievements.degree] : DegreeIconMap.default
@@ -36,7 +36,8 @@ export default function Achievements({ folder, size }: { folder?: ClientFolderDa
   return (
     <div
       className={clsx('flex gap-2 items-center', {
-        ['h-6']: true
+        [className]: className,
+        ['h-6 min-w-6']: true
       })}
     >
       <div className="relative flex gap-2">
@@ -61,9 +62,11 @@ export default function Achievements({ folder, size }: { folder?: ClientFolderDa
         }
       </div>
 
-      <span className="ml-2 text-xs uppercase font-bold text-gray-700">
-        {achievements.degree || 'N/A'}
-      </span>
+      {showDegree &&
+        <div className="ml-2 uppercase font-bold text-gray-700">
+          {achievements.degree || 'N/A'}
+        </div>
+      }
     </div>
   )
 }

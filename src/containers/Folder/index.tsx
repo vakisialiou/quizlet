@@ -19,6 +19,8 @@ export default function Folder(
     achievements,
     hrefPlay,
     hrefEdit,
+    disablePlay = false,
+    disableEdit = false,
     onSave,
     onExit,
     onChange,
@@ -35,6 +37,8 @@ export default function Folder(
     number: number,
     hrefPlay: string,
     hrefEdit: string,
+    disablePlay?: boolean,
+    disableEdit?: boolean,
     onSave: () => void,
     onExit: () => void,
     onChange: (prop: string, value: string) => void,
@@ -66,14 +70,16 @@ export default function Folder(
             <Link
               href={hrefPlay}
               className={clsx('flex items-center justify-center w-12 h-12 rounded-full transition-all', {
-                ['shadow-inner shadow-gray-300 bg-green-900 hover:shadow-gray-400/80 active:shadow-gray-400/50']: !edit,
-                ['pointer-events-none bg-gray-500/10']: edit,
+                ['shadow-inner shadow-gray-300 bg-green-900 hover:shadow-gray-400/80 active:shadow-gray-400/50']: !edit && !disablePlay,
+                ['pointer-events-none bg-gray-500/10']: edit || disablePlay,
               })}
             >
               <SVGPlay
                 width={24}
                 height={24}
-                className="text-gray-200"
+                className={clsx('text-gray-200', {
+                  ['text-gray-500/50']: edit || disablePlay,
+                })}
               />
             </Link>
           </div>
@@ -83,16 +89,16 @@ export default function Folder(
       <Link
         href={hrefEdit}
         className={clsx('relative group w-full min-w-0 flex flex-col justify-between gap-2 p-2', {
-          ['hover:border-gray-600']: !edit,
-          ['hover:cursor-pointer']: !edit,
+          ['hover:border-gray-600']: !edit && !disableEdit,
+          ['hover:cursor-pointer']: !edit && !disableEdit,
         })}
         onClick={(e) => {
-          if (edit) {
+          if (edit || disableEdit) {
             e.preventDefault()
           }
         }}
       >
-        {edit &&
+        {(edit || disableEdit) &&
           <div className="absolute left-0 top-0 w-full h-full cursor-default"></div>
         }
 

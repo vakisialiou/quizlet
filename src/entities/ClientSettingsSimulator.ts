@@ -1,10 +1,13 @@
 export enum SimulatorMethod {
-  single = 'single',
+  PICK = 'pick',
+  INPUT = 'input',
+  FLASHCARD = 'flashcard',
 }
 
 export type ClientSettingsSimulatorData = {
-  method: SimulatorMethod,
+  id: number
   inverted: boolean
+  method: SimulatorMethod
 }
 
 export default class ClientSettingsSimulator {
@@ -13,7 +16,7 @@ export default class ClientSettingsSimulator {
 
   constructor() {
     this.inverted = false
-    this.method = SimulatorMethod.single
+    this.method = SimulatorMethod.FLASHCARD
   }
 
   setInverted(value: boolean): ClientSettingsSimulator {

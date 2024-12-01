@@ -13,6 +13,7 @@ export async function PUT(req: Request) {
 
   try {
     await upsertSettingsSimulator(userId, {
+      id: body.id,
       method: body.method,
       inverted: body.inverted,
     })

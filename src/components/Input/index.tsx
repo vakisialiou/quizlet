@@ -12,6 +12,9 @@ export enum InputVariantFocus {
 }
 
 export enum InputSize {
+  h12 = 'h12',
+  h11 = 'h11',
+  h10 = 'h10',
   h8 = 'h8',
   h6 = 'h6'
 }
@@ -72,6 +75,9 @@ export default function Input(
       defaultValue={defaultValue}
       className={clsx('block border w-full', {
         [className]: className,
+        ['h-12 px-4 text-lg']: size === InputSize.h12,
+        ['h-11 px-4 text-md']: size === InputSize.h11,
+        ['h-10 px-2 text-md']: size === InputSize.h10,
         ['h-8 px-2 text-sm']: size === InputSize.h8,
         ['h-6 px-1 text-sm']: size === InputSize.h6,
         ['bg-gray-800 text-gray-300 placeholder-gray-500']: variant === InputVariant.gray,
