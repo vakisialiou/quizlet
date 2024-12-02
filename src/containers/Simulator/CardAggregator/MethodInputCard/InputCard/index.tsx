@@ -1,7 +1,7 @@
 import {CardStatus} from '@containers/Simulator/CardAggregator/types'
-import Button, { ButtonSkin } from '@components/Button'
-import Input, { InputSize } from '@components/Input'
-import { BaseSyntheticEvent } from 'react'
+import Button, {ButtonSkin} from '@components/Button'
+import Input, {InputSize} from '@components/Input'
+import {BaseSyntheticEvent} from 'react'
 import clsx from 'clsx'
 
 export type CardSelection = {
@@ -75,13 +75,24 @@ export default function InputCard(
           >
 
             <div className="flex flex-col gap-4">
-              <Input
-                rounded
-                autoFocus={true}
-                value={value.text}
-                onChange={onChange}
-                size={InputSize.h10}
-              />
+              <div className="flex w-full h-14 items-center justify-center">
+                {value.status !== CardStatus.error &&
+                  <Input
+                    rounded
+                    value={value.text}
+                    onChange={onChange}
+                    size={InputSize.h10}
+                    autoFocus={value.status === CardStatus.none}
+                  />
+                }
+
+                {value.status === CardStatus.error &&
+                  <div className="line-clamp-2 text-center">
+                    {cardSide.answer.text}
+                  </div>
+                }
+              </div>
+
               <Button
                 onClick={onSubmit}
                 skin={ButtonSkin.WHITE}

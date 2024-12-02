@@ -1,40 +1,38 @@
 import PickCard, {
+  CardSelection,
   CardSelectedValue,
-  CardSelection
 } from '@containers/Simulator/CardAggregator/MethodPickCard/PickCard'
 import {
   CardStatus,
+  HelpDataType,
   ExtraPickCardType,
-  HelpDataType
 } from '@containers/Simulator/CardAggregator/types'
-import {DefaultAnswerLang, DefaultQuestionLang} from '@entities/ClientTerm'
-import {getSimulatorNameById} from '@containers/Simulator/constants'
-import {SimulatorMethod} from '@entities/ClientSettingsSimulator'
-import {useCallback, useEffect, useMemo, useState} from 'react'
-import {ClientSimulatorData} from '@entities/ClientSimulator'
-import {ClientFolderData} from '@entities/ClientFolder'
-import {shuffle} from '@lib/array'
-
-type onChangeCallback = (data: HelpDataType) => void
+import { DefaultAnswerLang, DefaultQuestionLang } from '@entities/ClientTerm'
+import { getSimulatorNameById } from '@containers/Simulator/constants'
+import { SimulatorMethod } from '@entities/ClientSettingsSimulator'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { ClientSimulatorData } from '@entities/ClientSimulator'
+import { ClientTermData } from '@entities/ClientTerm'
+import { shuffle } from '@lib/array'
 
 export default function MethodPickCard(
   {
-    folder,
+    terms,
     onChange,
+    onSound,
     simulator,
+    activeTerm,
+    soundSelection
   }:
     {
-      folder: ClientFolderData,
-      onChange: onChangeCallback,
-      simulator: ClientSimulatorData,
+      terms: ClientTermData[]
+      activeTerm?: ClientTermData
+      simulator: ClientSimulatorData
+      soundSelection: CardSelection | null
+      onChange: (data: HelpDataType) => void
+      onSound: (selection: CardSelection | null) => void
     }
 ) {
-  const terms = useMemo(() => [...folder?.terms || []], [folder?.terms])
-
-  const activeTerm = useMemo(() => {
-    return terms.find(({ id }) => id === simulator.termId)
-  }, [terms, simulator.termId])
-
   const { inverted } = simulator.settings
 
   const cardSide = useMemo(() => {
@@ -84,11 +82,15 @@ export default function MethodPickCard(
   const generateHelpData = useCallback((status: CardStatus) => {
     return {
       association: cardSide.association,
-      lang: status === CardStatus.none ? null : cardSide.answer.lang,
-      text: status === CardStatus.none ? null : cardSide.answer.text,
+      lang: status === CardStatus.none
+        ? (inverted ? cardSide.question.lang : null)
+        : (inverted ? cardSide.question.lang : cardSide.answer.lang),
+      text: status === CardStatus.none
+        ? (inverted ? cardSide.question.text : null)
+        : (inverted ? cardSide.question.text : cardSide.answer.text),
       extra: { method: SimulatorMethod.PICK, status } as ExtraPickCardType
     }
-  }, [cardSide])
+  }, [cardSide, inverted])
 
   const [selectedValue, setSelectedValue] = useState<CardSelectedValue>({ id: null, status: CardStatus.none })
 
@@ -107,11 +109,15 @@ export default function MethodPickCard(
       key={activeTerm?.id}
       className="w-72 h-96"
       value={selectedValue}
+      soundSelection={soundSelection}
       onSelect={(selection) => {
         setSelectedValue({
           id: selection.id,
           status: selection.id === activeTerm?.id ? CardStatus.success : CardStatus.error
         })
+      }}
+      onSound={(selection) => {
+        onSound(selection.id !== soundSelection?.id ? selection : null)
       }}
     />
   )

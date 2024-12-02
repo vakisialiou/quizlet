@@ -1,6 +1,7 @@
 'use client'
 
-import CardAggregator, {OnChangeParamsType} from '@containers/Simulator/CardAggregator'
+import { CardSelection } from '@containers/Simulator/CardAggregator/MethodPickCard/PickCard'
+import CardAggregator, { OnChangeParamsType } from '@containers/Simulator/CardAggregator'
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import TextToSpeech, {TextToSpeechEvents, voices} from '@lib/speech'
 import {SimulatorMethod} from '@entities/ClientSettingsSimulator'
@@ -50,7 +51,6 @@ export default function Simulator({ folderId }: { folderId: string }) {
   const [cardData, setCardData] = useState<OnChangeParamsType | null>(null)
 
   const onChangeCardDataCallback = useCallback((params: OnChangeParamsType) => {
-    console.log(params)
     setCardData(params)
   }, [])
 
@@ -58,17 +58,17 @@ export default function Simulator({ folderId }: { folderId: string }) {
     return typeof(window) === 'object' ? new TextToSpeech() : null
   }, [])
 
-  const [ soundPlaying, setSoundPlaying ] = useState(false)
+  const [ soundSelection, setSoundSelection ] = useState<{ type: string, data: CardSelection | null }>({ type: '', data: null })
 
   useEffect(() => {
     if (speech) {
-      const onEndCallback = () => setSoundPlaying(false)
+      const onEndCallback = () => setSoundSelection({ type: '', data: null })
       speech.addEventListener(TextToSpeechEvents.end, onEndCallback)
       return () => {
         speech.removeEventListener(TextToSpeechEvents.end, onEndCallback)
       }
     }
-  }, [speech, setSoundPlaying])
+  }, [speech, setSoundSelection])
 
   const [stopFolderId, setStopFolderId] = useState<string | null>(null)
 
@@ -204,6 +204,21 @@ export default function Simulator({ folderId }: { folderId: string }) {
                     folder={folder}
                     simulator={simulator}
                     onChange={onChangeCardDataCallback}
+                    soundSelection={soundSelection.type === 'selection' ? soundSelection.data : null}
+                    onSound={(selection) => {
+                      if (!speech) {
+                        return
+                      }
+
+                      if (!selection) {
+                        speech.stop()
+                        return
+                      }
+
+                      const item = voices.find((item) => item.lang === selection.lang)
+                      speech.stop().setLang(selection.lang).setVoice(item?.name || selection.lang).speak(selection.text)
+                      setSoundSelection({ type: 'selection', data: selection })
+                    }}
                   />
                 }
 
@@ -230,7 +245,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
                 process={folders.process}
                 options={{
                   sound: {
-                    active: soundPlaying,
+                    active: soundSelection.type === 'sound',
                     disabled: !speech || showHelp || !cardData?.helpData?.text || !cardData?.helpData?.lang
                   },
                   help: {
@@ -255,7 +270,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
                       break
                     case 'sound':
                       if (simulator && cardData && speech) {
-                        if (soundPlaying) {
+                        if (soundSelection.type === 'sound') {
                           speech.stop()
                           return
                         }
@@ -264,9 +279,9 @@ export default function Simulator({ folderId }: { folderId: string }) {
                         const lang = cardData?.helpData?.lang
 
                         if (lang && text) {
-                          setSoundPlaying(true)
                           const item = voices.find((item) => item.lang === lang)
                           speech.stop().setLang(lang).setVoice(item?.name || lang).speak(text)
+                          setSoundSelection({ type: 'sound', data: { id: '', lang, text } as CardSelection })
                         }
                       }
                       break

@@ -26,6 +26,7 @@ export type InputProps = {
   size?: InputSize
   rounded?: boolean
   bordered?: boolean
+  readOnly?: boolean
   autoFocus?: boolean
   autoComplete?: string
   placeholder?: string
@@ -50,6 +51,7 @@ export default function Input(
     autoFocus,
     placeholder,
     value,
+    readOnly,
     defaultValue,
     className = '',
     variant = InputVariant.gray,
@@ -68,6 +70,7 @@ export default function Input(
       onBlur={onBlur}
       onFocus={onFocus}
       onKeyUp={onKeyUp}
+      readOnly={readOnly}
       onChange={onChange}
       autoFocus={autoFocus}
       placeholder={placeholder}

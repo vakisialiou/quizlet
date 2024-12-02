@@ -79,10 +79,6 @@ export default class TextToSpeech {
     return this
   }
 
-  hasVoice() {
-    return !!this.voice
-  }
-
   init() {
     this.voices = this.synth.getVoices()
     if (!this.voices.length) {

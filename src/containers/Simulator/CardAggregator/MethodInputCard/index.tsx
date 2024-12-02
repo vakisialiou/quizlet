@@ -2,13 +2,13 @@ import InputCard, {
   CardSelection,
   CardSelectedValue
 } from '@containers/Simulator/CardAggregator/MethodInputCard/InputCard'
-import {DefaultAnswerLang, DefaultQuestionLang} from '@entities/ClientTerm'
-import {getSimulatorNameById} from '@containers/Simulator/constants'
-import {SimulatorMethod} from '@entities/ClientSettingsSimulator'
-import {useCallback, useEffect, useMemo, useState} from 'react'
-import {ClientSimulatorData} from '@entities/ClientSimulator'
-import {ClientFolderData} from '@entities/ClientFolder'
-import {shuffle} from '@lib/array'
+import { DefaultAnswerLang, DefaultQuestionLang } from '@entities/ClientTerm'
+import { getSimulatorNameById } from '@containers/Simulator/constants'
+import { SimulatorMethod } from '@entities/ClientSettingsSimulator'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { ClientSimulatorData } from '@entities/ClientSimulator'
+import { ClientTermData } from '@entities/ClientTerm'
+import { shuffle } from '@lib/array'
 import {
   CardStatus,
   HelpDataType,
@@ -19,25 +19,19 @@ type onSubmitCallback = (data: HelpDataType) => void
 
 export default function MethodInputCard(
   {
-    folder,
+    terms,
     onSubmit,
     simulator,
+    activeTerm,
   }:
     {
-      folder: ClientFolderData,
+      terms: ClientTermData[],
       onSubmit: onSubmitCallback,
+      activeTerm?: ClientTermData,
       simulator: ClientSimulatorData,
     }
 )
 {
-  const terms = useMemo(() => {
-    return [...folder?.terms || []]
-  }, [folder?.terms])
-
-  const activeTerm = useMemo(() => {
-    return terms.find(({ id }) => id === simulator.termId)
-  }, [terms, simulator.termId])
-
   const { inverted } = simulator.settings
 
   const cardSide = useMemo(() => {

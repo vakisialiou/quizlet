@@ -5,33 +5,23 @@ import { getSimulatorNameById } from '@containers/Simulator/constants'
 import { SimulatorMethod } from '@entities/ClientSettingsSimulator'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ClientSimulatorData } from '@entities/ClientSimulator'
-import { ClientFolderData } from '@entities/ClientFolder'
+import { ClientTermData } from '@entities/ClientTerm'
 
 type onChangeCallback = (data: HelpDataType) => void
 
 export default function MethodFlashcard(
   {
-    folder,
     onChange,
     simulator,
-    isBack = false,
+    activeTerm,
   }:
   {
-    isBack?: boolean
-    folder: ClientFolderData,
     onChange: onChangeCallback,
+    activeTerm?: ClientTermData,
     simulator: ClientSimulatorData,
   }
 ) {
-  const [ isBackSide, setIsBackSide ] = useState(isBack)
-
-  const terms = useMemo(() => {
-    return [...folder?.terms || []]
-  }, [folder?.terms])
-
-  const activeTerm = useMemo(() => {
-    return terms.find(({ id }) => id === simulator.termId)
-  }, [terms, simulator.termId])
+  const [ isBackSide, setIsBackSide ] = useState(false)
 
   const { inverted } = simulator.settings
 
@@ -75,7 +65,6 @@ export default function MethodFlashcard(
       className="w-72 h-96"
       faceSide={faceSide}
       backSide={backSide}
-      key={activeTerm?.id}
       isBackSide={isBackSide}
       onClick={() => {
         setIsBackSide((prevState) => !prevState)
