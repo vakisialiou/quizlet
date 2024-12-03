@@ -1,7 +1,7 @@
+import Input, { InputSize, InputVariantFocus } from '@components/Input'
 import {CardStatus} from '@containers/Simulator/CardAggregator/types'
-import Button, {ButtonSkin} from '@components/Button'
-import Input, {InputSize} from '@components/Input'
-import {BaseSyntheticEvent} from 'react'
+import Button, { ButtonSkin } from '@components/Button'
+import { BaseSyntheticEvent } from 'react'
 import clsx from 'clsx'
 
 export type CardSelection = {
@@ -56,7 +56,7 @@ export default function InputCard(
             </div>
           </div>
 
-          <div className="flex items-center h-8 min-h-8 text-base font-bold">
+          <div className="flex items-center justify-center h-8 min-h-8 w-full text-base font-bold">
             {value.status === CardStatus.success &&
               <div className="text-green-800">
                 Success
@@ -70,28 +70,34 @@ export default function InputCard(
             }
           </div>
 
+          <div className="flex w-full h-14 min-h-14 items-center justify-center text-gray-500 text-sm">
+            {value.status === CardStatus.error &&
+              <div className="line-clamp-2 text-center">
+                {cardSide.answer.text}
+              </div>
+            }
+          </div>
+
           <div
             className="w-full h-full flex flex-col justify-center divide-y divide-gray-800 divide-dashed"
           >
-
             <div className="flex flex-col gap-4">
-              <div className="flex w-full h-14 items-center justify-center">
-                {value.status !== CardStatus.error &&
-                  <Input
-                    rounded
-                    value={value.text}
-                    onChange={onChange}
-                    size={InputSize.h10}
-                    autoFocus={value.status === CardStatus.none}
-                  />
-                }
-
-                {value.status === CardStatus.error &&
-                  <div className="line-clamp-2 text-center">
-                    {cardSide.answer.text}
-                  </div>
-                }
-              </div>
+              <Input
+                rounded
+                value={value.text}
+                onChange={onChange}
+                size={InputSize.h10}
+                autoFocus={value.status === CardStatus.none}
+                readOnly={value.status !== CardStatus.none}
+                variantFocus={value.status === CardStatus.none ? InputVariantFocus.blue : InputVariantFocus.none}
+                onKeyUp={(e) => {
+                  switch (e.keyCode) {
+                    case 13:
+                      onSubmit(e)
+                      break
+                  }
+                }}
+              />
 
               <Button
                 onClick={onSubmit}
@@ -105,7 +111,8 @@ export default function InputCard(
           </div>
 
           {cardSide.signature &&
-            <div className="absolute left-3 top-3 text-gray-700/50 uppercase font-bold text-[10px]">
+            <div
+              className="absolute left-3 top-3 text-gray-700/50 uppercase font-bold text-[10px]">
               {cardSide.signature}
             </div>
           }

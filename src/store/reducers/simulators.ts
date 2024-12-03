@@ -1,6 +1,7 @@
-import SimulatorTracker, { SimulatorTrackerAction } from '@entities/SimulatorTracker'
+import { ProgressTrackerAction } from '@entities/ProgressTracker'
 import { SimulatorStatus } from '@entities/ClientSimulator'
 import { upsertSimulators } from '@store/fetch/simulators'
+import SimulatorTracker from '@entities/SimulatorTracker'
 import { ClientFolderData } from '@entities/ClientFolder'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { ConfigType } from '@store/initial-state'
@@ -67,7 +68,7 @@ export const continueSimulators = createAsyncThunk(
   }
 )
 
-export type PayloadUpdateTracker = { folderId: string, trackerAction: SimulatorTrackerAction }
+export type PayloadUpdateTracker = { folderId: string, trackerAction: ProgressTrackerAction }
 
 export const updateTracker = createAsyncThunk(
   '/update/tracker',

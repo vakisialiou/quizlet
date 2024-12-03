@@ -27,7 +27,7 @@ import {
   actionUpdateTracker,
 } from '@store/index'
 
-import {SimulatorTrackerAction} from '@entities/SimulatorTracker'
+import { ProgressTrackerAction } from '@entities/ProgressTracker'
 import {CardStatus} from '@containers/Simulator/CardAggregator/types'
 
 export default function Simulator({ folderId }: { folderId: string }) {
@@ -47,6 +47,8 @@ export default function Simulator({ folderId }: { folderId: string }) {
   const simulator = useMemo(() => {
     return simulators.find(({ active }) => active)
   }, [simulators])
+
+  console.log(simulator)
 
   const [cardData, setCardData] = useState<OnChangeParamsType | null>(null)
 
@@ -116,7 +118,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
                   disabled={!folder || simulator?.status !== SimulatorStatus.PROCESSING}
                   onClick={() => {
                     if (folder) {
-                      actionUpdateTracker({ folderId: folder.id, trackerAction: SimulatorTrackerAction.actionFlashcardRemember }, () => {
+                      actionUpdateTracker({ folderId: folder.id, trackerAction: ProgressTrackerAction.success }, () => {
                         actionRememberSimulators({ folderId: folder.id })
                       })
                     }
@@ -131,7 +133,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
                   disabled={!folder || simulator?.status !== SimulatorStatus.PROCESSING}
                   onClick={() => {
                     if (folder) {
-                      actionUpdateTracker({ folderId: folder.id, trackerAction: SimulatorTrackerAction.actionFlashcardContinue }, () => {
+                      actionUpdateTracker({ folderId: folder.id, trackerAction: ProgressTrackerAction.error }, () => {
                         actionContinueSimulators({ folderId: folder.id })
                       })
                     }
@@ -151,14 +153,14 @@ export default function Simulator({ folderId }: { folderId: string }) {
                   if (folder) {
                     const trackerActionMap = {
                       [SimulatorMethod.PICK]: {
-                        [CardStatus.error]: SimulatorTrackerAction.actionPickError,
-                        [CardStatus.success]: SimulatorTrackerAction.actionPickSuccess
+                        [CardStatus.error]: ProgressTrackerAction.error,
+                        [CardStatus.success]: ProgressTrackerAction.success
                       },
                       [SimulatorMethod.INPUT]: {
-                        [CardStatus.error]: SimulatorTrackerAction.actionInputError,
-                        [CardStatus.success]: SimulatorTrackerAction.actionInputSuccess
+                        [CardStatus.error]: ProgressTrackerAction.error,
+                        [CardStatus.success]: ProgressTrackerAction.success
                       }
-                    } as Record<SimulatorMethod, Record<CardStatus, SimulatorTrackerAction>>
+                    } as Record<SimulatorMethod, Record<CardStatus, ProgressTrackerAction>>
 
                     const trackerAction = trackerActionMap[cardMethod]?.[cardStatus]
                     actionUpdateTracker({ folderId: folder.id, trackerAction }, () => {

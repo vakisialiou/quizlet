@@ -11,12 +11,19 @@ export type ClientSettingsSimulatorData = {
 }
 
 export default class ClientSettingsSimulator {
-  method: SimulatorMethod
+  id: number
   inverted: boolean
+  method: SimulatorMethod
 
-  constructor() {
-    this.inverted = false
-    this.method = SimulatorMethod.FLASHCARD
+  constructor(settings?: Partial<ClientSettingsSimulatorData>) {
+    this.id = settings?.id || 0
+    this.inverted = settings?.inverted || false
+    this.method = settings?.method || SimulatorMethod.FLASHCARD
+  }
+
+  setId(value: number) {
+    this.id = value
+    return this
   }
 
   setInverted(value: boolean): ClientSettingsSimulator {

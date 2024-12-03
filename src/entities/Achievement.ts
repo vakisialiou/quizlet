@@ -1,5 +1,6 @@
-import { ClientSimulatorData, SimulatorStatus, SimulatorType } from '@entities/ClientSimulator'
-import ProgressTracker from '@entities/ProgressTracker'
+import { ClientSimulatorData, SimulatorStatus } from '@entities/ClientSimulator'
+import { SimulatorMethod } from '@entities/ClientSettingsSimulator'
+import SimulatorTracker from '@entities/SimulatorTracker'
 
 export enum DegreeEnum {
   preschool = 'preschool',
@@ -19,9 +20,9 @@ export enum MedalEnum {
 }
 
 const weights = {
-  [SimulatorType.FLASHCARD]: 1,
-  [SimulatorType.PICK]: 1.2,
-  [SimulatorType.INPUT]: 4,
+  [SimulatorMethod.PICK]: 0.01,
+  [SimulatorMethod.FLASHCARD]: 0.02,
+  [SimulatorMethod.INPUT]: 0.5,
 }
 
 const thresholds = [
@@ -30,9 +31,9 @@ const thresholds = [
     max: 25,
     degree: DegreeEnum.preschool,
     thresholds: [
-      { min: 20, max: 46, medal: MedalEnum.bronze },
-      { min: 46, max: 72, medal: MedalEnum.silver },
-      { min: 72, max: 100, medal: MedalEnum.gold },
+      { min: 50, max: 70, medal: MedalEnum.bronze },
+      { min: 70, max: 95, medal: MedalEnum.silver },
+      { min: 95, max: 100, medal: MedalEnum.gold },
     ],
   },
   {
@@ -40,9 +41,9 @@ const thresholds = [
     max: 45,
     degree: DegreeEnum.primary,
     thresholds: [
-      { min: 20, max: 46, medal: MedalEnum.bronze },
-      { min: 46, max: 72, medal: MedalEnum.silver },
-      { min: 72, max: 100, medal: MedalEnum.gold },
+      { min: 50, max: 70, medal: MedalEnum.bronze },
+      { min: 70, max: 95, medal: MedalEnum.silver },
+      { min: 95, max: 100, medal: MedalEnum.gold },
     ],
   },
   {
@@ -50,9 +51,9 @@ const thresholds = [
     max: 65,
     degree: DegreeEnum.secondary,
     thresholds: [
-      { min: 20, max: 46, medal: MedalEnum.bronze },
-      { min: 46, max: 72, medal: MedalEnum.silver },
-      { min: 72, max: 100, medal: MedalEnum.gold },
+      { min: 50, max: 70, medal: MedalEnum.bronze },
+      { min: 70, max: 95, medal: MedalEnum.silver },
+      { min: 95, max: 100, medal: MedalEnum.gold },
     ],
   },
   {
@@ -115,7 +116,7 @@ export type AchievementData = {
 export default class Achievement {
 
   getSimulatorWeight(simulator: ClientSimulatorData): number {
-    return weights[simulator.type || SimulatorType.FLASHCARD] || 1
+    return weights[simulator.settings.method || SimulatorMethod.FLASHCARD] || 1
   }
 
   calculate(simulators: ClientSimulatorData[]): AchievementData {
@@ -123,13 +124,9 @@ export default class Achievement {
     // Выборка завершенных симуляторов
     const completedSimulators = [...simulators].filter(({ status, active }) => active === false && status === SimulatorStatus.DONE)
 
-    if (completedSimulators.length < 3) {
-      return achievement
-    }
-
     // Расчет общего взвешенного прогресса
     const totalWeightedProgress = completedSimulators.reduce((accumulator, simulator) => {
-      const progress = new ProgressTracker(simulator).getProgress()
+      const progress = new SimulatorTracker(simulator).getProgress()
       // Подсчет взвешенного прогресса
       const weight = this.getSimulatorWeight(simulator)
       return accumulator + (progress * weight)
@@ -143,7 +140,7 @@ export default class Achievement {
 
     // Общий процент
     const overallProgress = (totalWeightedProgress / maxProgress) * 100
-    if (overallProgress < 10) {
+    if (overallProgress < 5) {
       return achievement
     }
 

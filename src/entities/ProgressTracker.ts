@@ -1,7 +1,12 @@
 import { ClientSimulatorData } from '@entities/ClientSimulator'
 
+export enum ProgressTrackerAction {
+  success = 'success',
+  error = 'error',
+}
+
 export type Weights = {
-  [action: string]: number
+  [action in ProgressTrackerAction]: number
 }
 
 export type Actions = Record<string, string[]>
@@ -23,12 +28,18 @@ export default class ProgressTracker {
   errorRate: number
   penalties: Record<string, number>
 
-  constructor(simulator?: ClientSimulatorData, weights: Weights = {}) {
+  constructor(
+    weights: Weights = {
+      [ProgressTrackerAction.error]: 0,
+      [ProgressTrackerAction.success]: 0
+    },
+    simulator?: Partial<ClientSimulatorData>
+  ) {
     this.actions = { ...simulator?.tracker?.actions || {} }
     this.errorRate = simulator?.tracker?.errorRate || 0
 
     const termIds = [...simulator?.termIds || []]
-    this.penalties = this.calculatePenalties(termIds, weights)
+    this.penalties = this.calculatePenalties(weights, termIds)
 
     for (const termId of termIds) {
       if (termId in this.actions) {
@@ -39,7 +50,7 @@ export default class ProgressTracker {
     }
   }
 
-  private calculatePenalties(termIds: (string|number)[], weights: Weights): Record<string, number> {
+  private calculatePenalties(weights: Weights, termIds: (string|number)[]): Record<string, number> {
     const totalWeight = Object.values(weights).reduce((sum, weight) => sum + Math.abs(weight), 0)
 
     const maxPenaltyPerTerm = 100 / termIds.length
@@ -52,9 +63,8 @@ export default class ProgressTracker {
     return penalties
   }
 
-  calculate(action: string, termId: string | number): ProgressTracker {
-    const penalty = this.penalties[action]
-    if (!penalty) {
+  calculate(action: ProgressTrackerAction, termId: string | number): ProgressTracker {
+    if (!(action in this.penalties)) {
       throw new Error(`Action "${action}" is not defined in weights`)
     }
 
@@ -66,6 +76,16 @@ export default class ProgressTracker {
     if (actionsForTerm.includes(action)) {
       return this
     }
+
+    const penalty = this.penalties[action]
+    if (action === ProgressTrackerAction.success && penalty < 0) {
+      if (!actionsForTerm.includes(ProgressTrackerAction.error)) {
+        return this
+      }
+    }
+
+    // Action success - influence on errorRate to term which has error.
+    // Action error - influence on errorRate to each term which didn't has it before.
 
     actionsForTerm.push(action)
 

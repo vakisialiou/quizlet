@@ -1,13 +1,8 @@
 import { v4 } from 'uuid'
 
 import ClientSettingsSimulator, { ClientSettingsSimulatorData } from '@entities/ClientSettingsSimulator'
-import ProgressTracker, { ProgressTrackerData } from '@entities/ProgressTracker'
-
-export enum SimulatorType {
-  FLASHCARD = 'flashcard',
-  INPUT = 'input',
-  PICK = 'pick',
-}
+import { ProgressTrackerData } from '@entities/ProgressTracker'
+import SimulatorTracker from '@entities/SimulatorTracker'
 
 export enum SimulatorStatus {
   PROCESSING = 'processing',
@@ -22,7 +17,6 @@ export type ClientSimulatorData = {
   folderId: string
   duration: number
   status: SimulatorStatus
-  type: SimulatorType,
   termId: string | null
   termIds: string[]
   rememberIds: string[]
@@ -39,7 +33,6 @@ export default class ClientSimulator {
   folderId: string
   duration: number
   status: SimulatorStatus
-  type: SimulatorType
   termId: string | null
   termIds: string[]
   rememberIds: string[]
@@ -49,21 +42,20 @@ export default class ClientSimulator {
   tracker: ProgressTrackerData
   settings: ClientSettingsSimulatorData
 
-  constructor(folderId: string, status: SimulatorStatus) {
+  constructor(folderId: string, status: SimulatorStatus, settings?: Partial<ClientSettingsSimulatorData>) {
     this.id = v4()
     this.active = false
     this.folderId = folderId
     this.duration = 0
     this.status = status
-    this.type = SimulatorType.FLASHCARD
     this.termId = null
     this.termIds = []
     this.historyIds = []
     this.rememberIds = []
     this.continueIds = []
     this.needUpdate = false
-    this.tracker = new ProgressTracker().serialize()
-    this.settings = new ClientSettingsSimulator().serialize()
+    this.settings = new ClientSettingsSimulator(settings).serialize()
+    this.tracker = new SimulatorTracker(this).serialize()
   }
 
   setId(value: string): ClientSimulator {
@@ -83,11 +75,6 @@ export default class ClientSimulator {
 
   setDuration(value: number): ClientSimulator {
     this.duration = value
-    return this
-  }
-
-  setType(type: SimulatorType): ClientSimulator {
-    this.type = type
     return this
   }
 
