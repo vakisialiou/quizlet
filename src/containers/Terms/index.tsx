@@ -91,6 +91,7 @@ export default function Terms({ folderId }: { folderId: string }) {
       leftControls={(
         <div className="flex items-center mr-2">
           <Achievements
+            showProgress
             folder={folder}
             size={AchievementsSize.sm}
           />

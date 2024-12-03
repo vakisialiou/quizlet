@@ -141,6 +141,7 @@ export default function Folders() {
               achievements={(
                 <Achievements
                   showDegree
+                  showProgress
                   folder={folder}
                   className="text-[10px]"
                   size={AchievementsSize.sm}

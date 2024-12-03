@@ -110,7 +110,9 @@ const thresholds = [
 
 export type AchievementData = {
   degree: DegreeEnum | null
+  degreeProgress: number
   medal: MedalEnum | null
+  medalProgress: number
 }
 
 export default class Achievement {
@@ -120,7 +122,13 @@ export default class Achievement {
   }
 
   calculate(simulators: ClientSimulatorData[]): AchievementData {
-    const achievement = { medal: null, degree: null } as AchievementData
+    const achievement = {
+      medal: null,
+      degree: null,
+      degreeProgress: 0,
+      medalProgress: 0
+    } as AchievementData
+
     // Выборка завершенных симуляторов
     const completedSimulators = [...simulators].filter(({ status, active }) => active === false && status === SimulatorStatus.DONE)
 
@@ -139,18 +147,18 @@ export default class Achievement {
     }, 0)
 
     // Общий процент
-    const overallProgress = (totalWeightedProgress / maxProgress) * 100
-    if (overallProgress < 5) {
+    achievement.degreeProgress = maxProgress > 0 ? (totalWeightedProgress / maxProgress) * 100 : 0
+    if (achievement.degreeProgress < 5) {
       return achievement
     }
 
     for (const threshold of thresholds) {
-      if (overallProgress > threshold.min && overallProgress <= threshold.max) {
+      if (achievement.degreeProgress > threshold.min && achievement.degreeProgress <= threshold.max) {
         achievement.degree = threshold.degree
 
-        const relativeProgress = ((overallProgress - threshold.min) / (threshold.max - threshold.min)) * 100
+        achievement.medalProgress = ((achievement.degreeProgress - threshold.min) / (threshold.max - threshold.min)) * 100
         for (const { min, max, medal } of threshold.thresholds) {
-          if (relativeProgress > min && relativeProgress <= max) {
+          if (achievement.medalProgress > min && achievement.medalProgress <= max) {
             achievement.medal = medal
             break
           }

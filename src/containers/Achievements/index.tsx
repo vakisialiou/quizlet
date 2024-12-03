@@ -1,7 +1,7 @@
 import { DegreeEnum, MedalEnum } from '@entities/Achievement'
 import { ClientFolderData } from '@entities/ClientFolder'
 import Achievement from '@entities/Achievement'
-import clsx from "clsx";
+import clsx from 'clsx'
 
 const DegreeIconMap: Record<DegreeEnum, string> & { default: string }  = {
   [DegreeEnum.preschool]: '🧸',
@@ -27,7 +27,22 @@ export enum AchievementsSize {
   sm = 'sm'
 }
 
-export default function Achievements({ folder, size, className = '', showDegree }: { folder?: ClientFolderData, size?: AchievementsSize, className?: string, showDegree?: boolean }) {
+export default function Achievements(
+  {
+    folder,
+    size,
+    className = '',
+    showDegree,
+    showProgress
+  }:
+  {
+    folder?: ClientFolderData,
+    size?: AchievementsSize,
+    className?: string,
+    showDegree?: boolean
+    showProgress?: boolean
+  }
+) {
   const achievements = new Achievement().calculate(folder?.simulators || [])
 
   const degreeIcon = achievements.degree ? DegreeIconMap[achievements.degree] : DegreeIconMap.default
@@ -62,9 +77,19 @@ export default function Achievements({ folder, size, className = '', showDegree 
         }
       </div>
 
-      {showDegree &&
-        <div className="ml-2 uppercase font-bold text-gray-700">
-          {achievements.degree || 'N/A'}
+      {(showDegree || showProgress) &&
+        <div className="ml-2 uppercase font-bold text-gray-500 flex gap-2">
+          {showProgress &&
+            <div className="flex">
+              {achievements.degreeProgress.toFixed(1)}%
+            </div>
+          }
+
+          {showDegree &&
+            <div className="flex">
+              {achievements.degree} {(achievements.degree && achievements.medal) && '-'} {achievements.medal}
+            </div>
+          }
         </div>
       }
     </div>

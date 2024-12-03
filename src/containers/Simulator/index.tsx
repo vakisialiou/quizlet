@@ -3,17 +3,19 @@
 import { CardSelection } from '@containers/Simulator/CardAggregator/MethodPickCard/PickCard'
 import CardAggregator, { OnChangeParamsType } from '@containers/Simulator/CardAggregator'
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
+import { CardStatus } from '@containers/Simulator/CardAggregator/types'
 import TextToSpeech, {TextToSpeechEvents, voices} from '@lib/speech'
+import { ProgressTrackerAction } from '@entities/ProgressTracker'
 import {SimulatorMethod} from '@entities/ClientSettingsSimulator'
 import {SimulatorStatus} from '@entities/ClientSimulator'
-import Button, {ButtonSkin} from '@components/Button'
-import Dialog, {DialogType} from '@components/Dialog'
 import CardEmpty from '@containers/Simulator/CardEmpty'
 import CardStart from '@containers/Simulator/CardStart'
 import PanelInfo from '@containers/Simulator/PanelInfo'
+import Button, {ButtonSkin} from '@components/Button'
+import Dialog, {DialogType} from '@components/Dialog'
 import ButtonSquare from '@components/ButtonSquare'
-import {FoldersType} from '@store/initial-state'
 import ContentPage from '@containers/ContentPage'
+import {FoldersType} from '@store/initial-state'
 import PanelControls from './PanelControls'
 import SVGBack from '@public/svg/back.svg'
 import {useSelector} from 'react-redux'
@@ -26,9 +28,6 @@ import {
   actionRememberSimulators,
   actionUpdateTracker,
 } from '@store/index'
-
-import { ProgressTrackerAction } from '@entities/ProgressTracker'
-import {CardStatus} from '@containers/Simulator/CardAggregator/types'
 
 export default function Simulator({ folderId }: { folderId: string }) {
   const router = useRouter()
@@ -47,8 +46,6 @@ export default function Simulator({ folderId }: { folderId: string }) {
   const simulator = useMemo(() => {
     return simulators.find(({ active }) => active)
   }, [simulators])
-
-  console.log(simulator)
 
   const [cardData, setCardData] = useState<OnChangeParamsType | null>(null)
 
