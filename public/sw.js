@@ -1,4 +1,4 @@
-const CACHE_NAME = 'qp-pwa-cache-v1'
+const CACHE_NAME = 'qp-pwa-cache-v2'
 
 const SUPPORTED_LOCALES = ['en', 'ru']
 const ASSETS_TO_CACHE = [
