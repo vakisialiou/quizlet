@@ -47,5 +47,8 @@
     "pwa_install": "Install App",
 
     "footer": "© 2024. All rights reserved. The {appName} Learning Platform."
+  },
+  "Offline": {
+    "warn": "You are in offline mode. <br/>Try connecting to the network."
   }
 }

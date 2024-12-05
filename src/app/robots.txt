@@ -5,6 +5,7 @@ Disallow: /en/private/
 Disallow: /ru/private/
 Disallow: /en/api/
 Disallow: /ru/api/
+Disallow: /offline/
 Disallow: /private/
 Disallow: /api/
 Sitemap: https://quizerplay.com/sitemap.xml
