@@ -30,12 +30,17 @@ function Landing({ locale }: { locale: LanguageEnums }) {
 
   return (
     <ContentPage
-      showHeader={!!session}
+      showHeader
+      rightControls={(
+        <ButtonPWA
+          textInstall={t('pwa_install')}
+          className="px-6 gap-2 font-medium text-nowrap w-full"
+        />
+      )}
     >
       <header
         className={clsx('relative bg-cover bg-fixed', {
-          ['h-[calc(var(--vh)*100-4rem)]']: session,
-          ['h-[calc(var(--vh)*100)]']: !session,
+          ['h-[calc(var(--vh)*100-4rem)]']: true
         })}
         style={{
           backgroundImage: `url('/images/bg-head.avif')`,
@@ -83,29 +88,23 @@ function Landing({ locale }: { locale: LanguageEnums }) {
                 dangerouslySetInnerHTML={{__html: t('mainDesc')}}
               />
 
-              <div className="flex justify-center">
-                <div className="flex flex-col gap-4 justify-center items-center w-[280px]">
-                  <Button
-                    skin={ButtonSkin.WHITE}
-                    onClick={async () => {
-                      await signIn('google', {
-                        redirect: true,
-                        redirectTo: getPathname({href: '/private', locale})
-                      })
-                    }}
-                    className="px-6 gap-2 font-medium text-nowrap w-full"
-                  >
-                    <SVGGoogle
-                      width={24}
-                      height={24}
-                    />
-                    {t('mainButtonSignIn')}
-                  </Button>
-
-                  <ButtonPWA
-                    className="px-6 gap-2 font-medium text-nowrap w-full"
+              <div className="flex flex-col gap-4 justify-center items-center">
+                <Button
+                  skin={ButtonSkin.WHITE}
+                  onClick={async () => {
+                    await signIn('google', {
+                      redirect: true,
+                      redirectTo: getPathname({href: '/private', locale})
+                    })
+                  }}
+                  className="px-6 gap-2 font-medium text-nowrap"
+                >
+                  <SVGGoogle
+                    width={24}
+                    height={24}
                   />
-                </div>
+                  {t('mainButtonSignIn')}
+                </Button>
               </div>
             </div>
           }

@@ -1,12 +1,18 @@
-import { useEffect, useState, useCallback } from 'react'
-import Button from '@components/Button'
+import { useCallback, useEffect, useState } from 'react'
+import Button, { ButtonSize } from '@components/Button'
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>
   userChoice: Promise<{ outcome: string; platform: string }>
 }
 
-export default function ButtonPWA({ className = '' }: { className?: string }) {
+export default function ButtonPWA({
+  className = '',
+  textInstall,
+}: {
+  className?: string
+  textInstall: string,
+}) {
   const [ data, setData ] = useState<{ prompt: BeforeInstallPromptEvent | null, showButton: boolean }>({ prompt: null, showButton: false })
 
   const handleClick = useCallback(async () => {
@@ -20,7 +26,7 @@ export default function ButtonPWA({ className = '' }: { className?: string }) {
     await data.prompt.prompt()
     // Ждем ответ от пользователя
     data.prompt.userChoice.then((choiceResult) => {
-      console.log(choiceResult.outcome)
+      console.log(choiceResult.outcome, choiceResult)
     })
   }, [data.prompt])
 
@@ -35,23 +41,16 @@ export default function ButtonPWA({ className = '' }: { className?: string }) {
   }, [])
 
   return (
-    <div>
+    <>
       {data.showButton &&
         <Button
+          size={ButtonSize.H10}
           className={className}
           onClick={handleClick}
         >
-          Установить
+          {textInstall}
         </Button>
       }
-      {!data.showButton &&
-        <Button
-          disabled
-          className={className}
-        >
-          Установлено
-        </Button>
-      }
-    </div>
+    </>
   )
 }
