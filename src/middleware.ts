@@ -39,7 +39,7 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     '/',
-    // '/(ru|en)(!/api)(/.*|)',
+
     '/(ru|en)/private/:path*',
 
     '/private',
