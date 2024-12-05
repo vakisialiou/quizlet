@@ -55,7 +55,8 @@ export default function CardAggregator(
       {simulator.status === SimulatorStatus.DONE &&
         <CardDone
           folder={folder}
-          particlesImage="/images/test-card-1.jpg"
+          simulator={simulator}
+          particlesImage="linear-gradient(180deg, rgba(230,233,233,1) 0%, rgba(230,233,233,1) 3%, rgba(1,159,168,1) 100%)"
         />
       }
 

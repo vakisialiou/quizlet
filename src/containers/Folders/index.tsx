@@ -1,8 +1,11 @@
 'use client'
 
-import Achievements, { AchievementsSize } from '@containers/Achievements'
+import AchievementIcon, { AchievementsSize } from '@containers/AchievementIcon'
 import ClientFolder, { ClientFolderData } from '@entities/ClientFolder'
+import Achievement, { AchievementData } from '@entities/Achievement'
 import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
+import { filterFolderTerms } from '@containers/Simulator/helpers'
+import AchievementDegree from '@containers/AchievementDegree'
 import { SimulatorStatus } from '@entities/ClientSimulator'
 import Button, { ButtonSkin } from '@components/Button'
 import SVGFolderNew from '@public/svg/new_folder.svg'
@@ -21,7 +24,6 @@ import {
   actionUpdateFolder,
   actionSaveFolder,
 } from '@store/index'
-import {filterFolderTerms} from "@containers/Simulator/helpers";
 
 export default function Folders() {
   useEffect(actionFetchFolders, [])
@@ -45,6 +47,14 @@ export default function Folders() {
   }, [folders.items, search])
 
   const [removeFolder, setRemoveFolder] = useState<ClientFolderData | null>(null)
+
+  const achievements = useMemo(() => {
+    const res = {} as Partial<{[id: string]: AchievementData}>
+    for (const folder of items) {
+      res[folder.id] = new Achievement().calculate(folder?.simulators || [])
+    }
+    return res
+  }, [items])
 
   return (
     <ContentPage
@@ -139,13 +149,20 @@ export default function Folders() {
                 actionUpdateFolderItem({...folder, [prop]: value})
               }}
               achievements={(
-                <Achievements
-                  showDegree
-                  showProgress
-                  folder={folder}
-                  className="text-[10px]"
-                  size={AchievementsSize.sm}
-                />
+                <div
+                  className="flex items-center gap-2 overflow-hidden"
+                >
+                  <AchievementIcon
+                    className="text-[10px]"
+                    size={AchievementsSize.sm}
+                    achievementData={achievements[folder.id] as AchievementData}
+                  />
+
+                  <AchievementDegree
+                    achievementData={achievements[folder.id] as AchievementData}
+                    className="ml-2 uppercase font-bold text-gray-700 text-sm"
+                  />
+                </div>
               )}
               labels={(
                 <>

@@ -1,18 +1,22 @@
 import React, { useEffect, useState, useRef, useLayoutEffect, useMemo } from 'react'
+import AchievementIcon, { AchievementsSize } from '@containers/AchievementIcon'
+import { ClientSimulatorData } from '@entities/ClientSimulator'
+import AchievementDegree from '@containers/AchievementDegree'
 import { ClientFolderData } from '@entities/ClientFolder'
 import { actionDeactivateSimulators } from '@store/index'
 import CardEmpty from '@containers/Simulator/CardEmpty'
-import clsx from "clsx";
+import Achievement from '@entities/Achievement'
+import clsx from 'clsx'
 
 const randFloat = (min: number, max: number) => {
   return Math.random() * (max - min) + min
 }
 
-export default function SingleQueueDone(
+export default function CardDone(
   {
     folder,
+    simulator,
     particlesImage,
-    particlesColor,
     particlesCount = 24,
     particleColumns = 4,
     particlesDelay = 2000,
@@ -22,8 +26,8 @@ export default function SingleQueueDone(
   }:
   {
     folder: ClientFolderData,
+    simulator: ClientSimulatorData,
     particlesImage?: string,
-    particlesColor?: string,
     particlesCount?: number,
     particlesDelay?: number,
     particleColumns?: number,
@@ -79,16 +83,25 @@ export default function SingleQueueDone(
     return () => clearTimeout(timer)
   }, [onAnimationDone, particlesDelay, particlesDuration.max, folder.id])
 
+
+  const achievementData = useMemo(() => {
+    const simulators = [...folder.simulators || []].map((item) => {
+      return { ...item, active: item.id === simulator.id ? false : item.active }
+    })
+    return new Achievement().calculate(simulators)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <CardEmpty
-      classNameContent="relative"
+      classNameContent={clsx('relative', {
+        ['overflow-hidden']: !exploded
+      })}
     >
       <div
         ref={ref}
         data-attr="container"
-        className={clsx('absolute left-0 top-0 w-full h-full', {
-          ['overflow-hidden']: !exploded
-        })}
+        className={clsx('absolute left-0 top-0 w-full h-full')}
       >
         {tiles.map(({duration, delay, directionX, directionY}, index) => {
           const width = containerSize.width / particleColumns
@@ -107,18 +120,37 @@ export default function SingleQueueDone(
                 width: `${width}px`,
                 height: `${height}px`,
                 backgroundRepeat: 'no-repeat',
-                backgroundColor: particlesColor,
+                backgroundImage: particlesImage,
                 backgroundPosition: `${-left}px ${-top}px`,
                 transform: exploded
                   ? `translate(${directionX}px, ${directionY}px) scale3d(0, 0, 0)`
                   : `translate(0, 0) scale3d(1, 1, 1)`,
                 backgroundSize: `${containerSize.width}px ${containerSize.height}px`,
-                backgroundImage: particlesImage ? `url("${particlesImage}")` : undefined,
+
                 transition: exploded ? `transform ${duration}ms ease ${delay}ms` : undefined,
               } as React.CSSProperties}
             />
           )
         })}
+      </div>
+
+      <div
+        className="absolute left-0 top-0 w-full h-full flex flex-col items-center justify-center gap-6 py-4"
+        style={{
+          opacity: exploded ? `0` : `1`,
+          transition: `opacity ${particlesDuration.min}ms ease`,
+        }}
+      >
+        <AchievementIcon
+          size={AchievementsSize.xl}
+          achievementData={achievementData}
+        />
+
+        <AchievementDegree
+          disableTruncate
+          achievementData={achievementData}
+          className="flex flex-col gap-2 font-bold text-4xl items-center text-gray-700 uppercase"
+        />
       </div>
     </CardEmpty>
   )

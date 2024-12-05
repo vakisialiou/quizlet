@@ -1,94 +1,52 @@
 import ClientSimulator, {ClientSimulatorData, SimulatorStatus} from '@entities/ClientSimulator'
+import Achievement, { DegreeEnum, MedalEnum } from '@entities/Achievement'
 import { SimulatorMethod } from '@entities/ClientSettingsSimulator'
 import { ProgressTrackerAction } from '@entities/ProgressTracker'
 import SimulatorTracker from '@entities/SimulatorTracker'
-import Achievement from '@entities/Achievement'
 
-describe('Achievement methods', () => {
+describe('Achievement', () => {
   describe(`Simulator method ${SimulatorMethod.PICK}`, () => {
     it('should return calculated error rate 1 simulator 100% errors', () => {
-      const termIds = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
-
-      const simulator = new ClientSimulator('1', SimulatorStatus.DONE, { method: SimulatorMethod.PICK })
-        .setTermIds(termIds)
-
-      const tracker = new SimulatorTracker(simulator)
-      tracker.calculate(ProgressTrackerAction.error, '1')
-      tracker.calculate(ProgressTrackerAction.error, '2')
-      tracker.calculate(ProgressTrackerAction.error, '3')
-      tracker.calculate(ProgressTrackerAction.error, '4')
-      tracker.calculate(ProgressTrackerAction.error, '5')
-      tracker.calculate(ProgressTrackerAction.error, '6')
-      tracker.calculate(ProgressTrackerAction.error, '7')
-      tracker.calculate(ProgressTrackerAction.error, '8')
-      tracker.calculate(ProgressTrackerAction.error, '9')
-      tracker.calculate(ProgressTrackerAction.error, '10')
-
-      simulator.setTracker(tracker.serialize())
-
       const simulators = [
-        simulator.serialize(),
+        createSimulatorError100(SimulatorMethod.PICK)
       ]
 
-      expect(new Achievement().calculate(simulators)).toStrictEqual({ degree: 'preschool', medal: null })
+      expect(new Achievement().calculate(simulators)).toStrictEqual({
+        degree: DegreeEnum.beginner,
+        degreeRate: 9.09090909090908,
+        medal: null,
+        medalRate: 9.090909090909065,
+      })
     })
   })
 
   describe(`Simulator method ${SimulatorMethod.FLASHCARD}`, () => {
     it('should return calculated error rate 1 simulator 100% errors', () => {
-      const termIds = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
-
-      const simulator = new ClientSimulator('1', SimulatorStatus.DONE, { method: SimulatorMethod.FLASHCARD })
-        .setTermIds(termIds)
-
-      const tracker = new SimulatorTracker(simulator)
-      tracker.calculate(ProgressTrackerAction.error, '1')
-      tracker.calculate(ProgressTrackerAction.error, '2')
-      tracker.calculate(ProgressTrackerAction.error, '3')
-      tracker.calculate(ProgressTrackerAction.error, '4')
-      tracker.calculate(ProgressTrackerAction.error, '5')
-      tracker.calculate(ProgressTrackerAction.error, '6')
-      tracker.calculate(ProgressTrackerAction.error, '7')
-      tracker.calculate(ProgressTrackerAction.error, '8')
-      tracker.calculate(ProgressTrackerAction.error, '9')
-      tracker.calculate(ProgressTrackerAction.error, '10')
-
-      simulator.setTracker(tracker.serialize())
-
       const simulators = [
-        simulator.serialize(),
+        createSimulatorError100(SimulatorMethod.FLASHCARD)
       ]
 
-      expect(new Achievement().calculate(simulators)).toStrictEqual({ degree: 'preschool', medal: 'silver' })
+      expect(new Achievement().calculate(simulators)).toStrictEqual({
+        degree: DegreeEnum.beginner,
+        degreeRate: 21.73913043478261,
+        medal: null,
+        medalRate: 37.19806763285024,
+      })
     })
   })
 
   describe(`Simulator method ${SimulatorMethod.INPUT}`, () => {
     it('should return calculated error rate 1 simulator 100% errors', () => {
-      const termIds = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
-
-      const simulator = new ClientSimulator('1', SimulatorStatus.DONE, { method: SimulatorMethod.INPUT })
-        .setTermIds(termIds)
-
-      const tracker = new SimulatorTracker(simulator)
-      tracker.calculate(ProgressTrackerAction.error, '1')
-      tracker.calculate(ProgressTrackerAction.error, '2')
-      tracker.calculate(ProgressTrackerAction.error, '3')
-      tracker.calculate(ProgressTrackerAction.error, '4')
-      tracker.calculate(ProgressTrackerAction.error, '5')
-      tracker.calculate(ProgressTrackerAction.error, '6')
-      tracker.calculate(ProgressTrackerAction.error, '7')
-      tracker.calculate(ProgressTrackerAction.error, '8')
-      tracker.calculate(ProgressTrackerAction.error, '9')
-      tracker.calculate(ProgressTrackerAction.error, '10')
-
-      simulator.setTracker(tracker.serialize())
-
       const simulators = [
-        simulator.serialize(),
+        createSimulatorError100(SimulatorMethod.INPUT)
       ]
 
-      expect(new Achievement().calculate(simulators)).toStrictEqual({ degree: 'primary', medal: null })
+      expect(new Achievement().calculate(simulators)).toStrictEqual({
+        degree: DegreeEnum.beginner,
+        degreeRate: 30.43478260869564,
+        medal: MedalEnum.bronze,
+        medalRate: 56.52173913043475,
+      })
     })
   })
 
@@ -100,7 +58,12 @@ describe('Achievement methods', () => {
         createSimulatorError100(SimulatorMethod.INPUT),
       ]
 
-      expect(new Achievement().calculate(simulators)).toStrictEqual({ degree: 'primary', medal: null })
+      expect(new Achievement().calculate(simulators)).toStrictEqual({
+        degree: DegreeEnum.beginner,
+        degreeRate: 27.45515354211006,
+        medal: null,
+        medalRate: 49.90034120468903,
+      })
     })
 
     it('should return calculated error rate 3 simulators 50% errors', () => {
@@ -110,7 +73,12 @@ describe('Achievement methods', () => {
         createSimulatorError50(SimulatorMethod.INPUT),
       ]
 
-      expect(new Achievement().calculate(simulators)).toStrictEqual({ degree: 'secondary', medal: 'gold' })
+      expect(new Achievement().calculate(simulators)).toStrictEqual({
+        degree: DegreeEnum.learner,
+        degreeRate: 63.72757677105503,
+        medal: MedalEnum.silver,
+        medalRate: 91.51717847370018,
+      })
     })
 
     it('should return calculated error rate 3 simulators 50% fixed errors', () => {
@@ -120,7 +88,12 @@ describe('Achievement methods', () => {
         createSimulatorError50Fix(SimulatorMethod.INPUT),
       ]
 
-      expect(new Achievement().calculate(simulators)).toStrictEqual({ degree: 'primary', medal: 'gold' })
+      expect(new Achievement().calculate(simulators)).toStrictEqual({
+        degree: DegreeEnum.beginner,
+        degreeRate: 41.182730313165095,
+        medal: MedalEnum.silver,
+        medalRate: 80.4060673625891,
+      })
     })
 
     it('should return calculated error rate 3 simulators 100% errors & 3 simulators 50% fixed errors', () => {
@@ -133,7 +106,12 @@ describe('Achievement methods', () => {
         createSimulatorError50Fix(SimulatorMethod.INPUT),
       ]
 
-      expect(new Achievement().calculate(simulators)).toStrictEqual({ degree: 'primary', medal: 'bronze' })
+      expect(new Achievement().calculate(simulators)).toStrictEqual({
+        degree: DegreeEnum.beginner,
+        degreeRate: 34.318941927637574,
+        medal: MedalEnum.bronze,
+        medalRate: 65.15320428363906,
+      })
     })
 
     it('should return calculated error rate 3 simulators 100% errors & 3 simulators 50% fixed errors & 3 simulators 50% errors', () => {
@@ -149,7 +127,12 @@ describe('Achievement methods', () => {
         createSimulatorError50(SimulatorMethod.INPUT),
       ]
 
-      expect(new Achievement().calculate(simulators)).toStrictEqual({ degree: 'secondary', medal: null })
+      expect(new Achievement().calculate(simulators)).toStrictEqual({
+        degree: DegreeEnum.beginner,
+        degreeRate: 44.121820208776725,
+        medal: MedalEnum.silver,
+        medalRate: 86.93737824172607,
+      })
     })
   })
 })

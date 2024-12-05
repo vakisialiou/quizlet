@@ -102,7 +102,7 @@ export default function Folder(
           <div className="absolute left-0 top-0 w-full h-full cursor-default"></div>
         }
 
-        <div className="flex items-center justify-between w-full">
+        <div className="flex items-center justify-between min-w-0 w-full">
           {achievements}
 
           <Dropdown

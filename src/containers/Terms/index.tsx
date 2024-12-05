@@ -1,15 +1,17 @@
 'use client'
 
-import Achievements, { AchievementsSize } from '@containers/Achievements'
+import AchievementIcon, { AchievementsSize } from '@containers/AchievementIcon'
 import TextToSpeech, { TextToSpeechEvents, voices } from '@lib/speech'
 import { filterFolderTerms } from '@containers/Simulator/helpers'
 import ClientTerm, {ClientTermData} from '@entities/ClientTerm'
+import AchievementDegree from '@containers/AchievementDegree'
 import { FoldersType, TermsType } from '@store/initial-state'
 import React, {useEffect, useMemo, useState} from 'react'
 import Button, { ButtonSkin } from '@components/Button'
 import ButtonSquare from '@components/ButtonSquare'
 import ContentPage from '@containers/ContentPage'
 import SVGFileNew from '@public/svg/file_new.svg'
+import Achievement from '@entities/Achievement'
 import SVGBack from '@public/svg/back.svg'
 import SVGPlay from '@public/svg/play.svg'
 import Search from '@components/Search'
@@ -40,6 +42,10 @@ export default function Terms({ folderId }: { folderId: string }) {
   const folder = useMemo(() => {
     return folders.items.find(({ id }) => id === folderId)
   }, [folders.items, folderId])
+
+  const achievement = useMemo(() => {
+    return new Achievement().calculate(folder?.simulators || [])
+  }, [folder])
 
   const [search, setSearch] = useState<string | null>(null)
 
@@ -90,10 +96,14 @@ export default function Terms({ folderId }: { folderId: string }) {
       title={folder?.name}
       leftControls={(
         <div className="flex items-center mr-2">
-          <Achievements
-            showProgress
-            folder={folder}
+          <AchievementIcon
             size={AchievementsSize.sm}
+            achievementData={achievement}
+          />
+          <AchievementDegree
+            hideDegree
+            achievementData={achievement}
+            className="ml-4 uppercase font-bold text-gray-700 text-base"
           />
         </div>
       )}

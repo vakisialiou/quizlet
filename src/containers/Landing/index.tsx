@@ -88,7 +88,7 @@ function Landing({ locale }: { locale: LanguageEnums }) {
                   onClick={async () => {
                     await signIn('google', {
                       redirect: true,
-                      redirectTo: getPathname({ href: '/private', locale })
+                      redirectTo: getPathname({href: '/private', locale})
                     })
                   }}
                   className="px-6 gap-2 font-medium text-nowrap"
@@ -156,15 +156,18 @@ function Landing({ locale }: { locale: LanguageEnums }) {
                   {t('section2Title', {appName})}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 text-gray-400">
-                  <div className="p-6 bg-gray-900/50 border border-gray-400/50 shadow-lg rounded-lg">
+                  <div
+                    className="p-6 bg-gray-900/50 border border-gray-400/50 shadow-lg rounded-lg">
                     <h3 className="text-xl font-semibold mb-4">{t('section2Block1Title')}</h3>
                     <p>{t('section2Block1Text')}</p>
                   </div>
-                  <div className="p-6 bg-gray-900/50 border border-gray-400/50 shadow-lg rounded-lg">
+                  <div
+                    className="p-6 bg-gray-900/50 border border-gray-400/50 shadow-lg rounded-lg">
                     <h3 className="text-xl font-semibold mb-4">{t('section2Block2Title')}</h3>
                     <p>{t('section2Block2Text')}</p>
                   </div>
-                  <div className="p-6 bg-gray-900/50 border border-gray-400/50 shadow-lg rounded-lg">
+                  <div
+                    className="p-6 bg-gray-900/50 border border-gray-400/50 shadow-lg rounded-lg">
                     <h3 className="text-xl font-semibold mb-4">{t('section2Block3Title')}</h3>
                     <p>{t('section2Block3Text')}</p>
                   </div>
@@ -194,7 +197,8 @@ function Landing({ locale }: { locale: LanguageEnums }) {
 
           <section id="cta" className="py-20 bg-gradient-to-r from-blue-500 to-blue-600 text-white">
             <div className="flex flex-col items-center max-w-4xl mx-auto text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-8">{t('section4Title', {appName})}</h2>
+              <h2
+                className="text-3xl md:text-4xl font-bold mb-8">{t('section4Title', {appName})}</h2>
               <p className="text-lg md:text-xl mb-8 max-w-[600px]">{t('section4Text')}</p>
 
               <div className="flex justify-center gap-8">
@@ -204,7 +208,7 @@ function Landing({ locale }: { locale: LanguageEnums }) {
                   onClick={async () => {
                     await signIn('google', {
                       redirect: true,
-                      redirectTo: getPathname({ href: '/private', locale })
+                      redirectTo: getPathname({href: '/private', locale})
                     })
                   }}
                 >
