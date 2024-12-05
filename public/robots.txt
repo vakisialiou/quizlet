@@ -7,4 +7,4 @@ Disallow: /en/api/
 Disallow: /ru/api/
 Disallow: /private/
 Disallow: /api/
-Sitemap: http://quizerplay.com/sitemap.xml
+Sitemap: https://quizerplay.com/sitemap.xml
