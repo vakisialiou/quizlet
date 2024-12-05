@@ -1,8 +1,25 @@
 import { v4 } from 'uuid'
 
-export const DefaultAnswerLang = 'en-GB'
-export const DefaultQuestionLang = 'ru-RU'
-export const DefaultAssociationLang = 'en-GB'
+export const DefaultAnswerLang = 'en'
+export const DefaultQuestionLang = 'ru'
+export const DefaultAssociationLang = 'en'
+
+export const languages = [
+  {"name":"English","id":"en"},
+  {"name":"Русский","id":"ru"},
+  {"name":"Polski","id":"pl"},
+  {"name":"Deutsch","id":"de"},
+  {"name":"Español","id":"es"},
+  {"name":"Français","id":"fr"},
+  {"name":"Indonesia","id":"id"},
+  {"name":"Italiano","id":"it"},
+  {"name":"Nederlands","id":"nl"},
+  {"name":"Português do Brasil","id":"pt"},
+  {"name":"हिन्दी","id":"hi"},
+  {"name":"日本語","id":"ja"},
+  {"name":"한국의","id":"ko"},
+  {"name":"普通话（中国大陆）","id":"zh"},
+]
 
 export type ClientTermData = {
   id: string

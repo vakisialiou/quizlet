@@ -4,9 +4,9 @@ import { CardSelection } from '@containers/Simulator/CardAggregator/MethodPickCa
 import CardAggregator, { OnChangeParamsType } from '@containers/Simulator/CardAggregator'
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import { CardStatus } from '@containers/Simulator/CardAggregator/types'
-import TextToSpeech, {TextToSpeechEvents, voices} from '@lib/speech'
 import { ProgressTrackerAction } from '@entities/ProgressTracker'
 import {SimulatorMethod} from '@entities/ClientSettingsSimulator'
+import TextToSpeech, { TextToSpeechEvents } from '@lib/speech'
 import {SimulatorStatus} from '@entities/ClientSimulator'
 import CardEmpty from '@containers/Simulator/CardEmpty'
 import CardStart from '@containers/Simulator/CardStart'
@@ -214,8 +214,11 @@ export default function Simulator({ folderId }: { folderId: string }) {
                         return
                       }
 
-                      const item = voices.find((item) => item.lang === selection.lang)
-                      speech.stop().setLang(selection.lang).setVoice(item?.name || selection.lang).speak(selection.text)
+                      speech
+                        .stop()
+                        .setLang(selection.lang)
+                        .setVoice(speech.selectVoice(selection.lang))
+                        .speak(selection.text)
                       setSoundSelection({ type: 'selection', data: selection })
                     }}
                   />
@@ -278,8 +281,11 @@ export default function Simulator({ folderId }: { folderId: string }) {
                         const lang = cardData?.helpData?.lang
 
                         if (lang && text) {
-                          const item = voices.find((item) => item.lang === lang)
-                          speech.stop().setLang(lang).setVoice(item?.name || lang).speak(text)
+                          speech
+                            .stop()
+                            .setLang(lang)
+                            .setVoice(speech.selectVoice(lang))
+                            .speak(text)
                           setSoundSelection({ type: 'sound', data: { id: '', lang, text } as CardSelection })
                         }
                       }

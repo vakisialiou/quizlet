@@ -1,11 +1,8 @@
 
 export const voices = [
   {"name":"Google Deutsch","lang":"de-DE"},
-  {"name":"Google US English","lang":"en-US"},
   {"name":"Google UK English Male","lang":"en-GB"},
-  // {"name":"Google UK English Female","lang":"en-GB"},
   {"name":"Google español","lang":"es-ES"},
-  {"name":"Google español de Estados Unidos","lang":"es-US"},
   {"name":"Google français","lang":"fr-FR"},
   {"name":"Google हिन्दी","lang":"hi-IN"},
   {"name":"Google Bahasa Indonesia","lang":"id-ID"},
@@ -16,9 +13,7 @@ export const voices = [
   {"name":"Google polski","lang":"pl-PL"},
   {"name":"Google português do Brasil","lang":"pt-BR"},
   {"name":"Google русский","lang":"ru-RU"},
-  {"name":"Google 普通话（中国大陆）","lang":"zh-CN"},
-  {"name":"Google 粤語（香港）","lang":"zh-HK"},
-  {"name":"Google 國語（臺灣）","lang":"zh-TW"}
+  {"name":"Google 普通话（中国大陆","lang":"zh-CN"},
 ]
 
 export enum TextToSpeechEvents {
@@ -105,10 +100,21 @@ export default class TextToSpeech {
     return this
   }
 
-  setVoice(value: string) {
-    this.voice = this.voices.find((voice) => {
-      return voice.name === value || voice.lang === value
-    }) || null
+  selectVoice(lang: string, priorities: string[] = []) {
+    const filtered = this.voices.filter(voice => voice.lang.startsWith(lang));
+
+    // Сортируем по приоритету
+    filtered.sort((a, b) => {
+      const indexA = priorities.indexOf(a.lang)
+      const indexB = priorities.indexOf(b.lang)
+      return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB)
+    })
+
+    return filtered[0] || null
+  }
+
+  setVoice(voice: SpeechSynthesisVoice | null) {
+    this.voice = voice
     return this
   }
 

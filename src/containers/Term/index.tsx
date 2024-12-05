@@ -1,12 +1,11 @@
-import { ClientTermData, DefaultAnswerLang, DefaultQuestionLang, DefaultAssociationLang } from '@entities/ClientTerm'
-import {useCallback, useEffect, useMemo, useRef} from 'react'
+import { ClientTermData, DefaultAnswerLang, DefaultQuestionLang, DefaultAssociationLang, languages } from '@entities/ClientTerm'
 import Dropdown, { DropdownSkin } from '@components/Dropdown'
+import { useCallback, useEffect, useRef } from 'react'
 import Button, {ButtonSize} from '@components/Button'
 import SVGThreeDots from '@public/svg/three_dots.svg'
 import RowRead from '@containers/Term/RowRead'
 import Spinner from '@components/Spinner'
 import Input from '@components/Input'
-import {voices} from '@lib/speech'
 import clsx from 'clsx'
 
 export enum SoundPlayingNameEnum {
@@ -74,12 +73,6 @@ export default function Term(
       document.removeEventListener('mousedown', finishEdit)
     }
   }, [finishEdit, edit, data])
-
-  const dropdownLocales = useMemo(() => {
-    return voices.map(({ name, lang }) => {
-      return { id: lang, name }
-    })
-  }, [])
 
   const getLocaleShortName = useCallback((lang: string | null, defaultLang: string) => {
     lang = lang || defaultLang
@@ -186,9 +179,10 @@ export default function Term(
               <Dropdown
                 caret
                 className="px-1"
+                items={languages}
                 ref={refQuestionLang}
-                items={dropdownLocales}
                 skin={DropdownSkin.gray}
+                selected={data.questionLang || DefaultQuestionLang}
                 onClick={(e) => e.preventDefault()}
                 onSelect={(id) => {
                   onChange('questionLang', id as string)
@@ -248,10 +242,11 @@ export default function Term(
               <Dropdown
                 caret
                 className="px-1"
+                items={languages}
                 ref={refAnswerLang}
-                items={dropdownLocales}
                 skin={DropdownSkin.gray}
                 onClick={(e) => e.preventDefault()}
+                selected={data.answerLang || DefaultAnswerLang}
                 onSelect={(id) => {
                   onChange('answerLang', id as string)
                 }}
@@ -320,10 +315,11 @@ export default function Term(
               <Dropdown
                 caret
                 className="px-1"
+                items={languages}
                 ref={refAssociationLang}
-                items={dropdownLocales}
                 skin={DropdownSkin.gray}
                 onClick={(e) => e.preventDefault()}
+                selected={data.associationLang || DefaultAssociationLang}
                 onSelect={(id) => {
                   onChange('associationLang', id as string)
                 }}

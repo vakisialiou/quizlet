@@ -1,9 +1,9 @@
 'use client'
 
 import AchievementIcon, { AchievementsSize } from '@containers/AchievementIcon'
-import TextToSpeech, { TextToSpeechEvents, voices } from '@lib/speech'
 import { filterFolderTerms } from '@containers/Simulator/helpers'
 import ClientTerm, {ClientTermData} from '@entities/ClientTerm'
+import TextToSpeech, { TextToSpeechEvents } from '@lib/speech'
 import AchievementDegree from '@containers/AchievementDegree'
 import { FoldersType, TermsType } from '@store/initial-state'
 import React, {useEffect, useMemo, useState} from 'react'
@@ -215,8 +215,7 @@ export default function Terms({ folderId }: { folderId: string }) {
 
                     if (text && play) {
                       setSoundInfo({ playingName: name, termId: term.id })
-                      const item = voices.find((item) => item.lang === lang)
-                      speech.stop().setLang(lang).setVoice(item?.name || lang).speak(text)
+                      speech.stop().setLang(lang).setVoice(speech.selectVoice(lang)).speak(text)
                     }
                   }
                 }}

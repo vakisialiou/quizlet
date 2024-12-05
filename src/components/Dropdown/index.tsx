@@ -50,7 +50,7 @@ function Dropdown(
   {
     menu?: ReactNode,
     children: ReactNode,
-    selected?: string | number,
+    selected?: string | number | null,
     caret?: boolean,
     disabled?: boolean,
     className?: string,
