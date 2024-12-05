@@ -1,7 +1,7 @@
-import { ReactNode, useState, useLayoutEffect } from 'react'
 import SVGCollapseMenu from '@public/svg/collapsemenu.svg'
 import ButtonSquare from '@components/ButtonSquare'
 import HeaderPage from '@containers/HeaderPage'
+import { ReactNode, useState } from 'react'
 import NavMenu from '@containers/NavMenu'
 import clsx from 'clsx'
 import './style.css'
@@ -25,20 +25,8 @@ export default function ContentPage(
     showHeader?: boolean,
     showFooter?: boolean,
   }) {
+
   const [opened, setOpened] = useState(false)
-
-  useLayoutEffect(() => {
-    const updateHeight = () => {
-      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`)
-    }
-
-    updateHeight()
-    window.addEventListener('resize', updateHeight)
-
-    return () => {
-      window.removeEventListener('resize', updateHeight)
-    }
-  }, [])
 
   return (
     <>

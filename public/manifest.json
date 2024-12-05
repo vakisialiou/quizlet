@@ -1,7 +1,7 @@
 {
-  "name": "QuizerPlay - Структурируйте знания, обучайтесь с симуляторами и карточками для запоминания",
+  "name": "QuizerPlay",
   "short_name": "QuizerPlay",
-  "description": "Создавайте модули и карточки для эффективного обучения с симуляторами. Автоматические ассоциации и награды помогут вам учиться быстрее и достигать результатов.",
+  "description": "Create flashcards for effective learning with simulators. Automated associations and rewards will help you learn faster and achieve results.",
   "background_color": "#0a0a0a",
   "theme_color": "#0a0a0a",
   "start_url": "/",

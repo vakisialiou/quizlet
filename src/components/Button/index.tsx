@@ -17,6 +17,7 @@ export enum ButtonSize {
 
 export default function Button(
   {
+    id,
     children,
     onClick,
     className,
@@ -29,8 +30,9 @@ export default function Button(
     skin = ButtonSkin.GRAY
   }:
   {
+    id?: string
     children: React.ReactNode,
-    onClick: (e: BaseSyntheticEvent) => void,
+    onClick?: (e: BaseSyntheticEvent) => void,
     className?: string,
     border?: boolean,
     shadow?: boolean,
@@ -44,6 +46,7 @@ export default function Button(
 
   return (
     <div
+      id={id}
       onClick={onClick}
       className={clsx('select-none flex items-center justify-center transition-all', {
         [className || '']: className,

@@ -4,6 +4,7 @@ import { useRouter, getPathname, LanguageEnums } from '@i18n/routing'
 import Button, { ButtonSkin } from '@components/Button'
 import SVGGoogle from '@public/svg/painted/google.svg'
 import ContentPage from '@containers/ContentPage'
+import ButtonPWA from '@containers/ButtonPWA'
 import Dropdown from '@components/Dropdown'
 import { useTranslations } from 'next-intl'
 import { useSelector } from 'react-redux'
@@ -33,8 +34,8 @@ function Landing({ locale }: { locale: LanguageEnums }) {
     >
       <header
         className={clsx('relative bg-cover bg-fixed', {
-          ['h-[calc(100vh-4rem)]']: session,
-          ['h-screen']: !session
+          ['`h-[calc(var(--vh)*100-4rem)]`']: session,
+          ['h-[calc(var(--vh)*100)]']: !session,
         })}
         style={{
           backgroundImage: `url('/images/bg-head.avif')`,
@@ -83,22 +84,28 @@ function Landing({ locale }: { locale: LanguageEnums }) {
               />
 
               <div className="flex justify-center">
-                <Button
-                  skin={ButtonSkin.WHITE}
-                  onClick={async () => {
-                    await signIn('google', {
-                      redirect: true,
-                      redirectTo: getPathname({href: '/private', locale})
-                    })
-                  }}
-                  className="px-6 gap-2 font-medium text-nowrap"
-                >
-                  <SVGGoogle
-                    width={24}
-                    height={24}
+                <div className="flex flex-col gap-4 justify-center items-center w-[280px]">
+                  <Button
+                    skin={ButtonSkin.WHITE}
+                    onClick={async () => {
+                      await signIn('google', {
+                        redirect: true,
+                        redirectTo: getPathname({href: '/private', locale})
+                      })
+                    }}
+                    className="px-6 gap-2 font-medium text-nowrap w-full"
+                  >
+                    <SVGGoogle
+                      width={24}
+                      height={24}
+                    />
+                    {t('mainButtonSignIn')}
+                  </Button>
+
+                  <ButtonPWA
+                    className="px-6 gap-2 font-medium text-nowrap w-full"
                   />
-                  {t('mainButtonSignIn')}
-                </Button>
+                </div>
               </div>
             </div>
           }
@@ -182,24 +189,35 @@ function Landing({ locale }: { locale: LanguageEnums }) {
                 className="text-3xl md:text-4xl font-bold text-center mb-12 max-w-[320px] md:max-w-full"
                 dangerouslySetInnerHTML={{__html: t('section3Title', {appName})}}
               />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="p-6 bg-gray-50 shadow-md rounded-lg">
                   <h3 className="text-xl font-semibold mb-4">{t('section3Block1Title')}</h3>
                   <p>{t('section3Block1Text')}</p>
                 </div>
+
                 <div className="p-6 bg-gray-50 shadow-md rounded-lg">
                   <h3 className="text-xl font-semibold mb-4">{t('section3Block2Title')}</h3>
                   <p>{t('section3Block2Text')}</p>
+                </div>
+
+                <div className="p-6 bg-gray-50 shadow-md rounded-lg">
+                  <h3 className="text-xl font-semibold mb-4">{t('section3Block3Title')}</h3>
+                  <p>{t('section3Block3Text')}</p>
                 </div>
               </div>
             </div>
           </section>
 
           <section id="cta" className="py-20 bg-gradient-to-r from-blue-500 to-blue-600 text-white">
-            <div className="flex flex-col items-center max-w-4xl mx-auto text-center">
+            <div className="flex flex-col items-center max-w-4xl mx-auto text-center px-6">
               <h2
-                className="text-3xl md:text-4xl font-bold mb-8">{t('section4Title', {appName})}</h2>
-              <p className="text-lg md:text-xl mb-8 max-w-[600px]">{t('section4Text')}</p>
+                className="text-3xl md:text-4xl font-bold mb-8"
+              >
+                {t('section4Title', {appName})}
+              </h2>
+              <p className="text-lg md:text-xl mb-8 max-w-[600px]">
+                {t('section4Text')}
+              </p>
 
               <div className="flex justify-center gap-8">
                 <Button
