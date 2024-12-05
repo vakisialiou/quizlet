@@ -34,7 +34,7 @@ function Landing({ locale }: { locale: LanguageEnums }) {
     >
       <header
         className={clsx('relative bg-cover bg-fixed', {
-          ['`h-[calc(var(--vh)*100-4rem)]`']: session,
+          ['h-[calc(var(--vh)*100-4rem)]']: session,
           ['h-[calc(var(--vh)*100)]']: !session,
         })}
         style={{
