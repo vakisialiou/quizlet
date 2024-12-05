@@ -45,7 +45,11 @@ self.addEventListener('fetch', (event) => {
 
       return fetch(request)
         .then((networkResponse) => {
-          if (isOfflinePageRequest || request.url.includes('/_next/static/')) {
+          if (isOfflinePageRequest
+            || request.url.includes('/_next/static/')
+            || request.url.includes('/images')
+            || request.url.includes('/icons')
+          ) {
             const responseClone = networkResponse.clone()
             caches.open(CACHE_NAME).then((cache) => {
               cache.put(request, responseClone)
