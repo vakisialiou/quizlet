@@ -1,9 +1,10 @@
 User-agent: *
-Allow: /en
-Allow: /ru
+Allow: /en$
+Allow: /ru$
 Disallow: /en/private/
 Disallow: /ru/private/
 Disallow: /en/api/
 Disallow: /ru/api/
 Disallow: /private/
 Disallow: /api/
+Sitemap: http://quizerplay.com/sitemap.xml
