@@ -4,8 +4,8 @@
   "description": "Create flashcards for effective learning with simulators. Automated associations and rewards will help you learn faster and achieve results.",
   "background_color": "#0a0a0a",
   "theme_color": "#0a0a0a",
-  "start_url": "/",
-  "lang": "ru",
+  "start_url": "/en",
+  "lang": "en",
   "display": "standalone",
   "orientation": "portrait",
   "icons": [
