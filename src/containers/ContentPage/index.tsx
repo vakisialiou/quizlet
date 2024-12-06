@@ -51,7 +51,8 @@ export default function ContentPage(
         className={clsx(`overflow-y-auto`, {
           [`h-[calc(var(--vh)*100-64px)]`]: (showHeader && !showFooter) || (!showHeader && showFooter),
           [`h-[calc(var(--vh)*100-128px)]`]: showHeader && showHeader,
-          ['h-[calc(var(--vh)*100)]']: !showHeader && !showFooter
+          ['h-[calc(var(--vh)*100)]']: !showHeader && !showFooter,
+          ['scrollbar-thin scrollbar-thumb-gray-500/50 scrollbar-track-gray-900/80 active:scrollbar-thumb-gray-400']: true
         })}
       >
         {children}

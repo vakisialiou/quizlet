@@ -1,3 +1,4 @@
+import tailwindScrollbarPlugin from 'tailwind-scrollbar'
 import type { Config } from 'tailwindcss'
 
 const config: Config = {
@@ -15,6 +16,8 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    tailwindScrollbarPlugin({ preferredStrategy: 'pseudoelements' })
+  ],
 };
 export default config;
