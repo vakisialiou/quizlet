@@ -6,7 +6,6 @@ const cacheName = searchParams.get('cacheName')
 const CACHE_NAME = searchParams.get('cacheName') || 'qp-pwa-cache-v4'
 const SUPPORTED_LOCALES = ['en', 'ru']
 const ASSETS_TO_CACHE = [
-  '/',
   ...SUPPORTED_LOCALES.map((locale) => `/${locale}/offline`),
   ...SUPPORTED_LOCALES.map((locale) => `/${locale}`),
 ]
@@ -42,6 +41,11 @@ self.addEventListener('fetch', (event) => {
   const isOfflinePageRequest = SUPPORTED_LOCALES.some((locale) =>
     url.pathname === `/${locale}/offline`
   )
+
+  if (url.pathname === '/') {
+    event.respondWith(Response.redirect('/en'))
+    return
+  }
 
   event.respondWith(
     caches.match(request).then((response) => {
