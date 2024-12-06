@@ -29,11 +29,15 @@ const nextConfig = {
           },
           {
             key: 'X-Frame-Options',
-            value: 'DENY',
+            value: 'ALLOW-FROM chrome-extension://chehdamekibkojlopnipjpomdfimpgbb/',
           },
           {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: "default-src 'self'; frame-ancestors 'self' chrome-extension://chehdamekibkojlopnipjpomdfimpgbb/;",
           },
         ],
       },
@@ -50,7 +54,7 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self'",
+            value: "default-src 'self'; script-src 'self' ",
           },
         ],
       },
