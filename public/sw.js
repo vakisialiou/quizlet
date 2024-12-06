@@ -3,10 +3,12 @@
 const searchParams = new URL(self.location).searchParams
 const cacheName = searchParams.get('cacheName')
 
-const CACHE_NAME = searchParams.get('cacheName') || 'qp-pwa-cache-v3'
+const CACHE_NAME = searchParams.get('cacheName') || 'qp-pwa-cache-v4'
 const SUPPORTED_LOCALES = ['en', 'ru']
 const ASSETS_TO_CACHE = [
+  '/',
   ...SUPPORTED_LOCALES.map((locale) => `/${locale}/offline`),
+  ...SUPPORTED_LOCALES.map((locale) => `/${locale}`),
 ]
 
 self.addEventListener('install', (event) => {
