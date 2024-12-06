@@ -28,7 +28,7 @@ export async function generateMetadata({params}: { params: Promise<{ locale: Lan
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'Metadata'})
 
-  const baseUrl = 'https://quizerplay.com';
+  const baseUrl = 'https://quizerplay.com'
 
   return {
     title: t('title'),

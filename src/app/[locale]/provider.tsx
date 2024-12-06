@@ -24,7 +24,7 @@ export function AppProvider({ children, initialState }: { children: ReactNode, i
 
   if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
     navigator.serviceWorker
-      .register('/sw.js')
+      .register(`/sw.js?cacheName=${process.env.NEXT_PUBLIC_CACHE_NAME || ''}`)
       .then(() => console.log('Service Worker registered successfully'))
       .catch((err) => console.error('Service Worker registration failed:', err))
   }

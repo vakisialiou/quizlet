@@ -1,5 +1,9 @@
-const CACHE_NAME = 'qp-pwa-cache-v3'
 
+
+const searchParams = new URL(self.location).searchParams
+const cacheName = searchParams.get('cacheName')
+
+const CACHE_NAME = searchParams.get('cacheName') || 'qp-pwa-cache-v3'
 const SUPPORTED_LOCALES = ['en', 'ru']
 const ASSETS_TO_CACHE = [
   ...SUPPORTED_LOCALES.map((locale) => `/${locale}/offline`),
