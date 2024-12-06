@@ -64,7 +64,6 @@ self.addEventListener('fetch', (event) => {
           return networkResponse
         })
         .catch(() => {
-          console.log(request)
           if (request.mode === 'navigate') {
             const locale = SUPPORTED_LOCALES.find((locale) =>
               url.pathname.startsWith(`/${locale}`)
