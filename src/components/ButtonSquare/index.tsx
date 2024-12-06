@@ -2,8 +2,8 @@ import { ComponentType, SVGProps } from 'react'
 import clsx from 'clsx'
 
 export default function ButtonSquare(
-  { onClick, icon, bordered = false, size = 32, className = '' }:
-  { onClick?: () => void, icon: ComponentType<SVGProps<SVGSVGElement>>, bordered?: boolean, size?: number, className?: string }
+  { onClick, icon, bordered = false, size = 32, className = '', disabled = false }:
+  { onClick?: () => void, icon: ComponentType<SVGProps<SVGSVGElement>>, bordered?: boolean, size?: number, className?: string, disabled?: boolean }
 ) {
   const IconComponent = icon
   return (
@@ -11,6 +11,7 @@ export default function ButtonSquare(
       onClick={onClick}
       className={clsx('transition-colors w-8 h-8 hover:cursor-pointer flex items-center justify-center select-none group', {
         ['border border-gray-400 hover:border-gray-500']: bordered,
+        ['pointer-events-none opacity-50']: disabled,
         [className]: className
       })}
     >

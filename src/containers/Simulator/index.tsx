@@ -14,8 +14,10 @@ import PanelInfo from '@containers/Simulator/PanelInfo'
 import Button, {ButtonSkin} from '@components/Button'
 import Dialog, {DialogType} from '@components/Dialog'
 import ButtonSquare from '@components/ButtonSquare'
+import SVGQuestion from '@public/svg/question.svg'
 import ContentPage from '@containers/ContentPage'
 import {FoldersType} from '@store/initial-state'
+import { useTranslations } from 'next-intl'
 import PanelControls from './PanelControls'
 import SVGBack from '@public/svg/back.svg'
 import {useSelector} from 'react-redux'
@@ -71,6 +73,8 @@ export default function Simulator({ folderId }: { folderId: string }) {
 
   const [stopFolderId, setStopFolderId] = useState<string | null>(null)
 
+  const [showUserHelp, setShowUserHelp] = useState(false)
+
   const [showHelp, setShowHelp] = useState(false)
 
   const showHelpRef = useRef(showHelp)
@@ -89,20 +93,30 @@ export default function Simulator({ folderId }: { folderId: string }) {
   const cardStatus = extra?.status as CardStatus
   const cardMethod = extra?.method as SimulatorMethod
 
+  const t = useTranslations('Simulators')
+
   return (
     <ContentPage
       showHeader
       showFooter
       title={folder?.name}
       rightControls={(
-        <ButtonSquare
-          icon={SVGBack}
-          onClick={() => {
-            if (folder) {
-              router.push(`/private/folder/${folder?.id}`)
-            }
-          }}
-        />
+        <>
+          <ButtonSquare
+            icon={SVGQuestion}
+            disabled={showUserHelp}
+            onClick={() => setShowUserHelp(true)}
+          />
+
+          <ButtonSquare
+            icon={SVGBack}
+            onClick={() => {
+              if (folder) {
+                router.push(`/private/folder/${folder?.id}`)
+              }
+            }}
+          />
+        </>
       )}
       footer={(
         <div className="flex w-full justify-center">
@@ -121,7 +135,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
                     }
                   }}
                 >
-                  Remember
+                  {t('buttonRemember')}
                 </Button>
 
                 <Button
@@ -136,7 +150,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
                     }
                   }}
                 >
-                  Continue
+                  {t('buttonContinue')}
                 </Button>
               </>
             }
@@ -170,7 +184,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
                   }
                 }}
               >
-                Continue
+                {t('buttonContinue')}
               </Button>
             }
           </div>
@@ -297,10 +311,60 @@ export default function Simulator({ folderId }: { folderId: string }) {
           </div>
         </div>
 
+        {showUserHelp &&
+          <Dialog
+            title={t('userHelpTitle')}
+            text={(
+              <div className="flex flex-col gap-4 text-gray-800">
+
+                <div className="flex flex-col gap-1">
+                  <div className="font-bold">{t('userHelpSection1Title')}</div>
+                  {t('userHelpSection1Text')}
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <div className="font-bold">{t('userHelpSection2Title')}</div>
+                  {t('userHelpSection2Text')}
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <div className="font-bold">{t('userHelpSection3Title')}</div>
+                  {t('userHelpSection3Text')}
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <div className="font-bold">{t('userHelpSection4Title')}</div>
+                  {t('userHelpSection4Text')}
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <div className="font-bold">{t('userHelpSection5Title')}</div>
+                  {t('userHelpSection5Text')}
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <div className="font-bold">{t('userHelpSection6Title')}</div>
+                  {t('userHelpSection6Text')}
+                </div>
+              </div>
+            )}
+          >
+            <Button
+              className="w-28"
+              skin={ButtonSkin.GRAY}
+              onClick={() => {
+                setShowUserHelp(false)
+              }}
+            >
+              {t('userHelpButtonClose')}
+            </Button>
+          </Dialog>
+        }
+
         {stopFolderId &&
           <Dialog
-            title="Stopping"
-            text="Are you sure you want to stop?"
+            title={t('removeDialogTitle')}
+            text={t('removeDialogText')}
             type={DialogType.warning}
           >
             <Button
@@ -312,7 +376,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
                 })
               }}
             >
-              Approve
+              {t('removeDialogButtonApprove')}
             </Button>
 
             <Button
@@ -320,7 +384,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
               skin={ButtonSkin.WHITE}
               onClick={() => setStopFolderId(null)}
             >
-              Cancel
+              {t('removeDialogButtonCancel')}
             </Button>
           </Dialog>
         }

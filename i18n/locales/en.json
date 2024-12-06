@@ -46,9 +46,71 @@
 
     "pwa_install": "Install App",
 
-    "footer": "© 2024. All rights reserved. The {appName} Learning Platform."
+    "footer": "© 2024. All rights reserved. The {appName} Learning Platform.",
+
+    "helpSection1Title": "Click the button to open the 'Collection' section, where you can create folders and add terms to them for easy management and study."
   },
   "Offline": {
     "warn": "You are in offline mode. <br/>Try connecting to the network."
+  },
+  "Folders": {
+    "headTitle": "Collections",
+    "searchPlaceholder": "Search...",
+    "footButtonCreateFolder": "Create Folder",
+    "dropDownEdit": "Edit",
+    "dropDownRemove": "Delete",
+    "userHelpTitle": "Help",
+    "userHelpSection1Title": "How to create a folder?",
+    "userHelpSection1Text": "To add a new folder, click the white button located at the bottom of the screen.",
+    "userHelpSection2Title": "How to create a term?",
+    "userHelpSection2Text": "To add a new term, click on the created folder. You will be taken to a screen where you can add terms.",
+    "userHelpSection3Title": "How to start studying?",
+    "userHelpSection3Text": "To start studying, click the green button on the folder.",
+    "userHelpSection4Title": "Why is the study button disabled?",
+    "userHelpSection4Text": "If the button is unavailable, it may mean that there are no terms to study in the folder or that the values of the created terms are incorrect for studying.",
+    "userHelpButtonClose": "Close",
+    "removeDialogTitle": "Untitled",
+    "removeDialogText": "Are you sure you want to delete this folder?",
+    "removeDialogButtonApprove": "Delete",
+    "removeDialogButtonCancel": "Cancel"
+  },
+  "Terms": {
+    "searchPlaceholder": "Search...",
+    "footButtonCreateTerm": "Create Term",
+    "footButtonPlay": "Start Studying",
+    "userHelpTitle": "Help",
+    "userHelpSection1Title": "How to create a term?",
+    "userHelpSection1Text": "To add a new term, click the white button located at the bottom of the screen.",
+    "userHelpSection2Title": "How to start studying?",
+    "userHelpSection2Text": "To start studying, click the green button located at the bottom of the screen.",
+    "userHelpSection3Title": "Why is the study button disabled?",
+    "userHelpSection3Text": "If the button is unavailable, it may mean that there are no terms to study or that the values of the created terms are incorrect for studying.",
+    "userHelpButtonClose": "Close",
+    "removeDialogTitle": "Untitled",
+    "removeDialogText": "Are you sure you want to delete this term?",
+    "removeDialogButtonApprove": "Delete",
+    "removeDialogButtonCancel": "Cancel"
+  },
+  "Simulators": {
+    "buttonRemember": "Remember",
+    "buttonContinue": "Continue",
+    "userHelpTitle": "Help",
+    "userHelpSection1Title": "What is Pick?",
+    "userHelpSection1Text": "It is a simulator that offers 4 answer choices, and you need to select the correct one.",
+    "userHelpSection2Title": "What is Pick inverse?",
+    "userHelpSection2Text": "It is a version of the Pick simulator, but with the questions and answers swapped. You need to select the correct question for the given answer.",
+    "userHelpSection3Title": "What is Flashcard?",
+    "userHelpSection3Text": "It is a two-sided card that can be flipped to view the answer. You can click the 'Learned' or 'Continue' button. All terms marked as 'Continue' will be returned to the learning cycle. This process will repeat until all terms are learned.",
+    "userHelpSection4Title": "What is Flashcard inverse?",
+    "userHelpSection4Text": "It is a version of Flashcard, but with the questions and answers swapped. You need to guess the correct question based on the provided answer.",
+    "userHelpSection5Title": "What is Input?",
+    "userHelpSection5Text": "It is a card that shows a question and provides an input field for the answer. All terms with errors will be returned to a new learning cycle. This process will repeat until all terms are entered correctly.",
+    "userHelpSection6Title": "What is Input inverse?",
+    "userHelpSection6Text": "It is a version of Input, but with the questions and answers swapped. You need to correctly write the question based on the provided answer.",
+    "userHelpButtonClose": "Close",
+    "removeDialogTitle": "Stop",
+    "removeDialogText": "Are you sure you want to stop?",
+    "removeDialogButtonApprove": "Confirm",
+    "removeDialogButtonCancel": "Cancel"
   }
 }

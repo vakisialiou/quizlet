@@ -1,16 +1,17 @@
 'use client'
 
-import { useRouter, getPathname, LanguageEnums } from '@i18n/routing'
+import { getPathname, LanguageEnums, useRouter } from '@i18n/routing'
+import Dropdown, { DropdownSkin } from '@components/Dropdown'
 import Button, { ButtonSkin } from '@components/Button'
 import SVGGoogle from '@public/svg/painted/google.svg'
+import SVGPresetNew from '@public/svg/preset_new.svg'
 import ContentPage from '@containers/ContentPage'
 import ButtonPWA from '@containers/ButtonPWA'
-import Dropdown from '@components/Dropdown'
-import { useTranslations } from 'next-intl'
-import { useSelector } from 'react-redux'
-import { signIn } from 'next-auth/react'
-import { Session } from 'next-auth'
-import { memo } from 'react'
+import {useTranslations} from 'next-intl'
+import {useSelector} from 'react-redux'
+import {signIn} from 'next-auth/react'
+import {Session} from 'next-auth'
+import {memo} from 'react'
 import clsx from 'clsx'
 
 function Landing({ locale }: { locale: LanguageEnums }) {
@@ -51,27 +52,40 @@ function Landing({ locale }: { locale: LanguageEnums }) {
           <div className="absolute top-4 right-4">
             <Dropdown
               caret
+              className="py-1 px-2"
+              skin={DropdownSkin.gray}
               items={localeDropdownList}
-              className="py-2 px-2"
             >
-              {localeDropdownValue?.name || 'Language'}
+              <span className="pr-2">
+                {localeDropdownValue?.name || 'Language'}
+              </span>
             </Dropdown>
           </div>
 
           <div
-            className="absolute top-4 left-4 text-white bg-yellow-500 text-sm font-bold px-4 py-1 rounded-full"
+            className="absolute top-4 left-4 text-white bg-yellow-500 text-sm font-bold px-4 py-1 rounded-full mt-[2px]"
           >
             Beta
           </div>
 
           {session &&
-            <div className="flex flex-col text-center text-white px-6 max-w-[900px]">
+            <div className="flex flex-col gap-16 text-center text-white px-6 max-w-[900px]">
+
+              <div className="max-w-2xl text-gray-300">
+                {t('helpSection1Title')}
+              </div>
+
               <div className="flex justify-center">
                 <Button
                   skin={ButtonSkin.WHITE}
                   onClick={() => route.push('/private')}
                   className="px-6 gap-2 font-medium text-nowrap"
                 >
+                  <SVGPresetNew
+                    width={28}
+                    heught={28}
+                    className="text-gray-800"
+                  />
                   {t('mainButtonGoTo')}
                 </Button>
               </div>

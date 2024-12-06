@@ -10,8 +10,11 @@ import { SimulatorStatus } from '@entities/ClientSimulator'
 import Button, { ButtonSkin } from '@components/Button'
 import SVGFolderNew from '@public/svg/new_folder.svg'
 import { useEffect, useMemo, useState } from 'react'
+import ButtonSquare from '@components/ButtonSquare'
+import SVGQuestion from '@public/svg/question.svg'
 import { FoldersType } from '@store/initial-state'
 import ContentPage from '@containers/ContentPage'
+import { useTranslations } from 'next-intl'
 import { upsertObject } from '@lib/array'
 import { useSelector } from 'react-redux'
 import Dialog from '@components/Dialog'
@@ -30,6 +33,8 @@ export default function Folders() {
 
   const [ originItem, setOriginItem ] = useState<ClientFolderData | null>(null)
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
+
+  const [showUserHelp, setShowUserHelp] = useState(false)
 
   const [search, setSearch] = useState<string | null>(null)
 
@@ -56,11 +61,13 @@ export default function Folders() {
     return res
   }, [items])
 
+  const t = useTranslations('Folders')
+
   return (
     <ContentPage
       showHeader
       showFooter
-      title="Collections"
+      title={t('headTitle')}
       footer={(
         <div className="flex w-full justify-center lg:justify-end">
           <Button
@@ -77,9 +84,16 @@ export default function Folders() {
               className="text-gray-700"
             />
 
-            Create folder
+            {t('footButtonCreateFolder')}
           </Button>
         </div>
+      )}
+      rightControls={(
+        <ButtonSquare
+          icon={SVGQuestion}
+          disabled={showUserHelp}
+          onClick={() => setShowUserHelp(true)}
+        />
       )}
     >
       <Search
@@ -87,7 +101,7 @@ export default function Folders() {
         bordered
         value={search || ''}
         className="px-2 pt-2 md:px-4 md:pt-4"
-        placeholder="Search folder..."
+        placeholder={t('searchPlaceholder')}
         onClear={() => setSearch(null)}
         onChange={(e) => {
           setSearch(e.target.value ? `${e.target.value}`.toLocaleLowerCase() : null)
@@ -99,7 +113,7 @@ export default function Folders() {
         {items.map((folder, index) => {
           let doneSimulators = 0
           let hasActiveSimulator = false
-          for (const { active, status } of folder.simulators) {
+          for (const {active, status} of folder.simulators) {
             if (active) {
               hasActiveSimulator = true
             }
@@ -121,8 +135,8 @@ export default function Folders() {
               disablePlay={playTerms.length === 0}
               process={folders.processIds.includes(folder.id)}
               dropdownItems={[
-                {id: 1, name: 'Edit'},
-                {id: 2, name: 'Remove', disabled: (folder.terms.length || 0) > 0},
+                {id: 1, name: t('dropDownEdit')},
+                {id: 2, name: t('dropDownRemove'), disabled: (folder.terms.length || 0) > 0},
               ]}
               onDropdownSelect={(id) => {
                 switch (id) {
@@ -182,10 +196,49 @@ export default function Folders() {
         })}
       </div>
 
+      {showUserHelp &&
+        <Dialog
+          title={t('userHelpTitle')}
+          text={(
+            <div className="flex flex-col gap-4 text-gray-800">
+              <div className="flex flex-col gap-1">
+                <div className="font-bold">{t('userHelpSection1Title')}</div>
+                {t('userHelpSection1Text')}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <div className="font-bold">{t('userHelpSection2Title')}</div>
+                {t('userHelpSection2Text')}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <div className="font-bold">{t('userHelpSection3Title')}</div>
+                {t('userHelpSection3Text')}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <div className="font-bold">{t('userHelpSection4Title')}</div>
+                {t('userHelpSection4Text')}
+              </div>
+            </div>
+          )}
+        >
+          <Button
+            className="w-28"
+            skin={ButtonSkin.GRAY}
+            onClick={() => {
+              setShowUserHelp(false)
+            }}
+          >
+            {t('userHelpButtonClose')}
+          </Button>
+        </Dialog>
+      }
+
       {removeFolder &&
         <Dialog
-          title={removeFolder.name || 'Folder No Name'}
-          text="Are you sure you want to remove this folder?"
+          title={removeFolder.name || t('removeDialogTitle')}
+          text={t('removeDialogText')}
         >
           <Button
             className="w-28"
@@ -199,7 +252,7 @@ export default function Folders() {
               })
             }}
           >
-            Remove
+            {t('removeDialogButtonApprove')}
           </Button>
 
           <Button
@@ -207,7 +260,7 @@ export default function Folders() {
             skin={ButtonSkin.WHITE}
             onClick={() => setRemoveFolder(null)}
           >
-            Cancel
+            {t('removeDialogButtonCancel')}
           </Button>
         </Dialog>
       }

@@ -9,9 +9,11 @@ import { FoldersType, TermsType } from '@store/initial-state'
 import React, {useEffect, useMemo, useState} from 'react'
 import Button, { ButtonSkin } from '@components/Button'
 import ButtonSquare from '@components/ButtonSquare'
+import SVGQuestion from '@public/svg/question.svg'
 import ContentPage from '@containers/ContentPage'
 import SVGFileNew from '@public/svg/file_new.svg'
 import Achievement from '@entities/Achievement'
+import { useTranslations } from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
 import SVGPlay from '@public/svg/play.svg'
 import Search from '@components/Search'
@@ -26,7 +28,7 @@ import {
   actionUpdateTerm,
   actionUpdateTermItem
 } from '@store/index'
-import clsx from "clsx";
+import clsx from 'clsx'
 
 export default function Terms({ folderId }: { folderId: string }) {
   useEffect(actionFetchFolders, [])
@@ -89,6 +91,10 @@ export default function Terms({ folderId }: { folderId: string }) {
     return filterFolderTerms(folder)
   }, [folder])
 
+  const [showUserHelp, setShowUserHelp] = useState(false)
+
+  const t = useTranslations('Terms')
+
   return (
     <ContentPage
       showHeader
@@ -108,12 +114,20 @@ export default function Terms({ folderId }: { folderId: string }) {
         </div>
       )}
       rightControls={(
-        <ButtonSquare
-          icon={SVGBack}
-          onClick={() => {
-            router.push(`/private`)
-          }}
-        />
+        <>
+          <ButtonSquare
+            icon={SVGQuestion}
+            disabled={showUserHelp}
+            onClick={() => setShowUserHelp(true)}
+          />
+
+          <ButtonSquare
+            icon={SVGBack}
+            onClick={() => {
+              router.push(`/private`)
+            }}
+          />
+        </>
       )}
       footer={(
         <div className="flex w-full justify-center text-center">
@@ -131,7 +145,7 @@ export default function Terms({ folderId }: { folderId: string }) {
                 height={28}
                 className="text-gray-700"
               />
-              Create term
+              {t('footButtonCreateTerm')}
             </Button>
             <Button
               skin={ButtonSkin.GREEN}
@@ -150,7 +164,7 @@ export default function Terms({ folderId }: { folderId: string }) {
                   ['text-gray-500/50']: playTerms.length === 0
                 })}
               />
-              Play
+              {t('footButtonPlay')}
             </Button>
           </div>
         </div>
@@ -161,7 +175,7 @@ export default function Terms({ folderId }: { folderId: string }) {
         bordered
         value={search || ''}
         className="px-2 pt-2 md:px-4 md:pt-4"
-        placeholder="Search term..."
+        placeholder={t('searchPlaceholder')}
         onClear={() => setSearch(null)}
         onChange={(e) => {
           setSearch(e.target.value ? `${e.target.value}`.toLocaleLowerCase() : null)
@@ -225,10 +239,45 @@ export default function Terms({ folderId }: { folderId: string }) {
         </div>
       }
 
+      {showUserHelp &&
+        <Dialog
+          title={t('userHelpTitle')}
+          text={(
+            <div className="flex flex-col gap-4 text-gray-800">
+
+              <div className="flex flex-col gap-1">
+                <div className="font-bold">{t('userHelpSection1Title')}</div>
+                {t('userHelpSection1Text')}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <div className="font-bold">{t('userHelpSection2Title')}</div>
+                {t('userHelpSection2Text')}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <div className="font-bold">{t('userHelpSection3Title')}</div>
+                {t('userHelpSection3Text')}
+              </div>
+            </div>
+          )}
+        >
+          <Button
+            className="w-28"
+            skin={ButtonSkin.GRAY}
+            onClick={() => {
+              setShowUserHelp(false)
+            }}
+          >
+            {t('userHelpButtonClose')}
+          </Button>
+        </Dialog>
+      }
+
       {removeTerm &&
         <Dialog
-          title={removeTerm.question || removeTerm.answer || 'Term empty'}
-          text="Are you sure you want to remove this term?"
+          title={removeTerm.question || removeTerm.answer || t('removeDialogTitle')}
+          text={t('removeDialogText')}
         >
           <Button
             className="w-28"
@@ -242,7 +291,7 @@ export default function Terms({ folderId }: { folderId: string }) {
               })
             }}
           >
-            Remove
+            {t('removeDialogButtonApprove')}
           </Button>
 
           <Button
@@ -250,7 +299,7 @@ export default function Terms({ folderId }: { folderId: string }) {
             skin={ButtonSkin.WHITE}
             onClick={() => setRemoveTerm(null)}
           >
-            Cancel
+            {t('removeDialogButtonCancel')}
           </Button>
         </Dialog>
       }
