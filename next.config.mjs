@@ -28,10 +28,6 @@ const nextConfig = {
             value: 'nosniff',
           },
           {
-            key: 'X-Frame-Options',
-            value: 'ALLOW-FROM chrome-extension://chehdamekibkojlopnipjpomdfimpgbb/',
-          },
-          {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',
           },
