@@ -36,6 +36,10 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const { request } = event
+  if (request.url.startsWith('chrome-extension://')) {
+    return
+  }
+
   const url = new URL(request.url)
 
   const isOfflinePageRequest = SUPPORTED_LOCALES.some((locale) =>
