@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "NEXT_PUBLIC_CACHE_NAME=qp-pwa-cache-v1-$(date +%s) next build",
+    "build": "SW_CACHE_NAME=qp-pwa-cache-v1-$(date +%s) next build",
     "start": "next start",
     "lint": "next lint",
     "migrate:status": "npx prisma migrate status",

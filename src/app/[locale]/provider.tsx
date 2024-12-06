@@ -5,6 +5,7 @@ import { SessionProvider } from 'next-auth/react'
 import { ConfigType } from '@store/initial-state'
 import { presetStore } from '@store/index'
 import { Provider } from 'react-redux'
+import { config } from '@lib/config'
 
 export function AppProvider({ children, initialState }: { children: ReactNode, initialState: ConfigType }) {
   const store = presetStore(initialState)
@@ -24,7 +25,7 @@ export function AppProvider({ children, initialState }: { children: ReactNode, i
 
   if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
     navigator.serviceWorker
-      .register(`/sw.js?cacheName=${process.env.NEXT_PUBLIC_CACHE_NAME || ''}`)
+      .register(`/sw.js?cacheName=${config.sw.cacheName}&enabled=${config.sw.enabled}`)
       .then(() => console.log('Service Worker registered successfully'))
       .catch((err) => console.error('Service Worker registration failed:', err))
   }

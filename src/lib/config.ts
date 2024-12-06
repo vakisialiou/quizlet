@@ -5,6 +5,10 @@ export enum ENV {
 }
 
 type AppConfig = {
+  sw: {
+    enabled: boolean,
+    cacheName: string
+  },
   server: {
     env: ENV,
     baseURL: string
@@ -32,6 +36,10 @@ type AppConfig = {
 }
 
 export const config: AppConfig = {
+  sw: {
+    enabled: process.env.NODE_ENV === ENV.PROD,
+    cacheName: process.env.SW_CACHE_NAME || ''
+  },
   server: {
     baseURL: process.env.PUBLIC_BASE_URL || '',
     env: process.env.NODE_ENV === ENV.PROD ? ENV.PROD : ENV.DEV,
