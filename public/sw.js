@@ -42,11 +42,6 @@ self.addEventListener('fetch', (event) => {
     url.pathname === `/${locale}/offline`
   )
 
-  if (url.pathname === '/') {
-    event.respondWith(Response.redirect('/en'))
-    return
-  }
-
   event.respondWith(
     caches.match(request).then((response) => {
       if (response) {
@@ -59,6 +54,7 @@ self.addEventListener('fetch', (event) => {
             || request.url.includes('/_next/static/')
             || request.url.includes('/images')
             || request.url.includes('/icons')
+            || request.url.includes('/')
           ) {
             const responseClone = networkResponse.clone()
             caches.open(CACHE_NAME).then((cache) => {
@@ -68,6 +64,7 @@ self.addEventListener('fetch', (event) => {
           return networkResponse
         })
         .catch(() => {
+          console.log(request)
           if (request.mode === 'navigate') {
             const locale = SUPPORTED_LOCALES.find((locale) =>
               url.pathname.startsWith(`/${locale}`)
