@@ -7,7 +7,6 @@ const CACHE_NAME = searchParams.get('cacheName') || 'qp-pwa-cache-v4'
 const SUPPORTED_LOCALES = ['en', 'ru']
 const ASSETS_TO_CACHE = [
   ...SUPPORTED_LOCALES.map((locale) => `/${locale}/offline`),
-  ...SUPPORTED_LOCALES.map((locale) => `/${locale}`),
 ]
 
 self.addEventListener('install', (event) => {
@@ -58,7 +57,6 @@ self.addEventListener('fetch', (event) => {
             || request.url.includes('/_next/static/')
             || request.url.includes('/images')
             || request.url.includes('/icons')
-            || request.url.includes('/')
           ) {
             const responseClone = networkResponse.clone()
             caches.open(CACHE_NAME).then((cache) => {
