@@ -42,7 +42,10 @@ export function AppProvider({ children, initialState }: { children: ReactNode, i
     }
   }, [setIsOnline])
 
+  console.log(config.sw, 'server')
+
   useEffect(() => {
+    console.log(config.sw, 'client')
     navigator.serviceWorker
       .register(`/sw.js?cacheName=${config.sw.cacheName}&enabled=${config.sw.enabled}`)
       .then(() => console.log('Service Worker registered successfully'))
