@@ -12,12 +12,7 @@ const intlMiddleware = createMiddleware(routing)
 export async function middleware(req: NextRequest) {
   // /api маршруты без локализации поэтому сначала проверяем эти маршруты.
   const originPathname = req.nextUrl.pathname
-  if (
-    originPathname.startsWith('/api/folders')
-    || originPathname.startsWith('/api/terms')
-    || originPathname.startsWith('/api/settings')
-    || originPathname.startsWith('/api/simulator')
-  ) {
+  if (originPathname.startsWith('/api/')) {
     return await privateApiMiddleware(req)
   }
 
@@ -39,16 +34,7 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     '/',
-
     '/(ru|en)/private/:path*',
-
-    '/private',
-    '/api/folders',
-    '/api/folders/:id',
-    '/api/folders/:id/terms',
-    '/api/terms/:id',
-    '/api/settings/simulator',
-    '/api/simulator',
-    '/api/simulator/:id',
+    '/((?!api|.*\\..*).*)',
   ],
 }

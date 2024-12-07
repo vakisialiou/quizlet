@@ -4,6 +4,6 @@ import { defineRouting } from 'next-intl/routing'
 
 export * from '@i18n/constants'
 
-export const routing = defineRouting({ locales, defaultLocale })
+export const routing = defineRouting({ locales, defaultLocale, localeCookie: true })
 
 export const { Link, redirect, usePathname, useRouter, getPathname } = createNavigation(routing)
