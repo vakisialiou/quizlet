@@ -41,8 +41,8 @@ if (enabled === 'true') {
 
     const url = new URL(request.url)
 
-    const isOfflinePageRequest = SUPPORTED_LOCALES.some((locale) =>
-      url.pathname === `/${locale}/offline`
+    const isCachePage = SUPPORTED_LOCALES.some((locale) =>
+      url.pathname === `/${locale}/offline` || url.pathname === `/${locale}`
     )
 
     event.respondWith(
@@ -53,7 +53,7 @@ if (enabled === 'true') {
 
         return fetch(request)
           .then((networkResponse) => {
-            if (isOfflinePageRequest
+            if (isCachePage
               || request.url.includes('/_next/static/')
               || request.url.includes('/images')
               || request.url.includes('/icons')
