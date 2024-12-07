@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "SW_CACHE_NAME=qp-v1-$(date +%s) next build",
-    "start": "SW_CACHE_NAME=qp-v2-$(date +%s) next start",
+    "build": "NEXT_PUBLIC_SW_CACHE_NAME=qp-v1-$(date +%s) next build",
+    "start": "next start",
     "lint": "next lint",
     "migrate:status": "npx prisma migrate status",
     "migrate:add": "npx prisma migrate dev --name",

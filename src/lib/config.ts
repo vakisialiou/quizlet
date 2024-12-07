@@ -38,7 +38,7 @@ type AppConfig = {
 export const config: AppConfig = {
   sw: {
     enabled: process.env.NODE_ENV === ENV.PROD,
-    cacheName: process.env.SW_CACHE_NAME || ''
+    cacheName: process.env.NEXT_PUBLIC_SW_CACHE_NAME || ''
   },
   server: {
     baseURL: process.env.PUBLIC_BASE_URL || '',
