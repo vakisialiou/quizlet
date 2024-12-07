@@ -42,7 +42,7 @@ if (enabled === 'true') {
     const url = new URL(request.url)
 
     const isCachePage = SUPPORTED_LOCALES.some((locale) =>
-      url.pathname === `/${locale}/offline` || url.pathname === `/${locale}`
+      url.pathname === `/${locale}/offline`
     )
 
     event.respondWith(
