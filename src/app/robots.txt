@@ -11,5 +11,6 @@ Disallow: /api/
 Disallow: /_next/static/
 Disallow: /images
 Disallow: /icons
+Disallow: /favicon.ico
 
 Sitemap: https://quizerplay.com/sitemap.xml
