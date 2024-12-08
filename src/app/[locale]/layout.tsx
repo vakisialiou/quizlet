@@ -1,4 +1,4 @@
-import { routing, LanguageEnums } from '@i18n/routing'
+import { routing, LanguageEnums, defaultLocale } from '@i18n/routing'
 import { getInitialState } from '@store/initial-state'
 import { getSettings } from '@repositories/settings'
 import { getTranslations } from 'next-intl/server'
@@ -54,6 +54,9 @@ export async function generateMetadata({params}: { params: Promise<{ locale: Lan
       canonical: `${baseUrl}/${locale}`,
       languages: routing.locales.reduce((acc, lang) => {
         acc[lang] = `${baseUrl}/${lang}`
+        if (lang === defaultLocale) {
+          acc['x-default'] = `${baseUrl}/${lang}`
+        }
         return acc
       }, {} as Record<string, string>),
     },
