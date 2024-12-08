@@ -55,7 +55,7 @@ export async function generateMetadata({params}: { params: Promise<{ locale: Lan
       languages: routing.locales.reduce((acc, lang) => {
         acc[lang] = `${baseUrl}/${lang}`
         if (lang === defaultLocale) {
-          acc['x-default'] = `${baseUrl}/${lang}`
+          acc['x-default'] = `${baseUrl}`
         }
         return acc
       }, {} as Record<string, string>),
