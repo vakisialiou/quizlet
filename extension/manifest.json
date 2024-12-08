@@ -3,12 +3,13 @@
   "manifest_version": 3,
   "name": "QuizerPlay",
   "short_name": "QuizerPlay",
-  "description": "Create flashcards for effective learning with simulators. Automated associations and rewards will help you learn faster and achieve results.",
+  "description": "Create flashcards for efficient learning with simulators. Automated associations and rewards boost learning speed and results.",
   "homepage_url": "http://quizerplay.com",
   "icons": {
     "16": "favicon-16x16.png",
     "32": "favicon-32x32.png",
-    "96": "favicon-96x96.png"
+    "96": "favicon-96x96.png",
+    "128": "favicon-128x128.png"
   },
   "permissions": [
     "storage",
