@@ -8,4 +8,8 @@ Disallow: /ru/api/
 Disallow: /offline/
 Disallow: /private/
 Disallow: /api/
+Disallow: /_next/static/
+Disallow: /images
+Disallow: /icons
+
 Sitemap: https://quizerplay.com/sitemap.xml
