@@ -1,5 +1,5 @@
 import { privateApiMiddleware, privateMiddleware } from './middleware/private'
-import { viewportMiddleware } from './middleware/viewport'
+// import { viewportMiddleware } from './middleware/viewport'
 import { routing, locales } from '@i18n/routing'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
@@ -11,7 +11,7 @@ const LOCALES_PATTERN = `^/(${[...locales].join('|')})`
 const intlMiddleware = createMiddleware(routing)
 
 export async function middleware(req: NextRequest) {
-  viewportMiddleware(req)
+  // viewportMiddleware(req)
 
   // /api маршруты без локализации поэтому сначала проверяем эти маршруты.
   const originPathname = req.nextUrl.pathname

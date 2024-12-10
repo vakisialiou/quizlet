@@ -14,14 +14,16 @@ export default async function Page(
 ) {
   const { locale } = await params
   const { viewport } = await searchParams
+  console.log(viewport)
 
   return (
     <Landing
       locale={locale}
       mainScreenSRC={
-      viewport === ViewportEnums.mobile
-        ? '/images/bg-head-1280x853.webp'
-        : '/images/bg-head-3870x2580.avif'
+      '/images/bg-head-3870x2580.avif'
+      // viewport === ViewportEnums.mobile
+      //   ? '/images/bg-head-1280x853.webp'
+      //   : '/images/bg-head-3870x2580.avif'
       }
     />
   )
