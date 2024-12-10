@@ -15,8 +15,17 @@ import {Session} from 'next-auth'
 import {memo} from 'react'
 import clsx from 'clsx'
 
-function Landing({ locale }: { locale: LanguageEnums }) {
-  preload('/images/bg-head.avif', { as: 'image', fetchPriority: 'high' })
+function Landing(
+  {
+    locale,
+    mainScreenSRC
+  }:
+  {
+    locale: LanguageEnums
+    mainScreenSRC: string
+  }
+) {
+  preload(mainScreenSRC, { as: 'image', fetchPriority: 'high' })
 
   const route = useRouter()
   const session = useSelector(({ session }: { session: Session | null }) => session)
@@ -47,7 +56,7 @@ function Landing({ locale }: { locale: LanguageEnums }) {
           ['h-[calc(var(--vh)*100-4rem)]']: true
         })}
         style={{
-          backgroundImage: `url('/images/bg-head.avif')`,
+          backgroundImage: `url('${mainScreenSRC}')`,
           backgroundPosition: 'center'
         }}
       >
