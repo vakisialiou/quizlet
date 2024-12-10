@@ -3,10 +3,9 @@ import { ViewportEnums } from '@lib/viewport'
 
 export function viewportMiddleware(req: NextRequest): void {
   const { device } = userAgent(req)
-  req.nextUrl.searchParams.set(
-    'viewport',
+  req.headers.set(
+    'x-viewport',
     device.type === 'mobile'
       ? ViewportEnums.mobile
-      : ViewportEnums.desktop
-  )
+      : ViewportEnums.desktop)
 }

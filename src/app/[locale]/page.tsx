@@ -1,29 +1,28 @@
 import { ViewportEnums } from '@lib/viewport'
 import { LanguageEnums } from '@i18n/routing'
 import Landing from '@containers/Landing'
+import { headers } from 'next/headers'
 
 export default async function Page(
   {
     params,
-    searchParams
   }:
   {
     params: Promise<{ locale: LanguageEnums }>
-    searchParams: Promise<{ viewport: ViewportEnums }>
   }
 ) {
   const { locale } = await params
-  const { viewport } = await searchParams
-  console.log(viewport)
+
+  const headerList = await headers()
+  const viewport = headerList.get('x-viewport') as ViewportEnums
 
   return (
     <Landing
       locale={locale}
       mainScreenSRC={
-      '/images/bg-head-3870x2580.avif'
-      // viewport === ViewportEnums.mobile
-      //   ? '/images/bg-head-1280x853.webp'
-      //   : '/images/bg-head-3870x2580.avif'
+      viewport === ViewportEnums.mobile
+        ? '/images/bg-head-1280x853.webp'
+        : '/images/bg-head-3870x2580.avif'
       }
     />
   )
