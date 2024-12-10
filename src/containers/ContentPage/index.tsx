@@ -4,7 +4,6 @@ import HeaderPage from '@containers/HeaderPage'
 import { ReactNode, useState } from 'react'
 import NavMenu from '@containers/NavMenu'
 import clsx from 'clsx'
-import './style.css'
 
 export default function ContentPage(
   {
