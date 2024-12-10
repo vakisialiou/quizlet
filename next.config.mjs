@@ -20,12 +20,12 @@ const nextConfig = {
   },
   async headers() {
     const headers = []
-    if (process.env.NODE_ENV === 'production') {
-      headers.push({
-        key: 'Content-Security-Policy',
-        value: "frame-ancestors 'self' chrome-extension://chehdamekibkojlopnipjpomdfimpgbb/;",
-      })
-    }
+    // if (process.env.NODE_ENV === 'production') {
+    //   headers.push({
+    //     key: 'Content-Security-Policy',
+    //     value: "frame-ancestors 'self' chrome-extension://chehdamekibkojlopnipjpomdfimpgbb/;",
+    //   })
+    // }
 
     return [
       {
