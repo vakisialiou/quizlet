@@ -263,7 +263,7 @@ export default function Terms({ folderId }: { folderId: string }) {
           )}
         >
           <Button
-            className="w-28"
+            className="min-w-28 px-4"
             skin={ButtonSkin.GRAY}
             onClick={() => {
               setShowUserHelp(false)
@@ -280,7 +280,7 @@ export default function Terms({ folderId }: { folderId: string }) {
           text={t('removeDialogText')}
         >
           <Button
-            className="w-28"
+            className="min-w-28 px-4"
             skin={ButtonSkin.GRAY}
             onClick={() => {
               actionDeleteTerm(removeTerm, () => {
@@ -295,7 +295,7 @@ export default function Terms({ folderId }: { folderId: string }) {
           </Button>
 
           <Button
-            className="w-28"
+            className="min-w-28 px-4"
             skin={ButtonSkin.WHITE}
             onClick={() => setRemoveTerm(null)}
           >

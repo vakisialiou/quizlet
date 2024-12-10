@@ -10,11 +10,14 @@ import ButtonPWA from '@containers/ButtonPWA'
 import {useTranslations} from 'next-intl'
 import {useSelector} from 'react-redux'
 import {signIn} from 'next-auth/react'
+import { preload } from 'react-dom'
 import {Session} from 'next-auth'
 import {memo} from 'react'
 import clsx from 'clsx'
 
 function Landing({ locale }: { locale: LanguageEnums }) {
+  preload('/images/bg-head.avif', { as: 'image', fetchPriority: 'high' })
+
   const route = useRouter()
   const session = useSelector(({ session }: { session: Session | null }) => session)
 
@@ -48,7 +51,7 @@ function Landing({ locale }: { locale: LanguageEnums }) {
           backgroundPosition: 'center'
         }}
       >
-        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
           <div className="absolute top-4 right-4">
             <Dropdown
               caret
@@ -63,7 +66,7 @@ function Landing({ locale }: { locale: LanguageEnums }) {
           </div>
 
           <div
-            className="absolute top-4 left-4 text-white bg-yellow-500 text-sm font-bold px-4 py-1 rounded-full mt-[2px]"
+            className="absolute top-4 left-4 text-gray-100 bg-white/20 text-xs font-bold px-4 py-1 rounded-full mt-[2px] uppercase"
           >
             Beta
           </div>

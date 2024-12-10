@@ -81,11 +81,11 @@ export default function MethodInputCard(
   const generateHelpData = useCallback((status: CardStatus) => {
     return {
       association: cardSide.association,
-      lang: status === CardStatus.none ? null : cardSide.answer.lang,
-      text: status === CardStatus.none ? null : cardSide.answer.text,
+      lang: inverted ? cardSide.question.lang : cardSide.answer.lang,
+      text: inverted ? cardSide.question.text : cardSide.answer.text,
       extra: { method: SimulatorMethod.INPUT, status } as ExtraInputCardType
     }
-  }, [cardSide])
+  }, [cardSide, inverted])
 
   const [selectedValue, setSelectedValue] = useState<CardSelectedValue>({ text: '', status: CardStatus.none })
 

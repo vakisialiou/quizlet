@@ -48,7 +48,6 @@ export async function generateMetadata({params}: { params: Promise<{ locale: Lan
       {rel: 'apple-touch-icon', sizes: '144x144', url: '/icons/apple-icon-144x144.png'},
       {rel: 'apple-touch-icon', sizes: '152x152', url: '/icons/apple-icon-152x152.png'},
       {rel: 'apple-touch-icon', sizes: '180x180', url: '/icons/apple-icon-180x180.png'},
-      {rel: 'manifest', url: '/manifest.json'},
     ],
     alternates: {
       canonical: `${baseUrl}/${locale}`,
@@ -89,11 +88,11 @@ export default async function RootLayout({
       suppressHydrationWarning={true}
       className={`${geistSans.variable} ${geistMono.variable} antialiased min-w-80 h-screen overflow-hidden`}
     >
-      <NextIntlClientProvider locale={locale} messages={messages}>
-        <AppProvider initialState={initialState}>
-          {children}
-        </AppProvider>
-      </NextIntlClientProvider>
+    <NextIntlClientProvider locale={locale} messages={messages}>
+      <AppProvider initialState={initialState}>
+        {children}
+      </AppProvider>
+    </NextIntlClientProvider>
     </body>
     </html>
   )

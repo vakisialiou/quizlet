@@ -35,22 +35,22 @@ export default function MethodFlashcard(
         signature,
         association: activeTerm?.association || null,
         text: inverted ? activeTerm?.answer : activeTerm?.question,
-        lang: inverted ? activeTerm?.answerLang : activeTerm?.questionLang,
+        lang: inverted ? (activeTerm?.answerLang || DefaultAnswerLang) : (activeTerm?.questionLang || DefaultQuestionLang),
       },
       backSide: {
         signature,
         association: activeTerm?.association || null,
         text: inverted ? activeTerm?.question : activeTerm?.answer,
-        lang: inverted ? activeTerm?.questionLang : activeTerm?.answerLang,
+        lang: inverted ? (activeTerm?.questionLang || DefaultQuestionLang) : (activeTerm?.answerLang || DefaultAnswerLang),
       }
     }
   }, [inverted, activeTerm, signature])
 
   const generateHelpData = useCallback((back: boolean) => {
     return {
+      lang: back ? backSide.lang : faceSide.lang,
       text: back ? backSide.text : faceSide.text,
       association: back ? backSide.association : faceSide.association,
-      lang: back ? (backSide.lang || DefaultAnswerLang) : (faceSide.lang || DefaultQuestionLang),
       extra: { method: SimulatorMethod.FLASHCARD, status: CardStatus.none } as ExtraFlashcardType
     }
   }, [backSide, faceSide])

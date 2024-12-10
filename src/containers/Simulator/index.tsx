@@ -350,7 +350,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
             )}
           >
             <Button
-              className="w-28"
+              className="min-w-28 px-4"
               skin={ButtonSkin.GRAY}
               onClick={() => {
                 setShowUserHelp(false)
@@ -368,7 +368,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
             type={DialogType.warning}
           >
             <Button
-              className="w-28"
+              className="min-w-28 px-4"
               skin={ButtonSkin.GRAY}
               onClick={() => {
                 actionDeactivateSimulators({folderId: stopFolderId}, () => {
@@ -380,7 +380,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
             </Button>
 
             <Button
-              className="w-28"
+              className="min-w-28 px-4"
               skin={ButtonSkin.WHITE}
               onClick={() => setStopFolderId(null)}
             >

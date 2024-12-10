@@ -224,7 +224,7 @@ export default function Folders() {
           )}
         >
           <Button
-            className="w-28"
+            className="min-w-28 px-4"
             skin={ButtonSkin.GRAY}
             onClick={() => {
               setShowUserHelp(false)
@@ -241,7 +241,7 @@ export default function Folders() {
           text={t('removeDialogText')}
         >
           <Button
-            className="w-28"
+            className="min-w-28 px-4"
             skin={ButtonSkin.GRAY}
             onClick={() => {
               actionDeleteFolder(removeFolder, () => {
@@ -256,7 +256,7 @@ export default function Folders() {
           </Button>
 
           <Button
-            className="w-28"
+            className="min-w-28 px-4"
             skin={ButtonSkin.WHITE}
             onClick={() => setRemoveFolder(null)}
           >
