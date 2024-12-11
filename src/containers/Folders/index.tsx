@@ -1,31 +1,31 @@
 'use client'
 
-import AchievementIcon, { AchievementsSize } from '@containers/AchievementIcon'
-import ClientFolder, { ClientFolderData } from '@entities/ClientFolder'
-import Achievement, { AchievementData } from '@entities/Achievement'
-import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
-import { filterFolderTerms } from '@containers/Simulator/helpers'
+import AchievementIcon, {AchievementsSize} from '@containers/AchievementIcon'
+import ClientFolder, {ClientFolderData} from '@entities/ClientFolder'
+import Achievement, {AchievementData} from '@entities/Achievement'
+import MetaLabel, {MetaLabelVariant} from '@components/MetaLabel'
+import {filterFolderTerms} from '@containers/Simulator/helpers'
 import AchievementDegree from '@containers/AchievementDegree'
-import { SimulatorStatus } from '@entities/ClientSimulator'
-import Button, { ButtonSkin } from '@components/Button'
+import {SimulatorStatus} from '@entities/ClientSimulator'
+import Button, {ButtonSkin} from '@components/Button'
 import SVGFolderNew from '@public/svg/new_folder.svg'
-import { useEffect, useMemo, useState } from 'react'
+import {useEffect, useMemo, useState} from 'react'
 import ButtonSquare from '@components/ButtonSquare'
 import SVGQuestion from '@public/svg/question.svg'
-import { FoldersType } from '@store/initial-state'
+import {FoldersType} from '@store/initial-state'
 import ContentPage from '@containers/ContentPage'
-import { useTranslations } from 'next-intl'
-import { upsertObject } from '@lib/array'
-import { useSelector } from 'react-redux'
+import {useTranslations} from 'next-intl'
+import {upsertObject} from '@lib/array'
+import {useSelector} from 'react-redux'
 import Dialog from '@components/Dialog'
 import Search from '@components/Search'
 import Folder from '@containers/Folder'
 import {
-  actionUpdateFolderItem,
   actionDeleteFolder,
   actionFetchFolders,
-  actionUpdateFolder,
   actionSaveFolder,
+  actionUpdateFolder,
+  actionUpdateFolderItem,
 } from '@store/index'
 
 export default function Folders() {
@@ -149,13 +149,11 @@ export default function Folders() {
                 }
               }}
               onSave={() => {
-                console.log('onSave')
                 actionSaveFolder({folder, editId: null}, () => {
                   setOriginItem(null)
                 })
               }}
               onExit={() => {
-                console.log('onExit')
                 actionUpdateFolder({
                   editId: null,
                   items: upsertObject([...items], originItem as ClientFolderData)
@@ -165,11 +163,17 @@ export default function Folders() {
                 actionUpdateFolderItem({...folder, [prop]: value})
               }}
               info={(
-                <AchievementDegree
-                  hideDegree
-                  achievementData={achievements[folder.id] as AchievementData}
-                  className="uppercase font-bold text-gray-500 text-xs"
-                />
+                <div className="flex gap-4 items-center">
+                  <AchievementIcon
+                    size={AchievementsSize.sm}
+                    achievementData={achievements[folder.id] as AchievementData}
+                  />
+                  <AchievementDegree
+                    hideDegree
+                    achievementData={achievements[folder.id] as AchievementData}
+                    className="uppercase font-bold text-gray-500 text-xs"
+                  />
+                </div>
               )}
               labels={(
                 <>

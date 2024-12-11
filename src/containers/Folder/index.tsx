@@ -77,7 +77,7 @@ export default function Folder(
           <div className="flex items-center justify-center w-full h-full">
             <Link
               href={hrefPlay}
-              className={clsx('flex gap-1 items-center justify-center h-6 w-full rounded-md transition-all text-xs', {
+              className={clsx('flex gap-1 items-center justify-center h-6 w-full rounded-sm transition-all text-xs', {
                 ['shadow-inner shadow-gray-300 bg-green-900 hover:shadow-gray-400/80 active:shadow-gray-400/50']: !edit && !disablePlay,
                 ['pointer-events-none bg-gray-500/10']: edit || disablePlay,
               })}
