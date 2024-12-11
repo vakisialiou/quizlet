@@ -149,11 +149,13 @@ export default function Folders() {
                 }
               }}
               onSave={() => {
+                console.log('onSave')
                 actionSaveFolder({folder, editId: null}, () => {
                   setOriginItem(null)
                 })
               }}
               onExit={() => {
+                console.log('onExit')
                 actionUpdateFolder({
                   editId: null,
                   items: upsertObject([...items], originItem as ClientFolderData)
@@ -162,21 +164,12 @@ export default function Folders() {
               onChange={(prop, value) => {
                 actionUpdateFolderItem({...folder, [prop]: value})
               }}
-              achievements={(
-                <div
-                  className="flex items-center gap-2 overflow-hidden"
-                >
-                  <AchievementIcon
-                    className="text-[10px]"
-                    size={AchievementsSize.sm}
-                    achievementData={achievements[folder.id] as AchievementData}
-                  />
-
-                  <AchievementDegree
-                    achievementData={achievements[folder.id] as AchievementData}
-                    className="ml-2 uppercase font-bold text-gray-500 text-xs"
-                  />
-                </div>
+              info={(
+                <AchievementDegree
+                  hideDegree
+                  achievementData={achievements[folder.id] as AchievementData}
+                  className="uppercase font-bold text-gray-500 text-xs"
+                />
               )}
               labels={(
                 <>

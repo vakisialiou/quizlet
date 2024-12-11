@@ -101,7 +101,7 @@ export default function Terms({ folderId }: { folderId: string }) {
       showFooter
       title={folder?.name}
       leftControls={(
-        <div className="flex items-center mr-2">
+        <div className="flex items-center">
           <AchievementIcon
             size={AchievementsSize.sm}
             achievementData={achievement}

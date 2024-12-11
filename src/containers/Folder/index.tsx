@@ -17,7 +17,6 @@ export default function Folder(
     number,
     labels,
     info,
-    achievements,
     hrefPlay,
     hrefEdit,
     disablePlay = false,
@@ -32,7 +31,6 @@ export default function Folder(
     data: ClientFolderData,
     edit: boolean,
     process: boolean,
-    achievements?: ReactNode,
     labels?: ReactNode,
     info?: ReactNode,
     number: number,
@@ -49,14 +47,16 @@ export default function Folder(
 ) {
   return (
     <div
-      className={clsx('border w-full rounded flex justify-between bg-black/50 select-none overflow-hidden transition-all', {
+      className={clsx('group border w-full rounded flex justify-between bg-black/50 select-none overflow-hidden transition-all', {
         ['border-gray-500 shadow-inner shadow-gray-500/50']: true,
         ['hover:border-gray-600']: !edit && !disableEdit,
       })}
     >
-      <div className="flex">
+      <div
+        className="flex"
+      >
         <div
-          className="w-20 min-w-20 h-full flex flex-col p-2"
+          className="w-20 min-w-20 h-full flex flex-col gap-2 p-2"
           onClick={(e) => {
             if (edit) {
               e.preventDefault()
@@ -67,8 +67,8 @@ export default function Folder(
             className="flex gap-1 items-center h-6 min-h-6 w-full text-sm font-bold text-gray-400 pointer-events-none"
           >
             <SVGFolder
-              width={24}
-              height={24}
+              width={16}
+              height={16}
               className="text-gray-400"
             />
             #{number}
@@ -77,26 +77,32 @@ export default function Folder(
           <div className="flex items-center justify-center w-full h-full">
             <Link
               href={hrefPlay}
-              className={clsx('flex items-center justify-center w-12 h-12 rounded-full transition-all', {
+              className={clsx('flex gap-1 items-center justify-center h-6 w-full rounded-md transition-all text-xs', {
                 ['shadow-inner shadow-gray-300 bg-green-900 hover:shadow-gray-400/80 active:shadow-gray-400/50']: !edit && !disablePlay,
                 ['pointer-events-none bg-gray-500/10']: edit || disablePlay,
               })}
             >
               <SVGPlay
-                width={24}
-                height={24}
+                width={16}
+                height={16}
                 className={clsx('text-gray-200', {
                   ['text-gray-500/50']: edit || disablePlay,
                 })}
               />
+              Play
             </Link>
           </div>
         </div>
       </div>
 
+      <div className="grid grid-cols-2 divide-x divide-gray-500 group-hover:divide-gray-600 h-full transition-all">
+        <div className="w-[1px] h-full transition-all"/>
+        <div className="w-[1px] h-full transition-all"/>
+      </div>
+
       <Link
         href={hrefEdit}
-        className={clsx('relative group w-full min-w-0 flex flex-col justify-between gap-2 p-2', {
+        className={clsx('relative w-full min-w-0 flex flex-col justify-between gap-2 p-2', {
 
         })}
         onClick={(e) => {
@@ -110,7 +116,12 @@ export default function Folder(
         }
 
         <div className="flex items-center justify-between min-w-0 w-full">
-          {achievements}
+          <div
+            title={data.name || ''}
+            className="content-center transition-colors text-gray-400 font-semibold text-sm truncate ..."
+          >
+            {data.name}
+          </div>
 
           <Dropdown
             onClick={(e) => {
@@ -137,51 +148,34 @@ export default function Folder(
           </Dropdown>
         </div>
 
-        <div className="w-full flex justify-between gap-1 overflow-hidden z-10">
-          {!edit &&
-            <div className="flex items-center w-full max-w-full overflow-hidden">
-              <div
-                title={data.name || ''}
-                className="content-center transition-colors text-gray-400 font-semibold text-sm truncate ..."
-              >
-                {data.name}
-              </div>
-            </div>
-          }
-
-          {edit &&
-            <div
-              className="group w-full flex flex-col"
-            >
-              <label className="font-semibold text-sm text-gray-600">Enter folder name: </label>
-              <Input
-                autoFocus
-                type="text"
-                name="name"
-                onBlur={onSave}
-                autoComplete="off"
-                placeholder="Folder name"
-                defaultValue={data.name || ''}
-                onChange={(e) => {
-                  onChange('name', e.target.value)
-                }}
-                onKeyUp={(e) => {
-                  switch (e.keyCode) {
-                    case 13:
-                      onSave()
-                      break
-                    case 27:
-                      onExit()
-                      break
-                  }
-                }}
-              />
-            </div>
-          }
-        </div>
+        {edit &&
+          <Input
+            autoFocus
+            type="text"
+            name="name"
+            onBlur={onSave}
+            className="z-10"
+            autoComplete="off"
+            placeholder="Folder name"
+            defaultValue={data.name || ''}
+            onChange={(e) => {
+              onChange('name', e.target.value)
+            }}
+            onKeyUp={(e) => {
+              switch (e.keyCode) {
+                case 13:
+                  onSave()
+                  break
+                case 27:
+                  onExit()
+                  break
+              }
+            }}
+          />
+        }
 
         {!edit &&
-          <div className="w-full flex justify-between gap-1 overflow-hidden">
+          <div className="w-full flex justify-between gap-1 overflow-hidden py-1">
             <div className="flex gap-2 items-center">
               {info}
             </div>
