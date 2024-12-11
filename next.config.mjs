@@ -19,29 +19,7 @@ const nextConfig = {
     ],
   },
   async headers() {
-    const headers = []
-    // if (process.env.NODE_ENV === 'production') {
-    //   headers.push({
-    //     key: 'Content-Security-Policy',
-    //     value: "frame-ancestors 'self' chrome-extension://chehdamekibkojlopnipjpomdfimpgbb/;",
-    //   })
-    // }
-
     return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
-          ...headers,
-        ],
-      },
       {
         source: '/sw.js',
         headers: [

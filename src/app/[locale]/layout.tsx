@@ -50,7 +50,7 @@ export async function generateMetadata({params}: { params: Promise<{ locale: Lan
       {rel: 'apple-touch-icon', sizes: '180x180', url: '/icons/apple-icon-180x180.png'},
     ],
     alternates: {
-      canonical: `${baseUrl}/${locale}`,
+      canonical: locale === defaultLocale ? `${baseUrl}` : `${baseUrl}/${locale}`,
       languages: routing.locales.reduce((acc, lang) => {
         acc[lang] = `${baseUrl}/${lang}`
         if (lang === defaultLocale) {
