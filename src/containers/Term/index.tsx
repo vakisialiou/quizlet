@@ -82,14 +82,14 @@ export default function Term(
   return (
     <div
       ref={ref}
-      className={clsx('border rounded w-full border-gray-500 bg-gray-900/50 flex flex-col select-none overflow-hidden shadow-inner shadow-gray-500/50')}
+      className={clsx('border rounded w-full border-gray-500 bg-black/50 flex flex-col select-none overflow-hidden shadow-inner shadow-gray-500/50')}
       onClick={(e) => {
         if (edit) {
           e.preventDefault()
         }
       }}
     >
-      <div className="flex items-center justify-between w-full bg-gray-500/10 px-2 h-8">
+      <div className="flex items-center justify-between w-full bg-gray-500/20 px-2 h-8">
         <div
           className="bg-gray-300 text-gray-900 rounded-sm flex items-center justify-center px-2 text-xs">
           #{number}

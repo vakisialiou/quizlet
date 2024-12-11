@@ -1,6 +1,7 @@
 import Dropdown, { DropdownItemType } from '@components/Dropdown'
 import { ClientFolderData } from '@entities/ClientFolder'
 import SVGThreeDots from '@public/svg/three_dots.svg'
+import SVGFolder from '@public/svg/file_folder.svg'
 import SVGPlay from '@public/svg/play.svg'
 import Spinner from '@components/Spinner'
 import Input from '@components/Input'
@@ -48,8 +49,9 @@ export default function Folder(
 ) {
   return (
     <div
-      className={clsx('border w-full rounded flex justify-between border-gray-500 bg-gray-900/50 select-none overflow-hidden', {
+      className={clsx('border w-full rounded flex justify-between bg-black/50 select-none overflow-hidden transition-all', {
         ['border-gray-500 shadow-inner shadow-gray-500/50']: true,
+        ['hover:border-gray-600']: !edit && !disableEdit,
       })}
     >
       <div className="flex">
@@ -62,7 +64,13 @@ export default function Folder(
           }}
         >
           <div
-            className="flex items-center h-6 min-h-6 w-full text-xs text-gray-500/90 pointer-events-none">
+            className="flex gap-1 items-center h-6 min-h-6 w-full text-sm font-bold text-gray-400 pointer-events-none"
+          >
+            <SVGFolder
+              width={24}
+              height={24}
+              className="text-gray-400"
+            />
             #{number}
           </div>
 
@@ -89,8 +97,7 @@ export default function Folder(
       <Link
         href={hrefEdit}
         className={clsx('relative group w-full min-w-0 flex flex-col justify-between gap-2 p-2', {
-          ['hover:border-gray-600']: !edit && !disableEdit,
-          ['hover:cursor-pointer']: !edit && !disableEdit,
+
         })}
         onClick={(e) => {
           if (edit || disableEdit) {
@@ -135,7 +142,7 @@ export default function Folder(
             <div className="flex items-center w-full max-w-full overflow-hidden">
               <div
                 title={data.name || ''}
-                className="content-center transition-colors text-gray-400 group-hover:text-gray-500 group-active:text-gray-600 font-semibold text-sm truncate ..."
+                className="content-center transition-colors text-gray-400 font-semibold text-sm truncate ..."
               >
                 {data.name}
               </div>
@@ -144,7 +151,7 @@ export default function Folder(
 
           {edit &&
             <div
-              className="group group-hover:text-gray-400 group-active:text-gray-400 w-full flex flex-col"
+              className="group w-full flex flex-col"
             >
               <label className="font-semibold text-sm text-gray-600">Enter folder name: </label>
               <Input

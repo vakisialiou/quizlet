@@ -1,5 +1,5 @@
 {
-  "version": "1.0",
+  "version": "1.0.1",
   "manifest_version": 3,
   "name": "QuizerPlay",
   "short_name": "QuizerPlay",
@@ -15,8 +15,7 @@
     "storage",
     "alarms",
     "cookies",
-    "sidePanel",
-    "tabs"
+    "sidePanel"
   ],
   "host_permissions": [
     "http://*/*",

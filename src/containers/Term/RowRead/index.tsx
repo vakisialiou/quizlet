@@ -22,7 +22,7 @@ export default function RowReadonly({
     <div className="flex items-center justify-between w-full max-w-full overflow-hidden">
       <div
         title={value || ''}
-        className="inline w-full content-center px-[9px] pt-[1px] h-8 text-sm text-gray-400 truncate ..."
+        className="inline w-full content-center px-[9px] pt-[1px] h-8 text-sm text-gray-200 truncate ..."
       >
         {value || <span className="text-gray-500">{placeholder}</span>}
       </div>

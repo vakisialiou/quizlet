@@ -174,7 +174,7 @@ export default function Folders() {
 
                   <AchievementDegree
                     achievementData={achievements[folder.id] as AchievementData}
-                    className="ml-2 uppercase font-bold text-gray-700 text-sm"
+                    className="ml-2 uppercase font-bold text-gray-500 text-xs"
                   />
                 </div>
               )}
