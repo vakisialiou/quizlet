@@ -1,4 +1,5 @@
 import { upsertSettingsSimulator } from '@repositories/settings'
+import { prisma } from '@lib/prisma'
 import { auth } from '@auth'
 
 export async function PUT(req: Request) {
@@ -12,10 +13,12 @@ export async function PUT(req: Request) {
   const body = await req.json()
 
   try {
-    await upsertSettingsSimulator(userId, {
-      id: body.id,
-      method: body.method,
-      inverted: body.inverted,
+    await upsertSettingsSimulator(prisma, userId, {
+      simulator: {
+        id: body.id,
+        method: body.method,
+        inverted: body.inverted,
+      }
     })
 
     return new Response(null, { status: 200 })

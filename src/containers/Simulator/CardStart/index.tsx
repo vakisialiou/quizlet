@@ -1,22 +1,22 @@
-import { actionStartSimulators, actionUpdateSettingsSimulator } from '@store/index'
+import ClientSettingsSimulator from '@entities/ClientSettingsSimulator'
 import {simulatorMethodList} from '@containers/Simulator/constants'
-import {filterFolderTerms} from '@containers/Simulator/helpers'
-import {ClientSettingsData} from '@entities/ClientSettings'
 import {ClientFolderData} from '@entities/ClientFolder'
 import CardEmpty from '@containers/Simulator/CardEmpty'
 import Button, { ButtonSkin } from '@components/Button'
-import { useSelector } from 'react-redux'
-import { useMemo } from 'react'
+import { actionStartSimulators } from '@store/index'
+import { useMemo, useState } from 'react'
 import clsx from 'clsx'
 
-export default function SingleQueueStart(
+export default function SingleStart(
   { process = false, folder }:
   { process?: boolean, folder?: ClientFolderData | null }
 ) {
-  const settings = useSelector(({ settings }: { settings: ClientSettingsData }) => settings)
+
+  const [settings, setSettings] = useState(new ClientSettingsSimulator().serialize())
+
   const playTerms = useMemo(() => {
-    return filterFolderTerms(folder)
-  }, [folder])
+    return [...folder?.terms || []]
+  }, [folder?.terms])
 
   return (
     <CardEmpty
@@ -44,7 +44,7 @@ export default function SingleQueueStart(
                 <label
                   key={id}
                   className={clsx('h-8 flex gap-2 w-full items-center justify-between hover:bg-gray-500/30 px-2 cursor-pointer text-sm', {
-                    ['bg-gray-500/20 pointer-events-none']: settings.simulator.id === id
+                    ['bg-gray-500/20 pointer-events-none']: settings.id === id
                   })}
                 >
                   {name}
@@ -52,10 +52,10 @@ export default function SingleQueueStart(
                     type="radio"
                     name="method"
                     className="h-4 w-4"
-                    value={settings.simulator.method}
-                    checked={settings.simulator.id === id}
+                    value={settings.method}
+                    checked={settings.id === id}
                     onChange={() => {
-                      actionUpdateSettingsSimulator({ method, inverted, id })
+                      setSettings({ method, inverted, id })
                     }}
                   />
                 </label>
@@ -65,11 +65,11 @@ export default function SingleQueueStart(
 
           <Button
             skin={ButtonSkin.WHITE}
-            disabled={!settings.simulator.id || playTerms.length === 0}
+            disabled={!settings.id || playTerms.length === 0}
             onClick={() => {
               if (playTerms.length > 0) {
                 const termIds = playTerms.map(({id}) => id)
-                actionStartSimulators({folderId: folder.id, termIds})
+                actionStartSimulators({ folderId: folder.id, termIds, settings })
               }
             }}
           >

@@ -1,15 +1,26 @@
+import { getClientFolders, saveClientFolderData, deleteClientFolderData, DeleteClientFolderResults } from '@store/fetch/folders'
 import { unique, remove, upsertObject, removeObject } from '@lib/array'
+import { createPartitions } from '@store/fetch/partitions'
 import { ClientFolderData } from '@entities/ClientFolder'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { ConfigType } from '@store/initial-state'
-import { clientFetch } from '@lib/fetch-client'
 
 export const fetchFolders = createAsyncThunk(
   '/fetch/folders',
   async (): Promise<ClientFolderData[]> => {
-    return clientFetch('/api/folders')
-      .then((res) => res.json())
-      .then((json) => json.items)
+    return getClientFolders()
+  }
+)
+
+export type PartitionsType = {
+  folderId: string,
+  partitionSize: number,
+}
+
+export const createFolderPartitions = createAsyncThunk(
+  '/create/folder/partitions',
+  async (payload: PartitionsType): Promise<ClientFolderData[]> => {
+    return createPartitions(payload.folderId, payload.partitionSize)
   }
 )
 
@@ -21,32 +32,19 @@ export type SaveType = {
 export const saveFolder = createAsyncThunk(
   '/save/folder',
   async (payload: SaveType): Promise<SaveType> => {
-    const res = await clientFetch(`/api/folders/${payload.folder.id}`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          name: payload.folder.name,
-          order: payload.folder.order
-        })
-      })
-
-    if (!res.ok) {
-      throw new Error('Put folder error.', { cause: res.statusText })
-    }
-
+    await saveClientFolderData(payload.folder)
     return payload
   }
 )
 
+export type DeleteType = {
+  folder: ClientFolderData,
+}
+
 export const deleteFolder = createAsyncThunk(
-  '/delete/folder',
-  async (payload: ClientFolderData): Promise<ClientFolderData> => {
-    const res = await clientFetch(`/api/folders/${payload.id}`, { method: 'DELETE' })
-
-    if (!res.ok) {
-      throw new Error('Del folder error.', { cause: res.statusText })
-    }
-
-    return payload
+  '/delete/folder/module',
+  async (payload: DeleteType): Promise<DeleteClientFolderResults> => {
+    return await deleteClientFolderData(payload.folder.id)
   }
 )
 
@@ -85,6 +83,34 @@ export const folderReducers = (builder: any) => {
     })
 
   builder
+    .addCase(createFolderPartitions.pending, (state: ConfigType, action: { meta: { arg: PartitionsType } }) => {
+      state.folders = {
+        ...state.folders,
+        process: true,
+        processIds: unique([...state.folders.processIds, action.meta.arg.folderId]),
+      }
+    })
+    .addCase(createFolderPartitions.rejected, (state: ConfigType, action: { meta: { arg: PartitionsType } }) => {
+      state.folders = {
+        ...state.folders,
+        process: false,
+        processIds: remove(state.folders.processIds, action.meta.arg.folderId)
+      }
+    })
+    .addCase(createFolderPartitions.fulfilled, (state: ConfigType, action: { payload: ClientFolderData[], meta: { arg: PartitionsType } }) => {
+      let items = [...state.folders.items]
+      for (const item of action.payload) {
+        items = upsertObject([...items], { ...item })
+      }
+      state.folders = {
+        ...state.folders,
+        processIds: remove(state.folders.processIds, action.meta.arg.folderId),
+        process: false,
+        items,
+      }
+    })
+
+  builder
     .addCase(saveFolder.pending, (state: ConfigType, action: { meta: { arg: SaveType } }) => {
       const arg = action.meta.arg
       state.folders = {
@@ -113,23 +139,33 @@ export const folderReducers = (builder: any) => {
     })
 
   builder
-    .addCase(deleteFolder.pending, (state: ConfigType, action: { meta: { arg: ClientFolderData } }) => {
+    .addCase(deleteFolder.pending, (state: ConfigType, action: { meta: { arg: DeleteType } }) => {
       state.folders = {
         ...state.folders,
-        processIds: unique([...state.folders.processIds, action.meta.arg.id])
+        processIds: unique([...state.folders.processIds, action.meta.arg.folder.id])
       }
     })
-    .addCase(deleteFolder.rejected, (state: ConfigType, action: { meta: { arg: ClientFolderData } }) => {
+    .addCase(deleteFolder.rejected, (state: ConfigType, action: { meta: { arg: DeleteType } }) => {
       state.folders = {
         ...state.folders,
-        processIds: remove(state.folders.processIds, action.meta.arg.id)
+        processIds: remove(state.folders.processIds, action.meta.arg.folder.id)
       }
     })
-    .addCase(deleteFolder.fulfilled, (state: ConfigType, action: { meta: { arg: ClientFolderData } }) => {
+    .addCase(deleteFolder.fulfilled, (state: ConfigType, action: { meta: { arg: DeleteType }, payload: DeleteClientFolderResults }) => {
+      const { folder } = action.meta.arg
+      const { refreshFolder, removeFolderIds } = action.payload
+
+      let items = [...state.folders.items]
+        .filter((item) => !removeFolderIds.includes(item.id))
+
+      if (refreshFolder) {
+        items = upsertObject(items, refreshFolder)
+      }
+
       state.folders = {
         ...state.folders,
-        items: [...state.folders.items].filter((item) => item.id !== action.meta.arg.id),
-        processIds: remove(state.folders.processIds, action.meta.arg.id)
+        items,
+        processIds: remove(state.folders.processIds, folder.id)
       }
     })
 

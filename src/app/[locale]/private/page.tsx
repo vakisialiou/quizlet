@@ -1,7 +1,7 @@
-import Folders from '@containers/Folders'
+import CollectionContent from '@containers/CollectionContent'
 
 export default function Page() {
   return (
-    <Folders />
+    <CollectionContent />
   )
 }

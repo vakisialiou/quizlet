@@ -35,15 +35,24 @@ export default function MethodPickCard(
 ) {
   const { inverted } = simulator.settings
 
-  const cardSide = useMemo(() => {
+  const [selections, setSelections] = useState<ClientTermData[]>([])
+
+  useEffect(() => {
     const items = shuffle([...terms])
       .filter(({ id, answer, question }) => {
         const str = inverted ? question : answer
         return !(id === activeTerm?.id || !str)
       })
 
-    const selections = shuffle([...items.slice(0, 3), { ...activeTerm }])
+    const shuffledSelections = shuffle([
+      ...items.slice(0, 3),
+      { ...activeTerm } as ClientTermData]
+    )
 
+    setSelections(shuffledSelections)
+  }, [terms, activeTerm, inverted]);
+
+  const cardSide = useMemo(() => {
     return {
       signature: getSimulatorNameById(simulator.settings.id),
       association: activeTerm?.association || null,
@@ -77,7 +86,7 @@ export default function MethodPickCard(
         } as CardSelection
       }),
     }
-  }, [simulator.settings.id, inverted, activeTerm, terms])
+  }, [simulator.settings.id, inverted, activeTerm, selections])
 
   const generateHelpData = useCallback((status: CardStatus) => {
     return {

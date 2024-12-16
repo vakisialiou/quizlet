@@ -64,11 +64,11 @@ export default function Dialog(
                   </div>
                 }
 
-                <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
                   <h3 className="text-base font-semibold text-gray-900">
                     {title}
                   </h3>
-                  <div className="mt-2 text-sm text-gray-500">
+                  <div className="mt-2 text-sm text-gray-500 w-full">
                     {text}
                   </div>
                 </div>

@@ -1,197 +1,146 @@
-import { ClientSettingsSimulatorData } from '@entities/ClientSettingsSimulator'
-import ClientSimulator, { SimulatorStatus } from '@entities/ClientSimulator'
 import ClientFolder, { ClientFolderData } from '@entities/ClientFolder'
-import { ProgressTrackerData } from '@entities/ProgressTracker'
-import ClientTerm from '@entities/ClientTerm'
-import { prisma, Folder } from '@lib/prisma'
+import { Prisma, PrismaEntry } from '@lib/prisma'
+import {
+  RelationTermSelectType,
+  RelationTermSelect,
+  createRelationTermSelect
+} from '@repositories/relation-term'
+import {
+  SimulatorSelectType,
+  SimulatorSelect,
+  createSimulatorSelect
+} from '@repositories/simulators'
+import {
+  FolderGroupSelectType,
+  FolderGroupSelect,
+  createFolderGroupSelect
+} from '@repositories/folder-group'
+import {
+  TermSelectType,
+  TermSelect,
+  createTermSelect
+} from '@repositories/terms'
 
-export const findFoldersByUserId = async (userId: string): Promise<ClientFolderData[]> => {
-  const res = await prisma.folder.findMany({
+export type FolderSelectType = {
+  id: boolean,
+  name: boolean,
+  userId: boolean,
+  order: boolean,
+  parentId: boolean,
+  isModule: boolean,
+  collapsed: boolean,
+  createdAt: boolean,
+  updatedAt: boolean,
+  terms: {
+    select: TermSelectType
+  },
+  simulators: {
+    select: SimulatorSelectType
+  },
+  folderGroups: {
+    select: FolderGroupSelectType
+  },
+  relationTerms: {
+    select: RelationTermSelectType
+  },
+}
+
+export const FolderSelect = {
+  id: true,
+  name: true,
+  userId: true,
+  order: true,
+  parentId: true,
+  isModule: true,
+  collapsed: true,
+  createdAt: true,
+  updatedAt: true,
+  terms: {
+    select: { ...TermSelect }
+  },
+  simulators: {
+    select: { ...SimulatorSelect }
+  },
+  folderGroups: {
+    select: FolderGroupSelect
+  },
+  relationTerms: {
+    select: RelationTermSelect
+  },
+} as FolderSelectType
+
+type FolderResult = Prisma.FolderGetPayload<{
+  select: typeof FolderSelect
+}>
+
+export const createFolderSelect = (folder: FolderResult) => {
+  return new ClientFolder()
+    .setId(folder.id)
+    .setName(folder.name)
+    .setOrder(folder.order)
+    .setParentId(folder.parentId)
+    .setIsModule(folder.isModule)
+    .setCollapsed(folder.collapsed)
+    .setCreatedAt(folder.createdAt)
+    .setUpdatedAt(folder.updatedAt)
+    .setTerms(
+      folder.terms.map((item) => createTermSelect(item))
+    )
+    .setSimulators(
+      folder.simulators.map(item => createSimulatorSelect(item))
+    )
+    .setFolderGroups(
+      folder.folderGroups.map((item) => createFolderGroupSelect(item))
+    )
+    .setRelationTerms(
+      folder.relationTerms.map((item) => createRelationTermSelect(item))
+    )
+}
+
+export const findFoldersByUserId = async (db: PrismaEntry, userId: string): Promise<ClientFolderData[]> => {
+  const res = await db.folder.findMany({
     where: { userId },
-    select: {
-      id: true,
-      name: true,
-      order: true,
-      createdAt: true,
-      updatedAt: true,
-      terms: {
-        select: {
-          id: true,
-          order: true,
-          answer: true,
-          answerLang: true,
-          question: true,
-          questionLang: true,
-          association: true,
-          associationLang: true,
-          createdAt: true,
-          updatedAt: true
-        }
-      },
-      simulators: {
-        select: {
-          id: true,
-          termId: true,
-          active: true,
-          status: true,
-          folderId: true,
-          termIds: true,
-          historyIds: true,
-          continueIds: true,
-          rememberIds: true,
-          settings: true,
-          tracker: true
-        }
-      }
-    },
+    select: { ...FolderSelect },
   })
 
-  return res.map(folder => {
-    return new ClientFolder()
-      .setId(folder.id)
-      .setName(folder.name)
-      .setOrder(folder.order)
-      .setCreatedAt(folder.createdAt)
-      .setUpdatedAt(folder.updatedAt)
-      .setTerms(
-        folder.terms.map(term => {
-          return new ClientTerm(folder.id)
-            .setId(term.id)
-            .setOrder(term.order)
-            .setAnswer(term.answer)
-            .setAnswerLang(term.answerLang)
-            .setQuestion(term.question)
-            .setQuestionLang(term.questionLang)
-            .setAssociation(term.association)
-            .setAssociationLang(term.associationLang)
-            .setCreatedAt(term.createdAt)
-            .setUpdatedAt(term.updatedAt)
-        })
-      )
-      .setSimulators(
-        folder.simulators.map(simulator => {
-          const termIds = Array.isArray(simulator.termIds) ? simulator.termIds as string[] : []
-          const historyIds = Array.isArray(simulator.historyIds) ? simulator.historyIds as string[] : []
-          const continueIds = Array.isArray(simulator.continueIds) ? simulator.continueIds as string[] : []
-          const rememberIds = Array.isArray(simulator.rememberIds) ? simulator.rememberIds as string[] : []
 
-          return new ClientSimulator(simulator.folderId, simulator.status as SimulatorStatus)
-            .setId(simulator.id)
-            .setTermId(simulator.termId)
-            .setActive(simulator.active)
-            .setTermIds(termIds)
-            .setHistoryIds(historyIds)
-            .setContinueIds(continueIds)
-            .setRememberIds(rememberIds)
-            .setTracker(simulator.tracker as ProgressTrackerData)
-            .setSettings(simulator.settings as ClientSettingsSimulatorData)
-        })
-      )
-      .serialize()
+  return res.map(folder => {
+    return createFolderSelect(folder).serialize()
   })
 }
 
-export const getFolderById = async (userId: string, id: string): Promise<ClientFolderData | null> => {
-  const folder = await prisma.folder.findUnique({
+export const getFolderById = async (db: PrismaEntry, userId: string, id: string): Promise<ClientFolderData | null> => {
+  const folder = await db.folder.findUnique({
     where: { userId, id },
-    select: {
-      id: true,
-      name: true,
-      order: true,
-      createdAt: true,
-      updatedAt: true,
-      terms: {
-        select: {
-          id: true,
-          order: true,
-          answer: true,
-          answerLang: true,
-          question: true,
-          questionLang: true,
-          association: true,
-          associationLang: true,
-          createdAt: true,
-          updatedAt: true
-        }
-      },
-      simulators: {
-        select: {
-          id: true,
-          termId: true,
-          active: true,
-          status: true,
-          folderId: true,
-          termIds: true,
-          historyIds: true,
-          continueIds: true,
-          rememberIds: true,
-          settings: true,
-          tracker: true
-        }
-      }
-    },
+    select: { ...FolderSelect },
   })
 
   if (folder) {
-    return new ClientFolder()
-      .setId(folder.id)
-      .setName(folder.name)
-      .setOrder(folder.order)
-      .setCreatedAt(folder.createdAt)
-      .setUpdatedAt(folder.updatedAt)
-      .setTerms(
-        folder.terms.map(term => {
-          return new ClientTerm(folder.id)
-            .setId(term.id)
-            .setOrder(term.order)
-            .setAnswer(term.answer)
-            .setAnswerLang(term.answerLang)
-            .setQuestion(term.question)
-            .setQuestionLang(term.questionLang)
-            .setAssociation(term.association)
-            .setAssociationLang(term.associationLang)
-            .setCreatedAt(term.createdAt)
-            .setUpdatedAt(term.updatedAt)
-        })
-      )
-      .setSimulators(
-        folder.simulators.map(simulator => {
-          const termIds = Array.isArray(simulator.termIds) ? simulator.termIds as string[] : []
-          const historyIds = Array.isArray(simulator.historyIds) ? simulator.historyIds as string[] : []
-          const continueIds = Array.isArray(simulator.continueIds) ? simulator.continueIds as string[] : []
-          const rememberIds = Array.isArray(simulator.rememberIds) ? simulator.rememberIds as string[] : []
-
-          return new ClientSimulator(simulator.folderId, simulator.status as SimulatorStatus)
-            .setId(simulator.id)
-            .setTermId(simulator.termId)
-            .setActive(simulator.active)
-            .setTermIds(termIds)
-            .setHistoryIds(historyIds)
-            .setContinueIds(continueIds)
-            .setRememberIds(rememberIds)
-            .setTracker(simulator.tracker as ProgressTrackerData)
-            .setSettings(simulator.settings as ClientSettingsSimulatorData)
-        })
-      )
-      .serialize()
+    return createFolderSelect(folder).serialize()
   }
 
   return null
 }
 
-export const upsertFolder = async (userId: string, folder: Folder): Promise<string | null> => {
-  const res = await prisma.folder.upsert({
-    where: { userId, id: folder.id },
+export const upsertFolder = async (db: PrismaEntry, userId: string, item: ClientFolderData): Promise<string | null> => {
+  const res = await db.folder.upsert({
+    where: { userId, id: item.id },
     update: {
-      name: folder.name,
-      order: folder.order,
+      name: item.name,
+      order: item.order,
+      parentId: item.parentId,
+      isModule: item.isModule,
+      collapsed: item.collapsed,
       updatedAt: new Date(),
     },
     create: {
       userId,
-      id: folder.id,
-      name: folder.name,
-      order: folder.order,
+      id: item.id,
+      name: item.name,
+      order: item.order,
+      parentId: item.parentId,
+      isModule: item.isModule,
+      collapsed: item.collapsed,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -200,7 +149,35 @@ export const upsertFolder = async (userId: string, folder: Folder): Promise<stri
   return res.id
 }
 
-export const removeFolder = async (userId: string, id: string): Promise<boolean> => {
-  const res = await prisma.folder.delete({ where: { userId, id } })
+export const createManyFolder = async (db: PrismaEntry, userId: string, items: ClientFolderData[]): Promise<number> => {
+  const createdAt = new Date()
+  const updatedAt = new Date()
+
+  const res = await db.folder.createMany({
+    data: items.map((item) => {
+      return {
+        userId,
+        id: item.id,
+        name: item.name,
+        order: item.order,
+        parentId: item.parentId,
+        isModule: item.isModule,
+        collapsed: item.collapsed,
+        createdAt,
+        updatedAt
+      }
+    })
+  })
+
+  return res.count
+}
+
+export const removeFolder = async (db: PrismaEntry, userId: string, id: string): Promise<boolean> => {
+  const res = await db.folder.delete({ where: { userId, id } })
   return !!res?.id
+}
+
+export const removeFolders = async (db: PrismaEntry, userId: string, ids: string[]): Promise<boolean> => {
+  const res = await db.folder.deleteMany({ where: { userId, id: { in: ids } } })
+  return res.count > 0
 }

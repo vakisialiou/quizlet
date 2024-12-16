@@ -19,9 +19,13 @@ export const upsertObject = <T extends { id: string | null }>(arr: T[], val: T) 
   return arr
 }
 
-export const removeObject = <T extends { id: string | null }>(arr: T[], val: T) => {
+export const removeObject = <T extends { id: string | null }, K extends keyof T>(
+  arr: T[],
+  val: T,
+  prop: K = 'id' as K
+) => {
   return arr.filter((value) => {
-    return value.id !== val.id
+    return value[prop] !== val[prop]
   })
 }
 
@@ -40,4 +44,16 @@ export const groupByPath = <T extends Record<string, unknown>>(arr: T[], groupPa
 
 export const shuffle = <T>(arr: T[]): T[] => {
   return arr.sort(() => Math.random() - 0.5)
+}
+
+export const chunks = <T>(array: T[], chunkSize: number): T[][] => {
+  if (chunkSize === 0) {
+    throw new Error('chunkSize must be greater than or zero.')
+  }
+  const res = []
+  for (let i = 0; i < array.length; i += chunkSize) {
+    const chunk = array.slice(i, i + chunkSize)
+    res.push(chunk)
+  }
+  return res
 }

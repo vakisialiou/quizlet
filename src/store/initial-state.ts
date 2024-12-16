@@ -22,14 +22,22 @@ export type ConfigType = {
 }
 
 export const getInitialState = async (
-  { session, settings }:
-  { session: Session | null, settings: ClientSettingsData | null }
+  {
+    session,
+    settings,
+    items
+  }:
+  {
+    session: Session | null,
+    settings: ClientSettingsData | null
+    items: ClientFolderData[]
+  }
 ): Promise<ConfigType> => {
   return {
     folders: {
-      items: [],
+      items,
       editId: null,
-      process: true,
+      process: false,
       processIds: []
     },
     terms: {

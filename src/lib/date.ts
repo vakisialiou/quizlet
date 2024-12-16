@@ -13,3 +13,7 @@ export const calcDuration = (timestampA: ConfigType, timestampB: ConfigType, for
 export const getDuration = (time: number, formatStr = 'HH:mm:ss'): string => {
   return dayjs.duration(time).format(formatStr)
 }
+
+export const dateFormat = (date: ConfigType, formatStr = 'DD/MM/YYYY HH:mm:ss'): string => {
+  return dayjs(date).format(formatStr)
+}

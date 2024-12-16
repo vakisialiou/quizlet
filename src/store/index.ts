@@ -1,4 +1,5 @@
 import { configureStore, createReducer, EnhancedStore } from '@reduxjs/toolkit'
+import { DeleteClientFolderResults } from '@store/fetch/folders'
 import { loggerMiddleware } from '@store/middlewares/logger'
 import { ClientFolderData } from '@entities/ClientFolder'
 import * as simulators from '@store/reducers/simulators'
@@ -8,7 +9,6 @@ import * as folders from '@store/reducers/folders'
 import { ConfigType } from '@store/initial-state'
 import * as terms from '@store/reducers/terms'
 import {
-  PayloadFetch,
   PayloadBack,
   PayloadContinue,
   PayloadRemember,
@@ -64,17 +64,12 @@ const execAction = <T>(action: any, callback?: CallbackType<T>): void => {
   getStore().dispatch(action).unwrap().then(callback)
 }
 
-export const actionFetchFolders = (callback?: (res: ClientFolderData[]) => void): void => {
-  const action = folders.fetchFolders()
-  execAction(action, callback)
-}
-
 export const actionSaveFolder = (payload: folders.SaveType, callback?: (res: folders.SaveType) => void): void => {
   const action = folders.saveFolder(payload)
   execAction(action, callback)
 }
 
-export const actionDeleteFolder = (payload: ClientFolderData, callback?: (res: ClientFolderData) => void): void => {
+export const actionDeleteFolder = (payload: folders.DeleteType, callback?: (res: DeleteClientFolderResults) => void): void => {
   const action = folders.deleteFolder(payload)
   execAction(action, callback)
 }
@@ -89,14 +84,19 @@ export const actionUpdateFolderItem = (payload: ClientFolderData, callback?: (re
   execAction(action, callback)
 }
 
-
-export const actionSaveTerm = (payload: terms.SaveType, callback?: (res: terms.SaveType) => void): void => {
-  const action = terms.saveTerm(payload)
+export const actionFetchFolders = (callback?: (res: ClientFolderData[]) => void): void => {
+  const action = folders.fetchFolders()
   execAction(action, callback)
 }
 
-export const actionDeleteTerm = (payload: ClientTermData, callback?: (res: ClientTermData) => void): void => {
-  const action = terms.deleteTerm(payload)
+export const actionCreateFolderPartitions = (payload: folders.PartitionsType, callback?: (res: ClientFolderData[]) => void): void => {
+  const action = folders.createFolderPartitions(payload)
+  execAction(action, callback)
+}
+
+
+export const actionSaveTerm = (payload: terms.SaveType, callback?: (res: terms.SaveType) => void): void => {
+  const action = terms.saveTerm(payload)
   execAction(action, callback)
 }
 
@@ -107,11 +107,6 @@ export const actionUpdateTerm = (payload: terms.UpdateType, callback?: (res: ter
 
 export const actionUpdateTermItem = (payload: ClientTermData, callback?: (res: ClientTermData) => void): void => {
   const action = terms.updateTermItem(payload)
-  execAction(action, callback)
-}
-
-export const actionFetchSimulators = (payload: PayloadFetch, callback?: (res: ClientFolderData) => void): void => {
-  const action = simulators.fetchSimulators(payload)
   execAction(action, callback)
 }
 

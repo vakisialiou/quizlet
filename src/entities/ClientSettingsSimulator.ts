@@ -16,9 +16,9 @@ export default class ClientSettingsSimulator {
   method: SimulatorMethod
 
   constructor(settings?: Partial<ClientSettingsSimulatorData>) {
-    this.id = settings?.id || 0
+    this.id = settings?.id || 1
     this.inverted = settings?.inverted || false
-    this.method = settings?.method || SimulatorMethod.FLASHCARD
+    this.method = settings?.method || SimulatorMethod.PICK
   }
 
   setId(value: number) {

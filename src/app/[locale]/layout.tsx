@@ -7,10 +7,12 @@ import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { AppProvider } from './provider'
 import localFont from 'next/font/local'
+import { prisma } from '@lib/prisma'
 import { auth } from '@auth'
 import React from 'react'
 
 import './globals.css'
+import {findFoldersByUserId} from "@repositories/folders";
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -50,9 +52,9 @@ export async function generateMetadata({params}: { params: Promise<{ locale: Lan
       {rel: 'apple-touch-icon', sizes: '180x180', url: '/icons/apple-icon-180x180.png'},
     ],
     alternates: {
-      canonical: locale === defaultLocale ? `${baseUrl}` : `${baseUrl}/${locale}`,
+      canonical: locale === defaultLocale ? `${baseUrl}/` : `${baseUrl}/${locale}/`,
       languages: routing.locales.reduce((acc, lang) => {
-        acc[lang] = `${baseUrl}/${lang}`
+        acc[lang] = `${baseUrl}/${lang}/`
         if (lang === defaultLocale) {
           acc['x-default'] = `${baseUrl}/`
         }
@@ -78,8 +80,10 @@ export default async function RootLayout({
   }
 
   const session = await auth()
-  const settings = await getSettings(session?.user?.id || '')
-  const initialState = await getInitialState({session, settings})
+  const userId = session?.user?.id || ''
+  const settings = userId ? await getSettings(prisma, userId) : null
+  const items = userId ? await findFoldersByUserId(prisma, userId) : []
+  const initialState = await getInitialState({ session, settings, items })
   const messages = await getMessages({ locale })
 
   return (

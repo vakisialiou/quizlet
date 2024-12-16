@@ -1,7 +1,7 @@
 'use client'
 
+import { filterDeletedTerms, filterEmptyTerms } from '@containers/Simulator/helpers'
 import AchievementIcon, { AchievementsSize } from '@containers/AchievementIcon'
-import { filterFolderTerms } from '@containers/Simulator/helpers'
 import ClientTerm, {ClientTermData} from '@entities/ClientTerm'
 import TextToSpeech, { TextToSpeechEvents } from '@lib/speech'
 import AchievementDegree from '@containers/AchievementDegree'
@@ -12,7 +12,6 @@ import ButtonSquare from '@components/ButtonSquare'
 import SVGQuestion from '@public/svg/question.svg'
 import ContentPage from '@containers/ContentPage'
 import SVGFileNew from '@public/svg/file_new.svg'
-import Achievement from '@entities/Achievement'
 import { useTranslations } from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
 import SVGPlay from '@public/svg/play.svg'
@@ -22,8 +21,6 @@ import {useSelector} from 'react-redux'
 import Dialog from '@components/Dialog'
 import Term from '@containers/Term'
 import {
-  actionDeleteTerm,
-  actionFetchFolders,
   actionSaveTerm,
   actionUpdateTerm,
   actionUpdateTermItem
@@ -31,8 +28,6 @@ import {
 import clsx from 'clsx'
 
 export default function Terms({ folderId }: { folderId: string }) {
-  useEffect(actionFetchFolders, [])
-
   const router = useRouter()
 
   const [ originItem, setOriginItem ] = useState<ClientTermData | null>(null)
@@ -45,14 +40,11 @@ export default function Terms({ folderId }: { folderId: string }) {
     return folders.items.find(({ id }) => id === folderId)
   }, [folders.items, folderId])
 
-  const achievement = useMemo(() => {
-    return new Achievement().calculate(folder?.simulators || [])
-  }, [folder])
-
   const [search, setSearch] = useState<string | null>(null)
 
   const terms = useMemo(() => {
-    let rawItems = [...folder?.terms || []]
+    let rawItems = filterDeletedTerms([...folder?.terms || []])
+
     if (search) {
       rawItems = rawItems.filter(({ question, answer, association }) => {
         return `${question}`.toLocaleLowerCase().includes(search)
@@ -88,8 +80,8 @@ export default function Terms({ folderId }: { folderId: string }) {
   }, [speech, setSoundInfo])
 
   const playTerms = useMemo(() => {
-    return filterFolderTerms(folder)
-  }, [folder])
+    return filterEmptyTerms([...folder?.terms || []])
+  }, [folder?.terms])
 
   const [showUserHelp, setShowUserHelp] = useState(false)
 
@@ -103,12 +95,12 @@ export default function Terms({ folderId }: { folderId: string }) {
       leftControls={(
         <div className="flex items-center">
           <AchievementIcon
+            folder={folder}
             size={AchievementsSize.sm}
-            achievementData={achievement}
           />
           <AchievementDegree
             hideDegree
-            achievementData={achievement}
+            folder={folder}
             className="ml-4 uppercase font-bold text-gray-700 text-base"
           />
         </div>
@@ -283,7 +275,7 @@ export default function Terms({ folderId }: { folderId: string }) {
             className="min-w-28 px-4"
             skin={ButtonSkin.GRAY}
             onClick={() => {
-              actionDeleteTerm(removeTerm, () => {
+              actionSaveTerm({ term: { ...removeTerm, deleted: true }, editId: null }, () => {
                 setRemoveTerm(null)
                 if (originItem && originItem.id === removeTerm.id) {
                   setOriginItem(null)

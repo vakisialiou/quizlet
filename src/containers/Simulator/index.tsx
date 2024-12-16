@@ -2,6 +2,7 @@
 
 import { CardSelection } from '@containers/Simulator/CardAggregator/MethodPickCard/PickCard'
 import CardAggregator, { OnChangeParamsType } from '@containers/Simulator/CardAggregator'
+import { findFolder, ensureFolderValidTerms } from '@containers/Simulator/helpers'
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import { CardStatus } from '@containers/Simulator/CardAggregator/types'
 import { ProgressTrackerAction } from '@entities/ProgressTracker'
@@ -23,22 +24,25 @@ import SVGBack from '@public/svg/back.svg'
 import {useSelector} from 'react-redux'
 import {useRouter} from '@i18n/routing'
 import {
-  actionBackSimulators,
-  actionContinueSimulators,
   actionDeactivateSimulators,
-  actionFetchSimulators,
+  actionContinueSimulators,
   actionRememberSimulators,
+  actionBackSimulators,
   actionUpdateTracker,
 } from '@store/index'
 
 export default function Simulator({ folderId }: { folderId: string }) {
   const router = useRouter()
 
-  useEffect(() => actionFetchSimulators({ folderId }), [folderId])
-
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
+
   const folder = useMemo(() => {
-    return folders.items.find(({ id }) => id === folderId)
+    const folderItems = [...folders.items || []]
+    const folder = findFolder(folderItems, folderId)
+    if (folder) {
+      return ensureFolderValidTerms(folderItems, folder)
+    }
+    return null
   }, [folders.items, folderId])
 
   const simulators = useMemo(() => {
@@ -95,6 +99,8 @@ export default function Simulator({ folderId }: { folderId: string }) {
 
   const t = useTranslations('Simulators')
 
+  console.log({ folder, simulator })
+
   return (
     <ContentPage
       showHeader
@@ -112,7 +118,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
             icon={SVGBack}
             onClick={() => {
               if (folder) {
-                router.push(`/private/folder/${folder?.id}`)
+                router.push(`/private`)
               }
             }}
           />
@@ -192,7 +198,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
       )}
     >
       <div
-        className="w-full flex flex-col items-center"
+        className="w-full h-full flex flex-col items-center overflow-hidden"
       >
         <div className="flex flex-col">
           <PanelInfo

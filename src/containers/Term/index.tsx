@@ -2,11 +2,10 @@ import { ClientTermData, DefaultAnswerLang, DefaultQuestionLang, DefaultAssociat
 import Dropdown, { DropdownSkin } from '@components/Dropdown'
 import { useCallback, useEffect, useRef } from 'react'
 import Button, {ButtonSize} from '@components/Button'
-import SVGThreeDots from '@public/svg/three_dots.svg'
+import FolderCart from '@components/FolderCart'
 import RowRead from '@containers/Term/RowRead'
-import Spinner from '@components/Spinner'
+import SVGFile from '@public/svg/file.svg'
 import Input from '@components/Input'
-import clsx from 'clsx'
 
 export enum SoundPlayingNameEnum {
   answer = 'answer',
@@ -80,57 +79,36 @@ export default function Term(
   }, [])
 
   return (
-    <div
-      ref={ref}
-      className={clsx('border rounded w-full border-gray-500 bg-black/50 flex flex-col select-none overflow-hidden shadow-inner shadow-gray-500/50')}
-      onClick={(e) => {
-        if (edit) {
-          e.preventDefault()
+    <FolderCart
+      hover={false}
+      process={process}
+      title={(
+        <div className="flex gap-2 items-center font-bold">
+          <SVGFile
+            width={16}
+            height={16}
+          />
+          <span>#{number}</span>
+        </div>
+      )}
+      dropdown={{
+        items: [
+          {id: 1, name: 'Edit'},
+          {id: 2, name: 'Remove'},
+        ],
+        onSelect: (id) => {
+          switch (id) {
+            case 1:
+              onEdit()
+              break
+            case 2:
+              onRemove()
+              break
+          }
         }
       }}
     >
-      <div className="flex items-center justify-between w-full bg-gray-500/20 px-2 h-8">
-        <div
-          className="bg-gray-300 text-gray-900 rounded-sm flex items-center justify-center px-2 text-xs">
-          #{number}
-        </div>
-
-        <div className="flex gap-2">
-          <Dropdown
-            onClick={(e) => e.preventDefault()}
-            items={[
-              {id: 1, name: 'Edit'},
-              {id: 2, name: 'Remove'},
-            ]}
-            onSelect={(id) => {
-              switch (id) {
-                case 1:
-                  onEdit()
-                  break
-                case 2:
-                  onRemove()
-                  break
-              }
-            }}
-          >
-            {!process &&
-              <SVGThreeDots
-                width={23}
-                height={23}
-                className="text-gray-700"
-              />
-            }
-
-            {process &&
-              <div className="flex items-center justify-center w-8 h-8">
-                <Spinner/>
-              </div>
-            }
-          </Dropdown>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-1 p-2">
+      <div ref={ref} className="flex flex-col gap-1">
 
         <div className="flex justify-between gap-2 w-full max-w-full overflow-hidden">
           {!edit &&
@@ -333,7 +311,6 @@ export default function Term(
         </div>
 
       </div>
-
-    </div>
+    </FolderCart>
   )
 }

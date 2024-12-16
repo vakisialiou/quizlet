@@ -11,8 +11,8 @@ import {useTranslations} from 'next-intl'
 import {useSelector} from 'react-redux'
 import {signIn} from 'next-auth/react'
 import { preload } from 'react-dom'
-import {Session} from 'next-auth'
-import {memo} from 'react'
+import { Session } from 'next-auth'
+import { memo } from 'react'
 import clsx from 'clsx'
 
 function Landing(
@@ -25,10 +25,10 @@ function Landing(
     mainScreenSRC: string
   }
 ) {
-  preload(mainScreenSRC, { as: 'image', fetchPriority: 'high' })
+  const session = useSelector(({ session }: { session: Session | null }) => session)
 
   const route = useRouter()
-  const session = useSelector(({ session }: { session: Session | null }) => session)
+  preload(mainScreenSRC, { as: 'image', fetchPriority: 'high' })
 
   const appName = 'QuizerPlay'
 
@@ -82,7 +82,6 @@ function Landing(
 
           {session &&
             <div className="flex flex-col gap-16 text-center text-white px-6 max-w-[900px]">
-
               <div className="max-w-2xl text-gray-300">
                 {t('helpSection1Title')}
               </div>
@@ -90,7 +89,7 @@ function Landing(
               <div className="flex justify-center">
                 <Button
                   skin={ButtonSkin.WHITE}
-                  onClick={() => route.push('/private')}
+                  onClick={() => route.push('/private/collection')}
                   className="px-6 gap-2 font-medium text-nowrap"
                 >
                   <SVGPresetNew
@@ -120,7 +119,7 @@ function Landing(
                   onClick={async () => {
                     await signIn('google', {
                       redirect: true,
-                      redirectTo: getPathname({href: '/private', locale})
+                      redirectTo: getPathname({href: '/private/collection', locale})
                     })
                   }}
                   className="px-6 gap-2 font-medium text-nowrap"
@@ -251,7 +250,7 @@ function Landing(
                   onClick={async () => {
                     await signIn('google', {
                       redirect: true,
-                      redirectTo: getPathname({href: '/private', locale})
+                      redirectTo: getPathname({href: '/private/collection', locale})
                     })
                   }}
                 >

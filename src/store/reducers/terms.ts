@@ -1,9 +1,9 @@
 import { unique, remove, upsertObject, removeObject } from '@lib/array'
 import { ClientFolderData } from '@entities/ClientFolder'
+import { saveClientTermData } from '@store/fetch/terms'
 import { ClientTermData } from '@entities/ClientTerm'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { ConfigType } from '@store/initial-state'
-import { clientFetch } from '@lib/fetch-client'
 
 export type SaveType = {
   term: ClientTermData,
@@ -13,36 +13,7 @@ export type SaveType = {
 export const saveTerm = createAsyncThunk(
   '/save/term',
   async (payload: SaveType): Promise<SaveType> => {
-    const res = await clientFetch(`/api/terms/${payload.term.id}`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        order: payload.term.order,
-        answer: payload.term.answer,
-        answerLang: payload.term.answerLang,
-        question: payload.term.question,
-        questionLang: payload.term.questionLang,
-        association: payload.term.association,
-        folderId: payload.term.folderId,
-      })
-    })
-
-    if (!res.ok) {
-      throw new Error('Save term error.', { cause: res.statusText })
-    }
-
-    return payload
-  }
-)
-
-export const deleteTerm = createAsyncThunk(
-  '/delete/term',
-  async (payload: ClientTermData): Promise<ClientTermData> => {
-    const res = await clientFetch(`/api/terms/${payload.id}`, { method: 'DELETE' })
-
-    if (!res.ok) {
-      throw new Error('Delete term error.', { cause: res.statusText })
-    }
-
+    await saveClientTermData(payload.term)
     return payload
   }
 )
@@ -105,34 +76,6 @@ export const termReducers = (builder: any) => {
         processIds: remove(state.terms.processIds, action.meta.arg.term.id)
       }
 
-    })
-
-  builder
-    .addCase(deleteTerm.pending, (state: ConfigType, action: { meta: { arg: ClientTermData } }) => {
-      state.terms = {
-        ...state.terms,
-        processIds: unique([...state.terms.processIds, action.meta.arg.id])
-      }
-    })
-    .addCase(deleteTerm.rejected, (state: ConfigType, action: { meta: { arg: ClientTermData } }) => {
-      state.terms = {
-        ...state.terms,
-        processIds: remove(state.terms.processIds, action.meta.arg.id)
-      }
-    })
-    .addCase(deleteTerm.fulfilled, (state: ConfigType, action: { meta: { arg: ClientTermData } }) => {
-      state.terms = {
-        ...state.terms,
-        processIds: remove(state.terms.processIds, action.meta.arg.id)
-      }
-
-      const folder = state.folders.items.find(({ id }) => id === action.meta.arg.folderId) as ClientFolderData
-      folder.terms = removeObject([...folder.terms], action.meta.arg) as ClientTermData[]
-
-      state.folders = {
-        ...state.folders,
-        items: upsertObject([...state.folders.items], folder) as ClientFolderData[],
-      }
     })
 
   builder

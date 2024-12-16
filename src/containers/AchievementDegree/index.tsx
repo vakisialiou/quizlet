@@ -1,4 +1,6 @@
-import { AchievementData } from '@entities/Achievement'
+import { ClientFolderData } from '@entities/ClientFolder'
+import Achievement from '@entities/Achievement'
+import { useMemo } from 'react'
 import clsx from 'clsx'
 
 export default function AchievementDegree(
@@ -7,16 +9,20 @@ export default function AchievementDegree(
     hideRate,
     hideDegree,
     disableTruncate,
-    achievementData,
+    folder,
   }:
   {
     className?: string,
     hideRate?: boolean
     hideDegree?: boolean
     disableTruncate?: boolean
-    achievementData: AchievementData
+    folder?: ClientFolderData | null,
   }
 ) {
+  const achievement = useMemo(() => {
+    return new Achievement().calculate(folder?.simulators || [])
+  }, [folder])
+
   return (
     <div
       className={clsx('flex gap-2', {
@@ -26,13 +32,13 @@ export default function AchievementDegree(
     >
       {!hideRate &&
         <span>
-          {achievementData.degreeRate.toFixed(1)}%
+          {achievement.degreeRate.toFixed(1)}%
         </span>
       }
 
       {!hideDegree &&
         <span>
-          {achievementData.degree} {achievementData.medal}
+          {achievement.degree} {achievement.medal}
         </span>
       }
     </div>

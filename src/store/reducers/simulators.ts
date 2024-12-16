@@ -1,12 +1,10 @@
+import { ClientSettingsSimulatorData } from '@entities/ClientSettingsSimulator'
 import { ProgressTrackerAction } from '@entities/ProgressTracker'
 import { SimulatorStatus } from '@entities/ClientSimulator'
 import { upsertSimulators } from '@store/fetch/simulators'
 import SimulatorTracker from '@entities/SimulatorTracker'
-import { ClientFolderData } from '@entities/ClientFolder'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { ConfigType } from '@store/initial-state'
-import { clientFetch } from '@lib/fetch-client'
-import { upsertObject } from '@lib/array'
 import {
   findNeedUpdateSimulators,
   createActiveSimulator,
@@ -17,35 +15,12 @@ import {
   addHistoryId,
 } from '@containers/Simulator/helpers'
 
-export type PayloadFetch = {
-  folderId: string,
-}
-
 export type UpsertSimulatorsIds = (string | null)[]
-
-export const fetchSimulators = createAsyncThunk(
-  '/fetch/simulators',
-  async (payload: PayloadFetch, api): Promise<ClientFolderData> => {
-    const state = api.getState() as ConfigType
-    const folder = state.folders.items.find((item) => item.id === payload.folderId)
-    if (folder) {
-      return JSON.parse(JSON.stringify(folder))
-    }
-
-    return await clientFetch(`/api/folders/${payload.folderId}`)
-      .then((res) => res.json())
-      .then((json) => {
-        if (!json.folder) {
-          throw new Error(`Folder "${payload.folderId}" is not exists.`)
-        }
-        return json.folder as ClientFolderData
-      })
-  }
-)
 
 export type PayloadStart = {
   folderId: string,
-  termIds: string[]
+  termIds: string[],
+  settings: ClientSettingsSimulatorData
 }
 
 export const startSimulators = createAsyncThunk(
@@ -123,61 +98,10 @@ export const deactivateSimulators = createAsyncThunk(
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const simulatorReducers = (builder: any) => {
-  builder
-    .addCase(fetchSimulators.pending, (state: ConfigType) => {
-      state.folders = { ...state.folders, process: true }
-    })
-    .addCase(fetchSimulators.fulfilled, (state: ConfigType, action: { payload: ClientFolderData, meta: { arg: PayloadFetch } }) => {
-      const folder = { ...action.payload }
-      const actualTermIds = folder.terms.map(({ id }) => id)
-
-      state.folders.items = upsertObject([...state.folders.items], folder)
-
-      // Some terms can have been deleted. In that case have to clear all removed terms from simulator.
-      state.folders = updateActiveSimulator(state.folders, action.meta.arg.folderId, (simulator) => {
-        const termIds = simulator.termIds.filter((id) => actualTermIds.includes(id))
-
-        if (termIds.length === 0) {
-          return { ...simulator, active: false, needUpdate: true }
-        }
-
-        const historyIds = simulator.historyIds.filter((id) => actualTermIds.includes(id))
-        let continueIds = simulator.continueIds.filter((id) => actualTermIds.includes(id))
-        let rememberIds = simulator.rememberIds.filter((id) => actualTermIds.includes(id))
-
-        if (simulator.termId) {
-          if (!actualTermIds.includes(simulator.termId)) {
-            const historyIndex = historyIds.findLastIndex(() => true)
-            if (historyIndex !== -1) {
-              simulator.termId = historyIds.splice(historyIndex, 1)[0]
-              continueIds = continueIds.filter((uuid) => uuid !== simulator.termId)
-              rememberIds = rememberIds.filter((uuid) => uuid !== simulator.termId)
-            } else {
-              simulator.termId = null
-              simulator.status = SimulatorStatus.DONE
-            }
-          }
-        }
-
-        return {
-          ...simulator,
-          termIds,
-          historyIds,
-          continueIds,
-          rememberIds,
-          needUpdate: true,
-        }
-      })
-
-      state.folders = { ...state.folders, process: false }
-    })
-    .addCase(fetchSimulators.rejected, (state: ConfigType) => {
-      state.folders = { ...state.folders, process: false }
-    })
 
   builder
     .addCase(startSimulators.pending, (state: ConfigType, action: { meta: { arg: PayloadStart } }) => {
-      const { folderId, termIds } = action.meta.arg
+      const { folderId, termIds, settings } = action.meta.arg
 
       state.folders = createActiveSimulator(state.folders, folderId)
       state.folders = updateActiveSimulator(state.folders, folderId, (simulator) => {
@@ -186,8 +110,8 @@ export const simulatorReducers = (builder: any) => {
           termIds,
           needUpdate: true,
           termId: termIds[0],
-          status: SimulatorStatus.PROCESSING,
-          settings: { ...state.settings.simulator }
+          settings: { ...settings },
+          status: SimulatorStatus.PROCESSING
         }
       })
     })

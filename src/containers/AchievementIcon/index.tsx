@@ -1,5 +1,6 @@
-import { DegreeEnum, MedalEnum } from '@entities/Achievement'
-import { AchievementData } from '@entities/Achievement'
+import Achievement, { DegreeEnum, MedalEnum } from '@entities/Achievement'
+import { ClientFolderData } from '@entities/ClientFolder'
+import { useMemo } from 'react'
 import clsx from 'clsx'
 
 const DegreeIconMap: Record<DegreeEnum, string> & { default: string }  = {
@@ -27,17 +28,22 @@ export enum AchievementsSize {
 export default function AchievementIcon(
   {
     size,
+    folder,
     className = '',
-    achievementData
   }:
   {
     className?: string,
     size: AchievementsSize,
-    achievementData: AchievementData
+    folder?: ClientFolderData | null,
   }
 ) {
-  const degreeIcon = achievementData.degree ? DegreeIconMap[achievementData.degree] : DegreeIconMap.default
-  const medalIcon = achievementData.medal ? MedalIconMap[achievementData.medal] : MedalIconMap.default
+  const { degreeIcon, medalIcon } = useMemo(() => {
+    const achievement = new Achievement().calculate(folder?.simulators || [])
+    return {
+      degreeIcon: achievement.degree ? DegreeIconMap[achievement.degree] : DegreeIconMap.default,
+      medalIcon: achievement.medal ? MedalIconMap[achievement.medal] : MedalIconMap.default
+    }
+  }, [folder])
 
   return (
     <div
@@ -48,7 +54,7 @@ export default function AchievementIcon(
       })}
     >
       <div
-        className={clsx('flex w-full h-full items-start justify-start', {
+        className={clsx('flex w-full h-full items-center justify-start', {
           ['text-[56px] leading-[56px]']: size === AchievementsSize.xl,
           ['text-[16px] leading-[16px]']: size === AchievementsSize.sm,
         })}

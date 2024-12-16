@@ -70,36 +70,24 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Folder {
-  id         String     @id @default(uuid())
-  userId     String     @db.VarChar(36)
-  name       String?    @db.VarChar(255)
-  order      Int        @default(0)
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  terms          Term[]
-  simulators     Simulator[]
-
-  @@unique([id])
-}
-
 model Term {
   id              String     @id @default(uuid())
   userId          String     @db.VarChar(36)
   folderId        String     @db.VarChar(36)
   order           Int        @default(0)
   question        String?    @db.VarChar(255)
-  questionLang    String?    @db.VarChar(5) @default("ru-RU")
+  questionLang    String?    @db.VarChar(5) @default("ru")
   answer          String?    @db.VarChar(255)
-  answerLang      String?    @db.VarChar(5) @default("en-GB")
+  answerLang      String?    @db.VarChar(5) @default("en")
   association     String?    @db.VarChar(255)
-  associationLang String?    @db.VarChar(5) @default("en-GB")
+  associationLang String?    @db.VarChar(5) @default("en")
+  deleted         Boolean    @default(false)
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  folder Folder @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folder          Folder     @relation(fields: [folderId], references: [id], onDelete: Cascade)
+
+  relationTerms   RelationTerm[]
 
   @@unique([id])
 }
@@ -122,8 +110,70 @@ model Simulator {
 
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  folder Folder @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folder      Folder     @relation(fields: [folderId], references: [id], onDelete: Cascade)
+
+  @@unique([id])
+}
+
+model RelationTerm {
+  id             String     @id @default(uuid())
+  termId         String     @db.VarChar(36)
+  folderId       String     @db.VarChar(36)
+  createdAt      DateTime   @default(now())
+
+  term           Term       @relation(fields: [termId], references: [id], onDelete: Cascade)
+  folder         Folder     @relation(fields: [folderId], references: [id], onDelete: Cascade)
+
+  @@unique([id])
+  @@unique([termId, folderId])
+}
+
+model RelationFolder {
+  id             String     @id @default(uuid())
+  folderId       String     @db.VarChar(36)
+  folderGroupId  String     @db.VarChar(36)
+  createdAt      DateTime   @default(now())
+
+  folder         Folder      @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  folderGroup    FolderGroup @relation(fields: [folderGroupId], references: [id], onDelete: Cascade)
+
+  @@unique([id])
+  @@unique([folderId, folderGroupId])
+}
+
+model FolderGroup {
+  id             String     @id @default(uuid())
+  folderId       String     @db.VarChar(36)
+  name           String?    @db.VarChar(255)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  folder           Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  relationFolders  RelationFolder[]
+
+  @@unique([id])
+}
+
+model Folder {
+  id               String     @id @default(uuid())
+  userId           String     @db.VarChar(36)
+  parentId         String?    @db.VarChar(36)
+  name             String?    @db.VarChar(255)
+  order            Int        @default(0)
+  collapsed        Boolean    @default(true)
+  isModule         Boolean    @default(true)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  user             User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent           Folder?    @relation("ParentFolders", fields: [parentId], references: [id], onDelete: Cascade)
+  children         Folder[]   @relation("ParentFolders")
+
+  terms            Term[]
+  simulators       Simulator[]
+  folderGroups     FolderGroup[]
+  relationTerms    RelationTerm[]
+  relationFolders  RelationFolder[]
 
   @@unique([id])
 }
@@ -134,7 +184,7 @@ model Settings {
   simulator   Json
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([id])
   @@unique([userId])

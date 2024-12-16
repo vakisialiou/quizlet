@@ -15,7 +15,7 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
 
   const menuItems = [
     { id: 1, name: 'Home', href: `/` },
-    { id: 2, name: 'Collections', href: `/private`, private: true },
+    { id: 2, name: 'Collections', href: `/private/collection`, private: true },
   ]
 
   return (

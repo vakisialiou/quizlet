@@ -5,7 +5,6 @@ import AchievementDegree from '@containers/AchievementDegree'
 import { ClientFolderData } from '@entities/ClientFolder'
 import { actionDeactivateSimulators } from '@store/index'
 import CardEmpty from '@containers/Simulator/CardEmpty'
-import Achievement from '@entities/Achievement'
 import clsx from 'clsx'
 
 const randFloat = (min: number, max: number) => {
@@ -83,12 +82,11 @@ export default function CardDone(
     return () => clearTimeout(timer)
   }, [onAnimationDone, particlesDelay, particlesDuration.max, folder.id])
 
-
-  const achievementData = useMemo(() => {
+  const fakeFolder = useMemo(() => {
     const simulators = [...folder.simulators || []].map((item) => {
       return { ...item, active: item.id === simulator.id ? false : item.active }
     })
-    return new Achievement().calculate(simulators)
+    return { ...folder, simulators }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -142,13 +140,13 @@ export default function CardDone(
         }}
       >
         <AchievementIcon
+          folder={fakeFolder}
           size={AchievementsSize.xl}
-          achievementData={achievementData}
         />
 
         <AchievementDegree
           disableTruncate
-          achievementData={achievementData}
+          folder={fakeFolder}
           className="flex flex-col gap-2 font-bold text-4xl items-center text-gray-700 uppercase"
         />
       </div>

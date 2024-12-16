@@ -2,12 +2,49 @@ import ClientSimulator, {ClientSimulatorData, SimulatorStatus} from '@entities/C
 import { ClientFolderData } from '@entities/ClientFolder'
 import { ClientTermData } from '@entities/ClientTerm'
 import { FoldersType } from '@store/initial-state'
-import {unique} from "@lib/array";
+import { unique } from '@lib/array'
 
-export const filterFolderTerms = (folder: ClientFolderData | undefined | null): ClientTermData[] => {
-  return [...folder?.terms || []].filter(({ answer, question }) => {
+export const filterEmptyTerms = (terms: ClientTermData[]): ClientTermData[] => {
+  return [...terms || []].filter(({ answer, question }) => {
     return answer && question
   })
+}
+
+export const filterDeletedTerms = (terms: ClientTermData[]): ClientTermData[] => {
+  return [...terms || []].filter(({ deleted }) => !deleted)
+}
+
+export const findFolder = (folderItems: ClientFolderData[], folderId: string): ClientFolderData | null => {
+  return [...folderItems].find(({ id }) => id === folderId) || null
+}
+
+export const findParentFolder = (folderItems: ClientFolderData[], folder: ClientFolderData): ClientFolderData | null => {
+  return folderItems.find(({ id }) => id === folder.parentId) || null
+}
+
+export const ensureFolderValidTerms = (folderItems: ClientFolderData[], folder: ClientFolderData): ClientFolderData => {
+  if (folder?.parentId) {
+    const parentFolder = findParentFolder(folderItems, folder)
+    if (parentFolder) {
+      // У дочерних элементов нет собственных терминов. Но они имеют связь с терминами родителя.
+      const relationTermIds = [...folder.relationTerms].map(({ termId }) => termId)
+      return {
+        ...folder,
+        // Отфильтровать термины у которых незаполненны поля.
+        // Здесь ненужно применять фильтр удаленных терминов.
+        terms: filterEmptyTerms([...parentFolder?.terms || []]).filter((term) => {
+          return relationTermIds.includes(term.id)
+        })
+      } as ClientFolderData
+    }
+  }
+
+  return {
+    ...folder,
+    // Отфильтровать термины у которых незаполненны поля.
+    // Отфильтровать термины которые удалены.
+    terms: filterDeletedTerms(filterEmptyTerms([...folder?.terms || []]))
+  } as ClientFolderData
 }
 
 export const findNeedUpdateSimulators = (folders: FoldersType, folderId: string): ClientSimulatorData[] => {

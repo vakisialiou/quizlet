@@ -31,6 +31,7 @@ export type ClientTermData = {
   questionLang: string | null
   association: string | null
   associationLang: string | null
+  deleted: boolean
   createdAt: Date
   updatedAt: Date
 }
@@ -45,6 +46,7 @@ export default class ClientTerm {
   questionLang: string | null
   association: string | null
   associationLang: string | null
+  deleted: boolean
   createdAt: Date
   updatedAt: Date
 
@@ -58,6 +60,7 @@ export default class ClientTerm {
     this.questionLang = null
     this.association = null
     this.associationLang = null
+    this.deleted = false
     this.createdAt = new Date()
     this.updatedAt = new Date()
   }
@@ -114,6 +117,11 @@ export default class ClientTerm {
 
   setAssociationLang(value: string | null): ClientTerm {
     this.associationLang = value
+    return this
+  }
+
+  setDeleted(value: boolean): ClientTerm {
+    this.deleted = value
     return this
   }
 

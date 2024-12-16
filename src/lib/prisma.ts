@@ -7,7 +7,10 @@ import {
   Settings,
   Simulator,
   PrismaClient,
-  VerificationToken
+  FolderGroup,
+  RelationTerm,
+  VerificationToken,
+  Prisma
 } from '@prisma/client'
 
 export type {
@@ -18,8 +21,18 @@ export type {
   Session,
   Settings,
   Simulator,
-  VerificationToken
+  FolderGroup,
+  RelationTerm,
+  VerificationToken,
+  Prisma
 }
+
+export type PrismaEntry = PrismaClient | Prisma.TransactionClient
+
+export const transaction = <T>(prisma: PrismaClient, callback: (entry: Prisma.TransactionClient) => Promise<T>): Promise<T> => {
+  return prisma.$transaction(callback)
+}
+
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
 
