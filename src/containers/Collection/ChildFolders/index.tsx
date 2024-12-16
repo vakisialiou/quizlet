@@ -1,12 +1,11 @@
 'use client'
 
-import { ClientSimulatorData, SimulatorStatus } from '@entities/ClientSimulator'
 import AchievementIcon, {AchievementsSize} from '@containers/AchievementIcon'
 import Button, { ButtonSize, ButtonSkin } from '@components/Button'
 import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
+import { getSimulatorsInfo } from '@containers/Collection/helper'
 import AchievementDegree from '@containers/AchievementDegree'
 import { ClientFolderData } from '@entities/ClientFolder'
-import { Fragment, useCallback, useMemo } from 'react'
 import SVGRefresh from '@public/svg/file_refresh.svg'
 import SVGAssets from '@public/svg/asset_manager.svg'
 import { FoldersType } from '@store/initial-state'
@@ -15,13 +14,14 @@ import SVGTrash from '@public/svg/trash.svg'
 import { useTranslations } from 'next-intl'
 import SVGPlay from '@public/svg/play.svg'
 import { useSelector } from 'react-redux'
+import { Fragment, useMemo } from 'react'
 
 enum DropDownIdEnums {
   REMOVE_FOLDER = 'REMOVE_FOLDER',
   STUDY = 'STUDY',
 }
 
-export default function Collections(
+export default function ChildFolders(
   {
     folder,
     onPlay,
@@ -57,20 +57,6 @@ export default function Collections(
 
     return res
   }, [folders.items])
-
-  const getSimulatorsInfo = useCallback((simulators: ClientSimulatorData[]): { hasActive: boolean, countDone: number } => {
-    let countDone = 0
-    let hasActive = false
-    for (const {active, status} of simulators) {
-      if (active) {
-        hasActive = true
-      }
-      if (!active && status === SimulatorStatus.DONE) {
-        countDone++
-      }
-    }
-    return { countDone, hasActive }
-  }, [])
 
   const folderGroups = [...folder.folderGroups].sort((a, b) => {
     return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()

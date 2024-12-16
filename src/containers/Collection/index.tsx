@@ -1,135 +1,175 @@
-import FolderCart, {DropDownProps} from '@components/FolderCart'
-import { ClientFolderData } from '@entities/ClientFolder'
-import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
+'use client'
+
+import Button, { ButtonSkin } from '@components/Button'
+import SVGNewFolder from '@public/svg/new_folder.svg'
 import ButtonSquare from '@components/ButtonSquare'
-import SVGFileNew from '@public/svg/file_new.svg'
-import Divide from '@components/Divide'
-import Input from '@components/Input'
-import {ReactNode} from 'react'
-import clsx from 'clsx'
+import SVGQuestion from '@public/svg/question.svg'
+import ContentPage from '@containers/ContentPage'
+import ClientFolder from '@entities/ClientFolder'
+import { actionSaveFolder } from '@store/index'
+import Grid from '@containers/Collection/Grid'
+import { useTranslations } from 'next-intl'
+import { useRouter } from '@i18n/routing'
+import Dialog from '@components/Dialog'
+import Search from '@components/Search'
+import { useState } from 'react'
 
-export default function Collection(
-  {
-    data,
-    title,
-    labels,
-    achievement,
-    dropdown,
-    className,
-    edit = false,
-    process = false,
-    collapsed = true,
-    onCollapse,
-    onSave,
-    onExit,
-    onOpen,
-    onChange,
-    children
-  }:
-  {
-    edit?: boolean,
-    title: ReactNode,
-    process?: boolean,
-    collapsed?: boolean,
-    className?: string
-    labels?: ReactNode,
-    achievement?: ReactNode,
-    dropdown?: DropDownProps,
-    data: ClientFolderData,
-    onOpen: () => void,
-    onSave: () => void,
-    onExit: () => void,
-    onChange: (prop: string, value: string) => void,
-    onCollapse?: () => void,
-    children?: ReactNode,
-  }
-) {
+export default function Collection() {
+  const t = useTranslations('Folders')
+  const [ showUserHelp, setShowUserHelp ] = useState(false)
+  const [ search, setSearch ] = useState<string | null>(null)
+
+  const router = useRouter()
+
   return (
-    <FolderCart
-      hover={false}
-      title={title}
-      labels={labels}
-      process={process}
-      dropdown={dropdown}
-      className={className}
-    >
-      {achievement &&
-        <div className="w-full px-2 mt-2">
-          {achievement}
-        </div>
-      }
-      <div className="w-full font-bold text-gray-400 text-sm overflow-hidden flex items-center min-h-8 mt-3">
-        {edit &&
-          <Input
-            autoFocus
-            type="text"
-            name="name"
-            onBlur={onSave}
-            autoComplete="off"
-            className="z-10 w-full"
-            placeholder="Module name"
-            defaultValue={data.name || ''}
-            onChange={(e) => {
-              onChange('name', e.target.value)
+    <ContentPage
+      showHeader
+      showFooter
+      title={t('headTitle')}
+      footer={(
+        <div className="flex w-full justify-center lg:justify-end">
+          <Button
+            skin={ButtonSkin.WHITE}
+            className="w-full lg:w-auto px-8 gap-1"
+            onClick={() => {
+              const folder = new ClientFolder().serialize()
+              actionSaveFolder({ folder, editId: folder.id })
             }}
-            onKeyUp={(e) => {
-              switch (e.keyCode) {
-                case 13:
-                  onSave()
-                  break
-                case 27:
-                  onExit()
-                  break
-              }
-            }}
-          />
-        }
-
-        {!edit &&
-          <div className="flex gap-2 items-center justify-between w-full">
-            <div className="pt-[1px] mx-[9px] max-w-full truncate ...">
-              <span className="max-w-full">
-                {data.name || <span className="italic">(No name)</span>}
-              </span>
-            </div>
-
-            <ButtonSquare
-              bordered
-              size={20}
-              icon={SVGFileNew}
-              onClick={onOpen}
+          >
+            <SVGNewFolder
+              width={28}
+              height={28}
+              className="text-gray-700"
             />
-          </div>
-        }
-      </div>
 
-      <div className="relative flex items-center justify-center w-full h-[28px] my-2">
-        <Divide
-          className="absolute left-0 top-[13px] divide-white/15 w-full"
-        />
-        <div
-          className={clsx('rounded-full px-4 z-10', {
-            ['flex gap-1 items-center justify-center']: true,
-            ['h-[28px]']: true,
-            ['text-white/50 border border-white/25 bg-black']: true,
-            ['hover:border-white/35 active:border-white/25 cursor-pointer']: true,
-            ['transition-all']: true
-          })}
-          onClick={onCollapse}
-        >
-          <SVGArrowDown
-            width={20}
-            height={20}
-            className={clsx('transition-all text-white/50 hover:text-white/50', {
-              ['rotate-180']: !collapsed
-            })}
-          />
-
-          collapse
+            {t('footButtonCreateModule')}
+          </Button>
         </div>
+      )}
+      rightControls={(
+        <ButtonSquare
+          icon={SVGQuestion}
+          disabled={showUserHelp}
+          onClick={() => setShowUserHelp(true)}
+        />
+      )}
+    >
+      <div
+        className="flex gap-2 w-full items-center justify-between px-2 pt-2 md:px-4 md:pt-4"
+      >
+        <Search
+          rounded
+          bordered
+          value={search || ''}
+          className="w-full md:w-96"
+          onClear={() => setSearch(null)}
+          placeholder={t('searchPlaceholder')}
+          onChange={(e) => {
+            setSearch(e.target.value ? `${e.target.value}`.toLocaleLowerCase() : null)
+          }}
+        />
+
+        <ButtonSquare
+          bordered
+          icon={SVGNewFolder}
+          onClick={() => {
+            const folder = new ClientFolder().serialize()
+            actionSaveFolder({ folder, editId: folder.id })
+          }}
+        />
       </div>
 
-      {children}
-    </FolderCart>
+      <Grid
+        search={search}
+        onOpen={(folder) => {
+          router.push(`/private/folder/${folder.id}`)
+        }}
+        onPlay={(folder) => {
+          router.push(`/private/simulator/${folder.id}`)
+        }}
+      />
+
+      {showUserHelp &&
+        <Dialog
+          title={t('userHelpTitle')}
+          text={(
+            <div className="flex flex-col gap-4 text-gray-800">
+              <div className="flex flex-col gap-1">
+                <div className="font-bold">
+                  {t('userHelpSection1Title')}
+                </div>
+                {t('userHelpSection1Text')}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <div className="font-bold">
+                  {t('userHelpSection2Title')}
+                </div>
+                {t('userHelpSection2Text')}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <div className="font-bold">
+                  {t('userHelpSection3Title')}
+                </div>
+                {t('userHelpSection3Text')}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <div className="font-bold">
+                  {t('userHelpSection4Title')}
+                </div>
+                {t('userHelpSection4Text')}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <div className="font-bold">
+                  {t('userHelpSection5Title')}
+                </div>
+                {t('userHelpSection5Text')}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <div className="font-bold">
+                  {t('userHelpSection6Title')}
+                </div>
+                {t('userHelpSection6Text')}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <div className="font-bold">
+                  {t('userHelpSection7Title')}
+                </div>
+                {t('userHelpSection7Text')}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <div className="font-bold">
+                  {t('userHelpSection8Title')}
+                </div>
+                {t('userHelpSection8Text')}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <div className="font-bold">
+                  {t('userHelpSection9Title')}
+                </div>
+                {t('userHelpSection9Text')}
+              </div>
+            </div>
+          )}
+        >
+          <Button
+            className="min-w-28 px-4"
+            skin={ButtonSkin.GRAY}
+            onClick={() => {
+              setShowUserHelp(false)
+            }}
+          >
+          {t('userHelpButtonClose')}
+          </Button>
+        </Dialog>
+      }
+    </ContentPage>
   )
 }

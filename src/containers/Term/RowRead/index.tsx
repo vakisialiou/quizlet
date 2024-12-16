@@ -12,7 +12,7 @@ export default function RowReadonly({
   onClickSound
 }: {
   value?: string,
-  placeholder: string,
+  placeholder: ReactNode,
   lang: string,
   controls?: ReactNode,
   soundPlaying?: boolean,
@@ -24,7 +24,7 @@ export default function RowReadonly({
         title={value || ''}
         className="inline w-full content-center px-[9px] pt-[1px] h-8 text-sm text-gray-200 truncate ..."
       >
-        {value || <span className="text-gray-500">{placeholder}</span>}
+        {value || placeholder}
       </div>
 
       <div>

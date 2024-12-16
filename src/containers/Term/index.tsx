@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import Button, {ButtonSize} from '@components/Button'
 import FolderCart from '@components/FolderCart'
 import RowRead from '@containers/Term/RowRead'
+import { useTranslations } from 'next-intl'
 import SVGFile from '@public/svg/file.svg'
 import Input from '@components/Input'
 
@@ -78,6 +79,8 @@ export default function Term(
     return lang.split('-')[0]
   }, [])
 
+  const t = useTranslations('Terms')
+
   return (
     <FolderCart
       hover={false}
@@ -93,8 +96,8 @@ export default function Term(
       )}
       dropdown={{
         items: [
-          {id: 1, name: 'Edit'},
-          {id: 2, name: 'Remove'},
+          {id: 1, name: t('cardDropDownEdit')},
+          {id: 2, name: t('cardDropDownRemove')},
         ],
         onSelect: (id) => {
           switch (id) {
@@ -114,7 +117,11 @@ export default function Term(
           {!edit &&
             <RowRead
               value={data.question || ''}
-              placeholder="Question not set"
+              placeholder={(
+                <span className="text-red-800 italic">
+                  {t('cardQuestionHintR')}
+                </span>
+              )}
               soundPlaying={soundPlayingName === SoundPlayingNameEnum.question}
               lang={getLocaleShortName(data.questionLang, DefaultQuestionLang)}
               onClickSound={(play) => {
@@ -137,7 +144,7 @@ export default function Term(
                 type="text"
                 name="question"
                 autoComplete="off"
-                placeholder="Question not set"
+                placeholder={t('cardQuestionHintW')}
                 defaultValue={data.question || ''}
                 onChange={(e) => {
                   onChange('question', e.target.value)
@@ -178,7 +185,11 @@ export default function Term(
           {!edit &&
             <RowRead
               value={data.answer || ''}
-              placeholder="Answer not set"
+              placeholder={(
+                <span className="text-red-800 italic">
+                  {t('cardAnswerHintR')}
+                </span>
+              )}
               lang={getLocaleShortName(data.answerLang, DefaultAnswerLang)}
               soundPlaying={soundPlayingName === SoundPlayingNameEnum.answer}
               onClickSound={(play) => {
@@ -200,7 +211,7 @@ export default function Term(
                 type="text"
                 name="answer"
                 autoComplete="off"
-                placeholder="Answer not set"
+                placeholder={t('cardAnswerHintW')}
                 defaultValue={data.answer || ''}
                 onChange={(e) => {
                   onChange('answer', e.target.value)
@@ -241,7 +252,11 @@ export default function Term(
           {!edit &&
             <RowRead
               value={data.association || ''}
-              placeholder="Association not set"
+              placeholder={(
+                <span className="text-gray-700 italic">
+                  {t('cardAssociationHintR')}
+                </span>
+              )}
               soundPlaying={soundPlayingName === SoundPlayingNameEnum.association}
               lang={getLocaleShortName(data.associationLang, DefaultAssociationLang)}
               onClickSound={(play) => {
@@ -263,7 +278,7 @@ export default function Term(
                 type="text"
                 name="association"
                 autoComplete="off"
-                placeholder="Association not set"
+                placeholder={t('cardAssociationHintW')}
                 defaultValue={data.association || ''}
                 onChange={(e) => {
                   onChange('association', e.target.value)

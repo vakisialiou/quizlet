@@ -91,20 +91,7 @@ export default function Terms({ folderId }: { folderId: string }) {
     <ContentPage
       showHeader
       showFooter
-      title={folder?.name}
-      leftControls={(
-        <div className="flex items-center">
-          <AchievementIcon
-            folder={folder}
-            size={AchievementsSize.sm}
-          />
-          <AchievementDegree
-            hideDegree
-            folder={folder}
-            className="ml-4 uppercase font-bold text-gray-700 text-base"
-          />
-        </div>
-      )}
+      title={t('headTitle')}
       rightControls={(
         <>
           <ButtonSquare
@@ -162,6 +149,24 @@ export default function Terms({ folderId }: { folderId: string }) {
         </div>
       )}
     >
+      <div className="flex gap-2 items-center p-4 font-bold text-gray-500 text-base border-b border-white/10">
+        <div className="flex items-center">
+          <AchievementIcon
+            folder={folder}
+            size={AchievementsSize.sm}
+          />
+          <AchievementDegree
+            hideDegree
+            folder={folder}
+            className="ml-4 uppercase"
+          />
+        </div>
+
+        <div className="truncate ...">
+          {folder?.name}
+        </div>
+      </div>
+
       <Search
         rounded
         bordered

@@ -1,21 +1,48 @@
 import { Link, useRouter, usePathname } from '@i18n/routing'
 import SVGPanelClose from '@public/svg/panel_close.svg'
 import ButtonSquare from '@components/ButtonSquare'
+import { FoldersType } from '@store/initial-state'
 import { useSelector } from 'react-redux'
 import Account from '@containers/Account'
 import { Session } from 'next-auth'
 import Image from 'next/image'
 import clsx from 'clsx'
+import {useMemo} from "react";
 
 export default function NavMenu({ onClose }: { onClose: () => void }) {
   const router = useRouter()
   const pathname = usePathname()
 
   const session = useSelector(({ session }: { session: Session | null }) => session)
+  const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
+
+  const collectionChildren = useMemo(() => {
+    return [...folders.items]
+      .filter(({ isModule }) => isModule)
+      .map((item) => {
+        return {
+          id: item.id,
+          name: item.name,
+          private: true,
+          href: `/private/folder/${item.id}`
+        }
+      })
+  }, [folders.items])
 
   const menuItems = [
-    { id: 1, name: 'Home', href: `/` },
-    { id: 2, name: 'Collections', href: `/private/collection`, private: true },
+    {
+      id: 1,
+      name: 'Home',
+      href: `/`,
+      children: []
+    },
+    {
+      id: 2,
+      name: 'Collections',
+      href: `/private/collection`,
+      private: true,
+      children: collectionChildren
+    },
   ]
 
   return (
@@ -61,16 +88,42 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
               return
             }
 
+
             if (item.private) {
               return (
                 <div
+                  className="flex flex-col w-full"
                   key={item.id}
-                  onClick={() => router.push(item.href)}
-                  className={clsx('cursor-pointer text-sm font-semibold leading-6 text-gray-300 hover:bg-gray-900 hover:text-gray-400 active:text-gray-400/70 px-3 py-3', {
-                    ['pointer-events-none bg-gray-800 text-gray-400']: item.href === pathname,
-                  })}
                 >
-                  {item.name}
+                  <div
+                    onClick={() => router.push(item.href)}
+                    className={clsx('cursor-pointer text-sm font-semibold leading-6 text-gray-300 hover:bg-gray-900 hover:text-gray-400 active:text-gray-400/70 px-3 py-3', {
+                      ['pointer-events-none bg-gray-800 text-gray-400']: item.href === pathname,
+                    })}
+                  >
+                    {item.name}
+                  </div>
+
+                  {item.children.map((child) => {
+                    return (
+                      <div
+                        key={child.id}
+                        onClick={() => router.push(child.href)}
+                        className={clsx('cursor-pointer text-sm font-semibold leading-6 text-gray-300 hover:bg-gray-900 hover:text-gray-400 active:text-gray-400/70 px-3 py-3', {
+                          ['pointer-events-none bg-gray-800 text-gray-400']: child.href === pathname,
+                          ['relative pl-8 truncate']: true
+                        })}
+                      >
+                        <div
+                          className="absolute w-1 h-10 left-3 top-[3px] border-l border-dashed border-white/25"
+                        />
+                        <div
+                          className="absolute w-3 h-6 left-4 top-[-0px] border-b border-dashed border-white/25"
+                        />
+                        {child.name || <span className="text-gray-500">Module no name</span>}
+                      </div>
+                    )
+                  })}
                 </div>
               )
             }

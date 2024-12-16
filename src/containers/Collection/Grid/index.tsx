@@ -1,25 +1,25 @@
 'use client'
 
-import { ClientSimulatorData, SimulatorStatus } from '@entities/ClientSimulator'
 import AchievementIcon, {AchievementsSize} from '@containers/AchievementIcon'
-import CollectionGridGroups from '@containers/CollectionGridGroups'
 import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
+import { getSimulatorsInfo } from '@containers/Collection/helper'
+import ChildFolders from '@containers/Collection/ChildFolders'
 import AchievementDegree from '@containers/AchievementDegree'
 import Dropdown, { DropdownSkin } from '@components/Dropdown'
 import { ClientFolderData } from '@entities/ClientFolder'
 import Button, { ButtonSkin } from '@components/Button'
-import { useCallback, useMemo, useState } from 'react'
 import SVGRefresh from '@public/svg/file_refresh.svg'
 import SVGFolder from '@public/svg/file_folder.svg'
 import SVGEdit from '@public/svg/greasepencil.svg'
+import Folder from '@containers/Collection/Folder'
 import SVGOpen from '@public/svg/file_folder.svg'
 import {FoldersType} from '@store/initial-state'
-import Collection from '@containers/Collection'
 import SVGTrash from '@public/svg/trash.svg'
 import { useTranslations } from 'next-intl'
 import SVGPlay from '@public/svg/play.svg'
 import { useSelector } from 'react-redux'
 import { upsertObject } from '@lib/array'
+import { useMemo, useState } from 'react'
 import Dialog from '@components/Dialog'
 import {
   actionDeleteFolder,
@@ -37,7 +37,7 @@ enum DropDownIdEnums {
   STUDY = 'STUDY',
 }
 
-export default function Collections(
+export default function Grid(
   {
     onOpen,
     onPlay,
@@ -83,20 +83,6 @@ export default function Collections(
     })
   }, [folders.items, search])
 
-  const getSimulatorsInfo = useCallback((simulators: ClientSimulatorData[]): { hasActive: boolean, countDone: number } => {
-    let countDone = 0
-    let hasActive = false
-    for (const {active, status} of simulators) {
-      if (active) {
-        hasActive = true
-      }
-      if (!active && status === SimulatorStatus.DONE) {
-        countDone++
-      }
-    }
-    return { countDone, hasActive }
-  }, [])
-
   return (
     <>
       <div
@@ -106,7 +92,7 @@ export default function Collections(
           const { hasActive, countDone } = getSimulatorsInfo(folder.simulators)
 
           return (
-            <Collection
+            <Folder
               key={index}
               data={folder}
               collapsed={folder.collapsed}
@@ -165,10 +151,20 @@ export default function Collections(
               labels={(
                 <>
                   {hasActive &&
-                    <MetaLabel variant={MetaLabelVariant.amber}>Playing</MetaLabel>
+                    <MetaLabel
+                      variant={MetaLabelVariant.amber}
+                    >
+                      {t('folderLabelActive')}
+                    </MetaLabel>
                   }
                   <MetaLabel
-                    variant={MetaLabelVariant.gray}>Done {countDone}</MetaLabel>
+                    variant={MetaLabelVariant.gray}
+                  >
+                    {t('folderLabelDone', { count: countDone })}
+                  </MetaLabel>
+                  <MetaLabel>
+                    {t('folderLabelTerms', { count: folder.terms.length })}
+                  </MetaLabel>
                 </>
               )}
               onOpen={() => {
@@ -195,7 +191,7 @@ export default function Collections(
               }}
             >
               {!folder.collapsed &&
-                <CollectionGridGroups
+                <ChildFolders
                   folder={folder}
                   onPlay={(childFolder) => {
                     if (onPlay) {
@@ -210,7 +206,7 @@ export default function Collections(
                   }}
                 />
               }
-            </Collection>
+            </Folder>
           )
         })}
 
