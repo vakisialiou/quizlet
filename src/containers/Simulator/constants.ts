@@ -9,6 +9,10 @@ export const simulatorMethodList = [
   { id: 6, name: 'Input inverse', inverted: true, method: SimulatorMethod.INPUT },
 ]
 
+export const findSimulatorMethodById = (id: number) => {
+  return simulatorMethodList.find((item) => item.id === id)
+}
+
 export const getSimulatorNameById = (id: number): string | null => {
   const item = simulatorMethodList.find((item) => item.id === id)
   return item?.name || null

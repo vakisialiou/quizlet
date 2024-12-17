@@ -3,6 +3,7 @@ import { ClientFolderData } from '@entities/ClientFolder'
 import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
 import ButtonSquare from '@components/ButtonSquare'
 import SVGFileNew from '@public/svg/file_new.svg'
+import { useTranslations } from 'next-intl'
 import Divide from '@components/Divide'
 import Input from '@components/Input'
 import {ReactNode} from 'react'
@@ -13,7 +14,6 @@ export default function Folder(
     data,
     title,
     labels,
-    achievement,
     dropdown,
     className,
     edit = false,
@@ -33,7 +33,6 @@ export default function Folder(
     collapsed?: boolean,
     className?: string
     labels?: ReactNode,
-    achievement?: ReactNode,
     dropdown?: DropDownProps,
     data: ClientFolderData,
     onOpen: () => void,
@@ -44,6 +43,8 @@ export default function Folder(
     children?: ReactNode,
   }
 ) {
+  const t = useTranslations('Folders')
+
   return (
     <FolderCart
       hover={false}
@@ -53,11 +54,6 @@ export default function Folder(
       dropdown={dropdown}
       className={className}
     >
-      {achievement &&
-        <div className="w-full px-2 mt-2">
-          {achievement}
-        </div>
-      }
       <div className="w-full font-bold text-gray-400 text-sm overflow-hidden flex items-center min-h-8 mt-3">
         {edit &&
           <Input
@@ -89,7 +85,7 @@ export default function Folder(
           <div className="flex gap-2 items-center justify-between w-full">
             <div className="pt-[1px] mx-[9px] max-w-full truncate ...">
               <span className="max-w-full">
-                {data.name || <span className="italic">(No name)</span>}
+                {data.name || <span className="italic">{t('folderNoName')}</span>}
               </span>
             </div>
 
@@ -125,7 +121,6 @@ export default function Folder(
             })}
           />
 
-          collapse
         </div>
       </div>
 

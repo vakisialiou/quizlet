@@ -1,10 +1,12 @@
-import ClientSettingsSimulator from '@entities/ClientSettingsSimulator'
-import {simulatorMethodList} from '@containers/Simulator/constants'
+import { simulatorMethodList, findSimulatorMethodById } from '@containers/Simulator/constants'
+import { actionStartSimulators, actionUpdateSettingsSimulator } from '@store/index'
+import { ClientSettingsData } from '@entities/ClientSettings'
 import {ClientFolderData} from '@entities/ClientFolder'
 import CardEmpty from '@containers/Simulator/CardEmpty'
 import Button, { ButtonSkin } from '@components/Button'
-import { actionStartSimulators } from '@store/index'
-import { useMemo, useState } from 'react'
+import { useTranslations } from 'next-intl'
+import { useSelector } from 'react-redux'
+import { useMemo } from 'react'
 import clsx from 'clsx'
 
 export default function SingleStart(
@@ -12,11 +14,13 @@ export default function SingleStart(
   { process?: boolean, folder?: ClientFolderData | null }
 ) {
 
-  const [settings, setSettings] = useState(new ClientSettingsSimulator().serialize())
+  const settings = useSelector(({ settings }: { settings: ClientSettingsData }) => settings)
 
   const playTerms = useMemo(() => {
     return [...folder?.terms || []]
   }, [folder?.terms])
+
+  const t = useTranslations('Simulators')
 
   return (
     <CardEmpty
@@ -32,10 +36,10 @@ export default function SingleStart(
       }
 
       {(!process && folder) &&
-        <div className="flex flex-col justify-center text-center gap-4 w-full p-8">
+        <div className="flex flex-col justify-center text-center gap-4 w-full p-4">
 
           <div className="text-gray-300 text-lg font-bold">
-            Simulators
+            {t('simulatorStartTitle')}
           </div>
 
           <div className="text-gray-500 text-sm divide-y divide-gray-800 divide-dashed">
@@ -43,8 +47,8 @@ export default function SingleStart(
               return (
                 <label
                   key={id}
-                  className={clsx('h-8 flex gap-2 w-full items-center justify-between hover:bg-gray-500/30 px-2 cursor-pointer text-sm', {
-                    ['bg-gray-500/20 pointer-events-none']: settings.id === id
+                  className={clsx('h-10 flex gap-2 w-full items-center justify-between hover:bg-gray-500/30 px-3 cursor-pointer text-sm', {
+                    ['bg-gray-500/20 pointer-events-none']: settings.simulator.id === id
                   })}
                 >
                   {name}
@@ -52,10 +56,10 @@ export default function SingleStart(
                     type="radio"
                     name="method"
                     className="h-4 w-4"
-                    value={settings.method}
-                    checked={settings.id === id}
+                    value={settings.simulator.method}
+                    checked={settings.simulator.id === id}
                     onChange={() => {
-                      setSettings({ method, inverted, id })
+                      actionUpdateSettingsSimulator({ method, inverted, id })
                     }}
                   />
                 </label>
@@ -65,15 +69,19 @@ export default function SingleStart(
 
           <Button
             skin={ButtonSkin.WHITE}
-            disabled={!settings.id || playTerms.length === 0}
+            disabled={!findSimulatorMethodById(settings.simulator.id) || playTerms.length === 0}
             onClick={() => {
               if (playTerms.length > 0) {
                 const termIds = playTerms.map(({id}) => id)
-                actionStartSimulators({ folderId: folder.id, termIds, settings })
+                actionStartSimulators({
+                  termIds,
+                  folderId: folder.id,
+                  settings: settings.simulator
+                })
               }
             }}
           >
-            Start
+            {t('simulatorStartBtnStart')}
           </Button>
         </div>
       }

@@ -61,7 +61,6 @@
     "dropDownStudyModule": "Изучить модуль",
     "dropDownGenerateGroups": "Генерация учебной группы",
     "dropDownRemoveModule": "Удалить модуль",
-    "cardSubTitle": "Модуль",
     "dropDownEditGroup": "Изучить",
     "dropDownRemoveGroup": "Удалить",
     "warnGridGroup1": "Чтобы начать обучение, создайте термины.",
@@ -76,11 +75,10 @@
     "removeDialogText": "Вы уверены, что хотите удалить этот элемент?",
     "removeDialogButtonApprove": "Удалить",
     "removeDialogButtonCancel": "Отменить",
-
     "folderLabelActive": "Активные",
     "folderLabelDone": "Завершено {count}",
     "folderLabelTerms": "Термины {count}",
-
+    "folderNoName": "(Имя не указано)",
     "groupLabelActive": "Активные",
     "groupLabelDone": "Завершено {count}",
     "groupLabelTerms": "Термины {count}",
@@ -135,6 +133,7 @@
     "cardAssociationHintW": "Ваша ассоциация..."
   },
   "Simulators": {
+    "headTitle": "Тренажер",
     "buttonRemember": "Запомнить",
     "buttonContinue": "Продолжить",
     "userHelpTitle": "Подсказка",
@@ -154,7 +153,14 @@
     "removeDialogTitle": "Остановка",
     "removeDialogText": "Вы уверены, что хотите остановиться?",
     "removeDialogButtonApprove": "Подтвердить",
-    "removeDialogButtonCancel": "Отменить"
+    "removeDialogButtonCancel": "Отменить",
+
+    "simulatorStartTitle": "Выберите тренажер",
+    "simulatorStartBtnStart": "Начать",
+    "simulatorPanelTotal": "Всего",
+    "simulatorPanelWait": "Очередь",
+    "simulatorPanelDone": "Готово",
+    "simulatorPanelTime": "Время"
   },
   "Policy": {
     "title": "Политика конфиденциальности",

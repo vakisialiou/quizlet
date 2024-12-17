@@ -4,11 +4,14 @@ import { CardSelection } from '@containers/Simulator/CardAggregator/MethodPickCa
 import CardAggregator, { OnChangeParamsType } from '@containers/Simulator/CardAggregator'
 import { findFolder, ensureFolderValidTerms } from '@containers/Simulator/helpers'
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
+import AchievementIcon, {AchievementsSize} from '@containers/AchievementIcon'
 import { CardStatus } from '@containers/Simulator/CardAggregator/types'
 import { ProgressTrackerAction } from '@entities/ProgressTracker'
 import {SimulatorMethod} from '@entities/ClientSettingsSimulator'
 import TextToSpeech, { TextToSpeechEvents } from '@lib/speech'
-import {SimulatorStatus} from '@entities/ClientSimulator'
+import AchievementDegree from '@containers/AchievementDegree'
+import { SimulatorStatus } from '@entities/ClientSimulator'
+import { ClientFolderData } from '@entities/ClientFolder'
 import CardEmpty from '@containers/Simulator/CardEmpty'
 import CardStart from '@containers/Simulator/CardStart'
 import PanelInfo from '@containers/Simulator/PanelInfo'
@@ -36,14 +39,24 @@ export default function Simulator({ folderId }: { folderId: string }) {
 
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
 
-  const folder = useMemo(() => {
-    const folderItems = [...folders.items || []]
+  const getActualFolderData = useCallback((items: ClientFolderData[], folderId: string): ClientFolderData | null => {
+    const folderItems = [...items || []]
     const folder = findFolder(folderItems, folderId)
     if (folder) {
       return ensureFolderValidTerms(folderItems, folder)
     }
     return null
-  }, [folders.items, folderId])
+  }, [])
+
+  const { folder, parentFolder } = useMemo(() => {
+    const folder = getActualFolderData(folders.items, folderId)
+    return {
+      folder,
+      parentFolder: (folder && folder.parentId)
+        ? getActualFolderData(folders.items, folder.parentId)
+        : null,
+    }
+  }, [folders.items, folderId, getActualFolderData])
 
   const simulators = useMemo(() => {
     return folder?.simulators || []
@@ -99,13 +112,11 @@ export default function Simulator({ folderId }: { folderId: string }) {
 
   const t = useTranslations('Simulators')
 
-  console.log({ folder, simulator })
-
   return (
     <ContentPage
       showHeader
       showFooter
-      title={folder?.name}
+      title={t('headTitle')}
       rightControls={(
         <>
           <ButtonSquare
@@ -198,19 +209,39 @@ export default function Simulator({ folderId }: { folderId: string }) {
       )}
     >
       <div
-        className="w-full h-full flex flex-col items-center overflow-hidden"
+        className="flex gap-2 items-center p-4 font-bold text-gray-500 text-base border-b border-white/10"
+      >
+        <div className="flex items-center">
+          <AchievementIcon
+            folder={folder}
+            size={AchievementsSize.sm}
+          />
+          <AchievementDegree
+            hideDegree
+            folder={folder}
+            className="ml-4 uppercase"
+          />
+        </div>
+
+        <div className="truncate ...">
+          {parentFolder?.name && `Group of: ${parentFolder.name}`}
+          {!parentFolder?.name && folder?.name}
+        </div>
+      </div>
+      <div
+        className="w-full h-[calc(100%-58px)] flex flex-col items-center justify-center overflow-hidden"
       >
         <div className="flex flex-col">
           <PanelInfo
             simulator={simulator}
             process={folders.process}
-            className="my-6"
+            className="mb-6"
           />
 
           <div className="flex gap-2">
-            <div className="flex flex-col gap-4 w-72">
+            <div className="flex flex-col w-72">
 
-              {!simulator &&
+            {!simulator &&
                 <CardStart
                   folder={folder}
                   process={folders.process}

@@ -62,7 +62,6 @@
     "dropDownStudyModule": "Study module",
     "dropDownGenerateGroups": "Generate study groups",
     "dropDownRemoveModule": "Remove module",
-    "cardSubTitle": "Module",
     "dropDownEditGroup": "Study group",
     "dropDownRemoveGroup": "Remove",
     "warnGridGroup1": "To start learning, you need to create terms.",
@@ -80,6 +79,7 @@
     "folderLabelActive": "Active",
     "folderLabelDone": "Done {count}",
     "folderLabelTerms": "Terms {count}",
+    "folderNoName": "(No name)",
     "groupLabelActive": "Active",
     "groupLabelDone": "Done {count}",
     "groupLabelTerms": "Terms {count}",
@@ -134,6 +134,7 @@
     "cardAssociationHintW": "Your association ..."
   },
   "Simulators": {
+    "headTitle": "Simulator",
     "buttonRemember": "Remember",
     "buttonContinue": "Continue",
     "userHelpTitle": "Help",
@@ -153,7 +154,14 @@
     "removeDialogTitle": "Stop",
     "removeDialogText": "Are you sure you want to stop?",
     "removeDialogButtonApprove": "Confirm",
-    "removeDialogButtonCancel": "Cancel"
+    "removeDialogButtonCancel": "Cancel",
+
+    "simulatorStartTitle": "Pick out simulator",
+    "simulatorStartBtnStart": "Start",
+    "simulatorPanelTotal": "Total",
+    "simulatorPanelWait": "Queue",
+    "simulatorPanelDone": "Done",
+    "simulatorPanelTime": "Time"
   },
   "Policy": {
     "title": "Privacy Policy",

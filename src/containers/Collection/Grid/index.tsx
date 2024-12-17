@@ -1,15 +1,18 @@
 'use client'
 
-import AchievementIcon, {AchievementsSize} from '@containers/AchievementIcon'
 import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
-import { getSimulatorsInfo } from '@containers/Collection/helper'
+import {
+  findModuleItems,
+  getSimulatorsInfo,
+  searchItemsByName,
+  sortFolderItems
+} from '@containers/Collection/helper'
 import ChildFolders from '@containers/Collection/ChildFolders'
 import AchievementDegree from '@containers/AchievementDegree'
 import Dropdown, { DropdownSkin } from '@components/Dropdown'
 import { ClientFolderData } from '@entities/ClientFolder'
 import Button, { ButtonSkin } from '@components/Button'
 import SVGRefresh from '@public/svg/file_refresh.svg'
-import SVGFolder from '@public/svg/file_folder.svg'
 import SVGEdit from '@public/svg/greasepencil.svg'
 import Folder from '@containers/Collection/Folder'
 import SVGOpen from '@public/svg/file_folder.svg'
@@ -68,19 +71,9 @@ export default function Grid(
   const [ partition, setPartition ] = useState<{ folderId: string | null, size: number }>({ folderId: null, size: 20 })
 
   const items = useMemo(() => {
-    let rawItems = [...folders.items || []]
-      .filter((item) => item.isModule)
-
-    if (search) {
-      rawItems = rawItems.filter(({ name }) => `${name}`.toLocaleLowerCase().includes(search))
-    }
-
-    return rawItems.sort((a, b) => {
-      if (a.order === b.order) {
-        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-      }
-      return a.order - b.order
-    })
+    let rawItems = findModuleItems([...folders.items || []])
+    rawItems = searchItemsByName(rawItems, search)
+    return sortFolderItems(rawItems)
   }, [folders.items, search])
 
   return (
@@ -98,14 +91,15 @@ export default function Grid(
               collapsed={folder.collapsed}
               title={(
                 <div className="flex gap-2 items-center font-bold">
-                  <SVGFolder
-                    width={16}
-                    height={16}
-                  />
-                  <span className="uppercase text-xs">
-                    {t('cardSubTitle')}
-                  </span>
                   <span>#{index + 1}</span>
+
+                  <div className="flex items-center gap-4">
+                    <AchievementDegree
+                      hideDegree
+                      folder={folder}
+                      className="text-xs font-bold uppercase text-white/50"
+                    />
+                  </div>
                 </div>
               )}
               edit={folders.editId === folder.id}
@@ -136,18 +130,6 @@ export default function Grid(
                   }
                 }
               }}
-              achievement={(
-                <div className="flex items-center gap-4">
-                  <AchievementIcon
-                    folder={folder}
-                    size={AchievementsSize.sm}
-                  />
-                  <AchievementDegree
-                    folder={folder}
-                    className="text-sm font-bold uppercase text-white/50"
-                  />
-                </div>
-              )}
               labels={(
                 <>
                   {hasActive &&

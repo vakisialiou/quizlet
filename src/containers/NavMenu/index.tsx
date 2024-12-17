@@ -1,23 +1,25 @@
-import { Link, useRouter, usePathname } from '@i18n/routing'
+import NavMenuItem, { NavMenuItemProp } from '@containers/NavMenu/NavMenuItem'
+import { sortFolderItems } from '@containers/Collection/helper'
 import SVGPanelClose from '@public/svg/panel_close.svg'
 import ButtonSquare from '@components/ButtonSquare'
 import { FoldersType } from '@store/initial-state'
+import { usePathname } from '@i18n/routing'
+import { useTranslations } from 'next-intl'
 import { useSelector } from 'react-redux'
 import Account from '@containers/Account'
 import { Session } from 'next-auth'
+import { useMemo } from 'react'
 import Image from 'next/image'
 import clsx from 'clsx'
-import {useMemo} from "react";
 
 export default function NavMenu({ onClose }: { onClose: () => void }) {
-  const router = useRouter()
   const pathname = usePathname()
-
+  const t = useTranslations('Folders')
   const session = useSelector(({ session }: { session: Session | null }) => session)
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
 
   const collectionChildren = useMemo(() => {
-    return [...folders.items]
+    return sortFolderItems([...folders.items])
       .filter(({ isModule }) => isModule)
       .map((item) => {
         return {
@@ -25,7 +27,7 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
           name: item.name,
           private: true,
           href: `/private/folder/${item.id}`
-        }
+        } as NavMenuItemProp
       })
   }, [folders.items])
 
@@ -34,16 +36,17 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
       id: 1,
       name: 'Home',
       href: `/`,
+      private: false,
       children: []
     },
     {
       id: 2,
-      name: 'Collections',
+      name: t('headTitle'),
       href: `/private/collection`,
       private: true,
       children: collectionChildren
     },
-  ]
+  ] as NavMenuItemProp[]
 
   return (
     <div className="fixed top-0 left-0 w-full h-full z-10">
@@ -78,41 +81,37 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
           </div>
         </div>
 
-        <div className="flex flex-col px-4 py-4 bg-gray-900/70">
-          <Account session={session}/>
-        </div>
+        <div
+          className="flex flex-col w-full h-[calc(100%-64px)] justify-between"
+        >
 
-        <div className="h-full flex flex-col bg-gray-900/50">
-          {menuItems.map((item) => {
-            if (item.private && !session) {
-              return
-            }
+          <div
+            className={clsx('h-full flex flex-col bg-gray-900/50', {
+              ['overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500/50 scrollbar-track-gray-900/80 active:scrollbar-thumb-gray-400']: true
+            })}
+          >
+            {menuItems.map((item) => {
+              if (item.private && !session) {
+                return
+              }
 
-
-            if (item.private) {
               return (
                 <div
                   className="flex flex-col w-full"
                   key={item.id}
                 >
-                  <div
-                    onClick={() => router.push(item.href)}
-                    className={clsx('cursor-pointer text-sm font-semibold leading-6 text-gray-300 hover:bg-gray-900 hover:text-gray-400 active:text-gray-400/70 px-3 py-3', {
-                      ['pointer-events-none bg-gray-800 text-gray-400']: item.href === pathname,
-                    })}
-                  >
-                    {item.name}
-                  </div>
+                  <NavMenuItem
+                    item={item}
+                    currentPathname={pathname}
+                  />
 
                   {item.children.map((child) => {
                     return (
-                      <div
+                      <NavMenuItem
+                        item={child}
                         key={child.id}
-                        onClick={() => router.push(child.href)}
-                        className={clsx('cursor-pointer text-sm font-semibold leading-6 text-gray-300 hover:bg-gray-900 hover:text-gray-400 active:text-gray-400/70 px-3 py-3', {
-                          ['pointer-events-none bg-gray-800 text-gray-400']: child.href === pathname,
-                          ['relative pl-8 truncate']: true
-                        })}
+                        className="relative pl-8"
+                        currentPathname={pathname}
                       >
                         <div
                           className="absolute w-1 h-10 left-3 top-[3px] border-l border-dashed border-white/25"
@@ -120,27 +119,20 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
                         <div
                           className="absolute w-3 h-6 left-4 top-[-0px] border-b border-dashed border-white/25"
                         />
-                        {child.name || <span className="text-gray-500">Module no name</span>}
-                      </div>
+                        {child.name || <span className="text-gray-500">{t('folderNoName')}</span>}
+                      </NavMenuItem>
                     )
                   })}
                 </div>
               )
-            }
+            })}
+          </div>
 
-            return (
-              <Link
-                key={item.id}
-                href={item.href}
-                className={clsx('cursor-pointer text-sm font-semibold leading-6 text-gray-300 hover:bg-gray-900 hover:text-gray-400 active:text-gray-400/70 px-3 py-3', {
-                  ['pointer-events-none bg-gray-800 text-gray-400']: item.href === pathname,
-                })}
-              >
-                {item.name}
-              </Link>
-            )
-          })}
+          <div className="flex flex-col px-4 py-4 bg-gray-900/70">
+            <Account session={session}/>
+          </div>
         </div>
+
       </div>
     </div>
   )

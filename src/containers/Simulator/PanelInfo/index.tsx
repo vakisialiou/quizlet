@@ -1,5 +1,6 @@
 import { ClientSimulatorData, SimulatorStatus } from '@entities/ClientSimulator'
 import RoundInfo from '@components/RoundInfo'
+import { useTranslations } from 'next-intl'
 import { useRef, useEffect } from 'react'
 import { getDuration } from '@lib/date'
 import clsx from 'clsx'
@@ -42,6 +43,8 @@ export default function PanelInfo(
   const continueIds = simulator && !process ? simulator?.continueIds : []
   const rememberIds = simulator && !process ? simulator?.rememberIds : []
 
+  const t = useTranslations('Simulators')
+
   return (
     <div
       className={clsx('flex items-center justify-between select-none gap-2', {
@@ -49,22 +52,22 @@ export default function PanelInfo(
       })}
     >
       <RoundInfo
-        title="Total"
+        title={t('simulatorPanelTotal')}
         value={termIds.length}
       />
 
       <RoundInfo
-        title="Wait"
+        title={t('simulatorPanelWait')}
         value={Math.max(termIds.length - continueIds.length - rememberIds.length, 0)}
       />
 
       <RoundInfo
-        title="Done"
+        title={t('simulatorPanelDone')}
         value={rememberIds.length}
       />
 
       <RoundInfo
-        title="Time"
+        title={t('simulatorPanelTime')}
         value={<span key={simulator?.id || 0} ref={refTimer}>00:00:00</span>}
       />
     </div>
