@@ -4,7 +4,7 @@ import { createManyRelationFolders } from '@repositories/relation-folder'
 import ClientFolder, { ClientFolderData } from '@entities/ClientFolder'
 import { createManyFolder, getFolderById } from '@repositories/folders'
 import { createManyRelationTerms } from '@repositories/relation-term'
-import { filterEmptyTerms } from '@containers/Simulator/helpers'
+import { filterDeletedTerms } from '@containers/Simulator/helpers'
 import { upsertFolderGroup } from '@repositories/folder-group'
 import ClientFolderGroup from '@entities/ClientFolderGroup'
 import { prisma, transaction } from '@lib/prisma'
@@ -46,16 +46,21 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ fol
     return new Response(null, { status: 400 })
   }
 
-  const terms = filterEmptyTerms(parentFolder?.terms || [])
+  const terms = filterDeletedTerms(parentFolder.terms)
   if (terms.length === 0) {
     return new Response(null, { status: 400 })
   }
 
+  let i = 0
   const groupedArray = chunks(shuffle(terms), Number(body.partitionSize))
+
   for (const terms of groupedArray) {
+    ++i
     const folder = new ClientFolder()
-      .setIsModule(false)
       .setParentId(folderId)
+      .setIsModule(false)
+      .setName(`${i}`)
+      .setOrder(i)
 
     const relationFolder = new ClientRelationFolder()
       .setFolderGroupId(folderGroup.id)

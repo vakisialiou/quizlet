@@ -22,6 +22,15 @@ export const findParentFolder = (folderItems: ClientFolderData[], folder: Client
   return folderItems.find(({ id }) => id === folder.parentId) || null
 }
 
+export const getActualFolderData = (items: ClientFolderData[], folderId: string): ClientFolderData | null => {
+  const folderItems = [...items || []]
+  const folder = findFolder(folderItems, folderId)
+  if (folder) {
+    return ensureFolderValidTerms(folderItems, folder)
+  }
+  return null
+}
+
 export const ensureFolderValidTerms = (folderItems: ClientFolderData[], folder: ClientFolderData): ClientFolderData => {
   if (folder?.parentId) {
     const parentFolder = findParentFolder(folderItems, folder)

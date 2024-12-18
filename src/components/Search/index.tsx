@@ -19,6 +19,7 @@ export type SearchProps = {
   className?: string
   rounded?: boolean
   bordered?: boolean
+  autoFocus?: boolean
   placeholder?: string
   defaultValue?: string
   value?: string
@@ -36,6 +37,7 @@ export default function Search(
     className = '',
     rounded,
     bordered,
+    autoFocus = false,
     variant = SearchVariant.gray,
     variantFocus = SearchVariantFocus.blue,
     placeholder,
@@ -54,7 +56,7 @@ export default function Search(
         [className]: className
       })}
     >
-      <div
+      <label
         className={clsx('flex items-center w-full overflow-hidden border', {
           ['focus-within:border-blue-500']: variantFocus === SearchVariantFocus.blue,
           ['bg-gray-800 text-gray-300']: variant === SearchVariant.gray,
@@ -75,6 +77,7 @@ export default function Search(
           onFocus={onFocus}
           onKeyUp={onKeyUp}
           onChange={onChange}
+          autoFocus={autoFocus}
           placeholder={placeholder}
           defaultValue={defaultValue}
           variant={InputVariant[variant]}
@@ -89,7 +92,7 @@ export default function Search(
             className="mr-1 min-w-6"
           />
         }
-      </div>
+      </label>
     </div>
   )
 }

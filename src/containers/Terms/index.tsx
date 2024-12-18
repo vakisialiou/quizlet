@@ -1,21 +1,21 @@
 'use client'
 
 import { filterDeletedTerms, filterEmptyTerms } from '@containers/Simulator/helpers'
-import AchievementIcon, { AchievementsSize } from '@containers/AchievementIcon'
+import { searchTermItems, sortTermItems } from '@containers/Collection/helper'
 import ClientTerm, {ClientTermData} from '@entities/ClientTerm'
 import TextToSpeech, { TextToSpeechEvents } from '@lib/speech'
-import AchievementDegree from '@containers/AchievementDegree'
 import { FoldersType, TermsType } from '@store/initial-state'
-import React, {useEffect, useMemo, useState} from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
+import HeaderPageTitle from '@containers/HeaderPageTitle'
 import Button, { ButtonSkin } from '@components/Button'
 import ButtonSquare from '@components/ButtonSquare'
 import SVGQuestion from '@public/svg/question.svg'
 import ContentPage from '@containers/ContentPage'
 import SVGFileNew from '@public/svg/file_new.svg'
+import FolderTitle from '@containers/FolderTitle'
 import { useTranslations } from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
 import SVGPlay from '@public/svg/play.svg'
-import Search from '@components/Search'
 import {useRouter} from '@i18n/routing'
 import {useSelector} from 'react-redux'
 import Dialog from '@components/Dialog'
@@ -40,26 +40,21 @@ export default function Terms({ folderId }: { folderId: string }) {
     return folders.items.find(({ id }) => id === folderId)
   }, [folders.items, folderId])
 
-  const [search, setSearch] = useState<string | null>(null)
+  const [search, setSearch] = useState<string>('')
+
+  const visibleItems = useMemo(() => {
+    return filterDeletedTerms([...folder?.terms || []])
+  }, [folder?.terms])
 
   const terms = useMemo(() => {
-    let rawItems = filterDeletedTerms([...folder?.terms || []])
+    let rawItems = [...visibleItems]
 
     if (search) {
-      rawItems = rawItems.filter(({ question, answer, association }) => {
-        return `${question}`.toLocaleLowerCase().includes(search)
-          || `${answer}`.toLocaleLowerCase().includes(search)
-          || `${association}`.toLocaleLowerCase().includes(search)
-      })
+      rawItems = searchTermItems(rawItems, search, editTermInfo.editId)
     }
 
-    return rawItems.sort((a, b) => {
-      if (a.order === b.order) {
-        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-      }
-      return a.order - b.order
-    })
-  }, [folder?.terms, search])
+    return sortTermItems(rawItems)
+  }, [visibleItems, search, editTermInfo.editId])
 
   const speech = useMemo(() => {
     return typeof(window) === 'object' ? new TextToSpeech() : null
@@ -91,7 +86,17 @@ export default function Terms({ folderId }: { folderId: string }) {
     <ContentPage
       showHeader
       showFooter
-      title={t('headTitle')}
+      title={(
+        <HeaderPageTitle
+          title={t('headTitle')}
+          search={{
+            value: search || '',
+            placeholder: t('searchPlaceholder'),
+            onClear: () => setSearch(''),
+            onChange: ({ formattedValue }) => setSearch(formattedValue)
+          }}
+        />
+      )}
       rightControls={(
         <>
           <ButtonSquare
@@ -115,8 +120,13 @@ export default function Terms({ folderId }: { folderId: string }) {
               skin={ButtonSkin.WHITE}
               className="w-1/2 gap-1"
               onClick={() => {
-                const term = new ClientTerm(folderId).setOrder(terms.length).serialize()
-                actionSaveTerm({term, editId: term.id})
+                const term = new ClientTerm(folderId)
+                  .setOrder(visibleItems.length + 1)
+                  .serialize()
+
+                actionSaveTerm({ term, editId: term.id }, () => {
+                  setOriginItem(term)
+                })
               }}
             >
               <SVGFileNew
@@ -149,35 +159,7 @@ export default function Terms({ folderId }: { folderId: string }) {
         </div>
       )}
     >
-      <div className="flex gap-2 items-center p-4 font-bold text-gray-500 text-base border-b border-white/10">
-        <div className="flex items-center">
-          <AchievementIcon
-            folder={folder}
-            size={AchievementsSize.sm}
-          />
-          <AchievementDegree
-            hideDegree
-            folder={folder}
-            className="ml-4 uppercase"
-          />
-        </div>
-
-        <div className="truncate ...">
-          {folder?.name}
-        </div>
-      </div>
-
-      <Search
-        rounded
-        bordered
-        value={search || ''}
-        className="px-2 pt-2 md:px-4 md:pt-4"
-        placeholder={t('searchPlaceholder')}
-        onClear={() => setSearch(null)}
-        onChange={(e) => {
-          setSearch(e.target.value ? `${e.target.value}`.toLocaleLowerCase() : null)
-        }}
-      />
+      <FolderTitle folderId={folderId} />
 
       {folder &&
         <div

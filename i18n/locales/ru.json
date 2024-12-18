@@ -79,6 +79,8 @@
     "folderLabelDone": "Завершено {count}",
     "folderLabelTerms": "Термины {count}",
     "folderNoName": "(Имя не указано)",
+    "folderOpenTerms": "Термины",
+    "folderEditPlaceholder": "Название модуля",
     "groupLabelActive": "Активные",
     "groupLabelDone": "Завершено {count}",
     "groupLabelTerms": "Термины {count}",

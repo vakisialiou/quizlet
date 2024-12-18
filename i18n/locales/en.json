@@ -80,6 +80,8 @@
     "folderLabelDone": "Done {count}",
     "folderLabelTerms": "Terms {count}",
     "folderNoName": "(No name)",
+    "folderOpenTerms": "Terms",
+    "folderEditPlaceholder": "Module name",
     "groupLabelActive": "Active",
     "groupLabelDone": "Done {count}",
     "groupLabelTerms": "Terms {count}",

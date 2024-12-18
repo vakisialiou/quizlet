@@ -1,5 +1,6 @@
 'use client'
 
+import HeaderPageTitle from '@containers/HeaderPageTitle'
 import Button, { ButtonSkin } from '@components/Button'
 import SVGNewFolder from '@public/svg/new_folder.svg'
 import ButtonSquare from '@components/ButtonSquare'
@@ -11,13 +12,12 @@ import Grid from '@containers/Collection/Grid'
 import { useTranslations } from 'next-intl'
 import { useRouter } from '@i18n/routing'
 import Dialog from '@components/Dialog'
-import Search from '@components/Search'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 export default function Collection() {
   const t = useTranslations('Folders')
   const [ showUserHelp, setShowUserHelp ] = useState(false)
-  const [ search, setSearch ] = useState<string | null>(null)
+  const [search, setSearch] = useState<string>('')
 
   const router = useRouter()
 
@@ -25,7 +25,17 @@ export default function Collection() {
     <ContentPage
       showHeader
       showFooter
-      title={t('headTitle')}
+      title={(
+        <HeaderPageTitle
+          title={t('headTitle')}
+          search={{
+            value: search || '',
+            onClear: () => setSearch(''),
+            placeholder: t('searchPlaceholder'),
+            onChange: ({ formattedValue }) => setSearch(formattedValue)
+          }}
+        />
+      )}
       footer={(
         <div className="flex w-full justify-center lg:justify-end">
           <Button
@@ -54,31 +64,6 @@ export default function Collection() {
         />
       )}
     >
-      <div
-        className="flex gap-2 w-full items-center justify-between px-2 pt-2 md:px-4 md:pt-4"
-      >
-        <Search
-          rounded
-          bordered
-          value={search || ''}
-          className="w-full md:w-96"
-          onClear={() => setSearch(null)}
-          placeholder={t('searchPlaceholder')}
-          onChange={(e) => {
-            setSearch(e.target.value ? `${e.target.value}`.toLocaleLowerCase() : null)
-          }}
-        />
-
-        <ButtonSquare
-          bordered
-          icon={SVGNewFolder}
-          onClick={() => {
-            const folder = new ClientFolder().serialize()
-            actionSaveFolder({ folder, editId: folder.id })
-          }}
-        />
-      </div>
-
       <Grid
         search={search}
         onOpen={(folder) => {

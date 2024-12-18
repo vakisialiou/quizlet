@@ -28,6 +28,7 @@ export type InputProps = {
   bordered?: boolean
   readOnly?: boolean
   autoFocus?: boolean
+  maxLength?: number
   autoComplete?: string
   placeholder?: string
   value?: string
@@ -47,6 +48,7 @@ export default function Input(
     size = InputSize.h8,
     bordered,
     rounded,
+    maxLength,
     autoComplete,
     autoFocus,
     placeholder,
@@ -73,6 +75,7 @@ export default function Input(
       readOnly={readOnly}
       onChange={onChange}
       autoFocus={autoFocus}
+      maxLength={maxLength}
       placeholder={placeholder}
       autoComplete={autoComplete}
       defaultValue={defaultValue}

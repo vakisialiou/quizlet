@@ -143,6 +143,7 @@ export default function Term(
                 autoFocus
                 type="text"
                 name="question"
+                maxLength={100}
                 autoComplete="off"
                 placeholder={t('cardQuestionHintW')}
                 defaultValue={data.question || ''}
@@ -210,6 +211,7 @@ export default function Term(
               <Input
                 type="text"
                 name="answer"
+                maxLength={100}
                 autoComplete="off"
                 placeholder={t('cardAnswerHintW')}
                 defaultValue={data.answer || ''}
@@ -276,6 +278,7 @@ export default function Term(
             >
               <Input
                 type="text"
+                maxLength={255}
                 name="association"
                 autoComplete="off"
                 placeholder={t('cardAssociationHintW')}

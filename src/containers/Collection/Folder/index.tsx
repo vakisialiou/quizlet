@@ -1,9 +1,9 @@
+import Button, {ButtonSize, ButtonSkin} from '@components/Button'
 import FolderCart, {DropDownProps} from '@components/FolderCart'
-import { ClientFolderData } from '@entities/ClientFolder'
 import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
-import ButtonSquare from '@components/ButtonSquare'
-import SVGFileNew from '@public/svg/file_new.svg'
-import { useTranslations } from 'next-intl'
+import {ClientFolderData} from '@entities/ClientFolder'
+import SVGPresetNew from '@public/svg/preset_new.svg'
+import {useTranslations} from 'next-intl'
 import Divide from '@components/Divide'
 import Input from '@components/Input'
 import {ReactNode} from 'react'
@@ -54,17 +54,18 @@ export default function Folder(
       dropdown={dropdown}
       className={className}
     >
-      <div className="w-full font-bold text-gray-400 text-sm overflow-hidden flex items-center min-h-8 mt-3">
+      <div className="w-full font-bold text-white/50 text-sm overflow-hidden flex items-center min-h-8 mt-3">
         {edit &&
           <Input
             autoFocus
             type="text"
             name="name"
+            maxLength={100}
             onBlur={onSave}
             autoComplete="off"
             className="z-10 w-full"
-            placeholder="Module name"
             defaultValue={data.name || ''}
+            placeholder={t('folderEditPlaceholder')}
             onChange={(e) => {
               onChange('name', e.target.value)
             }}
@@ -89,12 +90,21 @@ export default function Folder(
               </span>
             </div>
 
-            <ButtonSquare
-              bordered
-              size={20}
-              icon={SVGFileNew}
-              onClick={onOpen}
-            />
+            <div>
+              <Button
+                skin={ButtonSkin.GRAY}
+                size={ButtonSize.H08}
+                className="px-2 gap-2 font-normal"
+                onClick={onOpen}
+              >
+                <SVGPresetNew
+                  width={18}
+                  height={18}
+                />
+
+                {t('folderOpenTerms')}
+              </Button>
+            </div>
           </div>
         }
       </div>

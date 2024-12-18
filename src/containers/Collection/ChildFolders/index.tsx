@@ -176,17 +176,23 @@ export default function ChildFolders(
                     }}
                   >
                     <div
-                      className="flex gap-2 items-center justify-between w-full p-2">
-                      <div className="flex items-center gap-4">
-                        <AchievementIcon
-                          folder={childFolder}
-                          size={AchievementsSize.sm}
-                        />
-                        <AchievementDegree
-                          hideDegree
-                          folder={childFolder}
-                          className="text-sm font-bold uppercase text-white/50"
-                        />
+                      className="flex gap-2 items-center justify-between w-full"
+                    >
+                      <div className="flex flex-col gap-1">
+                        <div className="text-xs font-bold text-white/50 uppercase">
+                          Group {childFolder.name}
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <AchievementIcon
+                            folder={childFolder}
+                            size={AchievementsSize.sm}
+                          />
+                          <AchievementDegree
+                            hideDegree
+                            folder={childFolder}
+                            className="text-sm font-bold uppercase text-white/20"
+                          />
+                        </div>
                       </div>
                       <div className="flex gap-2 items-center text-base text-white/50">
                         <SVGPlay

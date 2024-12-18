@@ -4,7 +4,7 @@ import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
 import {
   findModuleItems,
   getSimulatorsInfo,
-  searchItemsByName,
+  searchFolderItemsByName,
   sortFolderItems
 } from '@containers/Collection/helper'
 import ChildFolders from '@containers/Collection/ChildFolders'
@@ -31,6 +31,7 @@ import {
   actionUpdateFolderItem,
   actionCreateFolderPartitions
 } from '@store/index'
+import {filterDeletedTerms} from "@containers/Simulator/helpers";
 
 enum DropDownIdEnums {
   GENERATE = 'GENERATE',
@@ -72,9 +73,9 @@ export default function Grid(
 
   const items = useMemo(() => {
     let rawItems = findModuleItems([...folders.items || []])
-    rawItems = searchItemsByName(rawItems, search)
+    rawItems = searchFolderItemsByName(rawItems, search, folders.editId)
     return sortFolderItems(rawItems)
-  }, [folders.items, search])
+  }, [folders.items, folders.editId, search])
 
   return (
     <>
@@ -82,6 +83,7 @@ export default function Grid(
         className="flex flex-col gap-2 p-2 md:p-4"
       >
         {items.map((folder, index) => {
+          const terms = filterDeletedTerms(folder.terms)
           const { hasActive, countDone } = getSimulatorsInfo(folder.simulators)
 
           return (
@@ -145,7 +147,7 @@ export default function Grid(
                     {t('folderLabelDone', { count: countDone })}
                   </MetaLabel>
                   <MetaLabel>
-                    {t('folderLabelTerms', { count: folder.terms.length })}
+                    {t('folderLabelTerms', { count: terms.length })}
                   </MetaLabel>
                 </>
               )}
