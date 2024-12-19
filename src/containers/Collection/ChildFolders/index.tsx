@@ -1,18 +1,15 @@
 'use client'
 
-import AchievementIcon, {AchievementsSize} from '@containers/AchievementIcon'
 import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
 import AchievementDegree from '@containers/AchievementDegree'
 import { ClientFolderData } from '@entities/ClientFolder'
 import { getSimulatorsInfo } from '@helper/simulators'
-import SVGAssets from '@public/svg/asset_manager.svg'
 import { FoldersType } from '@store/initial-state'
 import FolderCart from '@components/FolderCart'
 import SVGTrash from '@public/svg/trash.svg'
 import { useTranslations } from 'next-intl'
 import SVGPlay from '@public/svg/play.svg'
 import { useSelector } from 'react-redux'
-
 import { Fragment, useMemo } from 'react'
 
 enum DropDownIdEnums {
@@ -117,11 +114,15 @@ export default function ChildFolders(
                     }}
                     title={(
                       <div className="flex gap-2 items-center font-bold">
-                        <SVGAssets
-                          width={16}
-                          height={16}
-                        />
                         <span>#{index + 1}</span>
+
+                        <div className="flex items-center gap-4">
+                          <AchievementDegree
+                            hideDegree
+                            folder={childFolder}
+                            className="text-sm font-bold uppercase text-white/50"
+                          />
+                        </div>
                       </div>
                     )}
                     labels={(
@@ -138,7 +139,7 @@ export default function ChildFolders(
                           <MetaLabel
                             variant={MetaLabelVariant.green}
                           >
-                            {t('folderLabelLast')}
+                            {t('groupLabelLast')}
                           </MetaLabel>
                         }
 
@@ -154,23 +155,10 @@ export default function ChildFolders(
                     }}
                   >
                     <div
-                      className="flex gap-2 items-center justify-between w-full"
+                      className="flex gap-2 items-center justify-between w-full p-2"
                     >
-                      <div className="flex flex-col gap-1">
-                        <div className="text-xs font-bold text-white/50 uppercase">
-                          Group {childFolder.name}
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <AchievementIcon
-                            folder={childFolder}
-                            size={AchievementsSize.sm}
-                          />
-                          <AchievementDegree
-                            hideDegree
-                            folder={childFolder}
-                            className="text-sm font-bold uppercase text-white/20"
-                          />
-                        </div>
+                      <div className="text-xs font-bold text-white/50 uppercase">
+                        {t('folderName', {num: childFolder.name})}
                       </div>
                       <div className="flex gap-2 items-center text-base text-white/50">
                         <SVGPlay

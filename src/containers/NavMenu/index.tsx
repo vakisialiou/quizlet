@@ -76,7 +76,7 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
 
             <ButtonSquare
               icon={SVGPanelClose}
-              className="right-4 top-4 md:hidden"
+              className="right-4 top-4"
               onClick={onClose}
             />
           </div>

@@ -268,7 +268,7 @@ export default function Grid(
         <Dialog
           title={t('generateDialogTitle')}
           text={(
-            <div className="flex items-center justify-center gap-4 w-full">
+            <div className="flex items-center justify-start gap-4 w-full">
               <div className="text-black">
                 {t('generateDialogPartitionLabel')}
               </div>
