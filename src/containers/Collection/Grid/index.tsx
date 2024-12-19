@@ -93,7 +93,7 @@ export default function Grid(
       >
         {moduleFolders.map((folder, index) => {
           const terms = filterDeletedTerms(folder.terms)
-          const { hasActive, countDone } = getSimulatorsInfo(folder.simulators)
+          const { hasActive } = getSimulatorsInfo(folder.simulators)
 
           const isLastStudy = lastStudy.parent.folder?.id === folder.id
 
@@ -161,11 +161,6 @@ export default function Grid(
                     </MetaLabel>
                   }
 
-                  <MetaLabel
-                    variant={MetaLabelVariant.gray}
-                  >
-                    {t('folderLabelDone', { count: countDone })}
-                  </MetaLabel>
                   <MetaLabel>
                     {t('folderLabelTerms', { count: terms.length })}
                   </MetaLabel>

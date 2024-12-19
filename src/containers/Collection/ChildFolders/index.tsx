@@ -90,7 +90,7 @@ export default function ChildFolders(
                   return
                 }
 
-                const { hasActive, countDone } = getSimulatorsInfo(childFolder.simulators)
+                const { hasActive } = getSimulatorsInfo(childFolder.simulators)
                 const isLastStudy = lastFolderId === childFolder.id
 
                 return (
@@ -142,11 +142,6 @@ export default function ChildFolders(
                           </MetaLabel>
                         }
 
-                        <MetaLabel
-                          variant={MetaLabelVariant.gray}
-                        >
-                          {t('groupLabelDone', {count: countDone})}
-                        </MetaLabel>
                         <MetaLabel>
                           {t('groupLabelTerms', { count: childFolder.relationTerms.length })}
                         </MetaLabel>
