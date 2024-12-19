@@ -21,12 +21,11 @@ export async function middleware(req: NextRequest) {
 
   // Убираем локаль из пути, если она есть
   const intlResponse = intlMiddleware(req)
-  if (intlResponse) {
+  if (intlResponse.status !== 200) {
     return intlResponse
   }
 
   const pathname = originPathname.replace(new RegExp(LOCALES_PATTERN), '')
-
   if (pathname.startsWith('/private')) {
     return await privateMiddleware(req)
   }
