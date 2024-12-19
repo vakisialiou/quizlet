@@ -192,7 +192,7 @@ export default function Grid(
               {!folder.collapsed &&
                 <>
                   <div
-                    className="flex mb-4 gap-2 justify-between max-w-xs"
+                    className="flex mb-4 gap-2 justify-between max-w-full md:max-w-xs"
                   >
                     <Button
                       skin={ButtonSkin.WHITE}
@@ -238,9 +238,7 @@ export default function Grid(
                         size={ButtonSize.H08}
                         className="gap-2 font-normal"
                         onClick={() => {
-                          if (onPlay) {
-                            onPlay(folder)
-                          }
+                          setPartition({...partition, folderId: folder.id})
                         }}
                       >
                         <SVGSettings

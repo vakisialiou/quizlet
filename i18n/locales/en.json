@@ -12,7 +12,7 @@
 
     "section1Title": "What does {appName} offer?",
     "section1Block1Title": "Flexibility",
-    "section1Block1Text": "Structure knowledge with modules and folders.",
+    "section1Block1Text": "Structure knowledge with modules and study groups.",
     "section1Block2Title": "Effective Simulators",
     "section1Block2Text": "Practice questions and answers until they're second nature.",
     "section1Block3Title": "Gamification",
@@ -26,7 +26,7 @@
 
     "section2Title": "{appName} - Three Steps to Productive Learning:",
     "section2Block1Title": "Step 1: Create Structure",
-    "section2Block1Text": "Create modules, folders, and terms. Organize materials by topics.",
+    "section2Block1Text": "Create modules, study group, and terms. Organize materials by topics.",
     "section2Block2Title": "Step 2: Learn the Material",
     "section2Block2Text": "Choose a simulator and dive into the learning process.",
     "section2Block3Title": "Step 3: Earn Rewards",
@@ -48,7 +48,7 @@
 
     "footer": "© 2024. All rights reserved. The {appName} Learning Platform.",
 
-    "helpSection1Title": "Click the button to open the 'Collection' section, where you can create folders and add terms to them for easy management and study."
+    "helpSection1Title": "Click the button to open the 'Collection' section, where you can create modules and add terms to them for easy management and study."
   },
   "Offline": {
     "warn": "You are in offline mode. <br/>Try connecting to the network."
@@ -97,7 +97,7 @@
     "userHelpSection3Text": "A study group always belongs to a module. It contains links to partitions. Partitions are linked to terms and simulators, allowing the material to be studied in smaller parts.",
     "userHelpSection4Title": "What is a simulator?",
     "userHelpSection4Text": "A simulator is a learning process. It is an entity that holds information about the current or past learning sessions.",
-    "userHelpSection5Title": "How to create a folder?",
+    "userHelpSection5Title": "How to create a module?",
     "userHelpSection5Text": "Click the white button located at the bottom of the screen.",
     "userHelpSection6Title": "How to create a term?",
     "userHelpSection6Text": "Click the ⋮ icon in the module and select \"Open module.\" After that, you will be redirected to a screen where you can add terms.",
