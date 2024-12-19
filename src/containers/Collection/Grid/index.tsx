@@ -1,18 +1,14 @@
 'use client'
 
 import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
-import {
-  findModuleItems,
-  getSimulatorsInfo,
-  searchFolderItemsByName,
-  sortFolderItems
-} from '@containers/Collection/helper'
+import Button, { ButtonSize, ButtonSkin } from '@components/Button'
+import { filterDeletedTerms } from '@containers/Simulator/helpers'
 import ChildFolders from '@containers/Collection/ChildFolders'
 import AchievementDegree from '@containers/AchievementDegree'
 import Dropdown, { DropdownSkin } from '@components/Dropdown'
 import { ClientFolderData } from '@entities/ClientFolder'
-import Button, { ButtonSkin } from '@components/Button'
-import SVGRefresh from '@public/svg/file_refresh.svg'
+import SVGPresetNew from '@public/svg/preset_new.svg'
+import SVGSettings from '@public/svg/settings.svg'
 import SVGEdit from '@public/svg/greasepencil.svg'
 import Folder from '@containers/Collection/Folder'
 import SVGOpen from '@public/svg/file_folder.svg'
@@ -31,7 +27,12 @@ import {
   actionUpdateFolderItem,
   actionCreateFolderPartitions
 } from '@store/index'
-import {filterDeletedTerms} from "@containers/Simulator/helpers";
+
+import { getLastStudyFolder, getLastStudyChildFolder } from '@helper/study'
+import { searchFolders } from '@helper/search-folders'
+import { getSimulatorsInfo } from '@helper/simulators'
+import { findModuleFolders } from '@helper/folders'
+import { sortFolders } from '@helper/sort-folders'
 
 enum DropDownIdEnums {
   GENERATE = 'GENERATE',
@@ -59,7 +60,7 @@ export default function Grid(
     {id: DropDownIdEnums.EDIT_FOLDER, name: t('dropDownEditModule'), icon: SVGEdit },
     {id: DropDownIdEnums.OPEN_FOLDER, name: t('dropDownOpenModule'), icon: SVGOpen },
     {id: DropDownIdEnums.STUDY, name: t('dropDownStudyModule'), icon: SVGPlay },
-    {id: DropDownIdEnums.GENERATE, name: t('dropDownGenerateGroups'), icon: SVGRefresh },
+    {id: DropDownIdEnums.GENERATE, name: t('dropDownGenerateGroups'), icon: SVGSettings },
     {id: '2', divider: true },
     {id: DropDownIdEnums.REMOVE_FOLDER, name: t('dropDownRemoveModule'), icon: SVGTrash },
   ]
@@ -71,20 +72,30 @@ export default function Grid(
 
   const [ partition, setPartition ] = useState<{ folderId: string | null, size: number }>({ folderId: null, size: 20 })
 
-  const items = useMemo(() => {
-    let rawItems = findModuleItems([...folders.items || []])
-    rawItems = searchFolderItemsByName(rawItems, search, folders.editId)
-    return sortFolderItems(rawItems)
+  const moduleFolders = useMemo(() => {
+    let moduleFolders = findModuleFolders([...folders.items || []])
+    moduleFolders = searchFolders(moduleFolders, search, folders.editId)
+    return sortFolders(moduleFolders)
   }, [folders.items, folders.editId, search])
+
+  const lastStudy = useMemo(() => {
+    const parent = getLastStudyFolder(moduleFolders)
+    return {
+      parent,
+      child: getLastStudyChildFolder(folders.items, parent.folder)
+    }
+  }, [folders.items, moduleFolders])
 
   return (
     <>
       <div
         className="flex flex-col gap-2 p-2 md:p-4"
       >
-        {items.map((folder, index) => {
+        {moduleFolders.map((folder, index) => {
           const terms = filterDeletedTerms(folder.terms)
           const { hasActive, countDone } = getSimulatorsInfo(folder.simulators)
+
+          const isLastStudy = lastStudy.parent.folder?.id === folder.id
 
           return (
             <Folder
@@ -141,6 +152,15 @@ export default function Grid(
                       {t('folderLabelActive')}
                     </MetaLabel>
                   }
+
+                  {(isLastStudy && !hasActive) &&
+                    <MetaLabel
+                      variant={MetaLabelVariant.green}
+                    >
+                      {t('folderLabelLast')}
+                    </MetaLabel>
+                  }
+
                   <MetaLabel
                     variant={MetaLabelVariant.gray}
                   >
@@ -151,11 +171,6 @@ export default function Grid(
                   </MetaLabel>
                 </>
               )}
-              onOpen={() => {
-                if (onOpen) {
-                  onOpen(folder)
-                }
-              }}
               onCollapse={() => {
                 actionSaveFolder({folder: {...folder, collapsed: !folder.collapsed}})
               }}
@@ -170,30 +185,90 @@ export default function Grid(
               onExit={() => {
                 actionUpdateFolder({
                   editId: null,
-                  items: upsertObject([...items], originItem as ClientFolderData)
+                  items: upsertObject([...moduleFolders], originItem as ClientFolderData)
                 }, () => setOriginItem(null))
               }}
             >
               {!folder.collapsed &&
-                <ChildFolders
-                  folder={folder}
-                  onPlay={(childFolder) => {
-                    if (onPlay) {
-                      onPlay(childFolder)
+                <>
+                  <div
+                    className="flex mb-4 gap-2 justify-between max-w-xs"
+                  >
+                    <Button
+                      skin={ButtonSkin.WHITE}
+                      size={ButtonSize.H08}
+                      className="gap-2 font-normal w-full"
+                      onClick={() => {
+                        if (onOpen) {
+                          onOpen(folder)
+                        }
+                      }}
+                    >
+                      <SVGPresetNew
+                        width={18}
+                        height={18}
+                        className="min-[18px]"
+                      />
+
+                      {t('folderOpen')}
+                    </Button>
+
+                    <Button
+                      skin={ButtonSkin.GREEN}
+                      size={ButtonSize.H08}
+                      className="gap-2 font-normal w-full"
+                      onClick={() => {
+                        if (onPlay) {
+                          onPlay(folder)
+                        }
+                      }}
+                    >
+                      <SVGPlay
+                        width={18}
+                        height={18}
+                        className="min-[18px]"
+                      />
+
+                      {t('folderPlay')}
+                    </Button>
+
+                    {folder.terms.length >= 20 &&
+                      <Button
+                        skin={ButtonSkin.GRAY}
+                        size={ButtonSize.H08}
+                        className="gap-2 font-normal"
+                        onClick={() => {
+                          if (onPlay) {
+                            onPlay(folder)
+                          }
+                        }}
+                      >
+                        <SVGSettings
+                          width={18}
+                          height={18}
+                          className="min-[18px]"
+                        />
+                      </Button>
                     }
-                  }}
-                  onRemove={(childFolder) => {
-                    setRemoveItem(childFolder)
-                  }}
-                  onGenerate={(parentFolder) => {
-                    setPartition({...partition, folderId: parentFolder.id})
-                  }}
-                />
+                  </div>
+
+                  <ChildFolders
+                    folder={folder}
+                    lastFolderId={lastStudy.child.folder?.id}
+                    onPlay={(childFolder) => {
+                      if (onPlay) {
+                        onPlay(childFolder)
+                      }
+                    }}
+                    onRemove={(childFolder) => {
+                      setRemoveItem(childFolder)
+                    }}
+                  />
+                </>
               }
             </Folder>
           )
         })}
-
       </div>
 
       {partition.folderId &&

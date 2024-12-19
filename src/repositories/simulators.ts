@@ -15,6 +15,8 @@ export type SimulatorSelectType = {
   rememberIds: boolean,
   settings: boolean,
   tracker: boolean,
+  createdAt: boolean
+  updatedAt: boolean
 }
 
 export const SimulatorSelect = {
@@ -29,6 +31,8 @@ export const SimulatorSelect = {
   rememberIds: true,
   settings: true,
   tracker: true,
+  createdAt: true,
+  updatedAt: true
 } as SimulatorSelectType
 
 type SimulatorResult = Prisma.SimulatorGetPayload<{
@@ -52,6 +56,8 @@ export const createSimulatorSelect = (data: SimulatorResult): ClientSimulator =>
     .setTermId(data.termId)
     .setTracker(tracker as ProgressTrackerData)
     .setSettings(settings as ClientSettingsSimulatorData)
+    .setCreatedAt(data.createdAt)
+    .setUpdatedAt(data.updatedAt)
 }
 
 export const findSimulatorsByFolderId = async (db: PrismaEntry, userId: string, folderId: string): Promise<ClientSimulatorData[]> => {

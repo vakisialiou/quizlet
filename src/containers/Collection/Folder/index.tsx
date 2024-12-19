@@ -1,8 +1,6 @@
-import Button, {ButtonSize, ButtonSkin} from '@components/Button'
 import FolderCart, {DropDownProps} from '@components/FolderCart'
 import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
 import {ClientFolderData} from '@entities/ClientFolder'
-import SVGPresetNew from '@public/svg/preset_new.svg'
 import {useTranslations} from 'next-intl'
 import Divide from '@components/Divide'
 import Input from '@components/Input'
@@ -22,7 +20,6 @@ export default function Folder(
     onCollapse,
     onSave,
     onExit,
-    onOpen,
     onChange,
     children
   }:
@@ -35,7 +32,6 @@ export default function Folder(
     labels?: ReactNode,
     dropdown?: DropDownProps,
     data: ClientFolderData,
-    onOpen: () => void,
     onSave: () => void,
     onExit: () => void,
     onChange: (prop: string, value: string) => void,
@@ -83,28 +79,10 @@ export default function Folder(
         }
 
         {!edit &&
-          <div className="flex gap-2 items-center justify-between w-full">
-            <div className="pt-[1px] mx-[9px] max-w-full truncate ...">
-              <span className="max-w-full">
-                {data.name || <span className="italic">{t('folderNoName')}</span>}
-              </span>
-            </div>
-
-            <div>
-              <Button
-                skin={ButtonSkin.GRAY}
-                size={ButtonSize.H08}
-                className="px-2 gap-2 font-normal"
-                onClick={onOpen}
-              >
-                <SVGPresetNew
-                  width={18}
-                  height={18}
-                />
-
-                {t('folderOpenTerms')}
-              </Button>
-            </div>
+          <div className="pt-[1px] mx-[9px] max-w-full truncate ...">
+            <span className="max-w-full">
+              {data.name || <span className="italic">{t('folderNoName')}</span>}
+            </span>
           </div>
         }
       </div>

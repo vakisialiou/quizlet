@@ -1,7 +1,6 @@
 'use client'
 
 import { filterDeletedTerms, filterEmptyTerms } from '@containers/Simulator/helpers'
-import { searchTermItems, sortTermItems } from '@containers/Collection/helper'
 import ClientTerm, {ClientTermData} from '@entities/ClientTerm'
 import TextToSpeech, { TextToSpeechEvents } from '@lib/speech'
 import { FoldersType, TermsType } from '@store/initial-state'
@@ -10,9 +9,11 @@ import HeaderPageTitle from '@containers/HeaderPageTitle'
 import Button, { ButtonSkin } from '@components/Button'
 import ButtonSquare from '@components/ButtonSquare'
 import SVGQuestion from '@public/svg/question.svg'
+import { searchTerms } from '@helper/search-terms'
 import ContentPage from '@containers/ContentPage'
 import SVGFileNew from '@public/svg/file_new.svg'
 import FolderTitle from '@containers/FolderTitle'
+import { sortTerms } from '@helper/sort-terms'
 import { useTranslations } from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
 import SVGPlay from '@public/svg/play.svg'
@@ -50,10 +51,10 @@ export default function Terms({ folderId }: { folderId: string }) {
     let rawItems = [...visibleItems]
 
     if (search) {
-      rawItems = searchTermItems(rawItems, search, editTermInfo.editId)
+      rawItems = searchTerms(rawItems, search, editTermInfo.editId)
     }
 
-    return sortTermItems(rawItems)
+    return sortTerms(rawItems)
   }, [visibleItems, search, editTermInfo.editId])
 
   const speech = useMemo(() => {

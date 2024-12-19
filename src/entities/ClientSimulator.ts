@@ -25,6 +25,8 @@ export type ClientSimulatorData = {
   needUpdate: boolean
   tracker: ProgressTrackerData
   settings: ClientSettingsSimulatorData
+  createdAt: Date
+  updatedAt: Date
 }
 
 export default class ClientSimulator {
@@ -41,6 +43,8 @@ export default class ClientSimulator {
   needUpdate: boolean
   tracker: ProgressTrackerData
   settings: ClientSettingsSimulatorData
+  createdAt: Date
+  updatedAt: Date
 
   constructor(folderId: string, status: SimulatorStatus, settings?: Partial<ClientSettingsSimulatorData>) {
     this.id = v4()
@@ -56,6 +60,8 @@ export default class ClientSimulator {
     this.needUpdate = false
     this.settings = new ClientSettingsSimulator(settings).serialize()
     this.tracker = new SimulatorTracker(this).serialize()
+    this.createdAt = new Date()
+    this.updatedAt = new Date()
   }
 
   setId(value: string): ClientSimulator {
@@ -167,6 +173,16 @@ export default class ClientSimulator {
 
   setSettings(value: Partial<ClientSettingsSimulatorData>): ClientSimulator {
     this.settings = { ...this.settings, ...value }
+    return this
+  }
+
+  setCreatedAt(value: Date): ClientSimulator {
+    this.createdAt = value
+    return this
+  }
+
+  setUpdatedAt(value: Date): ClientSimulator {
+    this.updatedAt = value
     return this
   }
 

@@ -1,12 +1,10 @@
 'use client'
 
 import AchievementIcon, {AchievementsSize} from '@containers/AchievementIcon'
-import Button, { ButtonSize, ButtonSkin } from '@components/Button'
 import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
-import { getSimulatorsInfo } from '@containers/Collection/helper'
 import AchievementDegree from '@containers/AchievementDegree'
 import { ClientFolderData } from '@entities/ClientFolder'
-import SVGRefresh from '@public/svg/file_refresh.svg'
+import { getSimulatorsInfo } from '@helper/simulators'
 import SVGAssets from '@public/svg/asset_manager.svg'
 import { FoldersType } from '@store/initial-state'
 import FolderCart from '@components/FolderCart'
@@ -14,6 +12,7 @@ import SVGTrash from '@public/svg/trash.svg'
 import { useTranslations } from 'next-intl'
 import SVGPlay from '@public/svg/play.svg'
 import { useSelector } from 'react-redux'
+
 import { Fragment, useMemo } from 'react'
 
 enum DropDownIdEnums {
@@ -24,15 +23,15 @@ enum DropDownIdEnums {
 export default function ChildFolders(
   {
     folder,
+    lastFolderId,
     onPlay,
     onRemove,
-    onGenerate,
   }:
   {
     folder: ClientFolderData
+    lastFolderId?: string | null,
     onPlay?: (folder: ClientFolderData) => void
     onRemove?: (folder: ClientFolderData) => void,
-    onGenerate?: (folder: ClientFolderData) => void
   }
 ) {
   const t = useTranslations('Folders')
@@ -72,33 +71,6 @@ export default function ChildFolders(
         </div>
       }
 
-      {(folder.terms.length > 0 && folderGroups.length === 0) &&
-        <div className="flex flex-col items-center justify-center gap-4 p-4">
-          <div className="text-white/50 text-sm italic text-center">
-            {t('warnGridGroup2')}
-          </div>
-
-          <Button
-            className="px-4 gap-2"
-            size={ButtonSize.H10}
-            skin={ButtonSkin.GREEN}
-            onClick={() => {
-              if (onGenerate) {
-                onGenerate(folder)
-              }
-            }}
-          >
-            <SVGRefresh
-              width={18}
-              height={18}
-              className="text-white"
-            />
-
-            {t('warnGridGroup2Button')}
-          </Button>
-        </div>
-      }
-
       {folderGroups.map((group, gIndex) => {
         return (
           <Fragment
@@ -119,6 +91,8 @@ export default function ChildFolders(
                 }
 
                 const { hasActive, countDone } = getSimulatorsInfo(childFolder.simulators)
+                const isLastStudy = lastFolderId === childFolder.id
+
                 return (
                   <FolderCart
                     key={index}
@@ -159,6 +133,15 @@ export default function ChildFolders(
                             {t('groupLabelActive')}
                           </MetaLabel>
                         }
+
+                        {(isLastStudy && !hasActive) &&
+                          <MetaLabel
+                            variant={MetaLabelVariant.green}
+                          >
+                            {t('folderLabelLast')}
+                          </MetaLabel>
+                        }
+
                         <MetaLabel
                           variant={MetaLabelVariant.gray}
                         >

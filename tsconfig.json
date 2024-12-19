@@ -31,6 +31,9 @@
       "@hooks/*": [
         "./src/hooks/*"
       ],
+      "@helper/*": [
+        "./src/helper/*"
+      ],
       "@i18n/*": [
         "./i18n/*"
       ],
