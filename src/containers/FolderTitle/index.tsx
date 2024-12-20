@@ -1,5 +1,5 @@
 import AchievementIcon, {AchievementsSize} from '@containers/AchievementIcon'
-import { getActualFolderData } from '@containers/Simulator/helpers'
+import { ensureActualFolderTermsByFolderId } from '@helper/folders'
 import AchievementDegree from '@containers/AchievementDegree'
 import { FoldersType } from '@store/initial-state'
 import { useSelector } from 'react-redux'
@@ -9,11 +9,11 @@ export default function FolderTitle({ folderId }: { folderId: string }) {
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
 
   const { folder, parentFolder } = useMemo(() => {
-    const folder = getActualFolderData(folders.items, folderId)
+    const folder = ensureActualFolderTermsByFolderId(folders.items, folderId)
     return {
       folder,
       parentFolder: (folder && folder.parentId)
-        ? getActualFolderData(folders.items, folder.parentId)
+        ? ensureActualFolderTermsByFolderId(folders.items, folder.parentId)
         : null,
     }
   }, [folders.items, folderId])

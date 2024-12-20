@@ -1,19 +1,19 @@
 import { ClientSettingsSimulatorData } from '@entities/ClientSettingsSimulator'
 import { ProgressTrackerAction } from '@entities/ProgressTracker'
+import { findNeedUpdateSimulators } from '@helper/simulators'
 import { SimulatorStatus } from '@entities/ClientSimulator'
 import { upsertSimulators } from '@store/fetch/simulators'
 import SimulatorTracker from '@entities/SimulatorTracker'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { ConfigType } from '@store/initial-state'
 import {
-  findNeedUpdateSimulators,
   createActiveSimulator,
   updateActiveSimulator,
   updateSimulatorById,
   addRememberIds,
   addContinueId,
   addHistoryId,
-} from '@containers/Simulator/helpers'
+} from '@helper/reducers-simulator'
 
 export type UpsertSimulatorsIds = (string | null)[]
 

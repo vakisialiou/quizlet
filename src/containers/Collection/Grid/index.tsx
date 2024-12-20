@@ -2,12 +2,12 @@
 
 import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
 import Button, { ButtonSize, ButtonSkin } from '@components/Button'
-import { filterDeletedTerms } from '@containers/Simulator/helpers'
 import ChildFolders from '@containers/Collection/ChildFolders'
 import AchievementDegree from '@containers/AchievementDegree'
 import Dropdown, { DropdownSkin } from '@components/Dropdown'
 import { ClientFolderData } from '@entities/ClientFolder'
 import SVGPresetNew from '@public/svg/preset_new.svg'
+import { filterDeletedTerms } from '@helper/terms'
 import SVGSettings from '@public/svg/settings.svg'
 import SVGEdit from '@public/svg/greasepencil.svg'
 import Folder from '@containers/Collection/Folder'
@@ -28,7 +28,7 @@ import {
   actionCreateFolderPartitions
 } from '@store/index'
 
-import { getLastStudyFolder, getLastStudyChildFolder } from '@helper/study'
+import { getLastStudyFolder } from '@helper/study'
 import { searchFolders } from '@helper/search-folders'
 import { getSimulatorsInfo } from '@helper/simulators'
 import { findModuleFolders } from '@helper/folders'
@@ -79,12 +79,8 @@ export default function Grid(
   }, [folders.items, folders.editId, search])
 
   const lastStudy = useMemo(() => {
-    const parent = getLastStudyFolder(moduleFolders)
-    return {
-      parent,
-      child: getLastStudyChildFolder(folders.items, parent.folder)
-    }
-  }, [folders.items, moduleFolders])
+    return getLastStudyFolder(folders.items)
+  }, [folders.items])
 
   return (
     <>
@@ -95,7 +91,7 @@ export default function Grid(
           const terms = filterDeletedTerms(folder.terms)
           const { hasActive } = getSimulatorsInfo(folder.simulators)
 
-          const isLastStudy = lastStudy.parent.folder?.id === folder.id
+          const isLastStudy = lastStudy.folder?.id === folder.id
 
           return (
             <Folder

@@ -4,7 +4,7 @@ import { CardSelection } from '@containers/Simulator/CardAggregator/MethodPickCa
 import CardAggregator, { OnChangeParamsType } from '@containers/Simulator/CardAggregator'
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import { CardStatus } from '@containers/Simulator/CardAggregator/types'
-import { getActualFolderData } from '@containers/Simulator/helpers'
+import { ensureActualFolderTermsByFolderId } from '@helper/folders'
 import { ProgressTrackerAction } from '@entities/ProgressTracker'
 import {SimulatorMethod} from '@entities/ClientSettingsSimulator'
 import TextToSpeech, { TextToSpeechEvents } from '@lib/speech'
@@ -39,7 +39,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
 
   const folder = useMemo(() => {
-    return getActualFolderData(folders.items, folderId)
+    return ensureActualFolderTermsByFolderId(folders.items, folderId)
   }, [folders.items, folderId])
 
   const simulators = useMemo(() => {

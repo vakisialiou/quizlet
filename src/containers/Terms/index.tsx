@@ -1,6 +1,6 @@
 'use client'
 
-import { filterDeletedTerms, filterEmptyTerms } from '@containers/Simulator/helpers'
+import { filterDeletedTerms, filterEmptyTerms } from '@helper/terms'
 import ClientTerm, {ClientTermData} from '@entities/ClientTerm'
 import TextToSpeech, { TextToSpeechEvents } from '@lib/speech'
 import { FoldersType, TermsType } from '@store/initial-state'
