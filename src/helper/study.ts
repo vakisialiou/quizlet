@@ -1,7 +1,7 @@
 import { ClientFolderGroupData } from '@entities/ClientFolderGroup'
 import { createFoldersRelation } from '@helper/folders-relation'
 import { ClientSimulatorData } from '@entities/ClientSimulator'
-import { sortSimulators } from '@helper/sort-simulators'
+import { sortSimulatorsDesc } from '@helper/sort-simulators'
 import { ClientFolderData} from '@entities/ClientFolder'
 import { findModuleFolders } from '@helper/folders'
 
@@ -35,32 +35,36 @@ export const getLastStudyFolder = (items: ClientFolderData[]): LastStudyFolder =
   const modules = findModuleFolders(items)
 
   for (const folder of modules) {
-    if (folder.simulators.length === 0) {
+    // Последнее дочернее обновление симулятора.
+    const child = getLastStudyChildFolder(items, folder)
+    // Последнее обновление симулятора у родителя
+    const [ simulator ] = sortSimulatorsDesc([...folder.simulators])
+
+    if (!child.timestamp && !simulator) {
       continue
     }
 
-    const child = getLastStudyChildFolder(items, folder)
-    const [ simulator ] = sortSimulators([...folder.simulators]).reverse()
-    const simulatorTimestamp = new Date(simulator.createdAt).getTime()
-    const actualTimestamp = child.timestamp > simulatorTimestamp ? child.timestamp : simulatorTimestamp
+    const simulatorTimestamp = simulator ? new Date(simulator.createdAt).getTime() : child.timestamp
+    const timestamp = child.timestamp > simulatorTimestamp ? child.timestamp : simulatorTimestamp
 
     if (!last.timestamp) {
       last.child = child
       last.folder = folder
       last.simulator = simulator
-      last.timestamp = actualTimestamp
+      last.timestamp = timestamp
       continue
     }
 
     if (last.simulator) {
-      if (actualTimestamp > last.timestamp) {
+      if (timestamp > last.timestamp) {
         last.child = child
         last.folder = folder
         last.simulator = simulator
-        last.timestamp = actualTimestamp
+        last.timestamp = timestamp
       }
     }
   }
+
   return last
 }
 
@@ -85,21 +89,21 @@ export const getLastStudyChildFolder = (items: ClientFolderData[], parentFolder:
         continue
       }
 
-      const [ simulator ] = sortSimulators([...folder.simulators]).reverse()
+      const [ simulator ] = sortSimulatorsDesc([...folder.simulators])
+      const timestamp = new Date(simulator.updatedAt).getTime()
 
       if (!last.timestamp) {
         last.folder = folder
+        last.timestamp = timestamp
         last.simulator = simulator
         last.folderGroup = folderGroup
-        last.timestamp = new Date(simulator.updatedAt).getTime()
       }
 
       if (last.simulator) {
-        const timestamp = new Date(simulator.updatedAt).getTime()
         if (timestamp > last.timestamp) {
           last.folder = folder
-          last.simulator = simulator
           last.timestamp = timestamp
+          last.simulator = simulator
           last.folderGroup = folderGroup
         }
       }

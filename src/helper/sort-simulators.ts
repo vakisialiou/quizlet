@@ -1,7 +1,7 @@
 import { ClientSimulatorData } from '@entities/ClientSimulator'
 
-export const sortSimulators = (simulators: ClientSimulatorData[]): ClientSimulatorData[] => {
+export const sortSimulatorsDesc = (simulators: ClientSimulatorData[]): ClientSimulatorData[] => {
   return [...simulators].sort((a, b) => {
-    return new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()
+    return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
   })
 }

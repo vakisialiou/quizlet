@@ -52,6 +52,10 @@ export default function HeaderPageTitle(
               case 27:
                 if (search.value) {
                   search.onClear()
+                  return
+                }
+                if (searchFocus) {
+                  setSearchFocus(false)
                 }
                 break
             }
