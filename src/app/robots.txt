@@ -11,6 +11,9 @@ Disallow: /ru/private/
 Disallow: /en/private/
 Disallow: /ru/offline/
 Disallow: /en/offline/
+Disallow: /api/
+Disallow: /ru/api/
+Disallow: /en/api/
 
 Host: https://quizerplay.com
 Sitemap: https://quizerplay.com/sitemap.xml
