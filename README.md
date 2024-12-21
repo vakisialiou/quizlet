@@ -166,3 +166,5 @@ npx prisma migrate deploy
 # or
 yarn deploy
 ```
+
+Поисковые операторы гугл, яндекс???
