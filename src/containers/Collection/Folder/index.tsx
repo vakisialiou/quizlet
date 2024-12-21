@@ -1,8 +1,8 @@
 import FolderCart, {DropDownProps} from '@components/FolderCart'
 import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
 import {ClientFolderData} from '@entities/ClientFolder'
+import ButtonSquare from '@components/ButtonSquare'
 import {useTranslations} from 'next-intl'
-import Divide from '@components/Divide'
 import Input from '@components/Input'
 import {ReactNode} from 'react'
 import clsx from 'clsx'
@@ -15,7 +15,6 @@ export default function Folder(
     dropdown,
     className,
     edit = false,
-    process = false,
     collapsed = true,
     onCollapse,
     onSave,
@@ -26,7 +25,6 @@ export default function Folder(
   {
     edit?: boolean,
     title: ReactNode,
-    process?: boolean,
     collapsed?: boolean,
     className?: string
     labels?: ReactNode,
@@ -46,11 +44,20 @@ export default function Folder(
       hover={false}
       title={title}
       labels={labels}
-      process={process}
       dropdown={dropdown}
       className={className}
+      controls={(
+        <ButtonSquare
+          size={24}
+          icon={SVGArrowDown}
+          onClick={onCollapse}
+          classNameIcon={clsx('', {
+            ['rotate-180']: !collapsed
+          })}
+        />
+      )}
     >
-      <div className="w-full font-bold text-white/50 text-sm overflow-hidden flex items-center min-h-8 mt-3">
+      <div className="w-full font-bold text-white/50 text-sm overflow-hidden flex items-center min-h-8">
         {edit &&
           <Input
             autoFocus
@@ -85,31 +92,6 @@ export default function Folder(
             </span>
           </div>
         }
-      </div>
-
-      <div className="relative flex items-center justify-center w-full h-[28px] my-2">
-        <Divide
-          className="absolute left-0 top-[13px] divide-white/15 w-full"
-        />
-        <div
-          className={clsx('rounded-full px-4 z-10', {
-            ['flex gap-1 items-center justify-center']: true,
-            ['h-[28px]']: true,
-            ['text-white/50 border border-white/25 bg-black']: true,
-            ['hover:border-white/35 active:border-white/25 cursor-pointer']: true,
-            ['transition-all']: true
-          })}
-          onClick={onCollapse}
-        >
-          <SVGArrowDown
-            width={20}
-            height={20}
-            className={clsx('transition-all text-white/50 hover:text-white/50', {
-              ['rotate-180']: !collapsed
-            })}
-          />
-
-        </div>
       </div>
 
       {children}

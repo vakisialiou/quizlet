@@ -87,6 +87,10 @@ export default function Terms({ folderId }: { folderId: string }) {
     <ContentPage
       showHeader
       showFooter
+      options={{
+        padding: true,
+        scrollbarGutter: true,
+      }}
       title={(
         <HeaderPageTitle
           title={t('headTitle')}
@@ -160,11 +164,13 @@ export default function Terms({ folderId }: { folderId: string }) {
         </div>
       )}
     >
-      <FolderTitle folderId={folderId} />
+      <div>
+        <FolderTitle folderId={folderId} />
+      </div>
 
       {folder &&
         <div
-          className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 p-2 md:p-4"
+          className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2"
         >
           {terms.map((term, index) => {
             return (
@@ -173,7 +179,6 @@ export default function Terms({ folderId }: { folderId: string }) {
                 key={term.id}
                 number={index + 1}
                 edit={term.id === editTermInfo.editId}
-                process={editTermInfo.processIds.includes(term.id)}
                 soundPlayingName={soundInfo.termId === term.id ? soundInfo.playingName : null}
                 onSave={() => {
                   actionSaveTerm({term, editId: null}, () => {

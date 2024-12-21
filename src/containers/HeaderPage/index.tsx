@@ -19,7 +19,7 @@ export default function HeaderPage(
         </div>
       }
 
-      <div className="w-full h-[1px] bg-gray-700 absolute bottom-0 left-0" />
+      <div className="w-full h-[1px] bg-white/20 absolute bottom-0 left-0" />
     </div>
   )
 }

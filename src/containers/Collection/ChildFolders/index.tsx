@@ -1,5 +1,10 @@
 'use client'
 
+import {
+  DEFAULT_GROUP_SIZE,
+  isGenerateGroupDisabled,
+  minTermsCountToGenerateGroup
+} from '@helper/groups'
 import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
 import AchievementDegree from '@containers/AchievementDegree'
 import { ClientFolderData } from '@entities/ClientFolder'
@@ -60,10 +65,10 @@ export default function ChildFolders(
 
   return (
     <div className="flex flex-col gap-2">
-      {(folder.terms.length === 0) &&
+      {isGenerateGroupDisabled(folder, DEFAULT_GROUP_SIZE) &&
         <div className="flex flex-col items-center justify-center gap-2">
           <div className="text-white/50 text-sm italic text-center">
-            {t('warnGridGroup1')}
+            {t('warnGridGroup1', { size: minTermsCountToGenerateGroup(DEFAULT_GROUP_SIZE) })}
           </div>
         </div>
       }
@@ -94,7 +99,6 @@ export default function ChildFolders(
                   <FolderCart
                     key={index}
                     hover={true}
-                    process={false}
                     dropdown={{
                       items: dropdownChildrenItems,
                       onSelect: (id) => {

@@ -25,7 +25,6 @@ export default function Term(
   {
     data,
     edit = false,
-    process = false,
     number,
     onEdit,
     onRemove,
@@ -39,7 +38,6 @@ export default function Term(
     data: ClientTermData
     number: number,
     edit: boolean
-    process: boolean
     onEdit: () => void
     onRemove: () => void
     onExit: () => void
@@ -84,7 +82,6 @@ export default function Term(
   return (
     <FolderCart
       hover={false}
-      process={process}
       title={(
         <div className="flex gap-2 items-center font-bold">
           <SVGFile

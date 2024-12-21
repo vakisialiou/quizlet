@@ -33,6 +33,16 @@ import { searchFolders } from '@helper/search-folders'
 import { getSimulatorsInfo } from '@helper/simulators'
 import { findModuleFolders } from '@helper/folders'
 import { sortFolders } from '@helper/sort-folders'
+import {
+  DEFAULT_GROUP_SIZE,
+  GROUP_SIZE_5,
+  GROUP_SIZE_10,
+  GROUP_SIZE_15,
+  GROUP_SIZE_20,
+  GROUP_SIZE_25,
+  GROUP_SIZE_30,
+  isGenerateGroupDisabled
+} from '@helper/groups'
 
 enum DropDownIdEnums {
   GENERATE = 'GENERATE',
@@ -70,7 +80,7 @@ export default function Grid(
   const [ originItem, setOriginItem ] = useState<ClientFolderData | null>(null)
   const [ removeItem, setRemoveItem ] = useState<ClientFolderData | null>(null)
 
-  const [ partition, setPartition ] = useState<{ folderId: string | null, size: number }>({ folderId: null, size: 20 })
+  const [ partition, setPartition ] = useState<{ folder: ClientFolderData | null, size: number }>({ folder: null, size: DEFAULT_GROUP_SIZE })
 
   const moduleFolders = useMemo(() => {
     let moduleFolders = findModuleFolders([...folders.items || []])
@@ -85,7 +95,7 @@ export default function Grid(
   return (
     <>
       <div
-        className="flex flex-col gap-2 p-2 md:p-4"
+        className="flex flex-col gap-2"
       >
         {moduleFolders.map((folder, index) => {
           const terms = filterDeletedTerms(folder.terms)
@@ -112,7 +122,6 @@ export default function Grid(
                 </div>
               )}
               edit={folders.editId === folder.id}
-              process={folders.processIds.includes(folder.id)}
               dropdown={{
                 items: dropdownParentItems,
                 onSelect: (id) => {
@@ -134,7 +143,7 @@ export default function Grid(
                       setRemoveItem(folder)
                       break
                     case DropDownIdEnums.GENERATE:
-                      setPartition({ ...partition, folderId: folder.id })
+                      setPartition({ ...partition, folder })
                       break
                   }
                 }
@@ -183,7 +192,7 @@ export default function Grid(
               {!folder.collapsed &&
                 <>
                   <div
-                    className="flex mb-4 gap-2 justify-between max-w-full md:max-w-xs"
+                    className="flex my-4 gap-2 justify-between max-w-full md:max-w-xs"
                   >
                     <Button
                       skin={ButtonSkin.WHITE}
@@ -223,23 +232,24 @@ export default function Grid(
                       {t('folderPlay')}
                     </Button>
 
-                    {folder.terms.length >= 20 &&
-                      <Button
-                        skin={ButtonSkin.GRAY}
-                        size={ButtonSize.H08}
-                        className="gap-2 font-normal"
-                        onClick={() => {
-                          setPartition({...partition, folderId: folder.id})
-                        }}
-                      >
-                        <SVGSettings
-                          width={18}
-                          height={18}
-                          className="min-[18px]"
-                        />
-                      </Button>
-                    }
+                    <Button
+                      skin={ButtonSkin.GRAY}
+                      size={ButtonSize.H08}
+                      className="gap-2 font-normal"
+                      disabled={isGenerateGroupDisabled(folder, DEFAULT_GROUP_SIZE)}
+                      onClick={() => {
+                        setPartition({...partition, folder})
+                      }}
+                    >
+                      <SVGSettings
+                        width={18}
+                        height={18}
+                        className="min-[18px]"
+                      />
+                    </Button>
                   </div>
+
+                  <div className="w-full h-[1px] border-b border-white/10 mt-1 mb-2" />
 
                   <ChildFolders
                     folder={folder}
@@ -260,7 +270,7 @@ export default function Grid(
         })}
       </div>
 
-      {partition.folderId &&
+      {partition.folder &&
         <Dialog
           title={t('generateDialogTitle')}
           text={(
@@ -276,11 +286,36 @@ export default function Grid(
                 selected={partition.size}
                 skin={DropdownSkin.white}
                 items={[
-                  { id: 10, name: t('generateDialogPartitionSize', { size: 10 }) },
-                  { id: 15, name: t('generateDialogPartitionSize', { size: 15 }) },
-                  { id: 20, name: t('generateDialogPartitionSize', { size: 20 }) },
-                  { id: 25, name: t('generateDialogPartitionSize', { size: 25 }) },
-                  { id: 30, name: t('generateDialogPartitionSize', { size: 30 }) },
+                  {
+                    id: GROUP_SIZE_5,
+                    name: t('generateDialogPartitionSize', { size: GROUP_SIZE_5  }),
+                    disabled: isGenerateGroupDisabled(partition.folder, GROUP_SIZE_5)
+                  },
+                  {
+                    id: GROUP_SIZE_10,
+                    name: t('generateDialogPartitionSize', { size: GROUP_SIZE_10 }),
+                    disabled: isGenerateGroupDisabled(partition.folder, GROUP_SIZE_10)
+                  },
+                  {
+                    id: GROUP_SIZE_15,
+                    name: t('generateDialogPartitionSize', { size: GROUP_SIZE_15 }),
+                    disabled: isGenerateGroupDisabled(partition.folder, GROUP_SIZE_15)
+                  },
+                  {
+                    id: GROUP_SIZE_20,
+                    name: t('generateDialogPartitionSize', { size: GROUP_SIZE_20 }),
+                    disabled: isGenerateGroupDisabled(partition.folder, GROUP_SIZE_20)
+                  },
+                  {
+                    id: GROUP_SIZE_25,
+                    name: t('generateDialogPartitionSize', { size: GROUP_SIZE_25 }),
+                    disabled: isGenerateGroupDisabled(partition.folder, GROUP_SIZE_25)
+                  },
+                  {
+                    id: GROUP_SIZE_30,
+                    name: t('generateDialogPartitionSize', { size: GROUP_SIZE_30 }),
+                    disabled: isGenerateGroupDisabled(partition.folder, GROUP_SIZE_30)
+                  },
                 ]}
                 onSelect={(id) => {
                   setPartition({ ...partition, size: id as number })
@@ -296,14 +331,12 @@ export default function Grid(
           <Button
             skin={ButtonSkin.GREEN}
             className="min-w-28 px-4"
+            disabled={isGenerateGroupDisabled(partition.folder, GROUP_SIZE_5)}
             onClick={() => {
-              if (partition.folderId) {
-                const { folderId, size } = partition
-                setPartition({ ...partition, folderId: null })
-                actionCreateFolderPartitions({
-                  folderId,
-                  partitionSize: size
-                })
+              if (partition.folder) {
+                const { folder, size } = partition
+                setPartition({ ...partition, folder: null })
+                actionCreateFolderPartitions({ folderId: folder.id, partitionSize: size })
               }
             }}
           >
@@ -313,7 +346,7 @@ export default function Grid(
           <Button
             className="min-w-28 px-4"
             skin={ButtonSkin.WHITE}
-            onClick={() => setPartition({ ...partition, folderId: null })}
+            onClick={() => setPartition({ ...partition, folder: null })}
           >
             {t('generateDialogButtonCancel')}
           </Button>

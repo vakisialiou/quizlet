@@ -196,10 +196,14 @@ export default function Simulator({ folderId }: { folderId: string }) {
         </div>
       )}
     >
-      <FolderTitle folderId={folderId} />
+      <div className="p-2 md:p-4">
+        <FolderTitle
+          folderId={folderId}
+        />
+      </div>
 
       <div
-        className="w-full h-[calc(100%-66px)] flex flex-col items-center justify-center overflow-hidden"
+        className="w-full h-[calc(100%-81px)] flex flex-col items-center justify-center overflow-hidden"
       >
         <div className="flex flex-col">
           <PanelInfo

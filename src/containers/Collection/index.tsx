@@ -25,6 +25,10 @@ export default function Collection() {
     <ContentPage
       showHeader
       showFooter
+      options={{
+        padding: true,
+        scrollbarGutter: true,
+      }}
       title={(
         <HeaderPageTitle
           title={t('headTitle')}

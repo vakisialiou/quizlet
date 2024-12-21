@@ -1,8 +1,7 @@
 import Dropdown, { DropdownItemType } from '@components/Dropdown'
 import SVGThreeDots from '@public/svg/three_dots.svg'
+import { BaseSyntheticEvent, ReactNode } from 'react'
 import FolderFrame from '@components/FolderFrame'
-import Spinner from '@components/Spinner'
-import {BaseSyntheticEvent, ReactNode} from 'react'
 
 export type DropDownProps = {
   hidden?: boolean
@@ -15,19 +14,19 @@ export default function FolderCart(
     title,
     labels,
     hover = true,
-    process = false,
     dropdown,
     children,
     className = '',
-    onClickBody
+    onClickBody,
+    controls
   }:
   {
     hover?: boolean
     title?: ReactNode,
-    process?: boolean,
     className?: string,
     labels?: ReactNode,
     children?: ReactNode,
+    controls?: ReactNode,
     dropdown?: DropDownProps
     onClickBody?: (e: BaseSyntheticEvent) => void
   }
@@ -46,33 +45,32 @@ export default function FolderCart(
           </div>
 
           <div className="flex gap-2 items-center">
-            {process &&
-              <div className="flex items-center justify-center w-6 h-6">
-                <Spinner size={3}/>
-              </div>
-            }
 
             {labels}
 
-            {dropdown?.hidden !== true &&
-              <Dropdown
-                onClick={(e) => {
-                  e.preventDefault()
-                }}
-                items={dropdown?.items || []}
-                onSelect={(id) => {
-                  if (dropdown?.onSelect) {
-                    dropdown?.onSelect(id)
-                  }
-                }}
-              >
-                <SVGThreeDots
-                  width={24}
-                  height={24}
-                  className="text-gray-500"
-                />
-              </Dropdown>
-            }
+            <div className="flex items-center">
+              {dropdown?.hidden !== true &&
+                <Dropdown
+                  onClick={(e) => {
+                    e.preventDefault()
+                  }}
+                  items={dropdown?.items || []}
+                  className="w-8 min-w-8 h-8 items-center"
+                  onSelect={(id) => {
+                    if (dropdown?.onSelect) {
+                      dropdown?.onSelect(id)
+                    }
+                  }}
+                >
+                  <SVGThreeDots
+                    width={24}
+                    height={24}
+                  />
+                </Dropdown>
+              }
+
+              {controls}
+            </div>
           </div>
         </div>
       )}
