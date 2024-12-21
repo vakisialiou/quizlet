@@ -7,6 +7,10 @@ Allow: /en$
 Allow: /ru$
 Allow: /en/policy$
 Allow: /ru/policy$
+Disallow: /ru/private/
+Disallow: /en/private/
+Disallow: /ru/offline/
+Disallow: /en/offline/
 
 Host: https://quizerplay.com
 Sitemap: https://quizerplay.com/sitemap.xml
