@@ -203,7 +203,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
       </div>
 
       <div
-        className="w-full h-[calc(100%-81px)] flex flex-col items-center justify-center overflow-hidden"
+        className="w-full h-[calc(100%-77px)] flex flex-col items-center justify-center overflow-hidden"
       >
         <div className="flex flex-col">
           <PanelInfo

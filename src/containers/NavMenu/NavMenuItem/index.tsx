@@ -31,8 +31,8 @@ export default function NavMenuItem(
       href={item.href}
       onClick={onClick}
       className={clsx('text-sm font-semibold leading-6 px-3 py-3 min-h-12 select-none', {
-        ['pointer-events-none bg-gray-800 text-gray-400']: item.href === currentPathname,
-        ['cursor-pointer hover:bg-gray-900 hover:text-gray-400 active:text-gray-400/70 text-gray-300']: item.href !== currentPathname,
+        ['pointer-events-none bg-white/10 text-gray-400']: item.href === currentPathname,
+        ['cursor-pointer hover:bg-white/15 hover:text-gray-400 active:text-gray-400/70 text-gray-300']: item.href !== currentPathname,
         ['truncate']: true,
         [className]: className
       })}

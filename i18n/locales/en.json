@@ -163,8 +163,8 @@
     "simulatorStartTitle": "Pick out simulator",
     "simulatorStartBtnStart": "Start",
     "simulatorPanelTotal": "Total",
-    "simulatorPanelWait": "Queue",
-    "simulatorPanelDone": "Done",
+    "simulatorPanelWait": "Repeat",
+    "simulatorPanelDone": "Studied",
     "simulatorPanelTime": "Time"
   },
   "Policy": {

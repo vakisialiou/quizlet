@@ -164,9 +164,11 @@ export default function Terms({ folderId }: { folderId: string }) {
         </div>
       )}
     >
-      <div>
-        <FolderTitle folderId={folderId} />
-      </div>
+
+      <FolderTitle
+        folderId={folderId}
+        className="mb-4"
+      />
 
       {folder &&
         <div

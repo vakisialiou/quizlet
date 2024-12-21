@@ -57,13 +57,13 @@ export default function PanelInfo(
       />
 
       <RoundInfo
-        title={t('simulatorPanelWait')}
-        value={Math.max(termIds.length - continueIds.length - rememberIds.length, 0)}
+        title={t('simulatorPanelDone')}
+        value={rememberIds.length}
       />
 
       <RoundInfo
-        title={t('simulatorPanelDone')}
-        value={rememberIds.length}
+        title={t('simulatorPanelWait')}
+        value={Math.max(continueIds.length, 0)}
       />
 
       <RoundInfo

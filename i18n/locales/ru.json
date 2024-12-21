@@ -163,8 +163,8 @@
     "simulatorStartTitle": "Выберите тренажер",
     "simulatorStartBtnStart": "Начать",
     "simulatorPanelTotal": "Всего",
-    "simulatorPanelWait": "Очередь",
-    "simulatorPanelDone": "Готово",
+    "simulatorPanelWait": "Повтор",
+    "simulatorPanelDone": "Изучено",
     "simulatorPanelTime": "Время"
   },
   "Policy": {

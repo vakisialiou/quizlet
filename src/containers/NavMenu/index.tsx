@@ -56,9 +56,9 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
         onClick={onClose}
       />
       <div
-        className="absolute w-full md:w-1/2 lg:w-1/3 xl:w-1/4 2xl:1/5 h-full bg-black border-r border-gray-700 flex flex-col">
+        className="absolute w-full md:w-1/2 lg:w-1/3 xl:w-1/4 2xl:1/5 h-full bg-black border-r border-white/25 flex flex-col">
 
-        <div className="flex h-16 px-4 flex-col border-b border-gray-700 p-4 bg-gray-900/70">
+        <div className="flex h-16 px-4 flex-col border-b border-white/15 p-4 bg-white/10">
           <div className="flex h-8 justify-between">
             <div className="flex gap-4 items-center">
               <Image
@@ -87,7 +87,7 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
         >
 
           <div
-            className={clsx('h-full flex flex-col bg-gray-900/50', {
+            className={clsx('h-full flex flex-col bg-white/5', {
               ['overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500/50 scrollbar-track-gray-900/80 active:scrollbar-thumb-gray-400']: true
             })}
           >
@@ -129,7 +129,7 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
             })}
           </div>
 
-          <div className="flex flex-col px-4 py-4 bg-gray-900/70">
+          <div className="flex flex-col px-4 py-4 bg-white/10 border-t border-white/15">
             <Account session={session}/>
           </div>
         </div>
