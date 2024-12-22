@@ -8,9 +8,9 @@ import {
   ExtraPickCardType,
 } from '@containers/Simulator/CardAggregator/types'
 import { DefaultAnswerLang, DefaultQuestionLang } from '@entities/ClientTerm'
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import { getSimulatorNameById } from '@containers/Simulator/constants'
 import { SimulatorMethod } from '@entities/ClientSettingsSimulator'
-import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ClientSimulatorData } from '@entities/ClientSimulator'
 import { ClientTermData } from '@entities/ClientTerm'
 import { shuffle } from '@lib/array'
@@ -35,22 +35,28 @@ export default function MethodPickCard(
 ) {
   const { inverted } = simulator.settings
 
-  const [selections, setSelections] = useState<ClientTermData[]>([])
+  const isServer = useRef(true)
 
-  useEffect(() => {
-    const items = shuffle([...terms])
+  const selections = useMemo(() => {
+    let items = (isServer ? [...terms] : shuffle([...terms]))
+
+    items = items
       .filter(({ id, answer, question }) => {
         const str = inverted ? question : answer
         return !(id === activeTerm?.id || !str)
       })
+      .slice(0, 3)
 
-    const shuffledSelections = shuffle([
-      ...items.slice(0, 3),
-      { ...activeTerm } as ClientTermData]
-    )
+    if (isServer) {
+      return [...items, {...activeTerm} as ClientTermData]
+    } else {
+      return shuffle([...items, {...activeTerm} as ClientTermData])
+    }
+  }, [terms, activeTerm, inverted])
 
-    setSelections(shuffledSelections)
-  }, [terms, activeTerm, inverted]);
+  useEffect(() => {
+    isServer.current = false
+  }, [])
 
   const cardSide = useMemo(() => {
     return {

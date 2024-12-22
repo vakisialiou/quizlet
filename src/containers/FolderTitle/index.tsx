@@ -34,14 +34,10 @@ export default function FolderTitle(
         [className]: className,
       })}
     >
-      <div className="text-gray-500 text-base font-bold truncate ...">
-        {parentFolder ? (parentFolder.name || '(No name)') : folder?.name || '(No name)'}
-      </div>
-
       <div
         className="flex gap-2 items-center uppercase"
       >
-        <div className="flex items-center">
+        <div className="flex gap-2 items-center">
           <AchievementIcon
             folder={folder}
             size={AchievementsSize.sm}
@@ -49,15 +45,19 @@ export default function FolderTitle(
           <AchievementDegree
             hideDegree
             folder={folder}
-            className="text-gray-500 text-xs ml-4 font-bold"
+            className="text-white/50 text-xs font-bold"
           />
         </div>
 
         {parentFolder &&
-          <div className="text-gray-500 text-xs font-bold">
+          <div className="text-white/50 text-xs font-bold">
             {`Group ${folder?.name}` || '(No name)'}
           </div>
         }
+      </div>
+
+      <div className="text-white/50 text-base font-bold truncate ...">
+        {parentFolder ? (parentFolder.name || '(No name)') : folder?.name || '(No name)'}
       </div>
     </div>
   )

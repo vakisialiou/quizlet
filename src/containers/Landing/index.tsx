@@ -1,18 +1,22 @@
 'use client'
 
 import { getPathname, LanguageEnums, useRouter } from '@i18n/routing'
+import SimulatorBody from '@containers/Simulator/SimulatorBody'
 import DropdownLanguage from '@containers/DropdownLanguage'
 import Button, { ButtonVariant } from '@components/Button'
+import { actionDeactivateSimulators } from '@store/index'
 import SVGGoogle from '@public/svg/painted/google.svg'
 import SVGPresetNew from '@public/svg/preset_new.svg'
+import FolderTitle from '@containers/FolderTitle'
 import ContentPage from '@containers/ContentPage'
 import ButtonPWA from '@containers/ButtonPWA'
+import { DEMO_FOLDER_ID } from '@helper/demo'
 import {useTranslations} from 'next-intl'
 import {useSelector} from 'react-redux'
 import {signIn} from 'next-auth/react'
 import { preload } from 'react-dom'
 import { Session } from 'next-auth'
-import { memo } from 'react'
+import React, { memo } from 'react'
 import clsx from 'clsx'
 
 function Landing(
@@ -90,7 +94,7 @@ function Landing(
           }
 
           {!session &&
-            <div className="flex flex-col text-center text-white px-6 max-w-[900px]">
+            <div className="flex flex-col text-center text-gray-200 px-6 max-w-[900px]">
               <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-12">
                 {t('mainTitle')}
               </h1>
@@ -124,6 +128,57 @@ function Landing(
 
       {!session &&
         <>
+          <section id="demo" className="bg-black">
+            <div className="flex flex-col items-center max-w-6xl mx-auto py-20">
+              <h2
+                className="text-2xl md:text-3xl font-bold text-center mb-12 max-w-[320px] md:max-w-full text-white/75"
+              >
+                {t('section0Title')}
+              </h2>
+              <div
+                className="max-w-96 px-[2px] md:px-2 py-4 flex flex-col items-center overflow-hidden gap-4 border border-white/10"
+              >
+                <FolderTitle
+                  folderId={DEMO_FOLDER_ID}
+                  className="w-full max-w-96 items-center"
+                />
+
+                <SimulatorBody
+                  folderId={DEMO_FOLDER_ID}
+                  onDeactivateAction={(folder) => {
+                    actionDeactivateSimulators({folderId: folder.id})
+                  }}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2 max-w-[320px] mt-8 text-center">
+                <h4 className="text-sm md:text-base text-white/75">
+                  {t('section0Block2Title')}
+                </h4>
+                <p className="text-xs md:text-xs text-white/50 mt-4">
+                  {t('section0Block2Text')}
+                </p>
+
+                <Button
+                  variant={ButtonVariant.WHITE}
+                  onClick={async () => {
+                    await signIn('google', {
+                      redirect: true,
+                      redirectTo: getPathname({href: '/private/collection', locale})
+                    })
+                  }}
+                  className="px-6 gap-2 font-medium text-nowrap"
+                >
+                  <SVGGoogle
+                    width={24}
+                    height={24}
+                  />
+                  {t('section0ButtonSignIn')}
+                </Button>
+              </div>
+            </div>
+          </section>
+
           <section id="features" className="py-20 bg-white text-gray-700">
             <div className="flex flex-col items-center max-w-6xl mx-auto px-6">
               <h2

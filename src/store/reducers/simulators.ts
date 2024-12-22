@@ -27,8 +27,11 @@ export const startSimulators = createAsyncThunk(
   '/start/simulators',
   async (payload: PayloadStart, api): Promise<UpsertSimulatorsIds> => {
     const state = api.getState() as ConfigType
-    const simulators = findNeedUpdateSimulators(state.folders, payload.folderId)
-    return await upsertSimulators(simulators)
+    if (state.serverQueryEnabled) {
+      const simulators = findNeedUpdateSimulators(state.folders, payload.folderId)
+      return await upsertSimulators(simulators)
+    }
+    return (await Promise.all([]))
   }
 )
 
@@ -38,8 +41,11 @@ export const continueSimulators = createAsyncThunk(
   '/continue/simulators',
   async (payload: PayloadContinue, api): Promise<UpsertSimulatorsIds> => {
     const state = api.getState() as ConfigType
-    const simulators = findNeedUpdateSimulators(state.folders, payload.folderId)
-    return await upsertSimulators(simulators)
+    if (state.serverQueryEnabled) {
+      const simulators = findNeedUpdateSimulators(state.folders, payload.folderId)
+      return await upsertSimulators(simulators)
+    }
+    return (await Promise.all([]))
   }
 )
 
@@ -58,8 +64,11 @@ export const rememberSimulators = createAsyncThunk(
   '/remember/simulators',
   async (payload: PayloadRemember, api): Promise<UpsertSimulatorsIds> => {
     const state = api.getState() as ConfigType
-    const simulators = findNeedUpdateSimulators(state.folders, payload.folderId)
-    return await upsertSimulators(simulators)
+    if (state.serverQueryEnabled) {
+      const simulators = findNeedUpdateSimulators(state.folders, payload.folderId)
+      return await upsertSimulators(simulators)
+    }
+    return (await Promise.all([]))
   }
 )
 
@@ -69,8 +78,11 @@ export const restartSimulators = createAsyncThunk(
   '/restart/simulators',
   async (payload: PayloadRestart, api): Promise<UpsertSimulatorsIds> => {
     const state = api.getState() as ConfigType
-    const simulators = findNeedUpdateSimulators(state.folders, payload.folderId)
-    return await upsertSimulators(simulators)
+    if (state.serverQueryEnabled) {
+      const simulators = findNeedUpdateSimulators(state.folders, payload.folderId)
+      return await upsertSimulators(simulators)
+    }
+    return (await Promise.all([]))
   }
 )
 
@@ -80,8 +92,11 @@ export const backSimulators = createAsyncThunk(
   '/back/simulators',
   async (payload: PayloadBack, api): Promise<UpsertSimulatorsIds> => {
     const state = api.getState() as ConfigType
-    const simulators = findNeedUpdateSimulators(state.folders, payload.folderId)
-    return await upsertSimulators(simulators)
+    if (state.serverQueryEnabled) {
+      const simulators = findNeedUpdateSimulators(state.folders, payload.folderId)
+      return await upsertSimulators(simulators)
+    }
+    return (await Promise.all([]))
   }
 )
 
@@ -91,8 +106,11 @@ export const deactivateSimulators = createAsyncThunk(
   '/deactivate/simulators',
   async (payload: PayloadDeactivate, api): Promise<UpsertSimulatorsIds> => {
     const state = api.getState() as ConfigType
-    const simulators = findNeedUpdateSimulators(state.folders, payload.folderId)
-    return await upsertSimulators(simulators)
+    if (state.serverQueryEnabled) {
+      const simulators = findNeedUpdateSimulators(state.folders, payload.folderId)
+      return await upsertSimulators(simulators)
+    }
+    return (await Promise.all([]))
   }
 )
 

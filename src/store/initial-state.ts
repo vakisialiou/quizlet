@@ -18,16 +18,19 @@ export type ConfigType = {
   folders: FoldersType,
   terms: TermsType,
   session: Session | null,
-  settings: ClientSettingsData
+  settings: ClientSettingsData,
+  serverQueryEnabled: boolean,
 }
 
 export const getInitialState = async (
   {
+    serverQueryEnabled,
     session,
     settings,
     items
   }:
   {
+    serverQueryEnabled: boolean,
     session: Session | null,
     settings: ClientSettingsData | null
     items: ClientFolderData[]
@@ -45,6 +48,7 @@ export const getInitialState = async (
       processIds: []
     },
     settings: new ClientSettings().setSimulator(settings?.simulator || null).serialize(),
-    session
+    session,
+    serverQueryEnabled
   }
 }

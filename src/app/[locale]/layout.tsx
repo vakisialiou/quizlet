@@ -1,4 +1,6 @@
 import { routing, LanguageEnums, defaultLocale } from '@i18n/routing'
+import { findFoldersByUserId } from '@repositories/folders'
+import { getDemoFoldersInitialData } from '@helper/demo'
 import { getInitialState } from '@store/initial-state'
 import { getSettings } from '@repositories/settings'
 import { getTranslations } from 'next-intl/server'
@@ -9,10 +11,9 @@ import { AppProvider } from './provider'
 import localFont from 'next/font/local'
 import { prisma } from '@lib/prisma'
 import { auth } from '@auth'
-import React from 'react'
 
+import React from 'react'
 import './globals.css'
-import {findFoldersByUserId} from "@repositories/folders";
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -82,8 +83,13 @@ export default async function RootLayout({
   const session = await auth()
   const userId = session?.user?.id || ''
   const settings = userId ? await getSettings(prisma, userId) : null
-  const items = userId ? await findFoldersByUserId(prisma, userId) : []
-  const initialState = await getInitialState({ session, settings, items })
+  const items = userId ? await findFoldersByUserId(prisma, userId) : await getDemoFoldersInitialData(locale)
+  const initialState = await getInitialState({
+    serverQueryEnabled: !!userId,
+    session,
+    settings,
+    items
+  })
   const messages = await getMessages({ locale })
 
   return (

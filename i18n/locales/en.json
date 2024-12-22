@@ -5,10 +5,16 @@
     "description": "QuizerPlay offers innovative AI-powered learning tools for effective language acquisition. Use our online flashcards, simulators, and gamified methods to accelerate your learning and stay motivated."
   },
   "Landing": {
-    "mainTitle": "Learning Foreign Languages",
-    "mainDesc": "Use gaming simulators for effective memory retention.",
+    "mainTitle": "Word Memorization with Flashcards",
+    "mainDesc": "Engage in memory training, learn languages, and master new skills with effective language learning simulators.",
     "mainButtonSignIn": "Get Started with Google",
     "mainButtonGoTo": "Open Collection",
+
+    "section0Title": "Add words and memorize them through game simulators",
+    "section0Block1Title": "My words for learning",
+    "section0Block2Title": "Group words into small sections and learn with engaging simulators!",
+    "section0Block2Text": "Sign in to create your own cards and save your progress.",
+    "section0ButtonSignIn": "Sign In with Google",
 
     "section1Title": "What does {appName} offer?",
     "section1Block1Title": "Flexibility",
