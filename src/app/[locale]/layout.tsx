@@ -30,7 +30,7 @@ export async function generateMetadata({params}: { params: Promise<{ locale: Lan
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'Metadata' })
 
-  const baseUrl = 'https://quizerplay.com'
+  const host = 'https://quizerplay.com'
 
   return {
     title: t('title'),
@@ -52,11 +52,11 @@ export async function generateMetadata({params}: { params: Promise<{ locale: Lan
       {rel: 'apple-touch-icon', sizes: '180x180', url: '/icons/apple-icon-180x180.png'},
     ],
     alternates: {
-      canonical: `${baseUrl}/${locale}`,
+      canonical: `${host}/${locale}`,
       languages: routing.locales.reduce((acc, lang) => {
-        acc[lang] = `${baseUrl}/${lang}`
+        acc[lang] = `${host}/${lang}`
         if (lang === defaultLocale) {
-          acc['x-default'] = `${baseUrl}`
+          acc['x-default'] = `${host}/${defaultLocale}`
         }
         return acc
       }, {} as Record<string, string>),

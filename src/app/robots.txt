@@ -1,12 +1,5 @@
 User-agent: *
 
-Disallow: /en/
-Disallow: /ru/
-Allow: $
-Allow: /en$
-Allow: /ru$
-Allow: /en/policy$
-Allow: /ru/policy$
 Disallow: /ru/private
 Disallow: /en/private
 Disallow: /ru/offline
