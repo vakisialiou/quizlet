@@ -8,5 +8,4 @@ Disallow: /api
 Disallow: /ru/api
 Disallow: /en/api
 
-Host: https://quizerplay.com
 Sitemap: https://quizerplay.com/sitemap.xml
