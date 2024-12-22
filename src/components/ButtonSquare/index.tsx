@@ -38,7 +38,7 @@ export default function ButtonSquare(
         ['hover:cursor-pointer']: !disabled,
         ['pointer-events-none opacity-50']: disabled,
 
-        ['hover:bg-gray-800']: variant === ButtonSquareVariant.transparent,
+        ['hover:bg-white/15']: variant === ButtonSquareVariant.transparent,
         ['border-gray-400 hover:border-gray-300 active:border-gray-400']: variant === ButtonSquareVariant.transparent && bordered,
 
         ['bg-gray-800 hover:bg-gray-800/50 active:bg-gray-800/55']: variant === ButtonSquareVariant.gray,

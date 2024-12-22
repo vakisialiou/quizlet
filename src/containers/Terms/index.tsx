@@ -6,7 +6,7 @@ import TextToSpeech, { TextToSpeechEvents } from '@lib/speech'
 import { FoldersType, TermsType } from '@store/initial-state'
 import React, { useEffect, useMemo, useState } from 'react'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
-import Button, { ButtonSkin } from '@components/Button'
+import Button, { ButtonVariant } from '@components/Button'
 import ButtonSquare from '@components/ButtonSquare'
 import SVGQuestion from '@public/svg/question.svg'
 import { searchTerms } from '@helper/search-terms'
@@ -122,7 +122,7 @@ export default function Terms({ folderId }: { folderId: string }) {
         <div className="flex w-full justify-center text-center">
           <div className="flex gap-2 w-full max-w-96">
             <Button
-              skin={ButtonSkin.WHITE}
+              variant={ButtonVariant.WHITE}
               className="w-1/2 gap-1"
               onClick={() => {
                 const term = new ClientTerm(folderId)
@@ -142,7 +142,7 @@ export default function Terms({ folderId }: { folderId: string }) {
               {t('footButtonCreateTerm')}
             </Button>
             <Button
-              skin={ButtonSkin.GREEN}
+              variant={ButtonVariant.GREEN}
               disabled={playTerms.length === 0}
               className="w-1/2 gap-1"
               onClick={() => {
@@ -251,7 +251,7 @@ export default function Terms({ folderId }: { folderId: string }) {
         >
           <Button
             className="min-w-28 px-4"
-            skin={ButtonSkin.GRAY}
+            variant={ButtonVariant.GRAY}
             onClick={() => {
               setShowUserHelp(false)
             }}
@@ -268,7 +268,7 @@ export default function Terms({ folderId }: { folderId: string }) {
         >
           <Button
             className="min-w-28 px-4"
-            skin={ButtonSkin.GRAY}
+            variant={ButtonVariant.GRAY}
             onClick={() => {
               actionSaveTerm({ term: { ...removeTerm, deleted: true }, editId: null }, () => {
                 setRemoveTerm(null)
@@ -283,7 +283,7 @@ export default function Terms({ folderId }: { folderId: string }) {
 
           <Button
             className="min-w-28 px-4"
-            skin={ButtonSkin.WHITE}
+            variant={ButtonVariant.WHITE}
             onClick={() => setRemoveTerm(null)}
           >
             {t('removeDialogButtonCancel')}

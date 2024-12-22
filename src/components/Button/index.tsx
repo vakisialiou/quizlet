@@ -1,7 +1,7 @@
 import React, { BaseSyntheticEvent } from 'react'
 import clsx from 'clsx'
 
-export enum ButtonSkin {
+export enum ButtonVariant {
   GRAY = 'gray',
   GREEN = 'green',
   WHITE = 'white',
@@ -27,7 +27,7 @@ export default function Button(
     rounded = true,
     disabled = false,
     size = ButtonSize.H12,
-    skin = ButtonSkin.GRAY
+    variant = ButtonVariant.GRAY
   }:
   {
     id?: string
@@ -40,7 +40,7 @@ export default function Button(
     rounded?: boolean,
     disabled?: boolean,
     size?: ButtonSize,
-    skin?: ButtonSkin
+    variant?: ButtonVariant
   },
 ) {
 
@@ -57,14 +57,14 @@ export default function Button(
         'border': border,
         'rounded': rounded,
         'shadow-inner': shadow,
-        'border-green-500/50 shadow-white/30 hover:shadow-white/40 text-white bg-green-500/70 hover:bg-green-500/80 active:bg-green-500/90': skin === ButtonSkin.GREEN && !disabled && !active,
-        'border-green-100/50 shadow-white/30 hover:shadow-white/40 text-white bg-green-600/50 hover:bg-green-600/60 active:bg-green-600/70': skin === ButtonSkin.GREEN && !disabled && active,
+        'border-green-500/50 shadow-white/30 hover:shadow-white/40 text-white bg-green-500/70 hover:bg-green-500/80 active:bg-green-500/90': variant === ButtonVariant.GREEN && !disabled && !active,
+        'border-green-100/50 shadow-white/30 hover:shadow-white/40 text-white bg-green-600/50 hover:bg-green-600/60 active:bg-green-600/70': variant === ButtonVariant.GREEN && !disabled && active,
 
-        'border-gray-500/50 shadow-gray-400/50 hover:shadow-gray-400/60 text-white/80 bg-gray-600/70 hover:bg-gray-600/80 active:bg-gray-600/90': skin === ButtonSkin.GRAY && !disabled && !active,
-        'border-gray-300/50 shadow-gray-400/50 hover:shadow-gray-400/60 text-white/80 bg-gray-700/50 hover:bg-gray-700/60 active:bg-gray-700/70': skin === ButtonSkin.GRAY && !disabled && active,
+        'border-gray-500/50 shadow-gray-400/50 hover:shadow-gray-400/60 text-white/80 bg-gray-600/70 hover:bg-gray-600/80 active:bg-gray-600/90': variant === ButtonVariant.GRAY && !disabled && !active,
+        'border-gray-300/50 shadow-gray-400/50 hover:shadow-gray-400/60 text-white/80 bg-gray-700/50 hover:bg-gray-700/60 active:bg-gray-700/70': variant === ButtonVariant.GRAY && !disabled && active,
 
-        'border-gray-900/50 shadow-gray-700/50 hover:shadow-gray-700/60 text-gray-900 bg-white hover:bg-white/90 active:bg-white/80': skin === ButtonSkin.WHITE && !disabled && !active,
-        'border-gray-100/50 shadow-gray-700/50 hover:shadow-gray-700/60 text-gray-900 bg-white hover:bg-white/80 active:bg-white/70': skin === ButtonSkin.WHITE && !disabled && active,
+        'border-gray-900/50 shadow-gray-700/50 hover:shadow-gray-700/60 text-gray-900 bg-white hover:bg-white/90 active:bg-white/80': variant === ButtonVariant.WHITE && !disabled && !active,
+        'border-gray-100/50 shadow-gray-700/50 hover:shadow-gray-700/60 text-gray-900 bg-white hover:bg-white/80 active:bg-white/70': variant === ButtonVariant.WHITE && !disabled && active,
 
         'border-gray-500/50 shadow-none text-gray-500/50 bg-transparent': disabled,
 

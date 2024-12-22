@@ -1,4 +1,5 @@
 import FolderCart, {DropDownProps} from '@components/FolderCart'
+import { FolderFrameVariant } from '@components/FolderFrame'
 import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
 import {ClientFolderData} from '@entities/ClientFolder'
 import ButtonSquare from '@components/ButtonSquare'
@@ -20,7 +21,8 @@ export default function Folder(
     onSave,
     onExit,
     onChange,
-    children
+    children,
+    variant
   }:
   {
     edit?: boolean,
@@ -35,6 +37,7 @@ export default function Folder(
     onChange: (prop: string, value: string) => void,
     onCollapse?: () => void,
     children?: ReactNode,
+    variant?: FolderFrameVariant
   }
 ) {
   const t = useTranslations('Folders')
@@ -44,6 +47,7 @@ export default function Folder(
       hover={false}
       title={title}
       labels={labels}
+      variant={variant}
       dropdown={dropdown}
       className={className}
       controls={(

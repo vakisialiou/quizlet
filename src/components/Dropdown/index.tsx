@@ -43,7 +43,7 @@ export type DropdownItemType = {
   icon?: ComponentType<SVGProps<SVGSVGElement>>
 }
 
-export enum DropdownSkin {
+export enum DropdownVariant {
   gray = 'gray',
   white = 'white',
   transparent = 'transparent'
@@ -60,7 +60,7 @@ function Dropdown(
     classNameMenu = '',
     menu,
     placement = Placement.bottomEnd,
-    skin = DropdownSkin.transparent,
+    variant = DropdownVariant.transparent,
     offsetOptions = 4,
     items = [],
     onSelect,
@@ -76,7 +76,7 @@ function Dropdown(
     className?: string,
     classNameMenu?: string,
     placement?: Placement,
-    skin?: DropdownSkin,
+    variant?: DropdownVariant,
     offsetOptions?: number,
     items?: (DropdownItemType)[],
     onClick?: ((e: BaseSyntheticEvent) => void),
@@ -146,31 +146,31 @@ function Dropdown(
       className={clsx('flex items-center text-left transition-all', {
         ['border']: bordered,
 
-        ['border-gray-400']: [DropdownSkin.white, DropdownSkin.transparent, DropdownSkin.gray].includes(skin) && bordered,
+        ['border-gray-400']: [DropdownVariant.white, DropdownVariant.transparent, DropdownVariant.gray].includes(variant) && bordered,
 
         ['disabled']: disabled,
-        ['hover:bg-gray-800']: skin === DropdownSkin.transparent,
-        ['bg-gray-800']: skin === DropdownSkin.transparent && isOpen,
+        ['hover:bg-white/15']: variant === DropdownVariant.transparent,
+        ['bg-white/15']: variant === DropdownVariant.transparent && isOpen,
 
-        ['bg-gray-800 hover:bg-gray-800/50']: skin === DropdownSkin.gray,
-        ['bg-gray-800/50']: skin === DropdownSkin.gray && isOpen,
+        ['bg-gray-800 hover:bg-gray-800/50']: variant === DropdownVariant.gray,
+        ['bg-gray-800/50']: variant === DropdownVariant.gray && isOpen,
 
-        ['bg-white hover:bg-gray-200/50']: skin === DropdownSkin.white,
-        ['bg-gray-300/50']: skin === DropdownSkin.white && isOpen
+        ['bg-white hover:bg-gray-200/50']: variant === DropdownVariant.white,
+        ['bg-gray-300/50']: variant === DropdownVariant.white && isOpen
       })}
     >
       <div
         onClick={toggleDropdown}
         className={clsx('flex items-center justify-center select-none group cursor-pointer w-full', {
           [className]: className,
-          ['text-gray-300 hover:text-gray-100 active:text-gray-50']: skin === DropdownSkin.transparent && isOpen,
-          ['text-gray-800 hover:text-gray-400 active:text-gray-300']: skin === DropdownSkin.transparent && !isOpen,
+          ['text-gray-300 hover:text-gray-100 active:text-gray-50']: variant === DropdownVariant.transparent && isOpen,
+          ['text-gray-500 hover:text-gray-400 active:text-gray-300']: variant === DropdownVariant.transparent && !isOpen,
 
-          ['text-gray-200 hover:text-gray-300 active:text-gray-400']: skin === DropdownSkin.gray && isOpen,
-          ['text-gray-400 hover:text-gray-300 active:text-gray-200']: skin === DropdownSkin.gray && !isOpen,
+          ['text-gray-200 hover:text-gray-300 active:text-gray-400']: variant === DropdownVariant.gray && isOpen,
+          ['text-gray-400 hover:text-gray-300 active:text-gray-200']: variant === DropdownVariant.gray && !isOpen,
 
-          ['text-gray-600 hover:text-gray-700 active:text-gray-800']: skin === DropdownSkin.white && isOpen,
-          ['text-gray-800 hover:text-gray-700 active:text-gray-600']: skin === DropdownSkin.white && !isOpen
+          ['text-gray-600 hover:text-gray-700 active:text-gray-800']: variant === DropdownVariant.white && isOpen,
+          ['text-gray-800 hover:text-gray-700 active:text-gray-600']: variant === DropdownVariant.white && !isOpen
         })}
       >
         {children}
@@ -192,9 +192,9 @@ function Dropdown(
             ref={refMenu}
             className={clsx('fixed z-10 mt-1 border ring-1 ring-black ring-opacity-5 focus:outline-none select-none px-1', {
               [classNameMenu]: classNameMenu,
-              ['border-gray-600/50 bg-black shadow-lg']: skin === DropdownSkin.gray,
-              ['border-gray-100/50 bg-white shadow-md']: skin === DropdownSkin.white,
-              ['border-gray-500/50 bg-black shadow-lg']: skin === DropdownSkin.transparent
+              ['border-gray-600/50 bg-black shadow-lg']: variant === DropdownVariant.gray,
+              ['border-gray-100/50 bg-white shadow-md']: variant === DropdownVariant.white,
+              ['border-gray-500/50 bg-black shadow-lg']: variant === DropdownVariant.transparent
             })}
           >
             {items.length > 0 &&
@@ -225,13 +225,13 @@ function Dropdown(
                         ['cursor-pointer']: !item.disabled,
                         ['disabled pointer-events-none opacity-30']: item.disabled,
 
-                        ['text-gray-400 hover:text-gray-200 hover:bg-gray-900 active:bg-gray-800']: item.id !== selected && skin === DropdownSkin.gray,
-                        ['text-gray-900 hover:text-gray-100 hover:bg-gray-600 active:bg-gray-500']: item.id !== selected && skin === DropdownSkin.white,
-                        ['text-gray-500 hover:text-gray-200 hover:bg-gray-900 active:bg-gray-800']: item.id !== selected && skin === DropdownSkin.transparent,
+                        ['text-gray-400 hover:text-gray-200 hover:bg-gray-900 active:bg-gray-800']: item.id !== selected && variant === DropdownVariant.gray,
+                        ['text-gray-900 hover:text-gray-100 hover:bg-gray-600 active:bg-gray-500']: item.id !== selected && variant === DropdownVariant.white,
+                        ['text-gray-500 hover:text-gray-200 hover:bg-gray-900 active:bg-gray-800']: item.id !== selected && variant === DropdownVariant.transparent,
 
-                        ['bg-gray-800 text-gray-400']: item.id === selected && skin === DropdownSkin.gray,
-                        ['bg-gray-700 text-gray-200']: item.id === selected && skin === DropdownSkin.white,
-                        ['bg-gray-800 text-gray-300']: item.id === selected && skin === DropdownSkin.transparent,
+                        ['bg-gray-800 text-gray-400']: item.id === selected && variant === DropdownVariant.gray,
+                        ['bg-gray-700 text-gray-200']: item.id === selected && variant === DropdownVariant.white,
+                        ['bg-gray-800 text-gray-300']: item.id === selected && variant === DropdownVariant.transparent,
 
                         [item.className || '']: item.className
                       })}

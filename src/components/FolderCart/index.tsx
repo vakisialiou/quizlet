@@ -1,7 +1,8 @@
+import FolderFrame, { FolderFrameVariant } from '@components/FolderFrame'
 import Dropdown, { DropdownItemType } from '@components/Dropdown'
 import SVGThreeDots from '@public/svg/three_dots.svg'
 import { BaseSyntheticEvent, ReactNode } from 'react'
-import FolderFrame from '@components/FolderFrame'
+import clsx from 'clsx'
 
 export type DropDownProps = {
   hidden?: boolean
@@ -18,7 +19,8 @@ export default function FolderCart(
     children,
     className = '',
     onClickBody,
-    controls
+    controls,
+    variant,
   }:
   {
     hover?: boolean
@@ -29,22 +31,28 @@ export default function FolderCart(
     controls?: ReactNode,
     dropdown?: DropDownProps
     onClickBody?: (e: BaseSyntheticEvent) => void
+    variant?: FolderFrameVariant
   }
 ) {
 
   return (
     <FolderFrame
       hover={hover}
+      variant={variant}
       className={className}
       onClickBody={onClickBody}
       head={(
         <div className="w-full flex items-center justify-between h-8 min-h-8 relative px-1">
-          <div className="absolute left-0 top-0 w-full h-full pointer-events-none bg-white/10"/>
-          <div className="flex items-center justify-between w-full h-6 gap-2 text-white/60 text-sm px-1">
+          <div
+            className={clsx('z-0 absolute left-0 top-0 w-full h-full pointer-events-none', {
+              ['bg-white/10']: true
+            })}
+          />
+          <div className="flex items-center justify-between w-full h-6 gap-2 text-white/60 text-sm px-1 z-10">
             {title}
           </div>
 
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-2 items-center z-10">
 
             {labels}
 

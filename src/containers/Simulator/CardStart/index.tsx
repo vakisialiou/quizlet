@@ -3,7 +3,7 @@ import { actionStartSimulators, actionUpdateSettingsSimulator } from '@store/ind
 import { ClientSettingsData } from '@entities/ClientSettings'
 import {ClientFolderData} from '@entities/ClientFolder'
 import CardEmpty from '@containers/Simulator/CardEmpty'
-import Button, { ButtonSkin } from '@components/Button'
+import Button, { ButtonVariant } from '@components/Button'
 import { useTranslations } from 'next-intl'
 import { useSelector } from 'react-redux'
 import { useMemo } from 'react'
@@ -68,7 +68,7 @@ export default function SingleStart(
           </div>
 
           <Button
-            skin={ButtonSkin.WHITE}
+            variant={ButtonVariant.WHITE}
             disabled={!findSimulatorMethodById(settings.simulator.id) || playTerms.length === 0}
             onClick={() => {
               if (playTerms.length > 0) {

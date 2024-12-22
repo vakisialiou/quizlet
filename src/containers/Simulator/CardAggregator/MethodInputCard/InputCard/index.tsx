@@ -1,6 +1,6 @@
 import Input, { InputSize, InputVariantFocus } from '@components/Input'
 import {CardStatus} from '@containers/Simulator/CardAggregator/types'
-import Button, { ButtonSkin } from '@components/Button'
+import Button, { ButtonVariant } from '@components/Button'
 import { BaseSyntheticEvent } from 'react'
 import clsx from 'clsx'
 
@@ -101,7 +101,7 @@ export default function InputCard(
 
               <Button
                 onClick={onSubmit}
-                skin={ButtonSkin.WHITE}
+                variant={ButtonVariant.WHITE}
                 disabled={!value.text || [CardStatus.success, CardStatus.error].includes(value.status)}
               >
                 Approve

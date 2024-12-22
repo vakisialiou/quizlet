@@ -1,8 +1,8 @@
 'use client'
 
 import { getPathname, LanguageEnums, useRouter } from '@i18n/routing'
-import Dropdown, { DropdownSkin } from '@components/Dropdown'
-import Button, { ButtonSkin } from '@components/Button'
+import DropdownLanguage from '@containers/DropdownLanguage'
+import Button, { ButtonVariant } from '@components/Button'
 import SVGGoogle from '@public/svg/painted/google.svg'
 import SVGPresetNew from '@public/svg/preset_new.svg'
 import ContentPage from '@containers/ContentPage'
@@ -34,13 +34,6 @@ function Landing(
 
   const t = useTranslations('Landing')
 
-  const localeDropdownList = [
-    { id: LanguageEnums.EN, name: 'English', href: getPathname({ href: '/', locale: LanguageEnums.EN }) },
-    { id: LanguageEnums.RU, name: 'Русский', href: getPathname({ href: '/', locale: LanguageEnums.RU }) },
-  ]
-
-  const localeDropdownValue = localeDropdownList.find(({ id }) => id === locale)
-
   return (
     <ContentPage
       showHeader
@@ -62,16 +55,9 @@ function Landing(
       >
         <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
           <div className="absolute top-4 right-4">
-            <Dropdown
-              caret
-              className="py-1 px-2"
-              skin={DropdownSkin.gray}
-              items={localeDropdownList}
-            >
-              <span className="pr-2">
-                {localeDropdownValue?.name || 'Language'}
-              </span>
-            </Dropdown>
+            <DropdownLanguage
+              locale={locale}
+            />
           </div>
 
           <div
@@ -88,7 +74,7 @@ function Landing(
 
               <div className="flex justify-center">
                 <Button
-                  skin={ButtonSkin.WHITE}
+                  variant={ButtonVariant.WHITE}
                   onClick={() => route.push('/private/collection')}
                   className="px-6 gap-2 font-medium text-nowrap"
                 >
@@ -115,7 +101,7 @@ function Landing(
 
               <div className="flex flex-col gap-4 justify-center items-center">
                 <Button
-                  skin={ButtonSkin.WHITE}
+                  variant={ButtonVariant.WHITE}
                   onClick={async () => {
                     await signIn('google', {
                       redirect: true,
@@ -245,7 +231,7 @@ function Landing(
 
               <div className="flex justify-center gap-8">
                 <Button
-                  skin={ButtonSkin.WHITE}
+                  variant={ButtonVariant.WHITE}
                   className="px-6 gap-2 font-medium"
                   onClick={async () => {
                     await signIn('google', {

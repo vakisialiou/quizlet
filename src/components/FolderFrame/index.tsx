@@ -1,13 +1,21 @@
 import {BaseSyntheticEvent, ReactNode} from 'react'
 import clsx from 'clsx'
 
+export enum FolderFrameVariant {
+  default = 'default',
+  yellow = 'yellow',
+  green = 'green',
+  blue = 'blue',
+}
+
 export default function FolderFrame(
   {
     head,
     children,
     hover = true,
     className = '',
-    onClickBody
+    onClickBody,
+    variant = FolderFrameVariant.default,
   }:
   {
     hover?: boolean
@@ -15,12 +23,17 @@ export default function FolderFrame(
     children?: ReactNode,
     className?: string,
     onClickBody?: (e: BaseSyntheticEvent) => void
+    variant?: FolderFrameVariant
   }
 ) {
   return (
     <div
-      className={clsx('w-full border border-white/15 bg-black rounded-md select-none flex flex-col overflow-hidden', {
+      className={clsx('w-full border bg-black rounded-md select-none flex flex-col overflow-hidden', {
         [className]: className,
+        ['border-white/15']: variant === FolderFrameVariant.default,
+        ['border-blue-300/40']: variant === FolderFrameVariant.blue,
+        ['border-green-300/50']: variant === FolderFrameVariant.green,
+        ['border-yellow-500/40']: variant === FolderFrameVariant.yellow
       })}
     >
       {head}

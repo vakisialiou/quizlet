@@ -73,19 +73,17 @@
     "removeDialogText": "Вы уверены, что хотите удалить этот элемент?",
     "removeDialogButtonApprove": "Удалить",
     "removeDialogButtonCancel": "Отменить",
-    "folderLabelLast": "Последний",
     "folderLabelActive": "Активный",
     "folderLabelTerms": "Термины {count}",
 
     "folderName": "Учебная группа {num}",
     "folderNoName": "(Имя не указано)",
     "folderOpen": "Открыть",
-    "folderPlay": "Изучать",
+    "folderPlay": "Изучить",
     "folderGenerate": "Generate",
     "folderEditPlaceholder": "Название модуля",
 
     "groupLabelActive": "Активный",
-    "groupLabelLast": "Последний",
     "groupLabelTerms": "Термины {count}",
     "groupButtonStartStudy": "Изучить",
 

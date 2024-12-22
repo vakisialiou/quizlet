@@ -1,11 +1,13 @@
 'use client'
 
 import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
-import Button, { ButtonSize, ButtonSkin } from '@components/Button'
+import Button, { ButtonSize, ButtonVariant } from '@components/Button'
+import Dropdown, { DropdownVariant } from '@components/Dropdown'
 import ChildFolders from '@containers/Collection/ChildFolders'
 import AchievementDegree from '@containers/AchievementDegree'
-import Dropdown, { DropdownSkin } from '@components/Dropdown'
+import { FolderFrameVariant } from '@components/FolderFrame'
 import { ClientFolderData } from '@entities/ClientFolder'
+import AchievementIcon, {AchievementsSize} from '@containers/AchievementIcon'
 import SVGPresetNew from '@public/svg/preset_new.svg'
 import { filterDeletedTerms } from '@helper/terms'
 import SVGSettings from '@public/svg/settings.svg'
@@ -82,15 +84,24 @@ export default function Grid(
 
   const [ partition, setPartition ] = useState<{ folder: ClientFolderData | null, size: number }>({ folder: null, size: DEFAULT_GROUP_SIZE })
 
+  const lastStudy = useMemo(() => {
+    return getLastStudyFolder(folders.items)
+  }, [folders.items])
+
   const moduleFolders = useMemo(() => {
     let moduleFolders = findModuleFolders([...folders.items || []])
     moduleFolders = searchFolders(moduleFolders, search, folders.editId)
     return sortFolders(moduleFolders)
-  }, [folders.items, folders.editId, search])
-
-  const lastStudy = useMemo(() => {
-    return getLastStudyFolder(folders.items)
-  }, [folders.items])
+      .sort((a, b) => {
+        if (lastStudy.folder?.id === a.id) {
+          return -1
+        }
+        if (lastStudy.folder?.id === b.id) {
+          return 1
+        }
+        return 0
+      })
+  }, [folders.items, folders.editId, search, lastStudy])
 
   return (
     <>
@@ -108,11 +119,16 @@ export default function Grid(
               key={index}
               data={folder}
               collapsed={folder.collapsed}
+              variant={isLastStudy ? FolderFrameVariant.blue : FolderFrameVariant.default}
               title={(
                 <div className="flex gap-2 items-center font-bold">
-                  <span>#{index + 1}</span>
 
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1">
+                    <AchievementIcon
+                      folder={folder}
+                      size={AchievementsSize.xs}
+                    />
+
                     <AchievementDegree
                       hideDegree
                       folder={folder}
@@ -158,14 +174,6 @@ export default function Grid(
                     </MetaLabel>
                   }
 
-                  {(isLastStudy && !hasActive) &&
-                    <MetaLabel
-                      variant={MetaLabelVariant.green}
-                    >
-                      {t('folderLabelLast')}
-                    </MetaLabel>
-                  }
-
                   <MetaLabel>
                     {t('folderLabelTerms', { count: terms.length })}
                   </MetaLabel>
@@ -195,8 +203,8 @@ export default function Grid(
                     className="flex my-4 gap-2 justify-between max-w-full md:max-w-xs"
                   >
                     <Button
-                      skin={ButtonSkin.WHITE}
                       size={ButtonSize.H08}
+                      variant={ButtonVariant.WHITE}
                       className="gap-2 font-normal w-full"
                       onClick={() => {
                         if (onOpen) {
@@ -214,8 +222,8 @@ export default function Grid(
                     </Button>
 
                     <Button
-                      skin={ButtonSkin.GREEN}
                       size={ButtonSize.H08}
+                      variant={ButtonVariant.GREEN}
                       className="gap-2 font-normal w-full"
                       onClick={() => {
                         if (onPlay) {
@@ -233,8 +241,8 @@ export default function Grid(
                     </Button>
 
                     <Button
-                      skin={ButtonSkin.GRAY}
                       size={ButtonSize.H08}
+                      variant={ButtonVariant.GRAY}
                       className="gap-2 font-normal"
                       disabled={isGenerateGroupDisabled(folder, DEFAULT_GROUP_SIZE)}
                       onClick={() => {
@@ -284,7 +292,7 @@ export default function Grid(
                 bordered
                 className="py-2 px-2"
                 selected={partition.size}
-                skin={DropdownSkin.white}
+                variant={DropdownVariant.white}
                 items={[
                   {
                     id: GROUP_SIZE_5,
@@ -329,7 +337,7 @@ export default function Grid(
           )}
         >
           <Button
-            skin={ButtonSkin.GREEN}
+            variant={ButtonVariant.GREEN}
             className="min-w-28 px-4"
             disabled={isGenerateGroupDisabled(partition.folder, GROUP_SIZE_5)}
             onClick={() => {
@@ -345,7 +353,7 @@ export default function Grid(
 
           <Button
             className="min-w-28 px-4"
-            skin={ButtonSkin.WHITE}
+            variant={ButtonVariant.WHITE}
             onClick={() => setPartition({ ...partition, folder: null })}
           >
             {t('generateDialogButtonCancel')}
@@ -360,7 +368,7 @@ export default function Grid(
         >
           <Button
             className="min-w-28 px-4"
-            skin={ButtonSkin.GRAY}
+            variant={ButtonVariant.GRAY}
             onClick={() => {
               const folder = removeItem
               setRemoveItem(null)
@@ -376,7 +384,7 @@ export default function Grid(
 
           <Button
             className="min-w-28 px-4"
-            skin={ButtonSkin.WHITE}
+            variant={ButtonVariant.WHITE}
             onClick={() => setRemoveItem(null)}
           >
             {t('removeDialogButtonCancel')}

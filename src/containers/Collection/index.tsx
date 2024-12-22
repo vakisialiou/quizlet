@@ -1,7 +1,7 @@
 'use client'
 
 import HeaderPageTitle from '@containers/HeaderPageTitle'
-import Button, { ButtonSkin } from '@components/Button'
+import Button, { ButtonVariant } from '@components/Button'
 import SVGNewFolder from '@public/svg/new_folder.svg'
 import ButtonSquare from '@components/ButtonSquare'
 import SVGQuestion from '@public/svg/question.svg'
@@ -43,7 +43,7 @@ export default function Collection() {
       footer={(
         <div className="flex w-full justify-center lg:justify-end">
           <Button
-            skin={ButtonSkin.WHITE}
+            variant={ButtonVariant.WHITE}
             className="w-full lg:w-auto px-8 gap-1"
             onClick={() => {
               const folder = new ClientFolder().serialize()
@@ -150,7 +150,7 @@ export default function Collection() {
         >
           <Button
             className="min-w-28 px-4"
-            skin={ButtonSkin.GRAY}
+            variant={ButtonVariant.GRAY}
             onClick={() => {
               setShowUserHelp(false)
             }}

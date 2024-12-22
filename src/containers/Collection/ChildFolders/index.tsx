@@ -7,6 +7,8 @@ import {
 } from '@helper/groups'
 import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
 import AchievementDegree from '@containers/AchievementDegree'
+import AchievementIcon, { AchievementsSize } from '@containers/AchievementIcon'
+import { FolderFrameVariant } from '@components/FolderFrame'
 import { ClientFolderData } from '@entities/ClientFolder'
 import { getSimulatorsInfo } from '@helper/simulators'
 import { FoldersType } from '@store/initial-state'
@@ -99,6 +101,7 @@ export default function ChildFolders(
                   <FolderCart
                     key={index}
                     hover={true}
+                    variant={isLastStudy ? FolderFrameVariant.yellow : FolderFrameVariant.default}
                     dropdown={{
                       items: dropdownChildrenItems,
                       onSelect: (id) => {
@@ -118,9 +121,12 @@ export default function ChildFolders(
                     }}
                     title={(
                       <div className="flex gap-2 items-center font-bold">
-                        <span>#{index + 1}</span>
+                        <div className="flex items-center gap-1">
+                          <AchievementIcon
+                            folder={childFolder}
+                            size={AchievementsSize.xs}
+                          />
 
-                        <div className="flex items-center gap-4">
                           <AchievementDegree
                             hideDegree
                             folder={childFolder}
@@ -136,14 +142,6 @@ export default function ChildFolders(
                             variant={MetaLabelVariant.amber}
                           >
                             {t('groupLabelActive')}
-                          </MetaLabel>
-                        }
-
-                        {(isLastStudy && !hasActive) &&
-                          <MetaLabel
-                            variant={MetaLabelVariant.green}
-                          >
-                            {t('groupLabelLast')}
                           </MetaLabel>
                         }
 

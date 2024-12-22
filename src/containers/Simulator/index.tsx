@@ -13,7 +13,7 @@ import HeaderPageTitle from '@containers/HeaderPageTitle'
 import CardEmpty from '@containers/Simulator/CardEmpty'
 import CardStart from '@containers/Simulator/CardStart'
 import PanelInfo from '@containers/Simulator/PanelInfo'
-import Button, {ButtonSkin} from '@components/Button'
+import Button, {ButtonVariant} from '@components/Button'
 import Dialog, {DialogType} from '@components/Dialog'
 import ButtonSquare from '@components/ButtonSquare'
 import SVGQuestion from '@public/svg/question.svg'
@@ -130,7 +130,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
               <>
                 <Button
                   className="w-1/2"
-                  skin={ButtonSkin.GREEN}
+                  variant={ButtonVariant.GREEN}
                   disabled={!folder || simulator?.status !== SimulatorStatus.PROCESSING}
                   onClick={() => {
                     if (folder) {
@@ -145,7 +145,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
 
                 <Button
                   className="w-1/2"
-                  skin={ButtonSkin.WHITE}
+                  variant={ButtonVariant.WHITE}
                   disabled={!folder || simulator?.status !== SimulatorStatus.PROCESSING}
                   onClick={() => {
                     if (folder) {
@@ -163,7 +163,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
             {[SimulatorMethod.PICK, SimulatorMethod.INPUT].includes(cardMethod) &&
               <Button
                 className="w-full"
-                skin={ButtonSkin.WHITE}
+                variant={ButtonVariant.WHITE}
                 disabled={!folder || simulator?.status !== SimulatorStatus.PROCESSING || cardStatus === CardStatus.none}
                 onClick={() => {
                   if (folder) {
@@ -362,7 +362,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
           >
             <Button
               className="min-w-28 px-4"
-              skin={ButtonSkin.GRAY}
+              variant={ButtonVariant.GRAY}
               onClick={() => {
                 setShowUserHelp(false)
               }}
@@ -380,7 +380,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
           >
             <Button
               className="min-w-28 px-4"
-              skin={ButtonSkin.GRAY}
+              variant={ButtonVariant.GRAY}
               onClick={() => {
                 actionDeactivateSimulators({folderId: stopFolderId}, () => {
                   setStopFolderId(null)
@@ -392,7 +392,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
 
             <Button
               className="min-w-28 px-4"
-              skin={ButtonSkin.WHITE}
+              variant={ButtonVariant.WHITE}
               onClick={() => setStopFolderId(null)}
             >
               {t('removeDialogButtonCancel')}

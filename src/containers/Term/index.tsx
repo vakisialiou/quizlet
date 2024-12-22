@@ -1,7 +1,7 @@
 import { ClientTermData, DefaultAnswerLang, DefaultQuestionLang, DefaultAssociationLang, languages } from '@entities/ClientTerm'
-import Dropdown, { DropdownSkin } from '@components/Dropdown'
+import Dropdown, { DropdownVariant } from '@components/Dropdown'
+import Button, { ButtonSize } from '@components/Button'
 import { useCallback, useEffect, useRef } from 'react'
-import Button, {ButtonSize} from '@components/Button'
 import FolderCart from '@components/FolderCart'
 import RowRead from '@containers/Term/RowRead'
 import { useTranslations } from 'next-intl'
@@ -164,7 +164,7 @@ export default function Term(
                 className="px-1"
                 items={languages}
                 ref={refQuestionLang}
-                skin={DropdownSkin.gray}
+                variant={DropdownVariant.gray}
                 selected={data.questionLang || DefaultQuestionLang}
                 onClick={(e) => e.preventDefault()}
                 onSelect={(id) => {
@@ -232,7 +232,7 @@ export default function Term(
                 className="px-1"
                 items={languages}
                 ref={refAnswerLang}
-                skin={DropdownSkin.gray}
+                variant={DropdownVariant.gray}
                 onClick={(e) => e.preventDefault()}
                 selected={data.answerLang || DefaultAnswerLang}
                 onSelect={(id) => {
@@ -310,7 +310,7 @@ export default function Term(
                 className="px-1"
                 items={languages}
                 ref={refAssociationLang}
-                skin={DropdownSkin.gray}
+                variant={DropdownVariant.gray}
                 onClick={(e) => e.preventDefault()}
                 selected={data.associationLang || DefaultAssociationLang}
                 onSelect={(id) => {
