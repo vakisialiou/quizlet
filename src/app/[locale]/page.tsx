@@ -1,7 +1,15 @@
+import { generateMetaAlternates } from '@helper/meta'
 import { ViewportEnums } from '@lib/viewport'
 import { LanguageEnums } from '@i18n/routing'
 import Landing from '@containers/Landing'
 import { headers } from 'next/headers'
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: LanguageEnums }>}) {
+  const { locale } = await params
+  return {
+    alternates: generateMetaAlternates(locale)
+  }
+}
 
 export default async function Page(
   {

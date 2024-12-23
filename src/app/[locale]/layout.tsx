@@ -1,7 +1,7 @@
-import { routing, LanguageEnums, defaultLocale } from '@i18n/routing'
 import { findFoldersByUserId } from '@repositories/folders'
 import { getDemoFoldersInitialData } from '@helper/demo'
 import { getInitialState } from '@store/initial-state'
+import { routing, LanguageEnums } from '@i18n/routing'
 import { getSettings } from '@repositories/settings'
 import { getTranslations } from 'next-intl/server'
 import { NextIntlClientProvider } from 'next-intl'
@@ -27,11 +27,16 @@ const geistMono = localFont({
   weight: '100 900',
 })
 
-export async function generateMetadata({params}: { params: Promise<{ locale: LanguageEnums }> }) {
+export async function generateMetadata(
+  {
+    params,
+  }:
+  {
+    params: Promise<{ locale: LanguageEnums }>,
+  }
+) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'Metadata' })
-
-  const host = 'https://quizerplay.com'
 
   return {
     title: t('title'),
@@ -52,26 +57,16 @@ export async function generateMetadata({params}: { params: Promise<{ locale: Lan
       {rel: 'apple-touch-icon', sizes: '152x152', url: '/icons/apple-icon-152x152.png'},
       {rel: 'apple-touch-icon', sizes: '180x180', url: '/icons/apple-icon-180x180.png'},
     ],
-    alternates: {
-      canonical: `${host}/${locale}`,
-      languages: routing.locales.reduce((acc, lang) => {
-        acc[lang] = `${host}/${lang}`
-        if (lang === defaultLocale) {
-          acc['x-default'] = `${host}/${defaultLocale}`
-        }
-        return acc
-      }, {} as Record<string, string>),
-    },
   }
 }
 
 export default async function RootLayout({
  children,
- params
+ params,
 }:
  Readonly<{
    children: React.ReactNode,
-   params: Promise<{ locale: LanguageEnums }>
+   params: Promise<{ locale: LanguageEnums }>,
  }
 >
 ) {
