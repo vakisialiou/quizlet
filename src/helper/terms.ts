@@ -9,3 +9,7 @@ export const filterEmptyTerms = (terms: ClientTermData[]): ClientTermData[] => {
 export const filterDeletedTerms = (terms: ClientTermData[]): ClientTermData[] => {
   return [...terms || []].filter(({ deleted }) => !deleted)
 }
+
+export function findTermsByIds(items: ClientTermData[], ids: string[]): ClientTermData[] {
+  return items.filter(({ id }) => ids.includes(id))
+}

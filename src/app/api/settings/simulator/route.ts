@@ -16,6 +16,7 @@ export async function PUT(req: Request) {
     await upsertSettingsSimulator(prisma, userId, {
       simulator: {
         id: body.id,
+        extra: body.extra,
         method: body.method,
         inverted: body.inverted,
       }

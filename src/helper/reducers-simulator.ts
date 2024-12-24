@@ -6,7 +6,7 @@ import { unique } from '@lib/array'
 type UpdateSimulatorCallback = (simulator: ClientSimulatorData) => ClientSimulatorData
 
 export const updateActiveSimulator = (folders: FoldersType, folderId: string, callback: UpdateSimulatorCallback): FoldersType => {
-  const { simulatorIndex, folderIndex, simulator } = findActiveSimulator(folders, folderId)
+  const { simulatorIndex, folderIndex, simulator } = findActiveSimulator(folders.items, folderId)
 
   if (!simulator) {
     return folders
@@ -18,7 +18,7 @@ export const updateActiveSimulator = (folders: FoldersType, folderId: string, ca
 }
 
 export const updateSimulatorById = (folders: FoldersType, folderId: string, id: string, callback: UpdateSimulatorCallback): FoldersType => {
-  const { folderIndex, simulatorIndex, simulator } = getSimulatorById(folders, folderId, id)
+  const { folderIndex, simulatorIndex, simulator } = getSimulatorById(folders.items, folderId, id)
   if (!simulator) {
     return folders
   }
@@ -29,7 +29,7 @@ export const updateSimulatorById = (folders: FoldersType, folderId: string, id: 
 }
 
 export const createActiveSimulator = (folders: FoldersType, folderId: string): FoldersType => {
-  const prev = findActiveSimulator(folders, folderId)
+  const prev = findActiveSimulator(folders.items, folderId)
   if (prev.folderIndex !== -1 && prev.simulator) {
     folders.items[prev.folderIndex].simulators[prev.simulatorIndex] = {
       ...prev.simulator,

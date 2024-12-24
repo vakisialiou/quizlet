@@ -4,7 +4,6 @@ import { CardSelection } from '@containers/Simulator/CardAggregator/MethodPickCa
 import CardAggregator, { OnChangeParamsType } from '@containers/Simulator/CardAggregator'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { CardStatus } from '@containers/Simulator/CardAggregator/types'
-import { ensureActualFolderTermsByFolderId } from '@helper/folders'
 import { ProgressTrackerAction } from '@entities/ProgressTracker'
 import {SimulatorMethod} from '@entities/ClientSettingsSimulator'
 import PanelControls from '@containers/Simulator/PanelControls'
@@ -15,6 +14,7 @@ import Button, {ButtonVariant} from '@components/Button'
 import CardEmpty from '@containers/Simulator/CardEmpty'
 import CardStart from '@containers/Simulator/CardStart'
 import PanelInfo from '@containers/Simulator/PanelInfo'
+import {ensureFolderTerms, getFolderById} from '@helper/folders'
 import {FoldersType} from '@store/initial-state'
 import { useTranslations } from 'next-intl'
 import {useSelector} from 'react-redux'
@@ -37,11 +37,10 @@ export default function SimulatorBody(
     onDeactivateAction: (folder: ClientFolderData) => void
   }
 ) {
-
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
 
   const folder = useMemo(() => {
-    return ensureActualFolderTermsByFolderId(folders.items, folderId)
+    return ensureFolderTerms(folders.items, getFolderById(folders.items, folderId))
   }, [folders.items, folderId])
 
   const simulators = useMemo(() => {
@@ -85,7 +84,7 @@ export default function SimulatorBody(
   const [cardData, setCardData] = useState<OnChangeParamsType | null>(null)
 
   useEffect(() => {
-    if (cardData && !simulator) {
+    if (cardData && (!simulator || simulator.status !== SimulatorStatus.PROCESSING)) {
       setCardData(null)
     }
   }, [simulator, cardData])
@@ -96,7 +95,6 @@ export default function SimulatorBody(
 
   const extra = cardData?.helpData?.extra
   const cardStatus = extra?.status as CardStatus
-
 
   const t = useTranslations('Simulators')
 

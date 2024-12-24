@@ -8,12 +8,12 @@ import {
   ExtraPickCardType,
 } from '@containers/Simulator/CardAggregator/types'
 import { DefaultAnswerLang, DefaultQuestionLang } from '@entities/ClientTerm'
-import { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import { getSimulatorNameById } from '@containers/Simulator/constants'
 import { SimulatorMethod } from '@entities/ClientSettingsSimulator'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ClientSimulatorData } from '@entities/ClientSimulator'
 import { ClientTermData } from '@entities/ClientTerm'
-import { shuffle } from '@lib/array'
+import { findTermsByIds } from '@helper/terms'
 
 export default function MethodPickCard(
   {
@@ -22,7 +22,7 @@ export default function MethodPickCard(
     onSound,
     simulator,
     activeTerm,
-    soundSelection
+    soundSelection,
   }:
     {
       terms: ClientTermData[]
@@ -35,28 +35,9 @@ export default function MethodPickCard(
 ) {
   const { inverted } = simulator.settings
 
-  const isServer = useRef(true)
-
   const selections = useMemo(() => {
-    let items = (isServer ? [...terms] : shuffle([...terms]))
-
-    items = items
-      .filter(({ id, answer, question }) => {
-        const str = inverted ? question : answer
-        return !(id === activeTerm?.id || !str)
-      })
-      .slice(0, 3)
-
-    if (isServer) {
-      return [...items, {...activeTerm} as ClientTermData]
-    } else {
-      return shuffle([...items, {...activeTerm} as ClientTermData])
-    }
-  }, [terms, activeTerm, inverted])
-
-  useEffect(() => {
-    isServer.current = false
-  }, [])
+    return findTermsByIds(terms, simulator.settings.extra.termIds || [])
+  }, [terms, simulator.settings.extra.termIds])
 
   const cardSide = useMemo(() => {
     return {

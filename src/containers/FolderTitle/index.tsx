@@ -1,10 +1,10 @@
 import AchievementIcon, {AchievementsSize} from '@containers/AchievementIcon'
-import { ensureActualFolderTermsByFolderId } from '@helper/folders'
 import AchievementDegree from '@containers/AchievementDegree'
 import { FoldersType } from '@store/initial-state'
+import { getFolderById } from '@helper/folders'
 import { useSelector } from 'react-redux'
 import React, { useMemo } from 'react'
-import clsx from "clsx";
+import clsx from 'clsx'
 
 export default function FolderTitle(
   {
@@ -19,12 +19,10 @@ export default function FolderTitle(
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
 
   const { folder, parentFolder } = useMemo(() => {
-    const folder = ensureActualFolderTermsByFolderId(folders.items, folderId)
+    const folder = getFolderById(folders.items, folderId)
     return {
-      folder,
-      parentFolder: (folder && folder.parentId)
-        ? ensureActualFolderTermsByFolderId(folders.items, folder.parentId)
-        : null,
+      parentFolder: folder?.parentId ? getFolderById(folders.items, folder?.parentId) : folder,
+      folder: !folder?.parentId ? folder : null
     }
   }, [folders.items, folderId])
 
