@@ -1,8 +1,8 @@
 import NavMenuItem, { NavMenuItemProp } from '@containers/NavMenu/NavMenuItem'
 import SVGPanelClose from '@public/svg/panel_close.svg'
+import { sortFoldersDesc } from '@helper/sort-folders'
 import { findModuleFolders } from '@helper/folders'
 import ButtonSquare from '@components/ButtonSquare'
-import { sortFolders } from '@helper/sort-folders'
 import { FoldersType } from '@store/initial-state'
 import { usePathname } from '@i18n/routing'
 import { useTranslations } from 'next-intl'
@@ -21,7 +21,7 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
 
   const collectionChildren = useMemo(() => {
 
-    return sortFolders(findModuleFolders([...folders.items]))
+    return sortFoldersDesc(findModuleFolders([...folders.items]))
       .map((item) => {
         return {
           id: item.id,

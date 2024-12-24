@@ -1,13 +1,13 @@
 'use client'
 
-import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
+import AchievementIcon, { AchievementsSize } from '@containers/AchievementIcon'
 import Button, { ButtonSize, ButtonVariant } from '@components/Button'
+import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
 import Dropdown, { DropdownVariant } from '@components/Dropdown'
 import ChildFolders from '@containers/Collection/ChildFolders'
 import AchievementDegree from '@containers/AchievementDegree'
 import { FolderFrameVariant } from '@components/FolderFrame'
 import { ClientFolderData } from '@entities/ClientFolder'
-import AchievementIcon, {AchievementsSize} from '@containers/AchievementIcon'
 import SVGPresetNew from '@public/svg/preset_new.svg'
 import { filterDeletedTerms } from '@helper/terms'
 import SVGSettings from '@public/svg/settings.svg'
@@ -34,7 +34,7 @@ import { getLastStudyFolder } from '@helper/study'
 import { searchFolders } from '@helper/search-folders'
 import { getSimulatorsInfo } from '@helper/simulators'
 import { findModuleFolders } from '@helper/folders'
-import { sortFolders } from '@helper/sort-folders'
+import { sortFoldersDesc } from '@helper/sort-folders'
 import {
   DEFAULT_GROUP_SIZE,
   GROUP_SIZE_5,
@@ -91,7 +91,7 @@ export default function Grid(
   const moduleFolders = useMemo(() => {
     let moduleFolders = findModuleFolders([...folders.items || []])
     moduleFolders = searchFolders(moduleFolders, search, folders.editId)
-    return sortFolders(moduleFolders)
+    return sortFoldersDesc(moduleFolders)
       .sort((a, b) => {
         if (lastStudy.folder?.id === a.id) {
           return -1

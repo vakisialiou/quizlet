@@ -2,15 +2,18 @@
 
 import {
   DEFAULT_GROUP_SIZE,
+  sortFolderGroups,
   isGenerateGroupDisabled,
   minTermsCountToGenerateGroup
 } from '@helper/groups'
-import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
-import AchievementDegree from '@containers/AchievementDegree'
 import AchievementIcon, { AchievementsSize } from '@containers/AchievementIcon'
+import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
+import { createRelationGroups } from '@helper/folders-relation'
+import AchievementDegree from '@containers/AchievementDegree'
 import { FolderFrameVariant } from '@components/FolderFrame'
 import { ClientFolderData } from '@entities/ClientFolder'
 import { getSimulatorsInfo } from '@helper/simulators'
+import { sortFoldersAsc } from '@helper/sort-folders'
 import { FoldersType } from '@store/initial-state'
 import FolderCart from '@components/FolderCart'
 import SVGTrash from '@public/svg/trash.svg'
@@ -48,22 +51,17 @@ export default function ChildFolders(
 
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
 
-  const relatedItems = useMemo(() => {
-    const res = {} as { [key: string]: ClientFolderData }
+  const folderGroups = useMemo(() => {
+    return sortFolderGroups(folder.folderGroups)
+  }, [folder.folderGroups])
 
-    const rawItems = [...folders.items || []]
-    for (const item of rawItems) {
-      if (!item.isModule) {
-        res[item.id] = item
-      }
+  const relatedGroups = useMemo(() => {
+    const relations = createRelationGroups(folder.folderGroups, folders.items)
+    for (const prop in relations) {
+      relations[prop] = sortFoldersAsc(relations[prop])
     }
-
-    return res
-  }, [folders.items])
-
-  const folderGroups = [...folder.folderGroups].sort((a, b) => {
-    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-  })
+    return relations
+  }, [folders.items, folder.folderGroups])
 
   return (
     <div className="flex flex-col gap-2">
@@ -76,6 +74,7 @@ export default function ChildFolders(
       }
 
       {folderGroups.map((group, gIndex) => {
+        const folders = relatedGroups[group.id] || []
         return (
           <Fragment
             key={gIndex}
@@ -88,12 +87,7 @@ export default function ChildFolders(
             <div
               className="gap-2 grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
 
-              {group.relationFolders.map((relation, index) => {
-                const childFolder = relatedItems[relation.folderId] as ClientFolderData
-                if (!childFolder) {
-                  return
-                }
-
+              {folders.map((childFolder, index) => {
                 const { hasActive } = getSimulatorsInfo(childFolder.simulators)
                 const isLastStudy = lastFolderId === childFolder.id
 

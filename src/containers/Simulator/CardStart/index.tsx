@@ -21,7 +21,7 @@ export default function SingleStart(
     const terms = filterDeletedTerms(filterEmptyTerms([...folder?.terms || []]))
     const termIds = [...folder?.relationTerms || []].map(({ termId }) => termId)
     return findTermsByIds(terms, termIds)
-  }, [folder?.terms])
+  }, [folder?.terms, folder?.relationTerms])
 
   const t = useTranslations('Simulators')
 

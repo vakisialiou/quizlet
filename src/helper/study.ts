@@ -1,5 +1,5 @@
 import { ClientFolderGroupData } from '@entities/ClientFolderGroup'
-import { createFoldersRelation } from '@helper/folders-relation'
+import { createRelationFoldersMap } from '@helper/folders-relation'
 import { ClientSimulatorData } from '@entities/ClientSimulator'
 import { sortSimulatorsDesc } from '@helper/sort-simulators'
 import { ClientFolderData} from '@entities/ClientFolder'
@@ -80,7 +80,7 @@ export const getLastStudyChildFolder = (items: ClientFolderData[], parentFolder:
     return last
   }
 
-  const relations = createFoldersRelation(items)
+  const relations = createRelationFoldersMap(items)
 
   for (const folderGroup of [...parentFolder.folderGroups]) {
     for (const relationFolder of folderGroup.relationFolders) {

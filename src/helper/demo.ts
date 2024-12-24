@@ -112,7 +112,13 @@ export const getDemoFoldersInitialData = async (locale: LanguageEnums): Promise<
       new ClientSimulator(DEMO_FOLDER_ID, SimulatorStatus.PROCESSING)
         .setActive(true)
         .setTermId(terms[0].id)
-        .setSettings(new ClientSettingsSimulator())
+        .setSettings(new ClientSettingsSimulator()
+          .setExtraTermIds([
+            terms[3].id,
+            terms[2].id,
+            terms[0].id,
+            terms[1].id
+          ]))
         .setTermIds(terms.map(({ id }) => id))
     )
     .setTerms(terms)

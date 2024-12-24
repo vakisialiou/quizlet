@@ -11,5 +11,10 @@ export const filterDeletedTerms = (terms: ClientTermData[]): ClientTermData[] =>
 }
 
 export function findTermsByIds(items: ClientTermData[], ids: string[]): ClientTermData[] {
-  return items.filter(({ id }) => ids.includes(id))
+  return [...ids]
+    .map((id) => {
+      const index = items.findIndex((item) => item.id === id)
+      return index !== -1 ? items[index] : null
+    })
+    .filter((item) => !!item)
 }
