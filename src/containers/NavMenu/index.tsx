@@ -43,7 +43,7 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
     {
       id: 2,
       name: t('headTitle'),
-      href: `/private/collection`,
+      href: `/private`,
       private: true,
       children: collectionChildren
     },

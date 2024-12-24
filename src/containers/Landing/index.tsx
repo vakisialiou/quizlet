@@ -79,7 +79,7 @@ function Landing(
               <div className="flex justify-center">
                 <Button
                   variant={ButtonVariant.WHITE}
-                  onClick={() => route.push('/private/collection')}
+                  onClick={() => route.push('/private')}
                   className="px-6 gap-2 font-medium text-nowrap"
                 >
                   <SVGPresetNew
@@ -109,7 +109,7 @@ function Landing(
                   onClick={async () => {
                     await signIn('google', {
                       redirect: true,
-                      redirectTo: getPathname({href: '/private/collection', locale})
+                      redirectTo: getPathname({href: '/private', locale})
                     })
                   }}
                   className="px-6 gap-2 font-medium text-nowrap"
@@ -164,7 +164,7 @@ function Landing(
                   onClick={async () => {
                     await signIn('google', {
                       redirect: true,
-                      redirectTo: getPathname({href: '/private/collection', locale})
+                      redirectTo: getPathname({href: '/private', locale})
                     })
                   }}
                   className="px-6 gap-2 font-medium text-nowrap"
@@ -291,7 +291,7 @@ function Landing(
                   onClick={async () => {
                     await signIn('google', {
                       redirect: true,
-                      redirectTo: getPathname({href: '/private/collection', locale})
+                      redirectTo: getPathname({href: '/private', locale})
                     })
                   }}
                 >

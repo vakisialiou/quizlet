@@ -1,10 +1,9 @@
 {
-  "Metadata": {
-    "title": "Learning Tools and Flashcards for Language Learning | QuizerPlay",
-    "keywords": "Learning, flashcards for learning, associations, learning motivation, education gamification, learning English, English study",
-    "description": "QuizerPlay offers innovative AI-powered learning tools for effective language acquisition. Use our online flashcards, simulators, and gamified methods to accelerate your learning and stay motivated."
-  },
   "Landing": {
+    "metaTitle": "Learning Tools and Flashcards for Language Learning | QuizerPlay",
+    "metaKeywords": "language learning, flashcards for studying, memory trainers, learning motivation, gamification, associations, language simulators, effective learning",
+    "metaDescription": "QuizerPlay offers innovative tools for language learning using AI simulators, flashcards, and gamification. Learn new words and phrases through gamified methods for fast and effective mastery of material.",
+
     "mainTitle": "Word Memorization with Flashcards",
     "mainDesc": "Engage in memory training, learn languages, and master new skills with effective language learning simulators.",
     "mainButtonSignIn": "Get Started with Google",
@@ -57,9 +56,17 @@
     "helpSection1Title": "Click the button to open the 'Collection' section, where you can create modules and add terms to them for easy management and study."
   },
   "Offline": {
+    "metaTitle": "Offline Mode | QuizerPlay",
+    "metaKeywords": "offline, no connection, offline mode, network issues, internet connection, QuizerPlay offline, no internet, reconnecting",
+    "metaDescription": "You are in offline mode. Try connecting to the network to continue using QuizerPlay.",
+
     "warn": "You are in offline mode. <br/>Try connecting to the network."
   },
   "Folders": {
+    "metaTitle": "Learning Modules | QuizerPlay",
+    "metaKeywords": "modules, terms, study groups, simulators, QuizerPlay, learning, creating modules, managing terms",
+    "metaDescription": "Manage learning modules, terms, and simulators on QuizerPlay. Create, study, and optimize your educational process.",
+
     "headTitle": "Collections",
     "searchPlaceholder": "Search...",
     "footButtonCreateModule": "Create Module",
@@ -115,6 +122,10 @@
     "userHelpButtonClose": "Close"
   },
   "Terms": {
+    "metaTitle": "Term Management | QuizerPlay",
+    "metaKeywords": "terms, term management, adding terms, editing terms, deleting terms, studying terms, QuizerPlay",
+    "metaDescription": "Create, edit, and study terms on the QuizerPlay platform. Manage your educational content easily and efficiently.",
+
     "headTitle": "Terms",
     "searchPlaceholder": "Search...",
     "footButtonCreateTerm": "Create",
@@ -142,6 +153,10 @@
     "cardAssociationHintW": "Your association ..."
   },
   "Simulators": {
+    "metaTitle": "Training Simulators | QuizerPlay",
+    "metaKeywords": "simulators, learning, Pick, Flashcard, Input, educational games, study, QuizerPlay",
+    "metaDescription": "Use training simulators on the QuizerPlay platform for effective learning. Choose a simulator and start learning terms with engaging methods.",
+
     "headTitle": "Simulator",
     "buttonRemember": "Remember",
     "buttonContinue": "Continue",
@@ -172,6 +187,10 @@
     "simulatorPanelTime": "Time"
   },
   "Policy": {
+    "metaTitle": "Privacy Policy | QuizerPlay",
+    "metaKeywords": "privacy policy, data protection, personal data, cookies, data security, Google Authentication, data processing, user rights, data collection, data usage, QuizerPlay confidentiality, how we protect your data.",
+    "metaDescription": "Learn how QuizerPlay protects your personal data. Explore our Privacy Policy, which details the methods of data collection, usage, and protection. We value your privacy and ensure transparent data processing terms.",
+
     "title": "Privacy Policy",
     "titleUpdate": "Last updated: {date} year",
     "section1Text": "At {appName}, we value your privacy and are committed to protecting your personal data. This Privacy Policy explains how we collect, use, and protect your information when using our platform.",

@@ -3,7 +3,6 @@ import { getDemoFoldersInitialData } from '@helper/demo'
 import { getInitialState } from '@store/initial-state'
 import { routing, LanguageEnums } from '@i18n/routing'
 import { getSettings } from '@repositories/settings'
-import { getTranslations } from 'next-intl/server'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
@@ -27,21 +26,8 @@ const geistMono = localFont({
   weight: '100 900',
 })
 
-export async function generateMetadata(
-  {
-    params,
-  }:
-  {
-    params: Promise<{ locale: LanguageEnums }>,
-  }
-) {
-  const { locale } = await params
-  const t = await getTranslations({ locale, namespace: 'Metadata' })
-
+export async function generateMetadata() {
   return {
-    title: t('title'),
-    keywords: t('keywords'),
-    description: t('description'),
     icons: [
       {rel: 'icon', type: 'image/png', sizes: '32x32', url: '/icons/favicon-32x32.png'},
       {rel: 'icon', type: 'image/png', sizes: '96x96', url: '/icons/favicon-96x96.png'},

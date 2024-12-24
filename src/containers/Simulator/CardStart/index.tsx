@@ -19,6 +19,9 @@ export default function SingleStart(
 
   const playTerms = useMemo(() => {
     const terms = filterDeletedTerms(filterEmptyTerms([...folder?.terms || []]))
+    if (folder?.isModule) {
+      return terms
+    }
     const termIds = [...folder?.relationTerms || []].map(({ termId }) => termId)
     return findTermsByIds(terms, termIds)
   }, [folder?.terms, folder?.relationTerms])
