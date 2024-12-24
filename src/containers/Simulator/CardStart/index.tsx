@@ -1,6 +1,6 @@
 import { simulatorMethodList, findSimulatorMethodById } from '@containers/Simulator/constants'
 import { actionStartSimulators, actionUpdateSettingsSimulator } from '@store/index'
-import { filterDeletedTerms, filterEmptyTerms } from '@helper/terms'
+import { filterDeletedTerms, filterEmptyTerms, findTermsByIds } from '@helper/terms'
 import { ClientSettingsData } from '@entities/ClientSettings'
 import Button, { ButtonVariant } from '@components/Button'
 import { ClientFolderData } from '@entities/ClientFolder'
@@ -18,7 +18,9 @@ export default function SingleStart(
   const settings = useSelector(({ settings }: { settings: ClientSettingsData }) => settings)
 
   const playTerms = useMemo(() => {
-    return filterDeletedTerms(filterEmptyTerms([...folder?.terms || []]))
+    const terms = filterDeletedTerms(filterEmptyTerms([...folder?.terms || []]))
+    const termIds = [...folder?.relationTerms || []].map(({ termId }) => termId)
+    return findTermsByIds(terms, termIds)
   }, [folder?.terms])
 
   const t = useTranslations('Simulators')
