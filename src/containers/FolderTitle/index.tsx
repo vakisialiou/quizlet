@@ -2,6 +2,7 @@ import AchievementIcon, {AchievementsSize} from '@containers/AchievementIcon'
 import AchievementDegree from '@containers/AchievementDegree'
 import { FoldersType } from '@store/initial-state'
 import { getFolderById } from '@helper/folders'
+import { useTranslations } from 'next-intl'
 import { useSelector } from 'react-redux'
 import React, { useMemo } from 'react'
 import clsx from 'clsx'
@@ -18,13 +19,15 @@ export default function FolderTitle(
 ) {
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
 
-  const { folder, parentFolder } = useMemo(() => {
+  const { folder, moduleFolder } = useMemo(() => {
     const folder = getFolderById(folders.items, folderId)
     return {
-      parentFolder: folder?.parentId ? getFolderById(folders.items, folder?.parentId) : folder,
-      folder: !folder?.parentId ? folder : null
+      moduleFolder: folder?.parentId ? getFolderById(folders.items, folder.parentId) : folder,
+      folder
     }
   }, [folders.items, folderId])
+
+  const t = useTranslations('Folders')
 
   return (
     <div
@@ -47,15 +50,21 @@ export default function FolderTitle(
           />
         </div>
 
-        {parentFolder &&
+        {(moduleFolder?.id !== folder?.id) &&
           <div className="text-white/50 text-xs font-bold">
-            {`Group ${folder?.name}` || '(No name)'}
+            {folder?.name
+              ? t('folderName', { num: folder?.name })
+              : t('folderNoName')
+            }
           </div>
         }
       </div>
 
       <div className="text-white/50 text-base font-bold truncate ...">
-        {parentFolder ? (parentFolder.name || '(No name)') : folder?.name || '(No name)'}
+        {(moduleFolder?.id !== folder?.id)
+          ? (moduleFolder?.name || t('folderNoName'))
+          : folder?.name || t('folderNoName')
+        }
       </div>
     </div>
   )

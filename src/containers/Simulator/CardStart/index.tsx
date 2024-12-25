@@ -24,7 +24,7 @@ export default function SingleStart(
     }
     const termIds = [...folder?.relationTerms || []].map(({ termId }) => termId)
     return findTermsByIds(terms, termIds)
-  }, [folder?.terms, folder?.relationTerms])
+  }, [folder?.terms, folder?.relationTerms, folder?.isModule])
 
   const t = useTranslations('Simulators')
 
