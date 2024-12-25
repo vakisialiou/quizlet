@@ -95,7 +95,7 @@ export default function ChildFolders(
                 const prevFolder = folders[index - 1]
                 const nextFolder = folders[index + 1]
                 const disabled = prevFolder && prevFolder.degreeRate < 90
-                const showWarn = nextFolder && nextFolder.degreeRate < 90 && childFolder.degreeRate < 90
+                const showWarn = !disabled && nextFolder && nextFolder.degreeRate < 90 && childFolder.degreeRate < 90
 
                 return (
                   <FolderCart
