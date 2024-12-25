@@ -37,12 +37,13 @@ export default function AchievementIcon(
   }
 ) {
   const { degreeIcon, medalIcon } = useMemo(() => {
-    const achievement = new Achievement().calculate(folder?.simulators || [])
+    const { medal, degree } = new Achievement().calculateByDegreeRate(folder?.degreeRate || 0)
+
     return {
-      degreeIcon: achievement.degree ? DegreeIconMap[achievement.degree] : null,
-      medalIcon: achievement.medal ? MedalIconMap[achievement.medal] : null
+      degreeIcon: degree ? DegreeIconMap[degree] : null,
+      medalIcon: medal ? MedalIconMap[medal] : null
     }
-  }, [folder])
+  }, [folder?.degreeRate])
 
   return (
     <div

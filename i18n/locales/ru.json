@@ -100,6 +100,9 @@
     "groupLabelTerms": "Термины {count}",
     "groupButtonStartStudy": "Изучить",
 
+    "groupWarn1": "Неактивно",
+    "groupWarn2": "Следующая группа откроется после достижения {percent}%.",
+
     "userHelpTitle": "Подсказка",
     "userHelpSection1Title": "Что такое учебный модуль?",
     "userHelpSection1Text": "Учебный модуль — это сущность, содержащая список терминов, учебные группы и симуляторы.",

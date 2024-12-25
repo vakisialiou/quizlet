@@ -20,8 +20,8 @@ export default function AchievementDegree(
   }
 ) {
   const achievement = useMemo(() => {
-    return new Achievement().calculate(folder?.simulators || [])
-  }, [folder])
+    return new Achievement().calculateByDegreeRate(folder?.degreeRate || 0)
+  }, [folder?.degreeRate])
 
   return (
     <div

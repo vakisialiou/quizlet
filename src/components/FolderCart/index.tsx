@@ -15,6 +15,7 @@ export default function FolderCart(
     title,
     labels,
     hover = true,
+    disabled = false,
     dropdown,
     children,
     className = '',
@@ -24,6 +25,7 @@ export default function FolderCart(
   }:
   {
     hover?: boolean
+    disabled?: boolean
     title?: ReactNode,
     className?: string,
     labels?: ReactNode,
@@ -39,13 +41,14 @@ export default function FolderCart(
     <FolderFrame
       hover={hover}
       variant={variant}
+      disabled={disabled}
       className={className}
       onClickBody={onClickBody}
       head={(
-        <div className="w-full flex items-center justify-between h-8 min-h-8 relative px-1">
+        <div className="w-full flex items-center justify-between h-8 min-h-8 relative px-1 border-b border-white/15">
           <div
             className={clsx('z-0 absolute left-0 top-0 w-full h-full pointer-events-none', {
-              ['bg-white/10']: true
+              ['bg-white/10']: true,
             })}
           />
           <div className="flex items-center justify-between w-full h-6 gap-2 text-white/60 text-sm px-1 z-10">

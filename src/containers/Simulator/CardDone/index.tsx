@@ -2,9 +2,10 @@ import React, { useEffect, useState, useRef, useLayoutEffect, useMemo } from 're
 import AchievementIcon, { AchievementsSize } from '@containers/AchievementIcon'
 import { ClientSimulatorData } from '@entities/ClientSimulator'
 import AchievementDegree from '@containers/AchievementDegree'
-import { ClientFolderData } from '@entities/ClientFolder'
 import { actionDeactivateSimulators } from '@store/index'
+import { ClientFolderData } from '@entities/ClientFolder'
 import CardEmpty from '@containers/Simulator/CardEmpty'
+import Achievement from '@entities/Achievement'
 import clsx from 'clsx'
 
 const randFloat = (min: number, max: number) => {
@@ -69,26 +70,32 @@ export default function CardDone(
     return () => clearTimeout(timer)
   }, [particlesDelay])
 
+  const simulators = useMemo(() => {
+    return [...folder.simulators || []].map((item) => {
+      return {
+        ...item,
+        active: item.id === simulator.id ? false : item.active
+      }
+    })
+  }, [folder.simulators, simulator.id])
+
+  const virtualFolder = useMemo(() => {
+    const degreeRate = new Achievement().getDegreeRate(simulators)
+    return { ...folder, degreeRate }
+  }, [folder, simulators])
+
   useEffect(() => {
     const timer = setTimeout(() => {
       if (onAnimationDone) {
         onAnimationDone()
       }
 
-      actionDeactivateSimulators({ folderId: folder.id })
+      actionDeactivateSimulators({ folderId: folder.id, degreeRate: virtualFolder.degreeRate })
 
     }, particlesDelay + particlesDuration.max)
 
     return () => clearTimeout(timer)
-  }, [onAnimationDone, particlesDelay, particlesDuration.max, folder.id])
-
-  const fakeFolder = useMemo(() => {
-    const simulators = [...folder.simulators || []].map((item) => {
-      return { ...item, active: item.id === simulator.id ? false : item.active }
-    })
-    return { ...folder, simulators }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [onAnimationDone, particlesDelay, particlesDuration.max, folder.id, virtualFolder.degreeRate])
 
   return (
     <CardEmpty
@@ -140,13 +147,13 @@ export default function CardDone(
         }}
       >
         <AchievementIcon
-          folder={fakeFolder}
+          folder={virtualFolder}
           size={AchievementsSize.xl}
         />
 
         <AchievementDegree
           disableTruncate
-          folder={fakeFolder}
+          folder={virtualFolder}
           className="flex flex-col gap-2 font-bold text-4xl items-center text-gray-700 uppercase"
         />
       </div>

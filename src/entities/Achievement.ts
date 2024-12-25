@@ -112,8 +112,7 @@ export default class Achievement {
     return null
   }
 
-  calculate(simulators: ClientSimulatorData[]): AchievementData {
-    const degreeRate = this.getDegreeRate(simulators)
+  calculateByDegreeRate(degreeRate: number): AchievementData {
     const medalRate = this.getMedalRate(degreeRate)
     return {
       medalRate,
@@ -121,5 +120,10 @@ export default class Achievement {
       medal: this.getMedal(medalRate),
       degree: this.getDegree(degreeRate)
     }
+  }
+
+  calculate(simulators: ClientSimulatorData[]): AchievementData {
+    const degreeRate = this.getDegreeRate(simulators)
+    return this.calculateByDegreeRate(degreeRate)
   }
 }

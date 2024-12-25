@@ -9,6 +9,7 @@ import SVGGoogle from '@public/svg/painted/google.svg'
 import SVGPresetNew from '@public/svg/preset_new.svg'
 import FolderTitle from '@containers/FolderTitle'
 import ContentPage from '@containers/ContentPage'
+import Achievement from '@entities/Achievement'
 import ButtonPWA from '@containers/ButtonPWA'
 import { DEMO_FOLDER_ID } from '@helper/demo'
 import {useTranslations} from 'next-intl'
@@ -146,7 +147,10 @@ function Landing(
                 <SimulatorBody
                   folderId={DEMO_FOLDER_ID}
                   onDeactivateAction={(folder) => {
-                    actionDeactivateSimulators({folderId: folder.id})
+                    actionDeactivateSimulators({
+                      folderId: folder.id,
+                      degreeRate: new Achievement().getDegreeRate(folder.simulators)
+                    })
                   }}
                 />
               </div>

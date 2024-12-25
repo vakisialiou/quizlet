@@ -2,25 +2,26 @@
 
 import {
   DEFAULT_GROUP_SIZE,
-  sortFolderGroups,
   isGenerateGroupDisabled,
-  minTermsCountToGenerateGroup
+  minTermsCountToGenerateGroup,
+  sortFolderGroups
 } from '@helper/groups'
-import AchievementIcon, { AchievementsSize } from '@containers/AchievementIcon'
-import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
-import { createRelationGroups } from '@helper/folders-relation'
+import AchievementIcon, {AchievementsSize} from '@containers/AchievementIcon'
+import MetaLabel, {MetaLabelVariant} from '@components/MetaLabel'
+import {createRelationGroups} from '@helper/folders-relation'
 import AchievementDegree from '@containers/AchievementDegree'
-import { FolderFrameVariant } from '@components/FolderFrame'
+import {FolderFrameVariant} from '@components/FolderFrame'
 import { ClientFolderData } from '@entities/ClientFolder'
-import { getSimulatorsInfo } from '@helper/simulators'
-import { sortFoldersAsc } from '@helper/sort-folders'
-import { FoldersType } from '@store/initial-state'
+import {getSimulatorsInfo} from '@helper/simulators'
+import {sortFoldersAsc} from '@helper/sort-folders'
+import {FoldersType} from '@store/initial-state'
 import FolderCart from '@components/FolderCart'
 import SVGTrash from '@public/svg/trash.svg'
 import { useTranslations } from 'next-intl'
 import SVGPlay from '@public/svg/play.svg'
 import { useSelector } from 'react-redux'
-import { Fragment, useMemo } from 'react'
+import {Fragment, useMemo} from 'react'
+import clsx from "clsx";
 
 enum DropDownIdEnums {
   REMOVE_FOLDER = 'REMOVE_FOLDER',
@@ -88,13 +89,19 @@ export default function ChildFolders(
               className="gap-2 grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
 
               {folders.map((childFolder, index) => {
-                const { hasActive } = getSimulatorsInfo(childFolder.simulators)
+                const simulatorsInfo = getSimulatorsInfo(childFolder.simulators)
                 const isLastStudy = lastFolderId === childFolder.id
+
+                const prevFolder = folders[index - 1]
+                const nextFolder = folders[index + 1]
+                const disabled = prevFolder && prevFolder.degreeRate < 90
+                const showWarn = nextFolder && nextFolder.degreeRate < 90 && childFolder.degreeRate < 90
 
                 return (
                   <FolderCart
                     key={index}
                     hover={true}
+                    disabled={disabled}
                     variant={isLastStudy ? FolderFrameVariant.yellow : FolderFrameVariant.default}
                     dropdown={{
                       items: dropdownChildrenItems,
@@ -131,7 +138,7 @@ export default function ChildFolders(
                     )}
                     labels={(
                       <>
-                        {hasActive &&
+                        {simulatorsInfo.hasActive &&
                           <MetaLabel
                             variant={MetaLabelVariant.amber}
                           >
@@ -151,18 +158,35 @@ export default function ChildFolders(
                     }}
                   >
                     <div
-                      className="flex gap-2 items-center justify-between w-full p-2"
+                      className="flex flex-col px-1 justify-center h-full"
                     >
-                      <div className="text-xs font-bold text-white/50 uppercase">
-                        {t('folderName', {num: childFolder.name})}
+                      <div
+                        className={clsx('flex gap-2 items-center justify-between w-full', {
+                          ['text-white/50']: !disabled,
+                          ['text-white/15']: disabled
+                        })}
+                      >
+                        <div className="text-xs font-bold uppercase">
+                          {t('folderName', {num: childFolder.name})}
+                        </div>
+                        <div className="flex gap-2 items-center text-base">
+                          <SVGPlay
+                            width={18}
+                            height={18}
+                          />
+                          {t('groupButtonStartStudy')}
+                        </div>
                       </div>
-                      <div className="flex gap-2 items-center text-base text-white/50">
-                        <SVGPlay
-                          width={18}
-                          height={18}
-                        />
-                        {t('groupButtonStartStudy')}
-                      </div>
+                      {showWarn &&
+                        <div className="text-[10px] italic text-white/50">
+                          {t('groupWarn2', { percent: 90 })}
+                        </div>
+                      }
+                      {disabled &&
+                        <div className="text-[10px] italic text-white/50">
+                          {t('groupWarn1')}
+                        </div>
+                      }
                     </div>
                   </FolderCart>
                 )

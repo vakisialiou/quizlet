@@ -13,12 +13,14 @@ export default function FolderFrame(
     head,
     children,
     hover = true,
+    disabled = false,
     className = '',
     onClickBody,
     variant = FolderFrameVariant.default,
   }:
   {
     hover?: boolean
+    disabled?: boolean
     head?: ReactNode,
     children?: ReactNode,
     className?: string,
@@ -39,9 +41,14 @@ export default function FolderFrame(
       {head}
 
       <div
-        onClick={onClickBody}
+        onClick={(e) => {
+          if (onClickBody && !disabled) {
+            onClickBody(e)
+          }
+        }}
         className={clsx('h-full flex flex-col text-sm relative p-2', {
-          ['group cursor-pointer']: hover
+          ['group cursor-pointer']: hover,
+          ['pointer-events-none bg-black/90']: disabled
         })}
       >
         <div

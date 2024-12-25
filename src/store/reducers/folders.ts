@@ -31,8 +31,11 @@ export type SaveType = {
 
 export const saveFolder = createAsyncThunk(
   '/save/folder',
-  async (payload: SaveType): Promise<SaveType> => {
-    await saveClientFolderData(payload.folder)
+  async (payload: SaveType, api): Promise<SaveType> => {
+    const state = api.getState() as ConfigType
+    if (state.serverQueryEnabled) {
+      await saveClientFolderData(payload.folder)
+    }
     return payload
   }
 )

@@ -4,6 +4,11 @@ import ClientSimulator, { ClientSimulatorData } from './ClientSimulator'
 import ClientTerm, { ClientTermData } from './ClientTerm'
 import { v4 } from 'uuid'
 
+export enum ClientFolderMarkersEnum {
+  active = 'active',
+  inactive = 'inactive',
+}
+
 export type ClientFolderData = {
   id: string
   parentId: string | null
@@ -11,6 +16,8 @@ export type ClientFolderData = {
   collapsed: boolean
   isModule: boolean
   order: number,
+  degreeRate: number,
+  markers: ClientFolderMarkersEnum[]
   terms: ClientTermData[]
   simulators: ClientSimulatorData[]
   folderGroups: ClientFolderGroupData[]
@@ -26,6 +33,8 @@ export default class ClientFolder {
   collapsed: boolean
   isModule: boolean
   name: string | null
+  degreeRate: number
+  markers: ClientFolderMarkersEnum[]
   terms: ClientTerm[]
   simulators: ClientSimulator[]
   folderGroups: ClientFolderGroup[]
@@ -36,11 +45,13 @@ export default class ClientFolder {
   constructor() {
     this.id = v4()
     this.order = 0
+    this.degreeRate = 0
     this.parentId = null
     this.name = null
     this.isModule = true
     this.collapsed = true
     this.terms = []
+    this.markers = []
     this.simulators = []
     this.folderGroups = []
     this.relationTerms = []
@@ -70,6 +81,21 @@ export default class ClientFolder {
 
   setOrder(value: number): ClientFolder {
     this.order = value
+    return this
+  }
+
+  setDegreeRate(value: number): ClientFolder {
+    this.degreeRate = value
+    return this
+  }
+
+  setMarkers(value: ClientFolderMarkersEnum[]): ClientFolder {
+    this.markers = value
+    return this
+  }
+
+  addMarker(value: ClientFolderMarkersEnum): ClientFolder {
+    this.markers.push(value)
     return this
   }
 

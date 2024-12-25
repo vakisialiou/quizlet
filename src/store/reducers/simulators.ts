@@ -21,6 +21,8 @@ import {
   selectRandomTermId,
   randomizeTermIds
 } from '@helper/simulators'
+import {ClientFolderData} from "@entities/ClientFolder";
+import { saveFolder } from '@store/reducers/folders'
 
 export type UpsertSimulatorsIds = {
   folderId: string,
@@ -102,13 +104,20 @@ export const backSimulators = createAsyncThunk(
 )
 
 export type PayloadDeactivate = {
-  folderId: string
+  folderId: string,
+  degreeRate: number
 }
 
 export const deactivateSimulators = createAsyncThunk(
   '/deactivate/simulators',
   async (payload: PayloadDeactivate, api): Promise<UpsertSimulatorsIds> => {
     const state = api.getState() as ConfigType
+    const folder = state.folders.items.find(({ id }) => {
+      return id === payload.folderId
+    }) as ClientFolderData | null
+    if (folder) {
+      await api.dispatch(saveFolder({ folder: { ...folder, degreeRate: payload.degreeRate } }))
+    }
     return await tryUpdate(state, payload.folderId)
   }
 )
