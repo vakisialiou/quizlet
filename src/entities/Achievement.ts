@@ -109,7 +109,7 @@ export default class Achievement {
   getRate(simulators: ClientSimulatorData[]): number {
     const arr = []
 
-    for (let options of this.options) {
+    for (const options of this.options) {
       arr.push(this.getMethodRate(simulators, options))
     }
 
