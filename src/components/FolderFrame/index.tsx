@@ -32,10 +32,17 @@ export default function FolderFrame(
     <div
       className={clsx('w-full border bg-black rounded-md select-none flex flex-col overflow-hidden', {
         [className]: className,
-        ['border-white/15']: variant === FolderFrameVariant.default,
-        ['border-blue-300/40']: variant === FolderFrameVariant.blue,
-        ['border-green-300/50']: variant === FolderFrameVariant.green,
-        ['border-yellow-500/40']: variant === FolderFrameVariant.yellow
+        ['border-white/15']: !disabled && variant === FolderFrameVariant.default,
+        ['border-white/10']: disabled && variant === FolderFrameVariant.default,
+
+        ['border-blue-300/50']: !disabled && variant === FolderFrameVariant.blue,
+        ['border-blue-300/20']: disabled && variant === FolderFrameVariant.blue,
+
+        ['border-green-300/50']: !disabled && variant === FolderFrameVariant.green,
+        ['border-green-300/25']: disabled && variant === FolderFrameVariant.green,
+
+        ['border-yellow-500/50']: !disabled && variant === FolderFrameVariant.yellow,
+        ['border-yellow-500/20']: disabled && variant === FolderFrameVariant.yellow,
       })}
     >
       {head}

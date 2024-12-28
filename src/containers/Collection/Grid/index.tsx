@@ -1,12 +1,12 @@
 'use client'
 
-import AchievementIcon, { AchievementsSize } from '@containers/AchievementIcon'
 import Button, { ButtonSize, ButtonVariant } from '@components/Button'
 import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
 import Dropdown, { DropdownVariant } from '@components/Dropdown'
 import ChildFolders from '@containers/Collection/ChildFolders'
 import AchievementDegree from '@containers/AchievementDegree'
 import { FolderFrameVariant } from '@components/FolderFrame'
+import AchievementIcon from '@containers/AchievementIcon'
 import { ClientFolderData } from '@entities/ClientFolder'
 import SVGPresetNew from '@public/svg/preset_new.svg'
 import { filterDeletedTerms } from '@helper/terms'
@@ -126,11 +126,10 @@ export default function Grid(
                   <div className="flex items-center gap-1">
                     <AchievementIcon
                       folder={folder}
-                      size={AchievementsSize.xs}
+                      size={12}
                     />
 
                     <AchievementDegree
-                      hideDegree
                       folder={folder}
                       className="text-xs font-bold uppercase text-white/50"
                     />

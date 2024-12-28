@@ -6,20 +6,20 @@ import {
   minTermsCountToGenerateGroup,
   sortFolderGroups
 } from '@helper/groups'
-import AchievementIcon, {AchievementsSize} from '@containers/AchievementIcon'
 import MetaLabel, {MetaLabelVariant} from '@components/MetaLabel'
 import {createRelationGroups} from '@helper/folders-relation'
 import AchievementDegree from '@containers/AchievementDegree'
+import AchievementIcon from '@containers/AchievementIcon'
 import {FolderFrameVariant} from '@components/FolderFrame'
-import { ClientFolderData } from '@entities/ClientFolder'
+import {ClientFolderData} from '@entities/ClientFolder'
 import {getSimulatorsInfo} from '@helper/simulators'
 import {sortFoldersAsc} from '@helper/sort-folders'
 import {FoldersType} from '@store/initial-state'
 import FolderCart from '@components/FolderCart'
 import SVGTrash from '@public/svg/trash.svg'
-import { useTranslations } from 'next-intl'
+import {useTranslations} from 'next-intl'
 import SVGPlay from '@public/svg/play.svg'
-import { useSelector } from 'react-redux'
+import {useSelector} from 'react-redux'
 import {Fragment, useMemo} from 'react'
 import clsx from "clsx";
 
@@ -43,12 +43,6 @@ export default function ChildFolders(
   }
 ) {
   const t = useTranslations('Folders')
-
-  const dropdownChildrenItems = [
-    {id: DropDownIdEnums.STUDY, name: t('dropDownEditGroup'), icon: SVGPlay },
-    {id: '1', divider: true },
-    {id: DropDownIdEnums.REMOVE_FOLDER, name: t('dropDownRemoveGroup'), icon: SVGTrash },
-  ]
 
   const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
 
@@ -104,7 +98,11 @@ export default function ChildFolders(
                     disabled={disabled}
                     variant={isLastStudy ? FolderFrameVariant.yellow : FolderFrameVariant.default}
                     dropdown={{
-                      items: dropdownChildrenItems,
+                      items: [
+                        {id: DropDownIdEnums.STUDY, name: t('dropDownEditGroup'), icon: SVGPlay, disabled },
+                        {id: '1', divider: true },
+                        {id: DropDownIdEnums.REMOVE_FOLDER, name: t('dropDownRemoveGroup'), icon: SVGTrash },
+                      ],
                       onSelect: (id) => {
                         switch (id) {
                           case DropDownIdEnums.STUDY:
@@ -125,11 +123,10 @@ export default function ChildFolders(
                         <div className="flex items-center gap-1">
                           <AchievementIcon
                             folder={childFolder}
-                            size={AchievementsSize.xs}
+                            size={12}
                           />
 
                           <AchievementDegree
-                            hideDegree
                             folder={childFolder}
                             className="text-sm font-bold uppercase text-white/50"
                           />
@@ -140,13 +137,14 @@ export default function ChildFolders(
                       <>
                         {simulatorsInfo.hasActive &&
                           <MetaLabel
+                            disabled={disabled}
                             variant={MetaLabelVariant.amber}
                           >
                             {t('groupLabelActive')}
                           </MetaLabel>
                         }
 
-                        <MetaLabel>
+                        <MetaLabel disabled={disabled}>
                           {t('groupLabelTerms', { count: childFolder.relationTerms.length })}
                         </MetaLabel>
                       </>
@@ -180,11 +178,6 @@ export default function ChildFolders(
                       {showWarn &&
                         <div className="text-[10px] italic text-white/50">
                           {t('groupWarn2', { percent: 90 })}
-                        </div>
-                      }
-                      {disabled &&
-                        <div className="text-[10px] italic text-white/50">
-                          {t('groupWarn1')}
                         </div>
                       }
                     </div>

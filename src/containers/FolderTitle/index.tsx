@@ -1,5 +1,5 @@
-import AchievementIcon, {AchievementsSize} from '@containers/AchievementIcon'
 import AchievementDegree from '@containers/AchievementDegree'
+import AchievementIcon from '@containers/AchievementIcon'
 import { FoldersType } from '@store/initial-state'
 import { getFolderById } from '@helper/folders'
 import { useTranslations } from 'next-intl'
@@ -41,10 +41,9 @@ export default function FolderTitle(
         <div className="flex gap-2 items-center">
           <AchievementIcon
             folder={folder}
-            size={AchievementsSize.sm}
+            size={12}
           />
           <AchievementDegree
-            hideDegree
             folder={folder}
             className="text-white/50 text-xs font-bold"
           />

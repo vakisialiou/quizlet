@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useLayoutEffect, useMemo } from 'react'
-import AchievementIcon, { AchievementsSize } from '@containers/AchievementIcon'
 import { ClientSimulatorData } from '@entities/ClientSimulator'
 import AchievementDegree from '@containers/AchievementDegree'
+import AchievementIcon from '@containers/AchievementIcon'
 import { actionDeactivateSimulators } from '@store/index'
 import { ClientFolderData } from '@entities/ClientFolder'
 import CardEmpty from '@containers/Simulator/CardEmpty'
@@ -80,7 +80,7 @@ export default function CardDone(
   }, [folder.simulators, simulator.id])
 
   const virtualFolder = useMemo(() => {
-    const degreeRate = new Achievement().getDegreeRate(simulators)
+    const degreeRate = new Achievement().getRate(simulators)
     return { ...folder, degreeRate }
   }, [folder, simulators])
 
@@ -148,7 +148,7 @@ export default function CardDone(
       >
         <AchievementIcon
           folder={virtualFolder}
-          size={AchievementsSize.xl}
+          size={56}
         />
 
         <AchievementDegree

@@ -100,7 +100,6 @@
     "groupLabelTerms": "Terms {count}",
     "groupButtonStartStudy": "Study",
 
-    "groupWarn1": "Inactive",
     "groupWarn2": "The next group will unlock after reaching {percent}%.",
 
     "userHelpTitle": "Help",

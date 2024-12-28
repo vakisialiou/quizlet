@@ -1,83 +1,55 @@
-import Achievement, { DegreeEnum, MedalEnum } from '@entities/Achievement'
 import { ClientFolderData } from '@entities/ClientFolder'
+import SVGRuby from '@public/svg/ruby/ruby.svg'
 import { useMemo } from 'react'
 import clsx from 'clsx'
 
-const DegreeIconMap: Record<DegreeEnum, string>  = {
-  [DegreeEnum.beginner]: '📝',
-  [DegreeEnum.learner]: '📚',
-  [DegreeEnum.researcher]: '🔬',
-  [DegreeEnum.expert]: '🎓',
-  [DegreeEnum.leader]: '💼',
-  [DegreeEnum.honorary]: '🏆️',
-}
-
-const MedalIconMap: Record<MedalEnum, string>  = {
-  [MedalEnum.bronze]: '🥉',
-  [MedalEnum.silver]: '🥈',
-  [MedalEnum.gold]: '🥇',
-}
-
-export enum AchievementsSize {
-  xl = 'xl',
-  sm = 'sm',
-  xs = 'xs',
-}
-
 export default function AchievementIcon(
   {
-    size,
     folder,
+    size,
+    single = false,
     className = '',
   }:
   {
+    size: number,
+    single?: boolean,
     className?: string,
-    size: AchievementsSize,
     folder?: ClientFolderData | null,
   }
 ) {
-  const { degreeIcon, medalIcon } = useMemo(() => {
-    const { medal, degree } = new Achievement().calculateByDegreeRate(folder?.degreeRate || 0)
-
-    return {
-      degreeIcon: degree ? DegreeIconMap[degree] : null,
-      medalIcon: medal ? MedalIconMap[medal] : null
-    }
+  const degreeRate = useMemo(() => {
+    return folder?.degreeRate || 0
   }, [folder?.degreeRate])
 
   return (
     <div
-      className={clsx('flex justify-center items-center text-white', {
+      className={clsx('flex items-center gap-1', {
         [className]: className,
-        ['h-[64px] text-[56px] leading-[56px]']: size === AchievementsSize.xl,
-        ['h-[24px] text-[16px] leading-[16px]']: size === AchievementsSize.sm,
-        ['h-[20px] text-[12px] leading-[12px]']: size === AchievementsSize.xs,
       })}
     >
-      {degreeIcon &&
-        <div
-          className={clsx('flex w-full h-full items-center')}
-        >
-          {degreeIcon}
-        </div>
+      {((degreeRate >= 70 && degreeRate < 80) || (!single && degreeRate >= 70)) &&
+        <SVGRuby
+          width={size}
+          height={size}
+          className={clsx(`min-w-[${size}px] text-orange-300`)}
+        />
       }
 
-      {medalIcon &&
-        <div
-          className={clsx('flex w-full h-full items-center')}
-        >
-          {medalIcon}
-        </div>
+      {((degreeRate >= 80 && degreeRate < 90) || (!single && degreeRate >= 80)) &&
+        <SVGRuby
+          width={size}
+          height={size}
+          className={clsx(`min-w-[${size}px] text-purple-300`)}
+        />
       }
 
-      {(!degreeIcon && !medalIcon) &&
-        <div
-          className={clsx('flex w-full h-full items-center')}
-        >
-          {'🔒'}
-        </div>
+      {((degreeRate >= 90 && degreeRate < 100) || (!single && degreeRate >= 90)) &&
+        <SVGRuby
+          width={size}
+          height={size}
+          className={clsx(`min-w-[${size}px] text-rose-300`)}
+        />
       }
-
     </div>
   )
 }

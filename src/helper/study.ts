@@ -55,13 +55,11 @@ export const getLastStudyFolder = (items: ClientFolderData[]): LastStudyFolder =
       continue
     }
 
-    if (last.simulator) {
-      if (timestamp > last.timestamp) {
-        last.child = child
-        last.folder = folder
-        last.simulator = simulator
-        last.timestamp = timestamp
-      }
+    if (last.timestamp < timestamp) {
+      last.child = child
+      last.folder = folder
+      last.simulator = simulator
+      last.timestamp = timestamp
     }
   }
 

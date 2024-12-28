@@ -149,7 +149,7 @@ function Landing(
                   onDeactivateAction={(folder) => {
                     actionDeactivateSimulators({
                       folderId: folder.id,
-                      degreeRate: new Achievement().getDegreeRate(folder.simulators)
+                      degreeRate: new Achievement().getRate(folder.simulators)
                     })
                   }}
                 />
