@@ -89,7 +89,8 @@ export default function ChildFolders(
                 const isLastStudy = lastFolderId === childFolder.id
 
                 const prevFolder = folders[index - 1]
-                disabled = disabled || !new Levels(prevFolder?.degreeRate || 100, true).hasLevel(EnumLevels.expert)
+                const prevDegreeRate = prevFolder?.degreeRate !== undefined ? prevFolder.degreeRate : 100
+                disabled = disabled || !new Levels(prevDegreeRate, true).hasLevel(EnumLevels.expert)
 
                 return (
                   <FolderCart
