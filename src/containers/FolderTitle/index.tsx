@@ -41,6 +41,7 @@ export default function FolderTitle(
         <div className="flex gap-2 items-center">
           <AchievementIcon
             folder={folder}
+            showDefault
             size={12}
           />
           <AchievementDegree

@@ -124,7 +124,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
               className="min-w-28 px-4"
               variant={ButtonVariant.GRAY}
               onClick={() => {
-                actionDeactivateSimulators({ folderId: stopFolderId, degreeRate: 0 }, () => {
+                actionDeactivateSimulators({ folderId: stopFolderId }, () => {
                   setStopFolderId(null)
                 })
               }}

@@ -4,6 +4,7 @@ import AchievementDegree from '@containers/AchievementDegree'
 import AchievementIcon from '@containers/AchievementIcon'
 import { actionDeactivateSimulators } from '@store/index'
 import { ClientFolderData } from '@entities/ClientFolder'
+import AchievementText from '@containers/AchievementText'
 import CardEmpty from '@containers/Simulator/CardEmpty'
 import Achievement from '@entities/Achievement'
 import clsx from 'clsx'
@@ -19,7 +20,7 @@ export default function CardDone(
     particlesImage,
     particlesCount = 24,
     particleColumns = 4,
-    particlesDelay = 2000,
+    particlesDelay = 3000,
     particlesSpreading = 200,
     particlesDuration = { min: 1000, max: 1500 },
     onAnimationDone
@@ -140,22 +141,31 @@ export default function CardDone(
       </div>
 
       <div
-        className="absolute left-0 top-0 w-full h-full flex flex-col items-center justify-center gap-6 py-4"
+        className="absolute left-0 top-0 w-full h-full flex flex-col items-center gap-4 py-4"
         style={{
           opacity: exploded ? `0` : `1`,
           transition: `opacity ${particlesDuration.min}ms ease`,
         }}
       >
-        <AchievementIcon
-          folder={virtualFolder}
-          size={56}
-        />
+        <div className="h-[140px] w-full flex items-center justify-center mt-4">
+          <AchievementIcon
+            size={72}
+            showDefault
+            folder={virtualFolder}
+          />
+        </div>
 
         <AchievementDegree
           disableTruncate
           folder={virtualFolder}
-          className="flex flex-col gap-2 font-bold text-4xl items-center text-gray-700 uppercase"
+          className="flex flex-col gap-2 font-bold text-4xl items-center text-gray-600 uppercase"
         />
+
+        <AchievementText
+          folder={virtualFolder}
+          className="text-gray-100 text-base font-bold px-4 mt-10"
+        />
+
       </div>
     </CardEmpty>
   )

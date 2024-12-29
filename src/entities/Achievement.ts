@@ -96,21 +96,19 @@ export default class Achievement {
   }
 
   getMethodRate(simulators: ClientSimulatorData[], options: TypeAchievementOptions) {
-    const maxRate = 100 / this.options.length
-
     const defaultSimulators = [...simulators].filter(({ settings }) => {
       return settings.method === options.method && settings.inverted === options.inverted
     })
 
-    const rate = maxRate / 100 * this.getTotalRate(defaultSimulators)
-    return Math.min(rate, maxRate)
+    return Math.min(this.getTotalRate(defaultSimulators), 100)
   }
 
   getRate(simulators: ClientSimulatorData[]): number {
     const arr = []
-
+    const maxRate = 100 / this.options.length
     for (const options of this.options) {
-      arr.push(this.getMethodRate(simulators, options))
+      const rate = maxRate / 100 * this.getMethodRate(simulators, options)
+      arr.push(rate)
     }
 
     const rate = arr.reduce((accumulator, percent) => {
@@ -119,4 +117,6 @@ export default class Achievement {
 
     return Math.min(rate, 100)
   }
+
+
 }

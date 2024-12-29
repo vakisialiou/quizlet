@@ -21,7 +21,8 @@ import {useTranslations} from 'next-intl'
 import SVGPlay from '@public/svg/play.svg'
 import {useSelector} from 'react-redux'
 import {Fragment, useMemo} from 'react'
-import clsx from "clsx";
+import clsx from 'clsx'
+import Levels, {EnumLevels} from '@entities/Levels'
 
 enum DropDownIdEnums {
   REMOVE_FOLDER = 'REMOVE_FOLDER',
@@ -70,6 +71,7 @@ export default function ChildFolders(
 
       {folderGroups.map((group, gIndex) => {
         const folders = relatedGroups[group.id] || []
+        let disabled = false
         return (
           <Fragment
             key={gIndex}
@@ -87,9 +89,7 @@ export default function ChildFolders(
                 const isLastStudy = lastFolderId === childFolder.id
 
                 const prevFolder = folders[index - 1]
-                const nextFolder = folders[index + 1]
-                const disabled = prevFolder && prevFolder.degreeRate < 90
-                const showWarn = !disabled && nextFolder && nextFolder.degreeRate < 90 && childFolder.degreeRate < 90
+                disabled = disabled || !new Levels(prevFolder?.degreeRate || 100, true).hasLevel(EnumLevels.expert)
 
                 return (
                   <FolderCart
@@ -175,11 +175,6 @@ export default function ChildFolders(
                           {t('groupButtonStartStudy')}
                         </div>
                       </div>
-                      {showWarn &&
-                        <div className="text-[10px] italic text-white/50">
-                          {t('groupWarn2', { percent: 90 })}
-                        </div>
-                      }
                     </div>
                   </FolderCart>
                 )

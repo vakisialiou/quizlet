@@ -1,5 +1,6 @@
+import SVGRubyOutline from '@public/svg/ruby/ruby-outline.svg'
 import { ClientFolderData } from '@entities/ClientFolder'
-import SVGRuby from '@public/svg/ruby/ruby.svg'
+import Levels, { EnumLevels } from '@entities/Levels'
 import { useMemo } from 'react'
 import clsx from 'clsx'
 
@@ -8,18 +9,26 @@ export default function AchievementIcon(
     folder,
     size,
     single = false,
+    showDefault = false,
     className = '',
   }:
   {
     size: number,
     single?: boolean,
+    showDefault?: boolean,
     className?: string,
     folder?: ClientFolderData | null,
   }
 ) {
-  const degreeRate = useMemo(() => {
-    return folder?.degreeRate || 0
-  }, [folder?.degreeRate])
+  const degreeRate = folder?.degreeRate || 0
+
+  const levels = useMemo(() => {
+    return new Levels(degreeRate, single)
+  }, [degreeRate, single])
+
+  if (levels.hasNoLevels() && !showDefault) {
+    return
+  }
 
   return (
     <div
@@ -27,27 +36,35 @@ export default function AchievementIcon(
         [className]: className,
       })}
     >
-      {((degreeRate >= 70 && degreeRate < 80) || (!single && degreeRate >= 70)) &&
-        <SVGRuby
+      {(levels.hasNoLevels() && showDefault) &&
+        <SVGRubyOutline
           width={size}
           height={size}
-          className={clsx(`min-w-[${size}px] text-orange-300`)}
+          className={clsx(`min-w-[${size}px] text-gray-600`)}
         />
       }
 
-      {((degreeRate >= 80 && degreeRate < 90) || (!single && degreeRate >= 80)) &&
-        <SVGRuby
+      {levels.hasLevel(EnumLevels.beginner) &&
+        <SVGRubyOutline
           width={size}
           height={size}
-          className={clsx(`min-w-[${size}px] text-purple-300`)}
+          className={clsx(`min-w-[${size}px] text-orange-600`)}
         />
       }
 
-      {((degreeRate >= 90 && degreeRate < 100) || (!single && degreeRate >= 90)) &&
-        <SVGRuby
+      {levels.hasLevel(EnumLevels.middle) &&
+        <SVGRubyOutline
           width={size}
           height={size}
-          className={clsx(`min-w-[${size}px] text-rose-300`)}
+          className={clsx(`min-w-[${size}px] text-orange-600`)}
+        />
+      }
+
+      {levels.hasLevel(EnumLevels.expert) &&
+        <SVGRubyOutline
+          width={size}
+          height={size}
+          className={clsx(`min-w-[${size}px] text-orange-600`)}
         />
       }
     </div>

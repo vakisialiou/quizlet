@@ -56,7 +56,7 @@ export default function CardAggregator(
         <CardDone
           folder={folder}
           simulator={simulator}
-          particlesImage="linear-gradient(180deg, rgba(230,233,233,1) 0%, rgba(230,233,233,1) 3%, rgba(1,159,168,1) 100%)"
+          particlesImage="linear-gradient(180deg, rgba(230,233,233,1) 0%, rgba(230,233,233,1) 10%, rgba(34,139,34,1) 70%, rgba(34,139,34,1) 100%)"
         />
       }
 

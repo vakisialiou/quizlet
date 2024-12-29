@@ -105,7 +105,7 @@ export const backSimulators = createAsyncThunk(
 
 export type PayloadDeactivate = {
   folderId: string,
-  degreeRate: number
+  degreeRate?: number
 }
 
 export const deactivateSimulators = createAsyncThunk(
@@ -116,7 +116,8 @@ export const deactivateSimulators = createAsyncThunk(
       return id === payload.folderId
     }) as ClientFolderData | null
     if (folder) {
-      await api.dispatch(saveFolder({ folder: { ...folder, degreeRate: payload.degreeRate } }))
+      const degreeRate = payload?.degreeRate === undefined ? folder.degreeRate : payload.degreeRate
+      await api.dispatch(saveFolder({ folder: { ...folder, degreeRate }}))
     }
     return await tryUpdate(state, payload.folderId)
   }
