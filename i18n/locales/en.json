@@ -181,6 +181,7 @@
 
     "simulatorStartTitle": "Pick out simulator",
     "simulatorStartBtnStart": "Start",
+    "simulatorRepeat": "Repetitions: {count}",
     "simulatorPanelTotal": "Total",
     "simulatorPanelWait": "Repeat",
     "simulatorPanelDone": "Studied",

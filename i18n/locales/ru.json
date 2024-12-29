@@ -181,6 +181,7 @@
 
     "simulatorStartTitle": "Выберите тренажер",
     "simulatorStartBtnStart": "Начать",
+    "simulatorRepeat": "Повторений: {count}",
     "simulatorPanelTotal": "Всего",
     "simulatorPanelWait": "Повтор",
     "simulatorPanelDone": "Изучено",

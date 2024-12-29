@@ -8,6 +8,11 @@ type TypeAchievementOptions = {
   weight: number
 }
 
+type TypeAchievementFilter = {
+  method: SimulatorMethod
+  inverted: boolean
+}
+
 export default class Achievement {
   private readonly options: TypeAchievementOptions[]
 
@@ -64,11 +69,8 @@ export default class Achievement {
    * @param {ClientSimulatorData[]} simulators
    */
   getTotalRate(simulators: ClientSimulatorData[]): number {
-    // Выборка завершенных симуляторов
-    const completedSimulators = [...simulators].filter(({ status, active }) => active === false && status === SimulatorStatus.DONE)
-
     // Получаем прогресс всех завершенных симуляторов
-    const progressValues = completedSimulators.map(simulator => {
+    const progressValues = simulators.map(simulator => {
       return {
         simulator,
         progress: new SimulatorTracker(simulator).getProgress()
@@ -95,11 +97,17 @@ export default class Achievement {
     return maxProgress > 0 ? (totalWeightedProgress / maxProgress) * 100 : 0
   }
 
-  getMethodRate(simulators: ClientSimulatorData[], options: TypeAchievementOptions) {
-    const defaultSimulators = [...simulators].filter(({ settings }) => {
-      return settings.method === options.method && settings.inverted === options.inverted
+  findSimulators(simulators: ClientSimulatorData[], options: TypeAchievementFilter) {
+    return [...simulators].filter(({ status, active, settings }) => {
+      return settings.method === options.method
+        && settings.inverted === options.inverted
+        && status === SimulatorStatus.DONE
+        && active === false
     })
+  }
 
+  getMethodRate(simulators: ClientSimulatorData[], options: TypeAchievementFilter) {
+    const defaultSimulators = this.findSimulators(simulators, options)
     return Math.min(this.getTotalRate(defaultSimulators), 100)
   }
 
