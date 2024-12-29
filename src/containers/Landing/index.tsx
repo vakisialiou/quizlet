@@ -144,7 +144,7 @@ function Landing(
                 <span dangerouslySetInnerHTML={{__html: t('section0Title')}}/>
               </h2>
 
-              <div className="flex flex-col lg:flex-row items-end justify-center gap-8">
+              <div className="flex flex-col lg:flex-row items-center lg:items-end justify-center gap-8">
 
                 <div
                   className="max-w-96 px-[2px] md:px-2 py-4 flex flex-col items-center overflow-hidden gap-4 lg:border border-white/10 lg:order-2"
