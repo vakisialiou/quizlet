@@ -2,6 +2,7 @@
 
 import { getPathname, LanguageEnums, useRouter } from '@i18n/routing'
 import SimulatorBody from '@containers/Simulator/SimulatorBody'
+import SVGRubyOutline from '@public/svg/ruby/ruby-outline.svg'
 import DropdownLanguage from '@containers/DropdownLanguage'
 import Button, { ButtonVariant } from '@components/Button'
 import { actionDeactivateSimulators } from '@store/index'
@@ -18,6 +19,7 @@ import {signIn} from 'next-auth/react'
 import { preload } from 'react-dom'
 import { Session } from 'next-auth'
 import React, { memo } from 'react'
+import Image from 'next/image'
 import clsx from 'clsx'
 
 function Landing(
@@ -100,8 +102,13 @@ function Landing(
                 {t('mainTitle')}
               </h1>
               <p
-                className="text-lg md:text-xl mb-12"
-                dangerouslySetInnerHTML={{__html: t('mainDesc')}}
+                className="text-base md:text-xl mb-12"
+                dangerouslySetInnerHTML={{__html: t('mainDesc1')}}
+              />
+
+              <p
+                className="text-xs md:text-sm mb-12 text-gray-500"
+                dangerouslySetInnerHTML={{__html: t('mainDesc2')}}
               />
 
               <div className="flex flex-col gap-4 justify-center items-center">
@@ -132,27 +139,68 @@ function Landing(
           <section id="demo" className="bg-black">
             <div className="flex flex-col items-center max-w-6xl mx-auto py-20">
               <h2
-                className="text-2xl md:text-3xl font-bold text-center mb-12 max-w-[320px] md:max-w-full text-white/75"
+                className="text-2xl md:text-3xl font-bold text-center mb-12 max-w-[320px] text-white/75"
               >
-                {t('section0Title')}
+                <span dangerouslySetInnerHTML={{__html: t('section0Title')}}/>
               </h2>
-              <div
-                className="max-w-96 px-[2px] md:px-2 py-4 flex flex-col items-center overflow-hidden gap-4 border border-white/10"
-              >
-                <FolderTitle
-                  folderId={DEMO_FOLDER_ID}
-                  className="w-full max-w-96 items-center"
-                />
 
-                <SimulatorBody
-                  folderId={DEMO_FOLDER_ID}
-                  onDeactivateAction={(folder) => {
-                    actionDeactivateSimulators({
-                      folderId: folder.id,
-                      degreeRate: new Achievement().getRate(folder.simulators)
-                    })
-                  }}
-                />
+              <div className="flex flex-col lg:flex-row items-end justify-center gap-8">
+
+                <div
+                  className="max-w-96 px-[2px] md:px-2 py-4 flex flex-col items-center overflow-hidden gap-4 lg:border border-white/10 lg:order-2"
+                >
+                  <FolderTitle
+                    folderId={DEMO_FOLDER_ID}
+                    className="w-full max-w-96 items-center"
+                  />
+
+                  <SimulatorBody
+                    folderId={DEMO_FOLDER_ID}
+                    onDeactivateAction={(folder) => {
+                      actionDeactivateSimulators({
+                        folderId: folder.id,
+                        degreeRate: new Achievement().getRate(folder.simulators)
+                      })
+                    }}
+                  />
+                </div>
+
+                <div className="relative lg:order-1 flex flex-col items-center justify-center text-center">
+                   <h4
+                     className="lg:absolute lg:top-0 max-w-72 text-white/75 font-bold text-sm mb-8"
+                     dangerouslySetInnerHTML={{__html: t('section2Head1')}}
+                   />
+
+                  <div
+                    className="max-w-96 lg:scale-75 opacity-70 lg:border border-white/15 px-4"
+                  >
+                    <Image
+                      width={360}
+                      height={740}
+                      alt={t('section2Alt1')}
+                      src="/images/demo/terms.webp"
+                    />
+                  </div>
+                </div>
+
+                <div className="relative lg:order-3 flex flex-col items-center justify-center text-center">
+                  <h4
+                    className="lg:absolute lg:top-0 max-w-72 text-white/75 font-bold text-sm mb-8"
+                    dangerouslySetInnerHTML={{ __html: t('section2Head2') }}
+                  />
+
+                  <div
+                    className="max-w-96 lg:scale-75 opacity-70 lg:border border-white/15 px-4"
+                  >
+                    <Image
+                      width={360}
+                      height={740}
+                      alt={t('section2Alt2')}
+                      src="/images/demo/collections.webp"
+                    />
+                  </div>
+                </div>
+
               </div>
 
               <div className="flex flex-col gap-2 max-w-[320px] mt-8 text-center">
@@ -229,7 +277,7 @@ function Landing(
             <div className="bg-black bg-opacity-70 py-36 px-6">
               <div className="max-w-5xl mx-auto">
                 <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
-                  {t('section2Title', {appName})}
+                  {t('section2Title')}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 text-gray-400">
                   <div
@@ -260,17 +308,38 @@ function Landing(
               />
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="p-6 bg-gray-50 shadow-md rounded-lg">
-                  <h3 className="text-xl font-semibold mb-4">{t('section3Block1Title')}</h3>
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-base font-semibold">{t('section3Block1Title')}</h3>
+                    <SVGRubyOutline
+                      width={24}
+                      height={24}
+                      className="text-amber-600"
+                    />
+                  </div>
                   <p>{t('section3Block1Text')}</p>
                 </div>
 
                 <div className="p-6 bg-gray-50 shadow-md rounded-lg">
-                  <h3 className="text-xl font-semibold mb-4">{t('section3Block2Title')}</h3>
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-base font-semibold">{t('section3Block2Title')}</h3>
+                    <SVGRubyOutline
+                      width={24}
+                      height={24}
+                      className="text-amber-600"
+                    />
+                  </div>
                   <p>{t('section3Block2Text')}</p>
                 </div>
 
                 <div className="p-6 bg-gray-50 shadow-md rounded-lg">
-                  <h3 className="text-xl font-semibold mb-4">{t('section3Block3Title')}</h3>
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-base font-semibold">{t('section3Block3Title')}</h3>
+                    <SVGRubyOutline
+                      width={24}
+                      height={24}
+                      className="text-amber-600"
+                    />
+                  </div>
                   <p>{t('section3Block3Text')}</p>
                 </div>
               </div>
