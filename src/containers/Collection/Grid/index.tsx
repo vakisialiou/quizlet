@@ -9,7 +9,7 @@ import Button, { ButtonVariant } from '@components/Button'
 import AchievementIcon from '@containers/AchievementIcon'
 import { ClientFolderData } from '@entities/ClientFolder'
 import { filterDeletedTerms } from '@helper/terms'
-import SVGSettings from '@public/svg/settings.svg'
+import SVGGroups from '@public/svg/syntax_on.svg'
 import SVGEdit from '@public/svg/greasepencil.svg'
 import Folder from '@containers/Collection/Folder'
 import SVGFileNew from '@public/svg/file_new.svg'
@@ -71,7 +71,7 @@ export default function Grid(
     {id: DropDownIdEnums.EDIT_FOLDER, name: t('dropDownEditModule'), icon: SVGEdit },
     {id: DropDownIdEnums.OPEN_FOLDER, name: t('dropDownOpenModule'), icon: SVGFileNew },
     {id: DropDownIdEnums.STUDY, name: t('dropDownStudyModule'), icon: SVGPlay },
-    {id: DropDownIdEnums.GENERATE, name: t('dropDownGenerateGroups'), icon: SVGSettings },
+    {id: DropDownIdEnums.GENERATE, name: t('dropDownGenerateGroups'), icon: SVGGroups },
     {id: '2', divider: true },
     {id: DropDownIdEnums.REMOVE_FOLDER, name: t('dropDownRemoveModule'), icon: SVGTrash },
   ]
