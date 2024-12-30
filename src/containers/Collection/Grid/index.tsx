@@ -13,12 +13,10 @@ import SVGGroups from '@public/svg/syntax_on.svg'
 import SVGEdit from '@public/svg/greasepencil.svg'
 import Folder from '@containers/Collection/Folder'
 import SVGFileNew from '@public/svg/file_new.svg'
-import {FoldersType} from '@store/initial-state'
 import React, { useMemo, useState } from 'react'
 import SVGTrash from '@public/svg/trash.svg'
 import { useTranslations } from 'next-intl'
 import SVGPlay from '@public/svg/play.svg'
-import { useSelector } from 'react-redux'
 import { upsertObject } from '@lib/array'
 import Dialog from '@components/Dialog'
 import {
@@ -53,14 +51,23 @@ enum DropDownIdEnums {
   STUDY = 'STUDY',
 }
 
+export type TypeFilter = {
+  limit?: number,
+  search?: string | null
+}
+
 export default function Grid(
   {
     onOpen,
     onPlay,
-    search,
+    editId,
+    items,
+    filter = {},
   }:
   {
-    search?: string | null,
+    editId: string | null,
+    filter: TypeFilter,
+    items: ClientFolderData[],
     onOpen?: (folder: ClientFolderData) => void,
     onPlay?: (folder: ClientFolderData) => void
   }
@@ -76,20 +83,18 @@ export default function Grid(
     {id: DropDownIdEnums.REMOVE_FOLDER, name: t('dropDownRemoveModule'), icon: SVGTrash },
   ]
 
-  const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
-
   const [ originItem, setOriginItem ] = useState<ClientFolderData | null>(null)
   const [ removeItem, setRemoveItem ] = useState<ClientFolderData | null>(null)
 
   const [ partition, setPartition ] = useState<{ folder: ClientFolderData | null, size: number }>({ folder: null, size: DEFAULT_GROUP_SIZE })
 
   const lastStudy = useMemo(() => {
-    return getLastStudyFolder(folders.items)
-  }, [folders.items])
+    return getLastStudyFolder(items)
+  }, [items])
 
   const moduleFolders = useMemo(() => {
-    let moduleFolders = findModuleFolders([...folders.items || []])
-    moduleFolders = searchFolders(moduleFolders, search, folders.editId)
+    let moduleFolders = findModuleFolders([...items || []])
+    moduleFolders = searchFolders(moduleFolders, filter.search || null, editId)
     return sortFoldersDesc(moduleFolders)
       .sort((a, b) => {
         if (lastStudy.folder?.id === a.id) {
@@ -99,13 +104,13 @@ export default function Grid(
           return 1
         }
         return 0
-      })
-  }, [folders.items, folders.editId, search, lastStudy])
+      }).slice(0, filter.limit || Infinity)
+  }, [items, editId, filter, lastStudy])
 
   return (
     <>
       <div
-        className="flex flex-col gap-2"
+        className="flex flex-col gap-2 text-start"
       >
         {moduleFolders.length === 0 &&
           <div className="flex flex-col items-center justify-center gap-2 p-4">
@@ -143,7 +148,7 @@ export default function Grid(
                   </div>
                 </div>
               )}
-              edit={folders.editId === folder.id}
+              edit={editId === folder.id}
               dropdown={{
                 items: dropdownParentItems,
                 onSelect: (id) => {

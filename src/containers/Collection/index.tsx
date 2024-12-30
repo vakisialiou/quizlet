@@ -5,17 +5,23 @@ import Button, { ButtonVariant } from '@components/Button'
 import SVGNewFolder from '@public/svg/new_folder.svg'
 import ButtonSquare from '@components/ButtonSquare'
 import SVGQuestion from '@public/svg/question.svg'
+import { FoldersType } from '@store/initial-state'
 import ContentPage from '@containers/ContentPage'
 import ClientFolder from '@entities/ClientFolder'
 import { actionSaveFolder } from '@store/index'
 import Grid from '@containers/Collection/Grid'
 import { useTranslations } from 'next-intl'
+import SVGBack from '@public/svg/back.svg'
 import { useRouter } from '@i18n/routing'
+import { useSelector } from 'react-redux'
 import Dialog from '@components/Dialog'
 import React, { useState } from 'react'
 
 export default function Collection() {
   const t = useTranslations('Folders')
+
+  const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
+
   const [ showUserHelp, setShowUserHelp ] = useState(false)
   const [search, setSearch] = useState<string>('')
 
@@ -61,15 +67,26 @@ export default function Collection() {
         </div>
       )}
       rightControls={(
-        <ButtonSquare
-          icon={SVGQuestion}
-          disabled={showUserHelp}
-          onClick={() => setShowUserHelp(true)}
-        />
+        <>
+          <ButtonSquare
+            icon={SVGQuestion}
+            disabled={showUserHelp}
+            onClick={() => setShowUserHelp(true)}
+          />
+
+          <ButtonSquare
+            icon={SVGBack}
+            onClick={() => {
+              router.push(`/`)
+            }}
+          />
+        </>
       )}
     >
       <Grid
-        search={search}
+        filter={{ search }}
+        items={folders.items}
+        editId={folders.editId}
         onOpen={(folder) => {
           router.push(`/private/folder/${folder.id}`)
         }}
