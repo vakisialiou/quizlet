@@ -46,7 +46,12 @@ export default function Clamp(
       <div
         ref={textRef}
         className={clsx('whitespace-pre-line', {
-          [`line-clamp-${rows}`]: !showMore
+          [`line-clamp-1`]: rows === 1 && !showMore,
+          [`line-clamp-2`]: rows === 2 && !showMore,
+          [`line-clamp-3`]: rows === 3 && !showMore,
+          [`line-clamp-4`]: rows === 4 && !showMore,
+          [`line-clamp-5`]: rows === 5 && !showMore,
+          [`line-clamp-6`]: rows === 6 && !showMore,
         })}
       >
         {children}

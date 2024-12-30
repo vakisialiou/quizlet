@@ -183,7 +183,10 @@ export default function Terms({ folderId }: { folderId: string }) {
         >
           {terms.map((term, index) => {
             return (
-              <div key={term.id}>
+              <div
+                key={term.id}
+                className="overflow-hidden"
+              >
                 <Term
                   data={term}
                   number={index + 1}
