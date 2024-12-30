@@ -6,10 +6,13 @@ import AchievementDegree from '@containers/AchievementDegree'
 import {createRelationGroups} from '@helper/folders-relation'
 import {FolderFrameVariant} from '@components/FolderFrame'
 import AchievementIcon from '@containers/AchievementIcon'
+import SVGAnchorRight from '@public/svg/anchor_right.svg'
+import SVGAnchorLeft from '@public/svg/anchor_left.svg'
 import {ClientFolderData} from '@entities/ClientFolder'
 import {getSimulatorsInfo} from '@helper/simulators'
 import Levels, {EnumLevels} from '@entities/Levels'
 import {sortFoldersAsc} from '@helper/sort-folders'
+import { Fragment, useMemo, useState } from 'react'
 import { sortFolderGroups } from '@helper/groups'
 import {FoldersType} from '@store/initial-state'
 import FolderCart from '@components/FolderCart'
@@ -17,7 +20,7 @@ import SVGTrash from '@public/svg/trash.svg'
 import {useTranslations} from 'next-intl'
 import SVGPlay from '@public/svg/play.svg'
 import {useSelector} from 'react-redux'
-import {Fragment, useMemo} from 'react'
+import Clamp from '@components/Clamp'
 import clsx from 'clsx'
 
 enum DropDownIdEnums {
@@ -55,23 +58,48 @@ export default function ChildFolders(
     return relations
   }, [folders.items, folder.folderGroups])
 
+  const [ flashcardBackSide, setFlashcardBackSide ] = useState(false)
+
   const playTerms = useMemo(() => {
-    return filterDeletedTerms(filterEmptyTerms([...folder?.terms || []]))
-  }, [folder?.terms])
+    const terms = filterDeletedTerms(filterEmptyTerms([...folder?.terms || []]))
+    return terms.map(({question, answer}) => flashcardBackSide ? answer : question).join(', ')
+  }, [folder?.terms, flashcardBackSide])
 
   return (
     <div className="flex flex-col gap-2">
       {playTerms.length > 0 &&
-        <div className="flex flex-col gap-1 text-sm text-white/35 mx-[9px] mt-4">
-          <label className="font-bold">Front side:</label>
-          <div className="text-white/25 line-clamp-3">
-            {playTerms.map(({question}) => question).join(', ')}
-          </div>
-          <label className="font-bold">Back side:</label>
-          <div className="text-white/25 line-clamp-3">
-            {playTerms.map(({answer}) => answer).join(', ')}
-          </div>
-        </div>
+        <Clamp
+          rows={2}
+          btnClumpMore={'Show more'}
+          btnClumpLess={'Show less'}
+          className="text-sm text-white/35 mx-[9px] mt-4"
+          title={(
+            <label
+              className="flex justify-between font-bold text-white/50 w-full hover:opacity-80 active:opacity-70 transition-all cursor-pointer"
+              onClick={() => {
+                setFlashcardBackSide(!flashcardBackSide)
+              }}
+            >
+              Flashcards:
+
+              {flashcardBackSide &&
+                <SVGAnchorLeft
+                  width={20}
+                  height={20}
+                />
+              }
+
+              {!flashcardBackSide &&
+                <SVGAnchorRight
+                  width={20}
+                  height={20}
+                />
+              }
+            </label>
+          )}
+        >
+          {playTerms}
+        </Clamp>
       }
 
       {folderGroups.map((group, gIndex) => {

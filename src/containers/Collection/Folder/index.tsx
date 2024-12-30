@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useRef } from 'react'
 import FolderCart, {DropDownProps} from '@components/FolderCart'
 import { FolderFrameVariant } from '@components/FolderFrame'
 import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
@@ -7,6 +7,7 @@ import ButtonSquare from '@components/ButtonSquare'
 import {useTranslations} from 'next-intl'
 import Textarea from '@components/Textarea'
 import Input from '@components/Input'
+import Clamp from '@components/Clamp'
 import clsx from 'clsx'
 
 export default function Folder(
@@ -41,7 +42,6 @@ export default function Folder(
     variant?: FolderFrameVariant
   }
 ) {
-  const DESC_ROWS = 3
   const t = useTranslations('Folders')
 
   const ref = useRef<HTMLDivElement | null>(null)
@@ -62,27 +62,6 @@ export default function Folder(
       document.removeEventListener('mousedown', finishEdit)
     }
   }, [finishEdit, edit, data])
-
-  const [ showMore, setShowMore ] = useState(false)
-
-  const [isClamped, setIsClamped] = useState(false)
-  const textRef = useRef<HTMLDivElement | null>(null)
-
-  useEffect(() => {
-    if (edit) {
-      return
-    }
-
-    if (textRef.current) {
-      const lineHeight = parseFloat(getComputedStyle(textRef.current).lineHeight)
-      const maxHeight = lineHeight * DESC_ROWS
-      if (textRef.current.scrollHeight > maxHeight) {
-        setIsClamped(true)
-      } else {
-        setIsClamped(false)
-      }
-    }
-  }, [edit])
 
   return (
     <FolderCart
@@ -158,7 +137,7 @@ export default function Folder(
         {!edit &&
           <div className="flex items-center h-8 pt-[1px] mx-[9px] text-white/75">
             <div className="max-w-full truncate ...">
-              <span className="max-w-full">
+              <span className="max-w-full select-text">
                 {data.name || <span className="italic">{t('folderNoName')}</span>}
               </span>
             </div>
@@ -166,31 +145,16 @@ export default function Folder(
         }
 
         {(!edit && data.description && !collapsed) &&
-          <div className="flex pt-[1px] mx-[9px] w-full">
-            <div className="max-w-full w-full">
-              <div
-                ref={textRef}
-                className={clsx('whitespace-pre-line', {
-                  [`line-clamp-${DESC_ROWS}`]: !showMore
-                })}
-              >
-                {data.description}
-              </div>
-
-              <div
-                className={clsx('flex justify-end transition-all', {
-                  ['opacity-0 pointer-events-none']: !isClamped,
-                  ['opacity-1']: isClamped,
-                })}
-              >
-                <div
-                  onClick={() => setShowMore(!showMore)}
-                  className="flex hover:opacity-90 px-4 cursor-pointer text-xs leading-3 text-white/25"
-                >
-                  {showMore ? 'Show less' : 'Show more'}
-                </div>
-              </div>
-            </div>
+          <div className="flex pt-[1px] mx-[9px]">
+            <Clamp
+              rows={3}
+              key={edit ? 1 : 0}
+              className="max-w-full w-full"
+              btnClumpMore={'Show more'}
+              btnClumpLess={'Show less'}
+            >
+              {data.description}
+            </Clamp>
           </div>
         }
       </div>
