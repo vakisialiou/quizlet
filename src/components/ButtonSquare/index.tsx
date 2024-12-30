@@ -36,7 +36,7 @@ export default function ButtonSquare(
       className={clsx('transition-colors w-8 min-w-8 h-8 flex items-center justify-center select-none group', {
         ['border']: bordered,
         ['hover:cursor-pointer']: !disabled,
-        ['pointer-events-none opacity-50']: disabled,
+        ['pointer-events-none opacity-15']: disabled,
 
         ['hover:bg-white/15']: variant === ButtonSquareVariant.transparent,
         ['border-gray-400 hover:border-gray-300 active:border-gray-400']: variant === ButtonSquareVariant.transparent && bordered,

@@ -76,7 +76,7 @@ export default function Terms({ folderId }: { folderId: string }) {
   }, [speech, setSoundInfo])
 
   const playTerms = useMemo(() => {
-    return filterEmptyTerms([...folder?.terms || []])
+    return filterDeletedTerms(filterEmptyTerms([...folder?.terms || []]))
   }, [folder?.terms])
 
   const [showUserHelp, setShowUserHelp] = useState(false)
@@ -164,11 +164,18 @@ export default function Terms({ folderId }: { folderId: string }) {
         </div>
       )}
     >
-
       <FolderTitle
         folderId={folderId}
         className="mb-4"
       />
+
+      {terms.length === 0 &&
+        <div className="flex flex-col items-center justify-center gap-2 p-4">
+          <div className="text-white/50 text-sm italic text-center">
+            {t('noCardsHelper', { btnName: t('footButtonCreateTerm') })}
+          </div>
+        </div>
+      }
 
       {folder &&
         <div
@@ -176,51 +183,59 @@ export default function Terms({ folderId }: { folderId: string }) {
         >
           {terms.map((term, index) => {
             return (
-              <Term
-                data={term}
-                key={term.id}
-                number={index + 1}
-                edit={term.id === editTermInfo.editId}
-                soundPlayingName={soundInfo.termId === term.id ? soundInfo.playingName : null}
-                onSave={() => {
-                  actionSaveTerm({term, editId: null}, () => {
-                    if (originItem) {
-                      setOriginItem(null)
-                    }
-                  })
-                }}
-                onExit={async () => {
-                  actionUpdateTerm({editId: null}, () => {
-                    if (originItem) {
-                      actionUpdateTermItem(originItem, () => {
+              <div key={term.id}>
+                <Term
+                  data={term}
+                  number={index + 1}
+                  edit={term.id === editTermInfo.editId}
+                  collapsed={term.collapsed && term.id !== editTermInfo.editId}
+                  soundPlayingName={soundInfo.termId === term.id ? soundInfo.playingName : null}
+                  onCollapse={() => {
+                    actionSaveTerm({
+                      term: { ...term, collapsed: !term.collapsed },
+                      editId: editTermInfo.editId
+                    })
+                  }}
+                  onSave={() => {
+                    actionSaveTerm({term, editId: null}, () => {
+                      if (originItem) {
                         setOriginItem(null)
-                      })
-                    }
-                  })
-                }}
-                onEdit={() => {
-                  actionUpdateTerm({ editId: term.id }, () => {
-                    setOriginItem(term)
-                  })
-                }}
-                onChange={(prop, value) => {
-                  actionUpdateTermItem({ ...term, [prop]: value } as ClientTerm)
-                }}
-                onRemove={() => setRemoveTerm(term)}
-                onClickSound={({ play, text, name, lang }) => {
-                  if (speech) {
-                    if (!play) {
-                      speech.stop()
-                      return
-                    }
+                      }
+                    })
+                  }}
+                  onExit={async () => {
+                    actionUpdateTerm({editId: null}, () => {
+                      if (originItem) {
+                        actionUpdateTermItem(originItem, () => {
+                          setOriginItem(null)
+                        })
+                      }
+                    })
+                  }}
+                  onEdit={() => {
+                    actionUpdateTerm({ editId: term.id }, () => {
+                      setOriginItem(term)
+                    })
+                  }}
+                  onChange={(prop, value) => {
+                    actionUpdateTermItem({ ...term, [prop]: value } as ClientTerm)
+                  }}
+                  onRemove={() => setRemoveTerm(term)}
+                  onClickSound={({ play, text, name, lang }) => {
+                    if (speech) {
+                      if (!play) {
+                        speech.stop()
+                        return
+                      }
 
-                    if (text && play) {
-                      setSoundInfo({ playingName: name, termId: term.id })
-                      speech.stop().setLang(lang).setVoice(speech.selectVoice(lang)).speak(text)
+                      if (text && play) {
+                        setSoundInfo({ playingName: name, termId: term.id })
+                        speech.stop().setLang(lang).setVoice(speech.selectVoice(lang)).speak(text)
+                      }
                     }
-                  }
-                }}
-              />
+                  }}
+                />
+              </div>
             )
           })}
         </div>

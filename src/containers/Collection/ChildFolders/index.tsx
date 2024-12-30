@@ -1,19 +1,16 @@
 'use client'
 
-import {
-  DEFAULT_GROUP_SIZE,
-  isGenerateGroupDisabled,
-  minTermsCountToGenerateGroup,
-  sortFolderGroups
-} from '@helper/groups'
+import {filterDeletedTerms, filterEmptyTerms} from '@helper/terms'
 import MetaLabel, {MetaLabelVariant} from '@components/MetaLabel'
-import {createRelationGroups} from '@helper/folders-relation'
 import AchievementDegree from '@containers/AchievementDegree'
-import AchievementIcon from '@containers/AchievementIcon'
+import {createRelationGroups} from '@helper/folders-relation'
 import {FolderFrameVariant} from '@components/FolderFrame'
+import AchievementIcon from '@containers/AchievementIcon'
 import {ClientFolderData} from '@entities/ClientFolder'
 import {getSimulatorsInfo} from '@helper/simulators'
+import Levels, {EnumLevels} from '@entities/Levels'
 import {sortFoldersAsc} from '@helper/sort-folders'
+import { sortFolderGroups } from '@helper/groups'
 import {FoldersType} from '@store/initial-state'
 import FolderCart from '@components/FolderCart'
 import SVGTrash from '@public/svg/trash.svg'
@@ -22,7 +19,6 @@ import SVGPlay from '@public/svg/play.svg'
 import {useSelector} from 'react-redux'
 import {Fragment, useMemo} from 'react'
 import clsx from 'clsx'
-import Levels, {EnumLevels} from '@entities/Levels'
 
 enum DropDownIdEnums {
   REMOVE_FOLDER = 'REMOVE_FOLDER',
@@ -59,12 +55,21 @@ export default function ChildFolders(
     return relations
   }, [folders.items, folder.folderGroups])
 
+  const playTerms = useMemo(() => {
+    return filterDeletedTerms(filterEmptyTerms([...folder?.terms || []]))
+  }, [folder?.terms])
+
   return (
     <div className="flex flex-col gap-2">
-      {isGenerateGroupDisabled(folder, DEFAULT_GROUP_SIZE) &&
-        <div className="flex flex-col items-center justify-center gap-2">
-          <div className="text-white/50 text-sm italic text-center">
-            {t('warnGridGroup1', { size: minTermsCountToGenerateGroup(DEFAULT_GROUP_SIZE) })}
+      {playTerms.length > 0 &&
+        <div className="flex flex-col gap-1 text-sm text-white/35 mx-[9px] mt-4">
+          <label className="font-bold">Front side:</label>
+          <div className="text-white/25 line-clamp-3">
+            {playTerms.map(({question}) => question).join(', ')}
+          </div>
+          <label className="font-bold">Back side:</label>
+          <div className="text-white/25 line-clamp-3">
+            {playTerms.map(({answer}) => answer).join(', ')}
           </div>
         </div>
       }

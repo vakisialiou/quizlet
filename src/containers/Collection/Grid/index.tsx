@@ -1,26 +1,25 @@
 'use client'
 
-import Button, { ButtonSize, ButtonVariant } from '@components/Button'
 import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
 import Dropdown, { DropdownVariant } from '@components/Dropdown'
 import ChildFolders from '@containers/Collection/ChildFolders'
 import AchievementDegree from '@containers/AchievementDegree'
 import { FolderFrameVariant } from '@components/FolderFrame'
+import Button, { ButtonVariant } from '@components/Button'
 import AchievementIcon from '@containers/AchievementIcon'
 import { ClientFolderData } from '@entities/ClientFolder'
-import SVGPresetNew from '@public/svg/preset_new.svg'
 import { filterDeletedTerms } from '@helper/terms'
 import SVGSettings from '@public/svg/settings.svg'
 import SVGEdit from '@public/svg/greasepencil.svg'
 import Folder from '@containers/Collection/Folder'
-import SVGOpen from '@public/svg/file_folder.svg'
+import SVGFileNew from '@public/svg/file_new.svg'
 import {FoldersType} from '@store/initial-state'
+import React, { useMemo, useState } from 'react'
 import SVGTrash from '@public/svg/trash.svg'
 import { useTranslations } from 'next-intl'
 import SVGPlay from '@public/svg/play.svg'
 import { useSelector } from 'react-redux'
 import { upsertObject } from '@lib/array'
-import { useMemo, useState } from 'react'
 import Dialog from '@components/Dialog'
 import {
   actionDeleteFolder,
@@ -70,7 +69,7 @@ export default function Grid(
 
   const dropdownParentItems = [
     {id: DropDownIdEnums.EDIT_FOLDER, name: t('dropDownEditModule'), icon: SVGEdit },
-    {id: DropDownIdEnums.OPEN_FOLDER, name: t('dropDownOpenModule'), icon: SVGOpen },
+    {id: DropDownIdEnums.OPEN_FOLDER, name: t('dropDownOpenModule'), icon: SVGFileNew },
     {id: DropDownIdEnums.STUDY, name: t('dropDownStudyModule'), icon: SVGPlay },
     {id: DropDownIdEnums.GENERATE, name: t('dropDownGenerateGroups'), icon: SVGSettings },
     {id: '2', divider: true },
@@ -108,6 +107,14 @@ export default function Grid(
       <div
         className="flex flex-col gap-2"
       >
+        {moduleFolders.length === 0 &&
+          <div className="flex flex-col items-center justify-center gap-2 p-4">
+            <div className="text-white/50 text-sm italic text-center">
+              {t('noFoldersHelper', { btnName: t('footButtonCreateModule') })}
+            </div>
+          </div>
+        }
+
         {moduleFolders.map((folder, index) => {
           const terms = filterDeletedTerms(folder.terms)
           const { hasActive } = getSimulatorsInfo(folder.simulators)
@@ -198,66 +205,6 @@ export default function Grid(
             >
               {!folder.collapsed &&
                 <>
-                  <div
-                    className="flex my-4 gap-2 justify-between max-w-full md:max-w-xs"
-                  >
-                    <Button
-                      size={ButtonSize.H08}
-                      variant={ButtonVariant.WHITE}
-                      className="gap-2 font-normal w-full"
-                      onClick={() => {
-                        if (onOpen) {
-                          onOpen(folder)
-                        }
-                      }}
-                    >
-                      <SVGPresetNew
-                        width={18}
-                        height={18}
-                        className="min-[18px]"
-                      />
-
-                      {t('folderOpen')}
-                    </Button>
-
-                    <Button
-                      size={ButtonSize.H08}
-                      variant={ButtonVariant.GREEN}
-                      className="gap-2 font-normal w-full"
-                      onClick={() => {
-                        if (onPlay) {
-                          onPlay(folder)
-                        }
-                      }}
-                    >
-                      <SVGPlay
-                        width={18}
-                        height={18}
-                        className="min-[18px]"
-                      />
-
-                      {t('folderPlay')}
-                    </Button>
-
-                    <Button
-                      size={ButtonSize.H08}
-                      variant={ButtonVariant.GRAY}
-                      className="gap-2 font-normal"
-                      disabled={isGenerateGroupDisabled(folder, DEFAULT_GROUP_SIZE)}
-                      onClick={() => {
-                        setPartition({...partition, folder})
-                      }}
-                    >
-                      <SVGSettings
-                        width={18}
-                        height={18}
-                        className="min-[18px]"
-                      />
-                    </Button>
-                  </div>
-
-                  <div className="w-full h-[1px] border-b border-white/10 mt-1 mb-2" />
-
                   <ChildFolders
                     folder={folder}
                     lastFolderId={lastStudy.child.folder?.id}

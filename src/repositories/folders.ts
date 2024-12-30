@@ -24,6 +24,7 @@ import {
 export type FolderSelectType = {
   id: boolean,
   name: boolean,
+  description: boolean,
   userId: boolean,
   order: boolean,
   markers: boolean,
@@ -50,6 +51,7 @@ export type FolderSelectType = {
 export const FolderSelect = {
   id: true,
   name: true,
+  description: true,
   userId: true,
   order: true,
   markers: true,
@@ -90,6 +92,7 @@ export const createFolderSelect = (folder: FolderResult) => {
     .setCreatedAt(folder.createdAt)
     .setUpdatedAt(folder.updatedAt)
     .setDegreeRate(folder.degreeRate)
+    .setDescription(folder.description)
     .setTerms(
       folder.terms.map((item) => createTermSelect(item))
     )
@@ -140,6 +143,7 @@ export const upsertFolder = async (db: PrismaEntry, userId: string, item: Client
       isModule: item.isModule,
       collapsed: item.collapsed,
       degreeRate: item.degreeRate,
+      description: item.description,
       updatedAt: new Date(),
     },
     create: {
@@ -152,6 +156,7 @@ export const upsertFolder = async (db: PrismaEntry, userId: string, item: Client
       isModule: item.isModule,
       collapsed: item.collapsed,
       degreeRate: item.degreeRate,
+      description: item.description,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -177,6 +182,7 @@ export const createManyFolder = async (db: PrismaEntry, userId: string, items: C
         isModule: item.isModule,
         collapsed: item.collapsed,
         degreeRate: item.degreeRate,
+        description: item.description,
         createdAt,
         updatedAt
       }

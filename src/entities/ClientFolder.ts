@@ -13,6 +13,7 @@ export type ClientFolderData = {
   id: string
   parentId: string | null
   name: string | null
+  description: string | null
   collapsed: boolean
   isModule: boolean
   order: number,
@@ -33,6 +34,7 @@ export default class ClientFolder {
   collapsed: boolean
   isModule: boolean
   name: string | null
+  description: string | null
   degreeRate: number
   markers: ClientFolderMarkersEnum[]
   terms: ClientTerm[]
@@ -48,8 +50,9 @@ export default class ClientFolder {
     this.degreeRate = 0
     this.parentId = null
     this.name = null
+    this.description = null
     this.isModule = true
-    this.collapsed = true
+    this.collapsed = false
     this.terms = []
     this.markers = []
     this.simulators = []
@@ -136,6 +139,11 @@ export default class ClientFolder {
 
   setName(value: string | null): ClientFolder {
     this.name = value
+    return this
+  }
+
+  setDescription(value: string | null): ClientFolder {
+    this.description = value
     return this
   }
 

@@ -12,6 +12,7 @@ export type TermSelectType = {
   association: boolean,
   associationLang: boolean,
   deleted: boolean,
+  collapsed: boolean,
   createdAt: boolean,
   updatedAt: boolean
 }
@@ -27,6 +28,7 @@ export const TermSelect = {
   association: true,
   associationLang: true,
   deleted: true,
+  collapsed: true,
   createdAt: true,
   updatedAt: true
 } as TermSelectType
@@ -46,6 +48,7 @@ export const createTermSelect = (term: TermResult): ClientTerm => {
     .setAssociation(term.association)
     .setAssociationLang(term.associationLang)
     .setDeleted(term.deleted)
+    .setCollapsed(term.collapsed)
     .setCreatedAt(term.createdAt)
     .setUpdatedAt(term.updatedAt)
 }
@@ -89,6 +92,7 @@ export const upsertTerm = async (db: PrismaEntry, userId: string, term: ClientTe
       association: term.association,
       associationLang: term.associationLang,
       deleted: term.deleted,
+      collapsed: term.collapsed,
       updatedAt: term.updatedAt || new Date(),
     },
     create: {
@@ -103,6 +107,7 @@ export const upsertTerm = async (db: PrismaEntry, userId: string, term: ClientTe
       associationLang: term.associationLang,
       folderId: term.folderId as string,
       deleted: term.deleted,
+      collapsed: term.collapsed,
       createdAt: term.createdAt || new Date(),
       updatedAt: term.updatedAt || new Date()
     },

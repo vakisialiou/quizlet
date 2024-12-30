@@ -1,12 +1,15 @@
 import { ClientTermData, DefaultAnswerLang, DefaultQuestionLang, DefaultAssociationLang, languages } from '@entities/ClientTerm'
 import Dropdown, { DropdownVariant } from '@components/Dropdown'
+import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
 import Button, { ButtonSize } from '@components/Button'
 import { useCallback, useEffect, useRef } from 'react'
+import ButtonSquare from '@components/ButtonSquare'
 import FolderCart from '@components/FolderCart'
 import RowRead from '@containers/Term/RowRead'
+import SVGError from '@public/svg/error.svg'
 import { useTranslations } from 'next-intl'
-import SVGFile from '@public/svg/file.svg'
 import Input from '@components/Input'
+import clsx from 'clsx'
 
 export enum SoundPlayingNameEnum {
   answer = 'answer',
@@ -31,6 +34,8 @@ export default function Term(
     onExit,
     onSave,
     onChange,
+    collapsed = true,
+    onCollapse,
     onClickSound,
     soundPlayingName
   }:
@@ -38,10 +43,12 @@ export default function Term(
     data: ClientTermData
     number: number,
     edit: boolean
+    collapsed: boolean
     onEdit: () => void
     onRemove: () => void
     onExit: () => void
     onSave: () => void
+    onCollapse?: () => void,
     onChange: (prop: string, value: string) => void
     soundPlayingName: SoundPlayingNameEnum | string | null,
     onClickSound: (params: ClickSoundCallbackParams) => void
@@ -84,12 +91,27 @@ export default function Term(
       hover={false}
       title={(
         <div className="flex gap-2 items-center font-bold">
-          <SVGFile
-            width={16}
-            height={16}
-          />
           <span>#{number}</span>
+
+          {((!data.question || !data.answer) && collapsed && !edit) &&
+            <SVGError
+              width={16}
+              height={16}
+              className="text-red-600"
+            />
+          }
         </div>
+      )}
+      controls={(
+        <ButtonSquare
+          size={24}
+          disabled={edit}
+          icon={SVGArrowDown}
+          onClick={onCollapse}
+          classNameIcon={clsx('', {
+            ['rotate-180']: !collapsed
+          })}
+        />
       )}
       dropdown={{
         items: [
@@ -179,151 +201,155 @@ export default function Term(
           }
         </div>
 
-        <div className="flex w-full max-w-full overflow-hidden">
-          {!edit &&
-            <RowRead
-              value={data.answer || ''}
-              placeholder={(
-                <span className="text-red-800 italic">
-                  {t('cardAnswerHintR')}
-                </span>
-              )}
-              lang={getLocaleShortName(data.answerLang, DefaultAnswerLang)}
-              soundPlaying={soundPlayingName === SoundPlayingNameEnum.answer}
-              onClickSound={(play) => {
-                onClickSound({
-                  play,
-                  text: data.answer || '',
-                  name: SoundPlayingNameEnum.answer,
-                  lang: data.answerLang || DefaultAnswerLang
-                })
-              }}
-            />
-          }
-
-          {edit &&
-            <div
-              className="flex gap-1 w-full"
-            >
-              <Input
-                type="text"
-                name="answer"
-                maxLength={100}
-                autoComplete="off"
-                placeholder={t('cardAnswerHintW')}
-                defaultValue={data.answer || ''}
-                onChange={(e) => {
-                  onChange('answer', e.target.value)
-                }}
-                onKeyUp={(e) => {
-                  switch (e.keyCode) {
-                    case 13:
-                      onSave()
-                      break
-                    case 27:
-                      onExit()
-                      break
-                  }
+        {!collapsed &&
+          <div className="flex w-full max-w-full overflow-hidden">
+            {!edit &&
+              <RowRead
+                value={data.answer || ''}
+                placeholder={(
+                  <span className="text-red-800 italic">
+                    {t('cardAnswerHintR')}
+                  </span>
+                )}
+                lang={getLocaleShortName(data.answerLang, DefaultAnswerLang)}
+                soundPlaying={soundPlayingName === SoundPlayingNameEnum.answer}
+                onClickSound={(play) => {
+                  onClickSound({
+                    play,
+                    text: data.answer || '',
+                    name: SoundPlayingNameEnum.answer,
+                    lang: data.answerLang || DefaultAnswerLang
+                  })
                 }}
               />
+            }
 
-              <Dropdown
-                caret
-                className="px-1"
-                items={languages}
-                ref={refAnswerLang}
-                variant={DropdownVariant.gray}
-                onClick={(e) => e.preventDefault()}
-                selected={data.answerLang || DefaultAnswerLang}
-                onSelect={(id) => {
-                  onChange('answerLang', id as string)
-                }}
+            {edit &&
+              <div
+                className="flex gap-1 w-full"
               >
-                <div className="w-6 min-w-6 text-center text-sm uppercase">
-                  {getLocaleShortName(data.answerLang, DefaultAnswerLang)}
-                </div>
-              </Dropdown>
-            </div>
-          }
-        </div>
+                <Input
+                  type="text"
+                  name="answer"
+                  maxLength={100}
+                  autoComplete="off"
+                  placeholder={t('cardAnswerHintW')}
+                  defaultValue={data.answer || ''}
+                  onChange={(e) => {
+                    onChange('answer', e.target.value)
+                  }}
+                  onKeyUp={(e) => {
+                    switch (e.keyCode) {
+                      case 13:
+                        onSave()
+                        break
+                      case 27:
+                        onExit()
+                        break
+                    }
+                  }}
+                />
 
-        <div className="flex w-full max-w-full overflow-hidden">
-          {!edit &&
-            <RowRead
-              value={data.association || ''}
-              placeholder={(
-                <span className="text-gray-700 italic">
-                  {t('cardAssociationHintR')}
-                </span>
-              )}
-              soundPlaying={soundPlayingName === SoundPlayingNameEnum.association}
-              lang={getLocaleShortName(data.associationLang, DefaultAssociationLang)}
-              onClickSound={(play) => {
-                onClickSound({
-                  play,
-                  text: data.association || '',
-                  name: SoundPlayingNameEnum.association,
-                  lang: data.associationLang || DefaultAssociationLang
-                })
-              }}
-            />
-          }
+                <Dropdown
+                  caret
+                  className="px-1"
+                  items={languages}
+                  ref={refAnswerLang}
+                  variant={DropdownVariant.gray}
+                  onClick={(e) => e.preventDefault()}
+                  selected={data.answerLang || DefaultAnswerLang}
+                  onSelect={(id) => {
+                    onChange('answerLang', id as string)
+                  }}
+                >
+                  <div className="w-6 min-w-6 text-center text-sm uppercase">
+                    {getLocaleShortName(data.answerLang, DefaultAnswerLang)}
+                  </div>
+                </Dropdown>
+              </div>
+            }
+          </div>
+        }
 
-          {edit &&
-            <div
-              className="flex gap-1 w-full"
-            >
-              <Input
-                type="text"
-                maxLength={255}
-                name="association"
-                autoComplete="off"
-                placeholder={t('cardAssociationHintW')}
-                defaultValue={data.association || ''}
-                onChange={(e) => {
-                  onChange('association', e.target.value)
-                }}
-                onKeyUp={(e) => {
-                  switch (e.keyCode) {
-                    case 13:
-                      onSave()
-                      break
-                    case 27:
-                      onExit()
-                      break
-                  }
+        {!collapsed &&
+          <div className="flex w-full max-w-full overflow-hidden">
+            {!edit &&
+              <RowRead
+                value={data.association || ''}
+                placeholder={(
+                  <span className="text-gray-700 italic">
+                    {t('cardAssociationHintR')}
+                  </span>
+                )}
+                soundPlaying={soundPlayingName === SoundPlayingNameEnum.association}
+                lang={getLocaleShortName(data.associationLang, DefaultAssociationLang)}
+                onClickSound={(play) => {
+                  onClickSound({
+                    play,
+                    text: data.association || '',
+                    name: SoundPlayingNameEnum.association,
+                    lang: data.associationLang || DefaultAssociationLang
+                  })
                 }}
               />
+            }
 
-              <Button
-                disabled
-                rounded={false}
-                onClick={() => {
-                }}
-                size={ButtonSize.H08}
+            {edit &&
+              <div
+                className="flex gap-1 w-full"
               >
-                AI
-              </Button>
+                <Input
+                  type="text"
+                  maxLength={255}
+                  name="association"
+                  autoComplete="off"
+                  placeholder={t('cardAssociationHintW')}
+                  defaultValue={data.association || ''}
+                  onChange={(e) => {
+                    onChange('association', e.target.value)
+                  }}
+                  onKeyUp={(e) => {
+                    switch (e.keyCode) {
+                      case 13:
+                        onSave()
+                        break
+                      case 27:
+                        onExit()
+                        break
+                    }
+                  }}
+                />
 
-              <Dropdown
-                caret
-                className="px-1"
-                items={languages}
-                ref={refAssociationLang}
-                variant={DropdownVariant.gray}
-                onClick={(e) => e.preventDefault()}
-                selected={data.associationLang || DefaultAssociationLang}
-                onSelect={(id) => {
-                  onChange('associationLang', id as string)
-                }}
-              >
-                <div className="w-6 min-w-6 text-center text-sm uppercase">
-                  {getLocaleShortName(data.associationLang, DefaultAssociationLang)}
-                </div>
-              </Dropdown>
-            </div>
-          }
-        </div>
+                <Button
+                  disabled
+                  rounded={false}
+                  onClick={() => {
+                  }}
+                  size={ButtonSize.H08}
+                >
+                  AI
+                </Button>
+
+                <Dropdown
+                  caret
+                  className="px-1"
+                  items={languages}
+                  ref={refAssociationLang}
+                  variant={DropdownVariant.gray}
+                  onClick={(e) => e.preventDefault()}
+                  selected={data.associationLang || DefaultAssociationLang}
+                  onSelect={(id) => {
+                    onChange('associationLang', id as string)
+                  }}
+                >
+                  <div className="w-6 min-w-6 text-center text-sm uppercase">
+                    {getLocaleShortName(data.associationLang, DefaultAssociationLang)}
+                  </div>
+                </Dropdown>
+              </div>
+            }
+          </div>
+        }
 
       </div>
     </FolderCart>

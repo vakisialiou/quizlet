@@ -32,6 +32,7 @@ export type ClientTermData = {
   association: string | null
   associationLang: string | null
   deleted: boolean
+  collapsed: boolean
   createdAt: Date
   updatedAt: Date
 }
@@ -47,6 +48,7 @@ export default class ClientTerm {
   association: string | null
   associationLang: string | null
   deleted: boolean
+  collapsed: boolean
   createdAt: Date
   updatedAt: Date
 
@@ -61,6 +63,7 @@ export default class ClientTerm {
     this.association = null
     this.associationLang = null
     this.deleted = false
+    this.collapsed = false
     this.createdAt = new Date()
     this.updatedAt = new Date()
   }
@@ -117,6 +120,11 @@ export default class ClientTerm {
 
   setAssociationLang(value: string | null): ClientTerm {
     this.associationLang = value
+    return this
+  }
+
+  setCollapsed(value: boolean): ClientTerm {
+    this.collapsed = value
     return this
   }
 

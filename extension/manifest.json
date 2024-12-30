@@ -1,10 +1,10 @@
 {
-  "version": "1.0.1",
+  "version": "1.0.4",
   "manifest_version": 3,
   "name": "QuizerPlay",
   "short_name": "QuizerPlay",
-  "description": "Create flashcards for efficient learning with simulators. Automated associations and rewards boost learning speed and results.",
-  "homepage_url": "http://quizerplay.com",
+  "description": "Boost your learning with QuizerPlay. Create flashcards, use AI-powered simulators, and achieve faster, rewarding results.",
+  "homepage_url": "https://quizerplay.com",
   "icons": {
     "16": "favicon-16x16.png",
     "32": "favicon-32x32.png",
