@@ -27,6 +27,7 @@ import {
   actionUpdateTermItem
 } from '@store/index'
 import clsx from 'clsx'
+import Grid from '@containers/Terms/Grid'
 
 export default function Terms({ folderId }: { folderId: string }) {
   const router = useRouter()
@@ -57,23 +58,6 @@ export default function Terms({ folderId }: { folderId: string }) {
     return sortTerms(rawItems)
   }, [visibleItems, search, editTermInfo.editId])
 
-  const speech = useMemo(() => {
-    return typeof(window) === 'object' ? new TextToSpeech() : null
-  }, [])
-
-  const [ soundInfo, setSoundInfo ] = useState<{ playingName: string | null, termId: string | null }>({ playingName: null, termId: null })
-
-  useEffect(() => {
-    if (speech) {
-      const onEndCallback = () => {
-        setSoundInfo({ playingName: null, termId: null })
-      }
-      speech.addEventListener(TextToSpeechEvents.end, onEndCallback)
-      return () => {
-        speech.removeEventListener(TextToSpeechEvents.end, onEndCallback)
-      }
-    }
-  }, [speech, setSoundInfo])
 
   const playTerms = useMemo(() => {
     return filterDeletedTerms(filterEmptyTerms([...folder?.terms || []]))
@@ -178,70 +162,10 @@ export default function Terms({ folderId }: { folderId: string }) {
       }
 
       {folder &&
-        <div
-          className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2"
-        >
-          {terms.map((term, index) => {
-            return (
-              <div
-                key={term.id}
-                className="overflow-hidden"
-              >
-                <Term
-                  data={term}
-                  number={index + 1}
-                  edit={term.id === editTermInfo.editId}
-                  collapsed={term.collapsed && term.id !== editTermInfo.editId}
-                  soundPlayingName={soundInfo.termId === term.id ? soundInfo.playingName : null}
-                  onCollapse={() => {
-                    actionSaveTerm({
-                      term: { ...term, collapsed: !term.collapsed },
-                      editId: editTermInfo.editId
-                    })
-                  }}
-                  onSave={() => {
-                    actionSaveTerm({term, editId: null}, () => {
-                      if (originItem) {
-                        setOriginItem(null)
-                      }
-                    })
-                  }}
-                  onExit={async () => {
-                    actionUpdateTerm({editId: null}, () => {
-                      if (originItem) {
-                        actionUpdateTermItem(originItem, () => {
-                          setOriginItem(null)
-                        })
-                      }
-                    })
-                  }}
-                  onEdit={() => {
-                    actionUpdateTerm({ editId: term.id }, () => {
-                      setOriginItem(term)
-                    })
-                  }}
-                  onChange={(prop, value) => {
-                    actionUpdateTermItem({ ...term, [prop]: value } as ClientTerm)
-                  }}
-                  onRemove={() => setRemoveTerm(term)}
-                  onClickSound={({ play, text, name, lang }) => {
-                    if (speech) {
-                      if (!play) {
-                        speech.stop()
-                        return
-                      }
-
-                      if (text && play) {
-                        setSoundInfo({ playingName: name, termId: term.id })
-                        speech.stop().setLang(lang).setVoice(speech.selectVoice(lang)).speak(text)
-                      }
-                    }
-                  }}
-                />
-              </div>
-            )
-          })}
-        </div>
+        <Grid
+          search={search}
+          items={terms}
+        />
       }
 
       {showUserHelp &&
@@ -275,36 +199,6 @@ export default function Terms({ folderId }: { folderId: string }) {
             }}
           >
             {t('userHelpButtonClose')}
-          </Button>
-        </Dialog>
-      }
-
-      {removeTerm &&
-        <Dialog
-          title={removeTerm.question || removeTerm.answer || t('removeDialogTitle')}
-          text={t('removeDialogText')}
-        >
-          <Button
-            className="min-w-28 px-4"
-            variant={ButtonVariant.GRAY}
-            onClick={() => {
-              actionSaveTerm({ term: { ...removeTerm, deleted: true }, editId: null }, () => {
-                setRemoveTerm(null)
-                if (originItem && originItem.id === removeTerm.id) {
-                  setOriginItem(null)
-                }
-              })
-            }}
-          >
-            {t('removeDialogButtonApprove')}
-          </Button>
-
-          <Button
-            className="min-w-28 px-4"
-            variant={ButtonVariant.WHITE}
-            onClick={() => setRemoveTerm(null)}
-          >
-            {t('removeDialogButtonCancel')}
           </Button>
         </Dialog>
       }

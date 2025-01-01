@@ -57,7 +57,7 @@ export default function Button(
         'border': border,
         'rounded': rounded,
         'shadow-inner': shadow,
-        'border-green-500/50 shadow-white/30 hover:shadow-white/40 text-white bg-green-500/70 hover:bg-green-500/80 active:bg-green-500/90': variant === ButtonVariant.GREEN && !disabled && !active,
+        'border-green-500/50 shadow-white/50 hover:shadow-white/40 text-white bg-green-500 hover:bg-green-500/80 active:bg-green-500/90': variant === ButtonVariant.GREEN && !disabled && !active,
         'border-green-100/50 shadow-white/30 hover:shadow-white/40 text-white bg-green-600/50 hover:bg-green-600/60 active:bg-green-600/70': variant === ButtonVariant.GREEN && !disabled && active,
 
         'border-gray-500/50 shadow-gray-400/50 hover:shadow-gray-400/60 text-white/80 bg-gray-600/70 hover:bg-gray-600/80 active:bg-gray-600/90': variant === ButtonVariant.GRAY && !disabled && !active,

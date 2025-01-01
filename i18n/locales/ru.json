@@ -79,6 +79,7 @@
     "dropDownOpenModule": "Добавить flashcard",
     "dropDownStudyModule": "Изучить весь модуль",
     "dropDownGenerateGroups": "Генерация учебной группы",
+    "dropDownGenerateShare": "Поделиться ссылкой",
     "dropDownRemoveModule": "Удалить модуль",
     "dropDownEditGroup": "Изучить",
     "dropDownRemoveGroup": "Удалить",
@@ -87,6 +88,15 @@
     "generateDialogPartitionSize": "{size} терминов",
     "generateDialogButtonGenerate": "Сгенерировать",
     "generateDialogButtonCancel": "Отмена",
+
+    "shareDialogTitle": "Настройка доступа",
+    "shareDialogLabel": "Уровень доступа",
+    "shareDialogCopied": "Скопировано",
+    "shareDialogReadonly": "Только просмотр",
+    "shareDialogEditable": "Просмотр и редактирование",
+    "shareDialogButtonCopy": "Копировать",
+    "shareDialogButtonCancel": "Закрыть",
+
     "removeDialogTitle": "Без имени",
     "removeDialogText": "Вы уверены, что хотите удалить этот элемент?",
     "removeDialogButtonApprove": "Удалить",
@@ -133,7 +143,7 @@
     "metaKeywords": "карточки, управление карточками, добавление карточек, редактирование карточек, удаление карточек, изучение карточек, QuizerPlay",
     "metaDescription": "Создавайте, редактируйте и изучайте карточки с терминами на платформе QuizerPlay. Управляйте вашим образовательным контентом легко и эффективно.",
 
-    "headTitle": "Карточки",
+    "headTitle": "Flashcards",
     "searchPlaceholder": "Поиск...",
     "footButtonCreateTerm": "Добавить",
     "footButtonPlay": "Изучать",
@@ -272,5 +282,10 @@
     "section10Text": "Мы можем обновлять эту Политику конфиденциальности. Все изменения будут опубликованы на этой странице.",
     "section11Title": "Контакты",
     "section11Text": "Если у вас есть вопросы, обращайтесь по Email: {email}"
+  },
+  "Share": {
+    "metaTitle": "Все ваши учебные карточки в одном месте | QuizerPlay",
+    "metaKeywords": "учебные карточки, управление, создание, редактирование, удаление, организация обучения, QuizerPlay",
+    "metaDescription": "Соберите и управляйте всеми вашими учебными карточками на платформе QuizerPlay. Простое и удобное решение для эффективного обучения."
   }
 }
