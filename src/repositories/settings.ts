@@ -1,6 +1,6 @@
-import { ClientSettingsSimulatorData } from '@entities/ClientSettingsSimulator'
-import ClientSettings, { ClientSettingsData } from '@entities/ClientSettings'
-import { Prisma, PrismaEntry, Settings } from '@lib/prisma'
+import { SimulatorSettingsData } from '@entities/SimulatorSettings'
+import Settings, { SettingsData } from '@entities/Settings'
+import { Prisma, PrismaEntry } from '@lib/prisma'
 
 export type SettingsSelectType = {
   id: boolean,
@@ -16,13 +16,13 @@ type SettingsResult = Prisma.SettingsGetPayload<{
   select: typeof SettingsSelect
 }>
 
-export const createSettingsSelect = (data: SettingsResult): ClientSettings => {
-  return new ClientSettings()
+export const createSettingsSelect = (data: SettingsResult): Settings => {
+  return new Settings()
     .setId(data.id)
-    .setSimulator(data?.simulator as ClientSettingsSimulatorData)
+    .setSimulator(data?.simulator as SimulatorSettingsData)
 }
 
-export const upsertSettingsSimulator = async (db: PrismaEntry, userId: string, data: { simulator: ClientSettingsSimulatorData }) => {
+export const upsertSettingsSimulator = async (db: PrismaEntry, userId: string, data: { simulator: SimulatorSettingsData }) => {
   const res = await db.settings.upsert({
     where: { userId },
     update: {
@@ -40,7 +40,7 @@ export const upsertSettingsSimulator = async (db: PrismaEntry, userId: string, d
   return res.id
 }
 
-export const getSettings = async (db: PrismaEntry, userId: string): Promise<ClientSettingsData | null> => {
+export const getSettings = async (db: PrismaEntry, userId: string): Promise<SettingsData | null> => {
   if (!userId) {
     return null
   }

@@ -3,20 +3,20 @@
 import SimulatorBody from '@containers/Simulator/SimulatorBody'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
 import Button, {ButtonVariant} from '@components/Button'
-import Dialog, {DialogType} from '@components/Dialog'
 import ButtonSquare from '@components/ButtonSquare'
 import SVGQuestion from '@public/svg/question.svg'
 import FolderTitle from '@containers/FolderTitle'
 import ContentPage from '@containers/ContentPage'
 import { useTranslations } from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
+import Dialog from '@components/Dialog'
 import React, { useState } from 'react'
 import {useRouter} from '@i18n/routing'
 import {
   actionDeactivateSimulators,
 } from '@store/index'
 
-export default function Simulator({ folderId }: { folderId: string }) {
+export default function Simulator({ folderId, editable }: { folderId: string, editable: boolean }) {
   const router = useRouter()
 
   const [stopFolderId, setStopFolderId] = useState<string | null>(null)
@@ -58,6 +58,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
         className="w-full flex flex-col items-center justify-center overflow-hidden mt-4"
       >
         <SimulatorBody
+          editable={editable}
           folderId={folderId}
           onDeactivateAction={(folder) => {
             setStopFolderId(folder.id)
@@ -67,6 +68,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
         {showUserHelp &&
           <Dialog
             title={t('userHelpTitle')}
+            onClose={() => setShowUserHelp(false)}
             text={(
               <div className="flex flex-col gap-4 text-gray-800">
 
@@ -105,9 +107,7 @@ export default function Simulator({ folderId }: { folderId: string }) {
             <Button
               className="min-w-28 px-4"
               variant={ButtonVariant.GRAY}
-              onClick={() => {
-                setShowUserHelp(false)
-              }}
+              onClick={() => setShowUserHelp(false)}
             >
               {t('userHelpButtonClose')}
             </Button>
@@ -118,13 +118,13 @@ export default function Simulator({ folderId }: { folderId: string }) {
           <Dialog
             title={t('removeDialogTitle')}
             text={t('removeDialogText')}
-            type={DialogType.warning}
+            onClose={() => setStopFolderId(null)}
           >
             <Button
               className="min-w-28 px-4"
               variant={ButtonVariant.GRAY}
               onClick={() => {
-                actionDeactivateSimulators({ folderId: stopFolderId }, () => {
+                actionDeactivateSimulators({ folderId: stopFolderId, editable }, () => {
                   setStopFolderId(null)
                 })
               }}

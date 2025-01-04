@@ -87,15 +87,14 @@
     "generateDialogPartitionLabel": "Размер групп",
     "generateDialogPartitionSize": "{size} терминов",
     "generateDialogButtonGenerate": "Сгенерировать",
-    "generateDialogButtonCancel": "Отмена",
 
-    "shareDialogTitle": "Настройка доступа",
+    "shareDialogTitle": "Поделиться ссылкой",
     "shareDialogLabel": "Уровень доступа",
     "shareDialogCopied": "Скопировано",
+    "shareDialogNotCopied": "Ошибка",
     "shareDialogReadonly": "Только просмотр",
     "shareDialogEditable": "Просмотр и редактирование",
     "shareDialogButtonCopy": "Копировать",
-    "shareDialogButtonCancel": "Закрыть",
 
     "removeDialogTitle": "Без имени",
     "removeDialogText": "Вы уверены, что хотите удалить этот элемент?",

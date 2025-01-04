@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef, useLayoutEffect, useMemo } from 'react'
-import { ClientSimulatorData } from '@entities/ClientSimulator'
+import { ClientSimulatorData } from '@entities/Simulator'
 import AchievementDegree from '@containers/AchievementDegree'
 import AchievementIcon from '@containers/AchievementIcon'
 import { actionDeactivateSimulators } from '@store/index'
-import { ClientFolderData } from '@entities/ClientFolder'
+import { ClientFolderData } from '@entities/Folder'
 import AchievementText from '@containers/AchievementText'
 import CardEmpty from '@containers/Simulator/CardEmpty'
 import Achievement from '@entities/Achievement'
@@ -16,6 +16,7 @@ const randFloat = (min: number, max: number) => {
 export default function CardDone(
   {
     folder,
+    editable,
     simulator,
     particlesImage,
     particlesCount = 24,
@@ -26,15 +27,16 @@ export default function CardDone(
     onAnimationDone
   }:
   {
-    folder: ClientFolderData,
-    simulator: ClientSimulatorData,
-    particlesImage?: string,
-    particlesCount?: number,
-    particlesDelay?: number,
-    particleColumns?: number,
-    particlesSpreading?: number,
-    particlesDuration?: { min: number; max: number },
-    onAnimationDone?: () => void,
+    editable: boolean
+    folder: ClientFolderData
+    simulator: ClientSimulatorData
+    particlesImage?: string
+    particlesCount?: number
+    particlesDelay?: number
+    particleColumns?: number
+    particlesSpreading?: number
+    particlesDuration?: { min: number; max: number }
+    onAnimationDone?: () => void
   }
 ) {
   const ref = useRef<HTMLDivElement | null>(null)
@@ -91,7 +93,7 @@ export default function CardDone(
         onAnimationDone()
       }
 
-      actionDeactivateSimulators({ folderId: folder.id, degreeRate: virtualFolder.degreeRate })
+      actionDeactivateSimulators({ folderId: folder.id, degreeRate: virtualFolder.degreeRate, editable })
 
     }, particlesDelay + particlesDuration.max)
 

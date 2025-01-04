@@ -2,10 +2,10 @@ import { ReactNode, useCallback, useEffect, useRef } from 'react'
 import FolderCart, {DropDownProps} from '@components/FolderCart'
 import { FolderFrameVariant } from '@components/FolderFrame'
 import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
-import {ClientFolderData} from '@entities/ClientFolder'
 import ButtonSquare from '@components/ButtonSquare'
-import {useTranslations} from 'next-intl'
+import { ModuleData } from '@entities/Module'
 import Textarea from '@components/Textarea'
+import {useTranslations} from 'next-intl'
 import Input from '@components/Input'
 import Clamp from '@components/Clamp'
 import clsx from 'clsx'
@@ -33,7 +33,7 @@ export default function Folder(
     className?: string
     labels?: ReactNode,
     dropdown?: DropDownProps,
-    data: ClientFolderData,
+    data: ModuleData,
     onSave: () => void,
     onExit: () => void,
     onChange: (prop: string, value: string) => void,

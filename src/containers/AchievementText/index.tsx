@@ -1,4 +1,4 @@
-import { ClientFolderData } from '@entities/ClientFolder'
+import { ClientFolderData } from '@entities/Folder'
 import Levels, { EnumLevels } from '@entities/Levels'
 import { useMemo, useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'

@@ -1,10 +1,21 @@
-import { ClientSimulatorData } from '@entities/ClientSimulator'
-import { ClientFolderData } from '@entities/ClientFolder'
+import { ClientSimulatorData } from '@entities/Simulator'
+import { ClientFolderData } from '@entities/Folder'
 import CardEmpty from '@containers/Simulator/CardEmpty'
 import { actionRestartSimulators } from '@store/index'
 import Button from '@components/Button'
 
-export default function SingleQueueFinish({ folder, simulator }: { folder: ClientFolderData, simulator: ClientSimulatorData, }) {
+export default function SingleQueueFinish(
+  {
+    folder,
+    editable,
+    simulator
+  }:
+  {
+    editable: boolean,
+    folder: ClientFolderData,
+    simulator: ClientSimulatorData,
+  }
+) {
   return (
     <CardEmpty>
       <div className="flex flex-col justify-center text-center gap-2">
@@ -18,7 +29,7 @@ export default function SingleQueueFinish({ folder, simulator }: { folder: Clien
 
         <div className="text-gray-500 text-lg">
           <Button
-            onClick={() => actionRestartSimulators({ folderId: folder.id })}
+            onClick={() => actionRestartSimulators({ folderId: folder.id, editable })}
           >
             Continue
           </Button>

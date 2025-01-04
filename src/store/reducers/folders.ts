@@ -1,68 +1,56 @@
-import { getClientFolders, saveClientFolderData, deleteClientFolderData, DeleteClientFolderResults } from '@store/fetch/folders'
+import { saveFolderData, deleteFolderData } from '@store/fetch/folders'
 import { unique, remove, upsertObject, removeObject } from '@lib/array'
-import { createPartitions } from '@store/fetch/partitions'
-import { ClientFolderData } from '@entities/ClientFolder'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { ConfigType } from '@store/initial-state'
-
-export const fetchFolders = createAsyncThunk(
-  '/fetch/folders',
-  async (): Promise<ClientFolderData[]> => {
-    return getClientFolders()
-  }
-)
-
-export type PartitionsType = {
-  folderId: string,
-  partitionSize: number,
-}
-
-export const createFolderPartitions = createAsyncThunk(
-  '/create/folder/partitions',
-  async (payload: PartitionsType): Promise<ClientFolderData[]> => {
-    return createPartitions(payload.folderId, payload.partitionSize)
-  }
-)
+import { FolderData } from '@entities/Folder'
 
 export type SaveType = {
-  folder: ClientFolderData,
-  editId?: string | null,
+  folder: FolderData
+  editId?: string | null
+  editable: boolean
 }
 
 export const saveFolder = createAsyncThunk(
-  '/save/folder',
-  async (payload: SaveType, api): Promise<SaveType> => {
-    const state = api.getState() as ConfigType
-    if (state.serverQueryEnabled) {
-      await saveClientFolderData(payload.folder)
+  '/folder/save',
+  async (payload: SaveType): Promise<boolean> => {
+    if (payload.editable) {
+      return await saveFolderData(payload.folder)
     }
-    return payload
+    return true
   }
 )
 
 export type DeleteType = {
-  folder: ClientFolderData,
+  folder: FolderData,
+  editable: boolean
 }
 
 export const deleteFolder = createAsyncThunk(
-  '/delete/folder/module',
-  async (payload: DeleteType): Promise<DeleteClientFolderResults> => {
-    return await deleteClientFolderData(payload.folder.id)
+  '/folder/delete',
+  async (payload: DeleteType): Promise<boolean> => {
+    if (payload.editable) {
+      return await deleteFolderData(payload.folder.id)
+    }
+    return true
   }
 )
 
-export type UpdateType = Partial<{ items?: ClientFolderData[], editId?: string | null, processIds?: (string)[], process?: boolean }>
+export type UpdateType = Partial<{
+  folders?: FolderData[],
+  editId?: string | null,
+  processIds?: (string)[]
+}>
 
 export const updateFolder = createAsyncThunk(
-  '/update/folder',
+  '/folder/update',
   async (payload: UpdateType): Promise<UpdateType> => {
     return payload
   }
 )
 
 export const updateFolderItem = createAsyncThunk(
-  '/update/folder/item',
-  async (payload: ClientFolderData): Promise<ClientFolderData> => {
+  '/folder/update/item',
+  async (payload: FolderData): Promise<FolderData> => {
     return payload
   }
 )
@@ -70,124 +58,45 @@ export const updateFolderItem = createAsyncThunk(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const folderReducers = (builder: any) => {
   builder
-    .addCase(fetchFolders.pending, (state: ConfigType) => {
-      state.folders = { ...state.folders, process: true }
-    })
-    .addCase(fetchFolders.rejected, (state: ConfigType) => {
-      state.folders = { ...state.folders, process: false }
-    })
-    .addCase(fetchFolders.fulfilled, (state: ConfigType, action: { payload: ClientFolderData[] }) => {
-      state.folders = {
-        editId: null,
-        process: false,
-        processIds: [],
-        items: [...action.payload],
-      }
-    })
-
-  builder
-    .addCase(createFolderPartitions.pending, (state: ConfigType, action: { meta: { arg: PartitionsType } }) => {
-      state.folders = {
-        ...state.folders,
-        process: true,
-        processIds: unique([...state.folders.processIds, action.meta.arg.folderId]),
-      }
-    })
-    .addCase(createFolderPartitions.rejected, (state: ConfigType, action: { meta: { arg: PartitionsType } }) => {
-      state.folders = {
-        ...state.folders,
-        process: false,
-        processIds: remove(state.folders.processIds, action.meta.arg.folderId)
-      }
-    })
-    .addCase(createFolderPartitions.fulfilled, (state: ConfigType, action: { payload: ClientFolderData[], meta: { arg: PartitionsType } }) => {
-      let items = [...state.folders.items]
-      for (const item of action.payload) {
-        items = upsertObject([...items], { ...item })
-      }
-      state.folders = {
-        ...state.folders,
-        processIds: remove(state.folders.processIds, action.meta.arg.folderId),
-        process: false,
-        items,
-      }
-    })
-
-  builder
     .addCase(saveFolder.pending, (state: ConfigType, action: { meta: { arg: SaveType } }) => {
       const arg = action.meta.arg
-      state.folders = {
-        ...state.folders,
-        processIds: unique([...state.folders.processIds, arg.folder.id]),
-        editId: arg.editId !== undefined ? arg.editId : state.folders.editId,
-        items: upsertObject([...state.folders.items], arg.folder) as ClientFolderData[],
-      }
+      state.edit.processFolderIds = unique([...state.edit.processFolderIds, arg.folder.id])
+      state.edit.folderId = arg.editId !== undefined ? arg.editId : state.edit.folderId
+      state.folders = upsertObject([...state.folders], arg.folder) as FolderData[]
     })
     .addCase(saveFolder.rejected, (state: ConfigType, action: { meta: { arg: SaveType } }) => {
       const { folder } = action.meta.arg
-      state.folders = {
-        ...state.folders,
-        editId: null,
-        items: removeObject([...state.folders.items], folder) as ClientFolderData[],
-        processIds: remove(state.folders.processIds, folder.id)
-      }
+      state.folders = removeObject([...state.folders], folder) as FolderData[]
+      state.edit.processFolderIds = remove(state.edit.processFolderIds, folder.id)
+      state.edit.folderId = null
     })
     .addCase(saveFolder.fulfilled, (state: ConfigType, action: { meta: { arg: SaveType } }) => {
       const { folder } = action.meta.arg
-
-      state.folders = {
-        ...state.folders,
-        processIds: remove(state.folders.processIds, folder.id)
-      }
+      state.edit.processFolderIds = remove(state.edit.processFolderIds, folder.id)
     })
 
   builder
     .addCase(deleteFolder.pending, (state: ConfigType, action: { meta: { arg: DeleteType } }) => {
-      state.folders = {
-        ...state.folders,
-        processIds: unique([...state.folders.processIds, action.meta.arg.folder.id])
-      }
+      state.edit.processFolderIds = unique([...state.edit.processFolderIds, action.meta.arg.folder.id])
     })
     .addCase(deleteFolder.rejected, (state: ConfigType, action: { meta: { arg: DeleteType } }) => {
-      state.folders = {
-        ...state.folders,
-        processIds: remove(state.folders.processIds, action.meta.arg.folder.id)
-      }
+      state.edit.processFolderIds = remove(state.edit.processFolderIds, action.meta.arg.folder.id)
     })
-    .addCase(deleteFolder.fulfilled, (state: ConfigType, action: { meta: { arg: DeleteType }, payload: DeleteClientFolderResults }) => {
+    .addCase(deleteFolder.fulfilled, (state: ConfigType, action: { meta: { arg: DeleteType } }) => {
       const { folder } = action.meta.arg
-      const { refreshFolder, removeFolderIds } = action.payload
-
-      let items = [...state.folders.items]
-        .filter((item) => !removeFolderIds.includes(item.id))
-
-      if (refreshFolder) {
-        items = upsertObject(items, refreshFolder)
-      }
-
-      state.folders = {
-        ...state.folders,
-        items,
-        processIds: remove(state.folders.processIds, folder.id)
-      }
+      state.folders = upsertObject(state.folders, folder)
+      state.edit.processFolderIds = remove(state.edit.processFolderIds, folder.id)
     })
 
   builder
     .addCase(updateFolder.fulfilled, (state: ConfigType, action: { meta: { arg: UpdateType }, payload: UpdateType }) => {
-      state.folders = {
-        ...state.folders,
-        items: action.payload.items !== undefined ? action.payload.items : state.folders.items,
-        editId: action.payload.editId !== undefined ? action.payload.editId : state.folders.editId,
-        process: action.payload.process !== undefined ? action.payload.process : state.folders.process,
-        processIds: action.payload.processIds !== undefined ? action.payload.processIds : state.folders.processIds,
-      }
+      state.edit.processFolderIds = action.payload.processIds !== undefined ? action.payload.processIds : state.edit.processFolderIds
+      state.edit.folderId = action.payload.editId !== undefined ? action.payload.editId : state.edit.folderId
+      state.folders = action.payload.folders !== undefined ? action.payload.folders : state.folders
     })
 
   builder
-    .addCase(updateFolderItem.fulfilled, (state: ConfigType, action: { meta: { arg: ClientFolderData }, payload: ClientFolderData }) => {
-      state.folders = {
-        ...state.folders,
-        items: upsertObject([...state.folders.items], action.payload) as ClientFolderData[]
-      }
+    .addCase(updateFolderItem.fulfilled, (state: ConfigType, action: { meta: { arg: FolderData }, payload: FolderData }) => {
+      state.folders = upsertObject([...state.folders], action.payload) as FolderData[]
     })
 }

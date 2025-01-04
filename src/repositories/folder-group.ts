@@ -1,11 +1,12 @@
 import { RelationFolderSelectType, RelationFolderSelect, createRelationFolderSelect } from '@repositories/relation-folder'
-import ClientFolderGroup, { ClientFolderGroupData } from '@entities/ClientFolderGroup'
+import FolderGroup, { FolderGroupData } from '@entities/FolderGroup'
 import { Prisma, PrismaEntry } from '@lib/prisma'
 
 export type FolderGroupSelectType = {
   id: boolean,
   name: boolean,
-  folderId: boolean,
+  userId: boolean,
+  moduleId: boolean,
   createdAt: boolean,
   updatedAt: boolean,
   relationFolders: {
@@ -16,7 +17,8 @@ export type FolderGroupSelectType = {
 export const FolderGroupSelect = {
   id: true,
   name: true,
-  folderId: true,
+  userId: true,
+  moduleId: true,
   createdAt: true,
   updatedAt: true,
   relationFolders: {
@@ -29,29 +31,28 @@ type FolderGroupResult = Prisma.FolderGroupGetPayload<{
 }>
 
 export const createFolderGroupSelect = (data: FolderGroupResult) => {
-  return new ClientFolderGroup()
+  return new FolderGroup()
     .setId(data.id)
     .setName(data.name)
-    .setFolderId(data.folderId)
-    .setCreatedAt(data.createdAt)
+    .setModuleId(data.moduleId)
     .setUpdatedAt(data.updatedAt)
     .setRelationFolders(
       data.relationFolders.map((item) => createRelationFolderSelect(item))
     )
 }
 
-export const upsertFolderGroup = async (db: PrismaEntry, item: ClientFolderGroupData): Promise<string | null> => {
+export const upsertFolderGroup = async (db: PrismaEntry, userId: string, item: FolderGroupData): Promise<string | null> => {
   const res = await db.folderGroup.upsert({
     where: { id: item.id },
     update: {
       name: item.name,
-      folderId: item.folderId,
       updatedAt: new Date(),
     },
     create: {
+      userId,
       id: item.id,
       name: item.name,
-      folderId: item.folderId,
+      moduleId: item.moduleId,
       createdAt: new Date(),
       updatedAt: new Date()
     },

@@ -1,13 +1,13 @@
-import { ClientSettingsSimulatorData } from '@entities/ClientSettingsSimulator'
+import { SimulatorSettingsData } from '@entities/SimulatorSettings'
 import { upsertSettingsSimulator } from '@store/fetch/settings'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { ConfigType } from '@store/initial-state'
 
-export type PayloadUpdate = Partial<ClientSettingsSimulatorData>
+export type PayloadUpdate = Partial<SimulatorSettingsData>
 
 export const updateSettingsSimulator = createAsyncThunk(
   '/update/settings/simulator',
-  async (payload: PayloadUpdate, api): Promise<ClientSettingsSimulatorData> => {
+  async (payload: PayloadUpdate, api): Promise<SimulatorSettingsData> => {
     const state = api.getState() as ConfigType
     const originSettings = { ...state.settings.simulator }
 
@@ -27,7 +27,7 @@ export const simulatorReducers = (builder: any) => {
     .addCase(updateSettingsSimulator.pending, (state: ConfigType, action: { meta: { arg: PayloadUpdate } }) => {
       state.settings.simulator = { ...state.settings.simulator, ...action.meta.arg }
     })
-    .addCase(updateSettingsSimulator.rejected, (state: ConfigType, action: { payload: ClientSettingsSimulatorData, meta: { arg: PayloadUpdate } }) => {
+    .addCase(updateSettingsSimulator.rejected, (state: ConfigType, action: { payload: SimulatorSettingsData, meta: { arg: PayloadUpdate } }) => {
       state.settings.simulator = { ...action.payload }
     })
 }

@@ -1,38 +1,20 @@
-import { ClientFolderData } from '@entities/ClientFolder'
 import { clientFetch } from '@lib/fetch-client'
+import { FolderData } from '@entities/Folder'
 
-export const getClientFolders = async (): Promise<ClientFolderData[]> => {
-  return await clientFetch(`/api/folders`)
-    .then((res) => res.json())
-    .then((json) => json.items)
-}
-
-export const saveClientFolderData = async (folder: ClientFolderData) => {
+export const saveFolderData = async (folder: FolderData): Promise<boolean> => {
   const res = await clientFetch(`/api/folders/${folder.id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(folder)
   })
 
-  if (!res.ok) {
-    throw new Error('Put folder error.', { cause: res.statusText })
-  }
+  return res.ok
 }
 
-export type DeleteClientFolderResults = {
-  removeFolderIds: string[],
-  removeFolderGroupIds: string,
-  refreshFolder: ClientFolderData | null
-}
-
-export const deleteClientFolderData = async (folderId: string): Promise<DeleteClientFolderResults> => {
+export const deleteFolderData = async (folderId: string): Promise<boolean> => {
   const res = await clientFetch(`/api/folders/${folderId}`, {
     method: 'DELETE',
   })
 
-  if (!res.ok) {
-    throw new Error('Delete folder error.', { cause: res.statusText })
-  }
-
-  return await res.json() as DeleteClientFolderResults
+  return res.ok
 }

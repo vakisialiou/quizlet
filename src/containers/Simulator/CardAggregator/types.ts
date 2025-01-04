@@ -1,4 +1,4 @@
-import { SimulatorMethod } from '@entities/ClientSettingsSimulator'
+import { SimulatorMethod } from '@entities/SimulatorSettings'
 
 export enum CardStatus {
   none = 'none',

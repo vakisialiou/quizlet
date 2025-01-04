@@ -1,18 +1,16 @@
-import ClientRelationFolder, { ClientRelationFolderData } from '@entities/ClientRelationFolder'
+import RelationFolder, { RelationFolderData } from '@entities/RelationFolder'
 import { Prisma, PrismaEntry } from '@lib/prisma'
 
 export type RelationFolderSelectType = {
-  id: boolean,
-  folderId: boolean,
-  folderGroupId: boolean,
-  createdAt: boolean,
+  id: boolean
+  groupId: boolean
+  folderId: boolean
 }
 
 export const RelationFolderSelect = {
   id: true,
+  groupId: true,
   folderId: true,
-  folderGroupId: true,
-  createdAt: true,
 } as RelationFolderSelectType
 
 type RelationFolderResult = Prisma.RelationFolderGetPayload<{
@@ -20,23 +18,20 @@ type RelationFolderResult = Prisma.RelationFolderGetPayload<{
 }>
 
 export const createRelationFolderSelect = (data: RelationFolderResult) => {
-  return new ClientRelationFolder()
+  return new RelationFolder()
     .setId(data.id)
+    .setGroupId(data.groupId)
     .setFolderId(data.folderId)
-    .setFolderGroupId(data.folderGroupId)
-    .setCreatedAt(data.createdAt)
 }
 
-export const createManyRelationFolders = async (db: PrismaEntry, items: ClientRelationFolderData[]): Promise<number> => {
-  const createdAt = new Date()
-
+export const createManyRelationFolders = async (db: PrismaEntry, userId: string, items: RelationFolderData[]): Promise<number> => {
   const res = await db.relationFolder.createMany({
     data: items.map((item) => {
       return {
+        userId,
         id: item.id,
+        groupId: item.groupId,
         folderId: item.folderId,
-        folderGroupId: item.folderGroupId,
-        createdAt,
       }
     })
   })

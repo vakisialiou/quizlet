@@ -1,6 +1,6 @@
-import { ClientFolderData } from '@entities/ClientFolder'
+import { FolderData } from '@entities/Folder'
 
-export const searchFolders = (items: ClientFolderData[], search?: string | null, editItemId?: string | null): ClientFolderData[] => {
+export const searchFolders = (items: FolderData[], search?: string | null, editItemId?: string | null): FolderData[] => {
   if (!search) {
     return items
   }

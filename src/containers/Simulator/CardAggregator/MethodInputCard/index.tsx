@@ -2,12 +2,12 @@ import InputCard, {
   CardSelection,
   CardSelectedValue
 } from '@containers/Simulator/CardAggregator/MethodInputCard/InputCard'
-import { DefaultAnswerLang, DefaultQuestionLang } from '@entities/ClientTerm'
+import { DefaultAnswerLang, DefaultQuestionLang } from '@entities/Term'
 import { getSimulatorNameById } from '@containers/Simulator/constants'
-import { SimulatorMethod } from '@entities/ClientSettingsSimulator'
+import { SimulatorMethod } from '@entities/SimulatorSettings'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { ClientSimulatorData } from '@entities/ClientSimulator'
-import { ClientTermData } from '@entities/ClientTerm'
+import { ClientSimulatorData } from '@entities/Simulator'
+import { ClientTermData } from '@entities/Term'
 import { shuffle } from '@lib/array'
 import {
   CardStatus,

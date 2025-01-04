@@ -1,5 +1,5 @@
-import ClientSimulator, {ClientSimulatorData, SimulatorStatus} from '@entities/ClientSimulator'
-import { SimulatorMethod } from '@entities/ClientSettingsSimulator'
+import Simulator, { SimulatorData, SimulatorStatus} from '@entities/Simulator'
+import { SimulatorMethod } from '@entities/SimulatorSettings'
 import { ProgressTrackerAction } from '@entities/ProgressTracker'
 import SimulatorTracker from '@entities/SimulatorTracker'
 import Achievement from '@entities/Achievement'
@@ -139,8 +139,8 @@ describe('Achievement', () => {
 
 })
 
-function createSimulator(method: SimulatorMethod, inverted: boolean, callback: (tracker: SimulatorTracker) => SimulatorTracker): ClientSimulatorData {
-  const simulator = new ClientSimulator('1', SimulatorStatus.DONE, { method, inverted })
+function createSimulator(method: SimulatorMethod, inverted: boolean, callback: (tracker: SimulatorTracker) => SimulatorTracker): SimulatorData {
+  const simulator = new Simulator('1', SimulatorStatus.DONE, { method, inverted })
     .setTermIds(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'])
 
   const tracker = new SimulatorTracker(simulator)
@@ -149,7 +149,7 @@ function createSimulator(method: SimulatorMethod, inverted: boolean, callback: (
   return simulator.serialize()
 }
 
-function createSimulatorSuccess100(method: SimulatorMethod, inverted: boolean, ): ClientSimulatorData {
+function createSimulatorSuccess100(method: SimulatorMethod, inverted: boolean, ): SimulatorData {
   return createSimulator(method, inverted, (tracker) => {
     tracker.calculate(ProgressTrackerAction.success, '1')
     tracker.calculate(ProgressTrackerAction.success, '2')
@@ -165,7 +165,7 @@ function createSimulatorSuccess100(method: SimulatorMethod, inverted: boolean, )
   })
 }
 
-function createSimulatorError100(method: SimulatorMethod, inverted: boolean): ClientSimulatorData {
+function createSimulatorError100(method: SimulatorMethod, inverted: boolean): SimulatorData {
   return createSimulator(method, inverted, (tracker) => {
     tracker.calculate(ProgressTrackerAction.error, '1')
     tracker.calculate(ProgressTrackerAction.error, '2')
@@ -181,7 +181,7 @@ function createSimulatorError100(method: SimulatorMethod, inverted: boolean): Cl
   })
 }
 
-function createSimulatorError50(method: SimulatorMethod, inverted: boolean): ClientSimulatorData {
+function createSimulatorError50(method: SimulatorMethod, inverted: boolean): SimulatorData {
   return createSimulator(method, inverted, (tracker) => {
     tracker.calculate(ProgressTrackerAction.success, '1')
     tracker.calculate(ProgressTrackerAction.success, '2')

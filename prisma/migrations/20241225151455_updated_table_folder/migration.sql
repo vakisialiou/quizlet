@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE `Folder` ADD COLUMN `degreeRate` DOUBLE NOT NULL DEFAULT 0;

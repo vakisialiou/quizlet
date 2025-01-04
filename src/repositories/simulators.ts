@@ -1,5 +1,5 @@
-import ClientSimulator, { ClientSimulatorData, SimulatorStatus } from '@entities/ClientSimulator'
-import { ClientSettingsSimulatorData } from '@entities/ClientSettingsSimulator'
+import Simulator, { SimulatorData, SimulatorStatus } from '@entities/Simulator'
+import { SimulatorSettingsData } from '@entities/SimulatorSettings'
 import { ProgressTrackerData } from '@entities/ProgressTracker'
 import { Prisma, PrismaEntry } from '@lib/prisma'
 
@@ -8,7 +8,6 @@ export type SimulatorSelectType = {
   termId: boolean,
   active: boolean,
   status: boolean,
-  folderId: boolean,
   termIds: boolean,
   historyIds: boolean,
   continueIds: boolean,
@@ -24,7 +23,6 @@ export const SimulatorSelect = {
   termId: true,
   active: true,
   status: true,
-  folderId: true,
   termIds: true,
   historyIds: true,
   continueIds: true,
@@ -39,14 +37,14 @@ type SimulatorResult = Prisma.SimulatorGetPayload<{
   select: typeof SimulatorSelect
 }>
 
-export const createSimulatorSelect = (data: SimulatorResult): ClientSimulator => {
+export const createSimulatorSelect = (data: SimulatorResult): Simulator => {
   const termIds = Array.isArray(data.termIds) ? data.termIds as string[] : []
   const historyIds = Array.isArray(data.historyIds) ? data.historyIds as string[] : []
   const continueIds = Array.isArray(data.continueIds) ? data.continueIds as string[] : []
   const rememberIds = Array.isArray(data.rememberIds) ? data.rememberIds as string[] : []
   const tracker = data.tracker || {}
   const settings = data.settings || {}
-  return new ClientSimulator(data.folderId, data.status as SimulatorStatus)
+  return new Simulator(data.status as SimulatorStatus)
     .setId(data.id)
     .setTermIds(termIds)
     .setHistoryIds(historyIds)
@@ -55,21 +53,12 @@ export const createSimulatorSelect = (data: SimulatorResult): ClientSimulator =>
     .setActive(data.active)
     .setTermId(data.termId)
     .setTracker(tracker as ProgressTrackerData)
-    .setSettings(settings as ClientSettingsSimulatorData)
+    .setSettings(settings as SimulatorSettingsData)
     .setCreatedAt(data.createdAt)
     .setUpdatedAt(data.updatedAt)
 }
 
-export const findSimulatorsByFolderId = async (db: PrismaEntry, userId: string, folderId: string): Promise<ClientSimulatorData[]> => {
-  const res = await db.simulator.findMany({
-    where: { userId, folderId },
-    select: { ...SimulatorSelect },
-  })
-
-  return res.map(simulator => createSimulatorSelect(simulator).serialize())
-}
-
-export const upsertSimulator = async (db: PrismaEntry, userId: string, data: ClientSimulatorData): Promise<string | null> => {
+export const upsertSimulator = async (db: PrismaEntry, userId: string, data: SimulatorData): Promise<string | null> => {
   const termIds = Array.isArray(data.termIds) ? data.termIds : []
   const historyIds = Array.isArray(data.historyIds) ? data.historyIds : []
   const continueIds = Array.isArray(data.continueIds) ? data.continueIds : []
@@ -102,7 +91,6 @@ export const upsertSimulator = async (db: PrismaEntry, userId: string, data: Cli
       termId: data.termId,
       active: data.active,
       status: data.status,
-      folderId: data.folderId,
       createdAt: new Date(),
       updatedAt: new Date()
     },

@@ -1,4 +1,4 @@
-import { ClientSimulatorData } from '@entities/ClientSimulator'
+import { SimulatorData } from '@entities/Simulator'
 
 export enum ProgressTrackerAction {
   success = 'success',
@@ -33,7 +33,7 @@ export default class ProgressTracker {
       [ProgressTrackerAction.error]: 0,
       [ProgressTrackerAction.success]: 0
     },
-    simulator?: Partial<ClientSimulatorData>
+    simulator?: Partial<SimulatorData>
   ) {
     this.actions = { ...simulator?.tracker?.actions || {} }
     this.errorRate = simulator?.tracker?.errorRate || 0

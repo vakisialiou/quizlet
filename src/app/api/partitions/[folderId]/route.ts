@@ -1,11 +1,11 @@
-import ClientRelationFolder, { ClientRelationFolderData } from '@entities/ClientRelationFolder'
-import ClientRelationTerm, { ClientRelationTermData } from '@entities/ClientRelationTerm'
+import RelationFolder, { ClientRelationFolderData } from '@entities/RelationFolder'
+import RelationTerm, { ClientRelationTermData } from '@entities/RelationTerm'
 import { createManyRelationFolders } from '@repositories/relation-folder'
 import { createManyFolder, getFolderById } from '@repositories/folders'
-import ClientFolder, { ClientFolderData } from '@entities/ClientFolder'
+import Folder, { ClientFolderData } from '@entities/Folder'
 import { createManyRelationTerms } from '@repositories/relation-term'
 import { upsertFolderGroup } from '@repositories/folder-group'
-import ClientFolderGroup from '@entities/ClientFolderGroup'
+import FolderGroup from '@entities/FolderGroup'
 import { filterDeletedTerms } from '@helper/terms'
 import { prisma, transaction } from '@lib/prisma'
 import { shuffle, chunks } from '@lib/array'
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ fol
 
   const { folderId } = await params
 
-  const folderGroup = new ClientFolderGroup()
+  const folderGroup = new FolderGroup()
     .setFolderId(folderId)
     .setName(dateFormat(new Date()))
 
@@ -56,13 +56,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ fol
 
   for (const terms of groupedArray) {
     ++i
-    const folder = new ClientFolder()
+    const folder = new Folder()
       .setParentId(folderId)
       .setIsModule(false)
       .setName(`${i}`)
       .setOrder(i)
 
-    const relationFolder = new ClientRelationFolder()
+    const relationFolder = new RelationFolder()
       .setFolderGroupId(folderGroup.id)
       .setFolderId(folder.id)
 
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ fol
     data.relationFolders.push(relationFolder.serialize())
 
     for (const term of terms) {
-      const relationTerm = new ClientRelationTerm()
+      const relationTerm = new RelationTerm()
         .setTermId(term.id)
         .setFolderId(folder.id)
 

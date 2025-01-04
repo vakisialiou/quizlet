@@ -147,22 +147,24 @@ function Landing(
               <div className="flex flex-col lg:flex-row items-center lg:items-end justify-center gap-8">
 
                 <div
-                  className="max-w-96 px-[2px] md:px-2 py-4 flex flex-col items-center overflow-hidden gap-4 lg:border border-white/10 lg:order-2"
+                  className="px-[2px] md:px-2 py-4 flex flex-col items-center overflow-hidden gap-4 lg:order-2"
                 >
-                  <FolderTitle
+                  {/*<FolderTitle
                     folderId={DEMO_FOLDER_ID}
                     className="w-full max-w-96 items-center"
-                  />
+                  />*/}
 
-                  <SimulatorBody
+                  {/*<SimulatorBody
+                    editable={false}
                     folderId={DEMO_FOLDER_ID}
                     onDeactivateAction={(folder) => {
                       actionDeactivateSimulators({
+                        editable: false,
                         folderId: folder.id,
                         degreeRate: new Achievement().getRate(folder.simulators)
                       })
                     }}
-                  />
+                  />*/}
                 </div>
 
                 <div className="relative lg:order-1 flex flex-col items-center justify-center text-center">
@@ -172,7 +174,7 @@ function Landing(
                    />
 
                   <div
-                    className="max-w-96 lg:scale-75 opacity-70 lg:border border-white/15 px-4"
+                    className="max-w-96 lg:scale-75 opacity-70 lg:border border-white/15 p-4"
                   >
                     <Image
                       width={360}
@@ -190,7 +192,7 @@ function Landing(
                   />
 
                   <div
-                    className="max-w-96 lg:scale-75 opacity-70 lg:border border-white/15 px-4"
+                    className="max-w-96 lg:scale-75 opacity-70 lg:border border-white/15 p-4"
                   >
                     <Image
                       width={360}

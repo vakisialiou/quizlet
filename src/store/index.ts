@@ -1,23 +1,13 @@
 import { configureStore, createReducer, EnhancedStore } from '@reduxjs/toolkit'
-import { DeleteClientFolderResults } from '@store/fetch/folders'
+import { PayloadStart, PayloadUpdate } from '@store/reducers/simulators'
 import { loggerMiddleware } from '@store/middlewares/logger'
-import { ClientFolderData } from '@entities/ClientFolder'
 import * as simulators from '@store/reducers/simulators'
 import * as settings from '@store/reducers/settings'
-import { ClientTermData } from '@entities/ClientTerm'
 import * as folders from '@store/reducers/folders'
+import * as modules from '@store/reducers/modules'
 import { ConfigType } from '@store/initial-state'
 import * as terms from '@store/reducers/terms'
-import {
-  PayloadBack,
-  PayloadContinue,
-  PayloadRemember,
-  PayloadRestart,
-  PayloadStart,
-  PayloadDeactivate,
-  UpsertSimulatorsIds,
-  PayloadUpdateTracker,
-} from '@store/reducers/simulators'
+import { FolderData } from '@entities/Folder'
 
 const DEBUG = false
 
@@ -33,6 +23,7 @@ function renderStore(initialState?: ConfigType): EnhancedStore {
     reducer: createReducer(initialState, (builder) => {
       simulators.simulatorReducers(builder)
       settings.simulatorReducers(builder)
+      modules.moduleReducers(builder)
       folders.folderReducers(builder)
       terms.termReducers(builder)
     }),
@@ -64,12 +55,12 @@ const execAction = <T>(action: any, callback?: CallbackType<T>): void => {
   getStore().dispatch(action).unwrap().then(callback)
 }
 
-export const actionSaveFolder = (payload: folders.SaveType, callback?: (res: folders.SaveType) => void): void => {
+export const actionSaveFolder = (payload: folders.SaveType, callback?: (res: boolean) => void): void => {
   const action = folders.saveFolder(payload)
   execAction(action, callback)
 }
 
-export const actionDeleteFolder = (payload: folders.DeleteType, callback?: (res: DeleteClientFolderResults) => void): void => {
+export const actionDeleteFolder = (payload: folders.DeleteType, callback?: (res: boolean) => void): void => {
   const action = folders.deleteFolder(payload)
   execAction(action, callback)
 }
@@ -79,69 +70,53 @@ export const actionUpdateFolder = (payload: folders.UpdateType, callback?: (res:
   execAction(action, callback)
 }
 
-export const actionUpdateFolderItem = (payload: ClientFolderData, callback?: (res: ClientFolderData) => void): void => {
+export const actionUpdateFolderItem = (payload: FolderData, callback?: (res: FolderData) => void): void => {
   const action = folders.updateFolderItem(payload)
   execAction(action, callback)
 }
 
-export const actionFetchFolders = (callback?: (res: ClientFolderData[]) => void): void => {
-  const action = folders.fetchFolders()
+export const actionSaveModule = (payload: modules.SaveType, callback?: (res: boolean) => void): void => {
+  const action = modules.saveModule(payload)
   execAction(action, callback)
 }
 
-export const actionCreateFolderPartitions = (payload: folders.PartitionsType, callback?: (res: ClientFolderData[]) => void): void => {
-  const action = folders.createFolderPartitions(payload)
+export const actionDeleteModule = (payload: modules.DeleteType, callback?: (res: boolean) => void): void => {
+  const action = modules.deleteModule(payload)
   execAction(action, callback)
 }
 
-
-export const actionSaveTerm = (payload: terms.SaveType, callback?: (res: terms.SaveType) => void): void => {
-  const action = terms.saveTerm(payload)
+export const actionUpdateModule = (payload: modules.UpdateType, callback?: (res: boolean) => void): void => {
+  const action = modules.updateModule(payload)
   execAction(action, callback)
 }
 
-export const actionUpdateTerm = (payload: terms.UpdateType, callback?: (res: terms.UpdateType) => void): void => {
+export const actionCreateModulePartitions = (payload: modules.PartitionsType, callback?: (res: FolderData[]) => void): void => {
+  const action = modules.createModulePartitions(payload)
+  execAction(action, callback)
+}
+
+export const actionCreateTerm = (payload: terms.SaveType, callback?: (res: boolean) => void): void => {
+  const action = terms.createTerm(payload)
+  execAction(action, callback)
+}
+
+export const actionUpdateTerm = (payload: terms.UpdateType, callback?: (res: boolean) => void): void => {
   const action = terms.updateTerm(payload)
   execAction(action, callback)
 }
 
-export const actionUpdateTermItem = (payload: ClientTermData, callback?: (res: ClientTermData) => void): void => {
-  const action = terms.updateTermItem(payload)
+export const actionEditTerm = (payload: terms.EditType, callback?: (res: boolean) => void): void => {
+  const action = terms.editTerm(payload)
   execAction(action, callback)
 }
 
-export const actionStartSimulators = (payload: PayloadStart, callback?: (res: UpsertSimulatorsIds) => void): void => {
-  const action = simulators.startSimulators(payload)
+export const actionStartSimulator = (payload: PayloadStart, callback?: (res: boolean) => void): void => {
+  const action = simulators.startSimulator(payload)
   execAction(action, callback)
 }
 
-export const actionContinueSimulators = (payload: PayloadContinue, callback?: (res: UpsertSimulatorsIds) => void): void => {
-  const action = simulators.continueSimulators(payload)
-  execAction(action, callback)
-}
-
-export const actionRememberSimulators = (payload: PayloadRemember, callback?: (res: UpsertSimulatorsIds) => void): void => {
-  const action = simulators.rememberSimulators(payload)
-  execAction(action, callback)
-}
-
-export const actionUpdateTracker = (payload: PayloadUpdateTracker, callback?: (res: PayloadUpdateTracker) => void): void => {
-  const action = simulators.updateTracker(payload)
-  execAction(action, callback)
-}
-
-export const actionRestartSimulators = (payload: PayloadRestart, callback?: (res: UpsertSimulatorsIds) => void): void => {
-  const action = simulators.restartSimulators(payload)
-  execAction(action, callback)
-}
-
-export const actionBackSimulators = (payload: PayloadBack, callback?: (res: UpsertSimulatorsIds) => void): void => {
-  const action = simulators.backSimulators(payload)
-  execAction(action, callback)
-}
-
-export const actionDeactivateSimulators = (payload: PayloadDeactivate, callback?: (res: UpsertSimulatorsIds) => void): void => {
-  const action = simulators.deactivateSimulators(payload)
+export const actionUpdateSimulator = (payload: PayloadUpdate, callback?: (res: boolean) => void): void => {
+  const action = simulators.updateSimulator(payload)
   execAction(action, callback)
 }
 

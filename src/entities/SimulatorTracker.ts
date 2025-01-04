@@ -1,6 +1,6 @@
 import ProgressTracker, { ProgressTrackerAction } from '@entities/ProgressTracker'
-import { SimulatorMethod } from '@entities/ClientSettingsSimulator'
-import { ClientSimulatorData } from '@entities/ClientSimulator'
+import { SimulatorMethod } from '@entities/SimulatorSettings'
+import { SimulatorData } from '@entities/Simulator'
 
 const weights = {
   [SimulatorMethod.PICK]: {
@@ -18,7 +18,7 @@ const weights = {
 }
 
 export default class SimulatorTracker extends ProgressTracker {
-  constructor(simulator: Partial<ClientSimulatorData>) {
+  constructor(simulator: Partial<SimulatorData>) {
     super(weights[simulator?.settings?.method || SimulatorMethod.FLASHCARD], simulator)
   }
 }

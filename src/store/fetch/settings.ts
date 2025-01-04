@@ -1,4 +1,4 @@
-import { ClientSettingsSimulatorData } from '@entities/ClientSettingsSimulator'
+import { ClientSettingsSimulatorData } from '@entities/SimulatorSettings'
 import { clientFetch } from '@lib/fetch-client'
 
 export const upsertSettingsSimulator = async (settings: ClientSettingsSimulatorData): Promise<boolean> => {

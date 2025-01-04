@@ -19,6 +19,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
 export default async function Page({ params }: { params: Promise<{ folderId: string }> }) {
   const { folderId } = await params
   return (
-    <Simulator folderId={folderId}/>
+    <Simulator
+      editable={true}
+      folderId={folderId}
+    />
   )
 }

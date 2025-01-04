@@ -1,9 +1,8 @@
 import NavMenuItem, { NavMenuItemProp } from '@containers/NavMenu/NavMenuItem'
 import SVGPanelClose from '@public/svg/panel_close.svg'
-import { sortFoldersDesc } from '@helper/sort-folders'
-import { findModuleFolders } from '@helper/folders'
 import ButtonSquare from '@components/ButtonSquare'
-import { FoldersType } from '@store/initial-state'
+import { sortDesc } from '@helper/sort-modules'
+import { ModuleData } from '@entities/Module'
 import { usePathname } from '@i18n/routing'
 import { useTranslations } from 'next-intl'
 import { useSelector } from 'react-redux'
@@ -17,11 +16,10 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
   const pathname = usePathname()
   const t = useTranslations('Folders')
   const session = useSelector(({ session }: { session: Session | null }) => session)
-  const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
+  const modules = useSelector(({ modules }: { modules: ModuleData[] }) => modules)
 
   const collectionChildren = useMemo(() => {
-
-    return sortFoldersDesc(findModuleFolders([...folders.items]))
+    return sortDesc([...modules])
       .map((item) => {
         return {
           id: item.id,
@@ -30,7 +28,7 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
           href: `/private/folder/${item.id}`
         } as NavMenuItemProp
       })
-  }, [folders.items])
+  }, [modules])
 
   const menuItems = [
     {

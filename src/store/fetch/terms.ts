@@ -1,13 +1,21 @@
-import { ClientTermData } from '@entities/ClientTerm'
+import { RelationTermData } from '@entities/RelationTerm'
 import { clientFetch } from '@lib/fetch-client'
+import { TermData } from '@entities/Term'
 
-export const saveClientTermData = async (term: ClientTermData) => {
+export const saveTermData = async (relationTerm: RelationTermData, term: TermData, shareId: string | null): Promise<boolean> => {
   const res = await clientFetch(`/api/terms/${term.id}`, {
     method: 'PUT',
-    body: JSON.stringify(term)
+    body: JSON.stringify({ relationTerm, term, shareId })
   })
 
-  if (!res.ok) {
-    throw new Error('Save term error.', { cause: res.statusText })
-  }
+  return res.ok
+}
+
+export const updateTermData = async (relationTerm: RelationTermData, term: TermData, shareId: string | null): Promise<boolean> => {
+  const res = await clientFetch(`/api/terms/${term.id}`, {
+    method: 'POST',
+    body: JSON.stringify({ relationTerm, term, shareId })
+  })
+
+  return res.ok
 }

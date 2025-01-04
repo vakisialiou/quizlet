@@ -1,8 +1,8 @@
-import { ClientFolderShareEnum } from '@entities/ClientFolderShare'
+import { ModuleShareEnum } from '@entities/ModuleShare'
 import { clientFetch } from '@lib/fetch-client'
 
-export const upsertClientFolderShare = async (folderId: string, access: ClientFolderShareEnum): Promise<string> => {
-  const res = await clientFetch(`/api/folders/share/${folderId}?access=${access}`, {
+export const upsertModuleShare = async (moduleId: string, access: ModuleShareEnum): Promise<string> => {
+  const res = await clientFetch(`/api/modules/share/${moduleId}?access=${access}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
   })

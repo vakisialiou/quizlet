@@ -1,5 +1,5 @@
-import ClientSettingsSimulator, { SimulatorMethod } from '@entities/ClientSettingsSimulator'
-import ClientSimulator, { SimulatorStatus } from '@entities/ClientSimulator'
+import SimulatorSettings, { SimulatorMethod } from '@entities/SimulatorSettings'
+import Simulator, { SimulatorStatus } from '@entities/Simulator'
 import { ProgressTrackerAction } from '@entities/ProgressTracker'
 import SimulatorTracker from '@entities/SimulatorTracker'
 
@@ -7,10 +7,10 @@ describe('SimulatorTracker methods', () => {
   const termIds = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
 
   describe(`Simulator method ${SimulatorMethod.PICK}`, () => {
-    const simulator = new ClientSimulator('simulator-1', SimulatorStatus.PROCESSING)
+    const simulator = new Simulator('simulator-1', SimulatorStatus.PROCESSING)
     simulator.setTermIds(termIds)
     simulator.setSettings(
-      new ClientSettingsSimulator()
+      new SimulatorSettings()
         .setMethod(SimulatorMethod.PICK)
         .serialize()
     )
@@ -101,10 +101,10 @@ describe('SimulatorTracker methods', () => {
   })
 
   describe(`Simulator type ${SimulatorMethod.FLASHCARD}`, () => {
-    const simulator = new ClientSimulator('simulator-2', SimulatorStatus.PROCESSING)
+    const simulator = new Simulator('simulator-2', SimulatorStatus.PROCESSING)
     simulator.setTermIds(termIds)
     simulator.setSettings(
-      new ClientSettingsSimulator()
+      new SimulatorSettings()
         .setMethod(SimulatorMethod.FLASHCARD)
         .serialize()
     )
@@ -195,10 +195,10 @@ describe('SimulatorTracker methods', () => {
   })
 
   describe(`Simulator type ${SimulatorMethod.INPUT}`, () => {
-    const simulator = new ClientSimulator('simulator-3', SimulatorStatus.PROCESSING)
+    const simulator = new Simulator('simulator-3', SimulatorStatus.PROCESSING)
     simulator.setTermIds(termIds)
     simulator.setSettings(
-      new ClientSettingsSimulator()
+      new SimulatorSettings()
         .setMethod(SimulatorMethod.INPUT)
         .serialize()
     )

@@ -1,5 +1,5 @@
 import SVGRubyOutline from '@public/svg/ruby/ruby-outline.svg'
-import { ClientFolderData } from '@entities/ClientFolder'
+import { ClientFolderData } from '@entities/Folder'
 import Levels, { EnumLevels } from '@entities/Levels'
 import { useMemo } from 'react'
 import clsx from 'clsx'

@@ -1,4 +1,4 @@
-import { ComponentType, SVGProps } from 'react'
+import { ComponentType, SVGProps, BaseSyntheticEvent } from 'react'
 import clsx from 'clsx'
 
 export enum ButtonSquareVariant {
@@ -19,7 +19,7 @@ export default function ButtonSquare(
     variant = ButtonSquareVariant.transparent,
   }:
   {
-    onClick?: () => void
+    onClick?: (e: BaseSyntheticEvent) => void
     icon: ComponentType<SVGProps<SVGSVGElement>>
     variant?: ButtonSquareVariant
     bordered?: boolean

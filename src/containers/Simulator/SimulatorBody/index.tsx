@@ -5,17 +5,16 @@ import CardAggregator, { OnChangeParamsType } from '@containers/Simulator/CardAg
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { CardStatus } from '@containers/Simulator/CardAggregator/types'
 import { ProgressTrackerAction } from '@entities/ProgressTracker'
-import {SimulatorMethod} from '@entities/ClientSettingsSimulator'
+import {SimulatorMethod} from '@entities/SimulatorSettings'
+import {ensureFolderTerms, getFolderById} from '@helper/folders'
 import PanelControls from '@containers/Simulator/PanelControls'
 import TextToSpeech, { TextToSpeechEvents } from '@lib/speech'
-import { SimulatorStatus } from '@entities/ClientSimulator'
-import { ClientFolderData } from '@entities/ClientFolder'
+import { SimulatorStatus } from '@entities/Simulator'
+import { ClientFolderData } from '@entities/Folder'
 import Button, {ButtonVariant} from '@components/Button'
 import CardEmpty from '@containers/Simulator/CardEmpty'
 import CardStart from '@containers/Simulator/CardStart'
 import PanelInfo from '@containers/Simulator/PanelInfo'
-import {ensureFolderTerms, getFolderById} from '@helper/folders'
-import {FoldersType} from '@store/initial-state'
 import { useTranslations } from 'next-intl'
 import {useSelector} from 'react-redux'
 import {
@@ -28,20 +27,22 @@ import {
 export default function SimulatorBody(
   {
     folderId,
+    editable,
     disableDeactivate,
     onDeactivateAction
   }:
   {
     folderId: string,
+    editable: boolean
     disableDeactivate?: boolean
     onDeactivateAction: (folder: ClientFolderData) => void
   }
 ) {
-  const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
+  const folders = useSelector(({ folders }: { folders: ClientFolderData[] }) => folders)
 
   const folder = useMemo(() => {
-    return ensureFolderTerms(folders.items, getFolderById(folders.items, folderId))
-  }, [folders.items, folderId])
+    return ensureFolderTerms(folders, getFolderById(folders, folderId))
+  }, [folders, folderId])
 
   const simulators = useMemo(() => {
     return folder?.simulators || []
@@ -101,9 +102,8 @@ export default function SimulatorBody(
   return (
     <div className="flex flex-col">
       <PanelInfo
-        simulator={simulator}
-        process={folders.process}
         className="mb-6"
+        simulator={simulator}
       />
 
       <div className="flex gap-2">
@@ -112,7 +112,7 @@ export default function SimulatorBody(
           {!simulator &&
             <CardStart
               folder={folder}
-              process={folders.process}
+              editable={editable}
             />
           }
 
@@ -120,6 +120,7 @@ export default function SimulatorBody(
             {(folder && simulator) &&
               <CardAggregator
                 folder={folder}
+                editable={editable}
                 simulator={simulator}
                 onChange={onChangeCardDataCallback}
                 soundSelection={soundSelection.type === 'selection' ? soundSelection.data : null}
@@ -173,10 +174,11 @@ export default function SimulatorBody(
                     onClick={() => {
                       if (folder) {
                         actionUpdateTracker({
+                          editable,
                           folderId: folder.id,
                           trackerAction: ProgressTrackerAction.success
                         }, () => {
-                          actionRememberSimulators({folderId: folder.id})
+                          actionRememberSimulators({ folderId: folder.id, editable })
                         })
                       }
                     }}
@@ -190,10 +192,11 @@ export default function SimulatorBody(
                     onClick={() => {
                       if (folder) {
                         actionUpdateTracker({
+                          editable,
                           folderId: folder.id,
                           trackerAction: ProgressTrackerAction.error
                         }, () => {
-                          actionContinueSimulators({folderId: folder.id})
+                          actionContinueSimulators({ folderId: folder.id, editable })
                         })
                       }
                     }}
@@ -222,11 +225,11 @@ export default function SimulatorBody(
                       } as Record<SimulatorMethod, Record<CardStatus, ProgressTrackerAction>>
 
                       const trackerAction = trackerActionMap[simulator.settings.method]?.[cardStatus]
-                      actionUpdateTracker({folderId: folder.id, trackerAction}, () => {
+                      actionUpdateTracker({ folderId: folder.id, trackerAction, editable }, () => {
                         if (cardStatus === CardStatus.success) {
-                          actionRememberSimulators({folderId: folder.id})
+                          actionRememberSimulators({ folderId: folder.id, editable })
                         } else {
-                          actionContinueSimulators({folderId: folder.id})
+                          actionContinueSimulators({ folderId: folder.id, editable })
                         }
                       })
                     }
@@ -243,7 +246,6 @@ export default function SimulatorBody(
         <div className="w-full">
           <PanelControls
             simulator={simulator}
-            process={folders.process}
             options={{
               sound: {
                 active: soundSelection.type === 'sound',
@@ -267,7 +269,7 @@ export default function SimulatorBody(
                   onDeactivateAction(folder)
                   break
                 case 'back':
-                  actionBackSimulators({folderId: folder.id})
+                  actionBackSimulators({ folderId: folder.id, editable })
                   break
                 case 'help':
                   setShowHelp((prevState) => !prevState)

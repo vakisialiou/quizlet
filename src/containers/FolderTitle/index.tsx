@@ -1,7 +1,10 @@
+import {getModule, RelationProps, getFolder, getModuleByFolderId} from '@helper/relation'
 import AchievementDegree from '@containers/AchievementDegree'
+import { RelationFolderData } from '@entities/RelationFolder'
 import AchievementIcon from '@containers/AchievementIcon'
-import { FoldersType } from '@store/initial-state'
-import { getFolderById } from '@helper/folders'
+import { FolderGroupData } from '@entities/FolderGroup'
+import { FolderData } from '@entities/Folder'
+import { ModuleData } from '@entities/Module'
 import { useTranslations } from 'next-intl'
 import { useSelector } from 'react-redux'
 import React, { useMemo } from 'react'
@@ -9,23 +12,31 @@ import clsx from 'clsx'
 
 export default function FolderTitle(
   {
-    folderId,
+    relation,
     className = '',
   }:
   {
-    folderId: string,
     className?: string
+    relation: RelationProps,
   }
 ) {
-  const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
+  const folders = useSelector(({ folders }: { folders: FolderData[] }) => folders)
+  const modules = useSelector(({ modules }: { modules: ModuleData[] }) => modules)
+  const folderGroups = useSelector(({ folderGroups }: { folderGroups: FolderGroupData[] }) => folderGroups)
+  const relationFolders = useSelector(({ relationFolders }: { relationFolders: RelationFolderData[] }) => relationFolders)
 
-  const { folder, moduleFolder } = useMemo(() => {
-    const folder = getFolderById(folders.items, folderId)
-    return {
-      moduleFolder: folder?.parentId ? getFolderById(folders.items, folder.parentId) : folder,
-      folder
+  const { folder, module } = useMemo(() => {
+    if (relation.folderId) {
+      return {
+        module: getModuleByFolderId(folderGroups, relationFolders, modules, relation.folderId),
+        folder: getFolder(folders, relation.folderId),
+      }
     }
-  }, [folders.items, folderId])
+    return {
+      module: relation.moduleId ? getModule(modules, relation.moduleId) : null,
+      folder: null,
+    }
+  }, [folderGroups, relationFolders, modules, folders, relation])
 
   const t = useTranslations('Folders')
 
@@ -50,7 +61,7 @@ export default function FolderTitle(
           />
         </div>
 
-        {(moduleFolder?.id !== folder?.id) &&
+        {(module && folder) &&
           <div className="text-white/50 text-xs font-bold">
             {folder?.name
               ? t('folderName', { num: folder?.name })
@@ -61,10 +72,7 @@ export default function FolderTitle(
       </div>
 
       <div className="text-white/50 text-base font-bold truncate ...">
-        {(moduleFolder?.id !== folder?.id)
-          ? (moduleFolder?.name || t('folderNoName'))
-          : folder?.name || t('folderNoName')
-        }
+        {module?.name || t('folderNoName')}
       </div>
     </div>
   )

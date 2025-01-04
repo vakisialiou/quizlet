@@ -1,13 +1,19 @@
-import { ClientSimulatorData } from '@entities/ClientSimulator'
+import { RelationSimulatorData } from '@entities/RelationSimulator'
+import { SimulatorData } from '@entities/Simulator'
 import { clientFetch } from '@lib/fetch-client'
 
-export const upsertSimulators = async (simulators: ClientSimulatorData[]): Promise<(string | null)[]> => {
-  const promises = simulators.map(async (simulator) => {
-    const res = await clientFetch(`/api/simulators/${simulator.id}`, {
-      method: 'PUT',
-      body: JSON.stringify(simulator)
-    })
-    return res.ok ? simulator.id : null
+export const saveSimulator = async (relationSimulator: RelationSimulatorData, simulator: SimulatorData): Promise<boolean> => {
+  const res = await clientFetch(`/api/simulators/${simulator.id}`, {
+    method: 'PUT',
+    body: JSON.stringify({ relationSimulator, simulator })
   })
-  return (await Promise.all(promises)).filter((id) => id)
+  return res.ok
+}
+
+export const upsertSimulator = async (simulator: SimulatorData): Promise<boolean> => {
+  const res = await clientFetch(`/api/simulators/${simulator.id}`, {
+    method: 'POST',
+    body: JSON.stringify({ simulator })
+  })
+  return res.ok
 }

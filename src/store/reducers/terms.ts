@@ -1,100 +1,92 @@
-import { unique, remove, upsertObject, removeObject } from '@lib/array'
-import { ClientFolderData } from '@entities/ClientFolder'
-import { saveClientTermData } from '@store/fetch/terms'
-import { ClientTermData } from '@entities/ClientTerm'
+import { saveTermData, updateTermData } from '@store/fetch/terms'
+import { unique, remove, upsertObject } from '@lib/array'
+import { RelationTermData } from '@entities/RelationTerm'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { ConfigType } from '@store/initial-state'
+import { TermData } from '@entities/Term'
 
 export type SaveType = {
-  term: ClientTermData,
-  editId?: string | null,
+  term: TermData,
+  relationTerm: RelationTermData,
+  editId: string | null
+  shareId: string | null
+  editable: boolean,
 }
 
-export const saveTerm = createAsyncThunk(
-  '/save/term',
-  async (payload: SaveType): Promise<SaveType> => {
-    await saveClientTermData(payload.term)
-    return payload
+export const createTerm = createAsyncThunk(
+  '/term/create',
+  async (payload: SaveType): Promise<boolean> => {
+    if (payload.editable) {
+      return await saveTermData(payload.relationTerm, payload.term, payload.shareId)
+    }
+    return true
   }
 )
 
-export type UpdateType = Partial<{ editId?: string | null, processIds?: (string)[] }>
+export type UpdateType = {
+  term: TermData,
+  relationTerm: RelationTermData,
+  shareId: string | null
+  editId: string | null
+  editable: boolean,
+}
 
-export const updateTerm= createAsyncThunk(
-  '/update/term',
-  async (payload: UpdateType): Promise<UpdateType> => {
-    return payload
+export const updateTerm = createAsyncThunk(
+  '/term/update',
+  async (payload: UpdateType): Promise<boolean> => {
+    if (payload.editable) {
+      return await updateTermData(payload.relationTerm, payload.term, payload.shareId)
+    }
+    return true
   }
 )
 
-export const updateTermItem = createAsyncThunk(
-  '/update/term/item',
-  async (payload: ClientTermData): Promise<ClientTermData> => {
-    return payload
+export type EditType = {
+  editId: string | null,
+}
+
+export const editTerm = createAsyncThunk(
+  '/term/edit',
+  async (payload: EditType): Promise<boolean> => {
+    return true
   }
 )
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const termReducers = (builder: any) => {
   builder
-    .addCase(saveTerm.pending, (state: ConfigType, action: { meta: { arg: SaveType } }) => {
-      const arg = action.meta.arg
-      state.terms = {
-        ...state.terms,
-        processIds: unique([...state.terms.processIds, arg.term.id]),
-        editId: arg.editId !== undefined ? arg.editId : state.terms.editId,
-      }
+    .addCase(createTerm.pending, (state: ConfigType, action: { meta: { arg: SaveType } }) => {
+      const { term, relationTerm, editId } = action.meta.arg
 
-      const folder = state.folders.items.find(({ id }) => id === arg.term.folderId) as ClientFolderData
-      folder.terms = upsertObject([...folder.terms], arg.term) as ClientTermData[]
+      state.edit.termId = editId
+      state.edit.processTermIds = unique([...state.edit.processTermIds, term.id])
 
-      state.folders = {
-        ...state.folders,
-        items: upsertObject([...state.folders.items], folder) as ClientFolderData[],
-      }
+      state.terms = upsertObject([...state.terms], term)
+      state.relationTerms = upsertObject([...state.relationTerms], relationTerm)
     })
-    .addCase(saveTerm.rejected, (state: ConfigType, action: { meta: { arg: SaveType } }) => {
-      const arg = action.meta.arg
-      state.terms = {
-        ...state.terms,
-        editId: null,
-        processIds: remove(state.terms.processIds, arg.term.id)
-      }
-
-      const folder = state.folders.items.find(({ id }) => id === arg.term.folderId) as ClientFolderData
-      folder.terms = removeObject([...folder.terms], arg.term) as ClientTermData[]
-
-      state.folders = {
-        ...state.folders,
-        items: upsertObject([...state.folders.items], folder) as ClientFolderData[],
-      }
-
-    })
-    .addCase(saveTerm.fulfilled, (state: ConfigType, action: { meta: { arg: SaveType } }) => {
-      state.terms = {
-        ...state.terms,
-        processIds: remove(state.terms.processIds, action.meta.arg.term.id)
-      }
-
+    .addCase(createTerm.fulfilled, (state: ConfigType, action: { meta: { arg: SaveType } }) => {
+      const { term } = action.meta.arg
+      state.edit.processTermIds = remove(state.edit.processTermIds, term.id)
     })
 
   builder
+    .addCase(updateTerm.pending, (state: ConfigType, action: { meta: { arg: UpdateType } }) => {
+      const { term, relationTerm } = action.meta.arg
+
+      state.edit.termId = action.meta.arg.editId
+      state.edit.processTermIds = unique([...state.edit.processTermIds, term.id])
+
+      state.terms = upsertObject([...state.terms], term)
+      state.relationTerms = upsertObject([...state.relationTerms], relationTerm)
+    })
     .addCase(updateTerm.fulfilled, (state: ConfigType, action: { meta: { arg: UpdateType }, payload: UpdateType }) => {
-      state.terms = {
-        ...state.terms,
-        editId: action.payload.editId !== undefined ? action.payload.editId : state.terms.editId,
-        processIds: action.payload.processIds !== undefined ? action.payload.processIds : state.terms.processIds,
-      }
+      const { term } = action.meta.arg
+      state.edit.processTermIds = remove(state.edit.processTermIds, term.id)
     })
 
   builder
-    .addCase(updateTermItem.fulfilled, (state: ConfigType, action: { meta: { arg: ClientTermData }, payload: ClientTermData }) => {
-      const folder = state.folders.items.find(({ id }) => id === action.meta.arg.folderId) as ClientFolderData
-      folder.terms = upsertObject([...folder.terms], action.meta.arg) as ClientTermData[]
-
-      state.folders = {
-        ...state.folders,
-        items: upsertObject([...state.folders.items], folder) as ClientFolderData[],
-      }
+    .addCase(editTerm.pending, (state: ConfigType, action: { meta: { arg: EditType } }) => {
+      const { editId } = action.meta.arg
+      state.edit.termId = editId
     })
 }

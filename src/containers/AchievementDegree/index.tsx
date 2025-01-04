@@ -1,4 +1,4 @@
-import { ClientFolderData } from '@entities/ClientFolder'
+import { ClientFolderData } from '@entities/Folder'
 import { useMemo } from 'react'
 import clsx from 'clsx'
 

@@ -1,112 +1,84 @@
-import { ClientFolderGroupData } from '@entities/ClientFolderGroup'
-import { createRelationFoldersMap } from '@helper/folders-relation'
-import { ClientSimulatorData } from '@entities/ClientSimulator'
+import { RelationSimulatorData } from '@entities/RelationSimulator'
 import { sortSimulatorsDesc } from '@helper/sort-simulators'
-import { ClientFolderData} from '@entities/ClientFolder'
-import { findModuleFolders } from '@helper/folders'
+import { SimulatorData } from '@entities/Simulator'
+import { findSimulators } from '@helper/relation'
+import { FolderData } from '@entities/Folder'
+import { ModuleData } from '@entities/Module'
 
-export type LastStudyChildFolder = {
-  timestamp: number,
-  folder: ClientFolderData | null,
-  simulator: ClientSimulatorData | null,
-  folderGroup: ClientFolderGroupData | null
-}
-
-export type LastStudyFolder = {
+type LastStudyModule = {
   timestamp: number
-  child: LastStudyChildFolder,
-  folder: ClientFolderData | null,
-  simulator: ClientSimulatorData | null
+  module: ModuleData | null,
+  simulator: SimulatorData | null
 }
 
-export const getLastStudyFolder = (items: ClientFolderData[]): LastStudyFolder => {
+export const getLastStudyModule = (modules: ModuleData[], relationSimulators: RelationSimulatorData[], simulators: SimulatorData[]): ModuleData | null => {
   const last = {
     timestamp: 0,
-    folder: null,
+    module: null,
     simulator: null,
-    child: {
-      timestamp: 0,
-      folder: null,
-      simulator: null,
-      folderGroup: null
-    },
-  } as LastStudyFolder
+  } as LastStudyModule
 
-  const modules = findModuleFolders(items)
+  for (const module of modules) {
+    const moduleSimulators = findSimulators(relationSimulators, simulators, { moduleId: module.id })
+    const [ simulator ] = sortSimulatorsDesc(moduleSimulators)
 
-  for (const folder of modules) {
-    // Последнее дочернее обновление симулятора.
-    const child = getLastStudyChildFolder(items, folder)
-    // Последнее обновление симулятора у родителя
-    const [ simulator ] = sortSimulatorsDesc([...folder.simulators])
-
-    if (!child.timestamp && !simulator) {
+    if (!simulator) {
       continue
     }
-
-    const simulatorTimestamp = simulator ? new Date(simulator.createdAt).getTime() : child.timestamp
-    const timestamp = child.timestamp > simulatorTimestamp ? child.timestamp : simulatorTimestamp
 
     if (!last.timestamp) {
-      last.child = child
-      last.folder = folder
+      last.module = module
       last.simulator = simulator
-      last.timestamp = timestamp
+      last.timestamp = new Date(simulator.createdAt).getTime()
       continue
     }
 
+    const timestamp = new Date(simulator.createdAt).getTime()
     if (last.timestamp < timestamp) {
-      last.child = child
-      last.folder = folder
+      last.module = module
       last.simulator = simulator
       last.timestamp = timestamp
     }
   }
 
-  return last
+  return last.module
 }
 
-export const getLastStudyChildFolder = (items: ClientFolderData[], parentFolder: ClientFolderData | null): LastStudyChildFolder => {
+type LastStudyFolder = {
+  timestamp: number,
+  folder: FolderData | null,
+  simulator: SimulatorData | null,
+}
+
+export const getLastStudyFolder = (folders: FolderData[], relationSimulators: RelationSimulatorData[], simulators: SimulatorData[]): FolderData | null => {
   const last = {
     timestamp: 0,
     folder: null,
     simulator: null,
-    folderGroup: null
-  } as LastStudyChildFolder
+  } as LastStudyFolder
 
-  if (!parentFolder) {
-    return last
-  }
+  for (const folder of folders) {
+    const folderSimulators = findSimulators(relationSimulators, simulators, { folderId: folder.id })
+    const [ simulator ] = sortSimulatorsDesc(folderSimulators)
 
-  const relations = createRelationFoldersMap(items)
+    if (!simulator) {
+      continue
+    }
 
-  for (const folderGroup of [...parentFolder.folderGroups]) {
-    for (const relationFolder of folderGroup.relationFolders) {
-      const folder = relations[relationFolder.folderId]
-      if (!folder || folder.simulators.length === 0) {
-        continue
-      }
+    if (!last.timestamp) {
+      last.folder = folder
+      last.simulator = simulator
+      last.timestamp = new Date(simulator.createdAt).getTime()
+      continue
+    }
 
-      const [ simulator ] = sortSimulatorsDesc([...folder.simulators])
-      const timestamp = new Date(simulator.updatedAt).getTime()
-
-      if (!last.timestamp) {
-        last.folder = folder
-        last.timestamp = timestamp
-        last.simulator = simulator
-        last.folderGroup = folderGroup
-      }
-
-      if (last.simulator) {
-        if (timestamp > last.timestamp) {
-          last.folder = folder
-          last.timestamp = timestamp
-          last.simulator = simulator
-          last.folderGroup = folderGroup
-        }
-      }
+    const timestamp = new Date(simulator.createdAt).getTime()
+    if (last.timestamp < timestamp) {
+      last.folder = folder
+      last.simulator = simulator
+      last.timestamp = timestamp
     }
   }
 
-  return last
+  return last.folder
 }

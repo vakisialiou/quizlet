@@ -1,5 +1,5 @@
-import { ClientSimulatorData, SimulatorStatus } from '@entities/ClientSimulator'
-import { SimulatorMethod } from '@entities/ClientSettingsSimulator'
+import { SimulatorData, SimulatorStatus } from '@entities/Simulator'
+import { SimulatorMethod } from '@entities/SimulatorSettings'
 import SimulatorTracker from '@entities/SimulatorTracker'
 
 type TypeAchievementOptions = {
@@ -65,10 +65,8 @@ export default class Achievement {
 
   /**
    * Then lower result value, then worse the material is learned.
-   *
-   * @param {ClientSimulatorData[]} simulators
    */
-  getTotalRate(simulators: ClientSimulatorData[]): number {
+  getTotalRate(simulators: SimulatorData[]): number {
     // Получаем прогресс всех завершенных симуляторов
     const progressValues = simulators.map(simulator => {
       return {
@@ -97,7 +95,7 @@ export default class Achievement {
     return maxProgress > 0 ? (totalWeightedProgress / maxProgress) * 100 : 0
   }
 
-  findSimulators(simulators: ClientSimulatorData[], options: TypeAchievementFilter) {
+  findSimulators(simulators: SimulatorData[], options: TypeAchievementFilter) {
     return [...simulators].filter(({ status, active, settings }) => {
       return settings.method === options.method
         && settings.inverted === options.inverted
@@ -106,12 +104,12 @@ export default class Achievement {
     })
   }
 
-  getMethodRate(simulators: ClientSimulatorData[], options: TypeAchievementFilter) {
+  getMethodRate(simulators: SimulatorData[], options: TypeAchievementFilter) {
     const defaultSimulators = this.findSimulators(simulators, options)
     return Math.min(this.getTotalRate(defaultSimulators), 100)
   }
 
-  getRate(simulators: ClientSimulatorData[]): number {
+  getRate(simulators: SimulatorData[]): number {
     const arr = []
     const maxRate = 100 / this.options.length
     for (const options of this.options) {

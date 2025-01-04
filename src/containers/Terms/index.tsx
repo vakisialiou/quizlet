@@ -1,71 +1,42 @@
 'use client'
 
 import { filterDeletedTerms, filterEmptyTerms } from '@helper/terms'
-import ClientTerm, {ClientTermData} from '@entities/ClientTerm'
-import TextToSpeech, { TextToSpeechEvents } from '@lib/speech'
-import { FoldersType, TermsType } from '@store/initial-state'
-import React, { useEffect, useMemo, useState } from 'react'
+import { findTerms, RelationProps } from '@helper/relation'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
-import Button, { ButtonVariant } from '@components/Button'
+import Button, {ButtonVariant} from '@components/Button'
+import React, { useMemo, useState, useRef } from 'react'
+import { useTermSelect } from '@hooks/useTermSelect'
 import ButtonSquare from '@components/ButtonSquare'
 import SVGQuestion from '@public/svg/question.svg'
-import { searchTerms } from '@helper/search-terms'
 import ContentPage from '@containers/ContentPage'
 import SVGFileNew from '@public/svg/file_new.svg'
 import FolderTitle from '@containers/FolderTitle'
-import { sortTerms } from '@helper/sort-terms'
 import { useTranslations } from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
 import SVGPlay from '@public/svg/play.svg'
-import {useRouter} from '@i18n/routing'
-import {useSelector} from 'react-redux'
-import Dialog from '@components/Dialog'
-import Term from '@containers/Term'
-import {
-  actionSaveTerm,
-  actionUpdateTerm,
-  actionUpdateTermItem
-} from '@store/index'
-import clsx from 'clsx'
 import Grid from '@containers/Terms/Grid'
+import {useRouter} from '@i18n/routing'
+import Dialog from '@components/Dialog'
+import clsx from 'clsx'
 
-export default function Terms({ folderId }: { folderId: string }) {
+export default function Terms({ relation }: { relation: RelationProps }) {
   const router = useRouter()
+  const { terms, relationTerms } = useTermSelect()
 
-  const [ originItem, setOriginItem ] = useState<ClientTermData | null>(null)
-  const folders = useSelector(({ folders }: { folders: FoldersType }) => folders)
-  const editTermInfo = useSelector(({ terms }: { terms: TermsType }) => terms)
-
-  const [removeTerm, setRemoveTerm] = useState<ClientTermData | null>(null)
-
-  const folder = useMemo(() => {
-    return folders.items.find(({ id }) => id === folderId)
-  }, [folders.items, folderId])
-
-  const [search, setSearch] = useState<string>('')
-
-  const visibleItems = useMemo(() => {
-    return filterDeletedTerms([...folder?.terms || []])
-  }, [folder?.terms])
-
-  const terms = useMemo(() => {
-    let rawItems = [...visibleItems]
-
-    if (search) {
-      rawItems = searchTerms(rawItems, search, editTermInfo.editId)
-    }
-
-    return sortTerms(rawItems)
-  }, [visibleItems, search, editTermInfo.editId])
-
+  const rawTerms = useMemo(() => {
+    return findTerms(relationTerms, terms, relation)
+  }, [relationTerms, terms, relation])
 
   const playTerms = useMemo(() => {
-    return filterDeletedTerms(filterEmptyTerms([...folder?.terms || []]))
-  }, [folder?.terms])
+    return filterDeletedTerms(filterEmptyTerms(rawTerms))
+  }, [rawTerms])
 
-  const [showUserHelp, setShowUserHelp] = useState(false)
+  const [ search, setSearch ] = useState<string>('')
+  const [ showUserHelp, setShowUserHelp ] = useState(false)
 
   const t = useTranslations('Terms')
+
+  const ref = useRef<{ onCreate?: () => void }>({})
 
   return (
     <ContentPage
@@ -103,74 +74,69 @@ export default function Terms({ folderId }: { folderId: string }) {
         </>
       )}
       footer={(
-        <div className="flex w-full justify-center text-center">
-          <div className="flex gap-2 w-full max-w-96">
-            <Button
-              variant={ButtonVariant.WHITE}
-              className="w-1/2 gap-1"
-              onClick={() => {
-                const term = new ClientTerm(folderId)
-                  .setOrder(visibleItems.length + 1)
-                  .serialize()
+        <>
+          <div className="flex w-full justify-center text-center">
+            <div className="flex gap-2 w-full max-w-96">
+              <Button
+                variant={ButtonVariant.WHITE}
+                className="w-1/2 gap-1"
+                onClick={() => {
+                  if (ref.current?.onCreate) {
+                    ref.current?.onCreate()
+                  }
+                }}
+              >
+                <SVGFileNew
+                  width={28}
+                  height={28}
+                  className="text-gray-700"
+                />
+                {t('footButtonCreateTerm')}
+              </Button>
 
-                actionSaveTerm({ term, editId: term.id }, () => {
-                  setOriginItem(term)
-                })
-              }}
-            >
-              <SVGFileNew
-                width={28}
-                height={28}
-                className="text-gray-700"
-              />
-              {t('footButtonCreateTerm')}
-            </Button>
-            <Button
-              variant={ButtonVariant.GREEN}
-              disabled={playTerms.length === 0}
-              className="w-1/2 gap-1"
-              onClick={() => {
-                if (folder) {
-                  router.push(`/private/simulator/${folder.id}`)
-                }
-              }}
-            >
-              <SVGPlay
-                width={28}
-                height={28}
-                className={clsx('text-gray-100', {
-                  ['text-gray-500/50']: playTerms.length === 0
-                })}
-              />
-              {t('footButtonPlay')}
-            </Button>
+              <Button
+                variant={ButtonVariant.GREEN}
+                disabled={playTerms.length === 0}
+                className="w-1/2 gap-1"
+                onClick={() => {
+                  if (relation.moduleId) {
+                    router.push(`/private/simulator?moduleId=${relation.moduleId}`)
+                  } else if (relation.folderId) {
+                    router.push(`/private/simulator?folderId=${relation.folderId}`)
+                  }
+                }}
+              >
+                <SVGPlay
+                  width={28}
+                  height={28}
+                  className={clsx('text-gray-100', {
+                    ['text-gray-500/50']: playTerms.length === 0
+                  })}
+                />
+                {t('footButtonPlay')}
+              </Button>
+            </div>
           </div>
-        </div>
+        </>
       )}
     >
       <FolderTitle
-        folderId={folderId}
         className="mb-4"
+        relation={relation}
       />
 
-      {terms.length === 0 &&
-        <div className="flex flex-col items-center justify-center gap-2 p-4">
-          <div className="text-white/50 text-sm italic text-center">
-            {t('noCardsHelper', { btnName: t('footButtonCreateTerm') })}
-          </div>
-        </div>
-      }
-
-      {folder &&
-        <Grid
-          search={search}
-          items={terms}
-        />
-      }
+      <Grid
+        ref={ref}
+        shareId={null}
+        editable={true}
+        filter={{ search }}
+        relation={relation}
+      />
 
       {showUserHelp &&
         <Dialog
           title={t('userHelpTitle')}
+          onClose={() => setShowUserHelp(false)}
           text={(
             <div className="flex flex-col gap-4 text-gray-800">
 
@@ -194,9 +160,7 @@ export default function Terms({ folderId }: { folderId: string }) {
           <Button
             className="min-w-28 px-4"
             variant={ButtonVariant.GRAY}
-            onClick={() => {
-              setShowUserHelp(false)
-            }}
+            onClick={() => setShowUserHelp(false)}
           >
             {t('userHelpButtonClose')}
           </Button>

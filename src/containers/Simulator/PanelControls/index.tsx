@@ -1,4 +1,4 @@
-import { ClientSimulatorData, SimulatorStatus } from '@entities/ClientSimulator'
+import { ClientSimulatorData, SimulatorStatus } from '@entities/Simulator'
 import SVGPanelClose from '@public/svg/panel_close.svg'
 import SVGMuteOff from '@public/svg/mute_ipo_off.svg'
 import SVGLoopBack from '@public/svg/loop_back.svg'

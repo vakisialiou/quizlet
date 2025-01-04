@@ -87,15 +87,14 @@
     "generateDialogPartitionLabel": "Group Size",
     "generateDialogPartitionSize": "{size} terms",
     "generateDialogButtonGenerate": "Generate",
-    "generateDialogButtonCancel": "Cancel",
 
-    "shareDialogTitle": "Access Settings",
+    "shareDialogTitle": "Share link",
     "shareDialogLabel": "Access level",
     "shareDialogCopied": "Copied",
+    "shareDialogNotCopied": "Error",
     "shareDialogReadonly": "View Only",
     "shareDialogEditable": "View and Edit",
     "shareDialogButtonCopy": "Copy",
-    "shareDialogButtonCancel": "Close",
 
     "removeDialogTitle": "Untitled",
     "removeDialogText": "Are you sure you want to delete this item?",

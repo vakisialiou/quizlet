@@ -1,10 +1,10 @@
-import { ClientFolderGroupData } from '@entities/ClientFolderGroup'
-import { ClientFolderData } from '@entities/ClientFolder'
+import { FolderGroupData } from '@entities/FolderGroup'
+import { FolderData } from '@entities/Folder'
 import { getFolderById } from '@helper/folders'
 
-export type FoldersRelation = { [key: string]: ClientFolderData }
+export type FoldersRelation = { [key: string]: FolderData }
 
-export const createRelationFoldersMap = (items: ClientFolderData[]): FoldersRelation => {
+export const createRelationFoldersMap = (items: FolderData[]): FoldersRelation => {
   const res = {} as FoldersRelation
 
   const rawItems = [...items || []]
@@ -15,9 +15,9 @@ export const createRelationFoldersMap = (items: ClientFolderData[]): FoldersRela
   return res
 }
 
-export type GroupsRelation = { [key: string]: ClientFolderData[] }
+export type GroupsRelation = { [key: string]: FolderData[] }
 
-export const createRelationGroups = (folderGroups: ClientFolderGroupData[], items: ClientFolderData[]): GroupsRelation => {
+export const createRelationGroups = (folderGroups: FolderGroupData[], items: FolderData[]): GroupsRelation => {
   const res = {} as GroupsRelation
   for (const group of folderGroups) {
     if (!(group.id in res)) {

@@ -1,4 +1,4 @@
-import ClientTerm, { ClientTermData } from '@entities/ClientTerm'
+import Term, { TermData } from '@entities/Term'
 import { Prisma, PrismaEntry } from '@lib/prisma'
 
 export type TermSelectType = {
@@ -13,14 +13,12 @@ export type TermSelectType = {
   associationLang: boolean,
   deleted: boolean,
   collapsed: boolean,
-  createdAt: boolean,
   updatedAt: boolean
 }
 
 export const TermSelect = {
   id: true,
   order: true,
-  folderId: true,
   answer: true,
   answerLang: true,
   question: true,
@@ -29,7 +27,6 @@ export const TermSelect = {
   associationLang: true,
   deleted: true,
   collapsed: true,
-  createdAt: true,
   updatedAt: true
 } as TermSelectType
 
@@ -37,8 +34,8 @@ type TermResult = Prisma.TermGetPayload<{
   select: typeof TermSelect
 }>
 
-export const createTermSelect = (term: TermResult): ClientTerm => {
-  return new ClientTerm(term.folderId)
+export const createTermSelect = (term: TermResult): Term => {
+  return new Term()
     .setId(term.id)
     .setOrder(term.order)
     .setAnswer(term.answer)
@@ -49,54 +46,34 @@ export const createTermSelect = (term: TermResult): ClientTerm => {
     .setAssociationLang(term.associationLang)
     .setDeleted(term.deleted)
     .setCollapsed(term.collapsed)
-    .setCreatedAt(term.createdAt)
     .setUpdatedAt(term.updatedAt)
 }
 
-export const findTermsByUserId = async (db: PrismaEntry, userId: string): Promise<ClientTermData[]> => {
+export const getTermById = async (db: PrismaEntry, id: string): Promise<TermData[]> => {
   const res = await db.term.findMany({
-    where: { userId },
+    where: { id },
     select: { ...TermSelect },
   })
 
   return res.map(term => createTermSelect(term).serialize())
 }
 
-export const findTermsByFolderId = async (db: PrismaEntry, userId: string, folderId: string): Promise<ClientTermData[]> => {
+export async function findTermsByUserId(db: PrismaEntry, userId: string) {
   const res = await db.term.findMany({
-    where: { userId, folderId },
-    select: { ...TermSelect },
-  })
-
-  return res.map(term => createTermSelect(term).serialize())
-}
-
-export const getTermById = async (db: PrismaEntry, userId: string, id: string): Promise<ClientTermData[]> => {
-  const res = await db.term.findMany({
-    where: { userId, id },
-    select: { ...TermSelect },
-  })
-
-  return res.map(term => createTermSelect(term).serialize())
-}
-
-export const upsertTerm = async (db: PrismaEntry, userId: string, term: ClientTermData): Promise<string | null> => {
-  const res = await db.term.upsert({
-    where: { id: term.id },
-    update: {
-      order: term.order,
-      answer: term.answer,
-      question: term.question,
-      answerLang: term.answerLang,
-      questionLang: term.questionLang,
-      association: term.association,
-      associationLang: term.associationLang,
-      deleted: term.deleted,
-      collapsed: term.collapsed,
-      updatedAt: term.updatedAt || new Date(),
+    where: {
+      relationTerms: {
+        some: { userId },
+      },
     },
-    create: {
-      userId,
+    select: { ...TermSelect },
+    distinct: ['id'],
+  })
+  return res.map(term => createTermSelect(term).serialize())
+}
+
+export const createTerm = async (db: PrismaEntry, term: TermData): Promise<string | null> => {
+  const res = await db.term.create({
+    data: {
       id: term.id,
       order: term.order,
       answer: term.answer,
@@ -105,12 +82,31 @@ export const upsertTerm = async (db: PrismaEntry, userId: string, term: ClientTe
       questionLang: term.questionLang,
       association: term.association,
       associationLang: term.associationLang,
-      folderId: term.folderId as string,
       deleted: term.deleted,
       collapsed: term.collapsed,
-      createdAt: term.createdAt || new Date(),
-      updatedAt: term.updatedAt || new Date()
-    },
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+  })
+
+  return res.id
+}
+
+export const updateTerm = async (db: PrismaEntry, term: TermData): Promise<string | null> => {
+  const res = await db.term.update({
+    where: { id: term.id },
+    data: {
+      order: term.order,
+      answer: term.answer,
+      deleted: term.deleted,
+      question: term.question,
+      collapsed: term.collapsed,
+      answerLang: term.answerLang,
+      association: term.association,
+      questionLang: term.questionLang,
+      associationLang: term.associationLang,
+      updatedAt: new Date(),
+    }
   })
 
   return res.id

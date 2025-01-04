@@ -9,8 +9,9 @@
     "lint": "next lint",
     "migrate:status": "npx prisma migrate status",
     "migrate:add": "npx prisma migrate dev --name",
-    "deploy": "npx prisma migrate deploy",
-    "generate": "npx prisma generate",
+    "migrate:deploy": "npx prisma migrate deploy",
+    "migrate:dev": "npx prisma migrate dev",
+    "migrate:generate": "npx prisma generate",
     "studio": "npx prisma studio",
     "test": "jest"
   },

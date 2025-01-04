@@ -1,15 +1,12 @@
-import { findFoldersByUserId } from '@repositories/folders'
-import { getDemoFoldersInitialData } from '@helper/demo'
-import { getInitialState } from '@store/initial-state'
 import { routing, LanguageEnums } from '@i18n/routing'
-import { getSettings } from '@repositories/settings'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
-import { AppProvider } from './provider'
 import localFont from 'next/font/local'
-import { prisma } from '@lib/prisma'
-import { auth } from '@auth'
+import { SessionProvider } from 'next-auth/react'
+import ProviderResize from './provider-resize'
+import ProviderWorker from './provider-worker'
+import ProviderOnline from './provider-online'
 
 import React from 'react'
 import './globals.css'
@@ -53,6 +50,7 @@ export default async function RootLayout({
  Readonly<{
    children: React.ReactNode,
    params: Promise<{ locale: LanguageEnums }>,
+
  }
 >
 ) {
@@ -61,16 +59,6 @@ export default async function RootLayout({
     notFound()
   }
 
-  const session = await auth()
-  const userId = session?.user?.id || ''
-  const settings = userId ? await getSettings(prisma, userId) : null
-  const items = userId ? await findFoldersByUserId(prisma, userId) : await getDemoFoldersInitialData(locale)
-  const initialState = await getInitialState({
-    serverQueryEnabled: !!userId,
-    session,
-    settings,
-    items
-  })
   const messages = await getMessages({ locale })
 
   return (
@@ -80,9 +68,17 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} antialiased min-w-80 h-screen overflow-hidden`}
     >
     <NextIntlClientProvider locale={locale} messages={messages}>
-      <AppProvider initialState={initialState}>
-        {children}
-      </AppProvider>
+
+      <ProviderOnline>
+        <ProviderWorker>
+          <ProviderResize>
+            <SessionProvider>
+              {children}
+            </SessionProvider>
+          </ProviderResize>
+        </ProviderWorker>
+      </ProviderOnline>
+
     </NextIntlClientProvider>
     </body>
     </html>

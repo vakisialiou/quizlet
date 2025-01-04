@@ -1,8 +1,7 @@
-import { getFolderShareById } from '@repositories/folder-share'
 import { generateMetaAlternates } from '@helper/meta'
 import { getTranslations } from 'next-intl/server'
 import { LanguageEnums } from '@i18n/routing'
-import { prisma } from '@lib/prisma'
+import Share from '@containers/Share'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: LanguageEnums }>}) {
   const { locale } = await params
@@ -15,24 +14,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
   }
 }
 
-export default async function Page(
-  {
-    params,
-  }:
-    {
-      params: Promise<{ id: string }>
-    }
-) {
-  const { id } = await params
-  const data = await getFolderShareById(prisma, id)
-  console.log(data)
-
-
+export default async function Page() {
   return (
-    <div
-
-    >
-      asdasd
-    </div>
+    <Share />
   )
 }

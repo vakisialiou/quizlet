@@ -1,4 +1,4 @@
-import { ClientTermData } from '@entities/ClientTerm'
+import { ClientTermData } from '@entities/Term'
 
 export const searchTerms = (items: ClientTermData[], search: string | null, termEditId?: string | null): ClientTermData[] => {
   if (!search) {

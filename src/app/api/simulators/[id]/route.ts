@@ -1,4 +1,4 @@
-import { ClientSimulatorData } from '@entities/ClientSimulator'
+import { ClientSimulatorData } from '@entities/Simulator'
 import { upsertSimulator } from '@repositories/simulators'
 import { getFolderById } from '@repositories/folders'
 import { prisma } from '@lib/prisma'

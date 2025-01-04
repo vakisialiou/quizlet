@@ -1,4 +1,4 @@
-import { ClientSimulatorData, SimulatorStatus } from '@entities/ClientSimulator'
+import { ClientSimulatorData, SimulatorStatus } from '@entities/Simulator'
 import RoundInfo from '@components/RoundInfo'
 import { useTranslations } from 'next-intl'
 import { useRef, useEffect } from 'react'

@@ -1,5 +1,5 @@
-import { ClientFolderGroupData } from '@entities/ClientFolderGroup'
-import { ClientFolderData } from '@entities/ClientFolder'
+import { FolderGroupData } from '@entities/FolderGroup'
+import { TermData } from '@entities/Term'
 
 export const GROUP_SIZE_5 = 5
 export const GROUP_SIZE_10 = 10
@@ -13,12 +13,12 @@ export const minTermsCountToGenerateGroup = (size: number) => {
   return (size * 2)
 }
 
-export const isGenerateGroupDisabled = (parentFolder: ClientFolderData, size: number) => {
-  return parentFolder.terms.length < minTermsCountToGenerateGroup(size)
+export const isGenerateGroupDisabled = (terms: TermData[], size: number) => {
+  return terms.length < minTermsCountToGenerateGroup(size)
 }
 
-export const sortFolderGroups = (folderGroups: ClientFolderGroupData[]) => {
+export const sortFolderGroups = (folderGroups: FolderGroupData[]) => {
   return [...folderGroups].sort((a, b) => {
-    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    return new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()
   })
 }

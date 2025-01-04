@@ -1,9 +1,9 @@
 import {findSimulatorMethodById, simulatorMethodList} from '@containers/Simulator/constants'
 import {actionStartSimulators, actionUpdateSettingsSimulator} from '@store/index'
 import {filterDeletedTerms, filterEmptyTerms, findTermsByIds} from '@helper/terms'
-import {ClientSettingsData} from '@entities/ClientSettings'
+import {ClientSettingsData} from '@entities/Settings'
 import Button, {ButtonVariant} from '@components/Button'
-import {ClientFolderData} from '@entities/ClientFolder'
+import {ClientFolderData} from '@entities/Folder'
 import CardEmpty from '@containers/Simulator/CardEmpty'
 import Achievement from '@entities/Achievement'
 import {useTranslations} from 'next-intl'
@@ -12,8 +12,16 @@ import {useMemo} from 'react'
 import clsx from 'clsx'
 
 export default function SingleStart(
-  { process = false, folder }:
-  { process?: boolean, folder?: ClientFolderData | null }
+  {
+    process,
+    editable,
+    folder
+  }:
+  {
+    process?: boolean,
+    editable: boolean,
+    folder?: ClientFolderData | null
+  }
 ) {
 
   const settings = useSelector(({ settings }: { settings: ClientSettingsData }) => settings)
@@ -100,6 +108,7 @@ export default function SingleStart(
                 const termIds = playTerms.map(({id}) => id)
                 actionStartSimulators({
                   termIds,
+                  editable,
                   folderId: folder.id,
                   settings: settings.simulator
                 })

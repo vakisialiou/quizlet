@@ -2,11 +2,11 @@ import { CardSelection } from '@containers/Simulator/CardAggregator/MethodPickCa
 import MethodFlashcard from '@containers/Simulator/CardAggregator/MethodFlashcard'
 import MethodInputCard from '@containers/Simulator/CardAggregator/MethodInputCard'
 import MethodPickCard from '@containers/Simulator/CardAggregator/MethodPickCard'
-import { ClientSimulatorData, SimulatorStatus } from '@entities/ClientSimulator'
+import { ClientSimulatorData, SimulatorStatus } from '@entities/Simulator'
 import { HelpDataType } from '@containers/Simulator/CardAggregator/types'
-import { SimulatorMethod } from '@entities/ClientSettingsSimulator'
+import { SimulatorMethod } from '@entities/SimulatorSettings'
 import CardFinish from '@containers/Simulator/CardFinish'
-import { ClientFolderData } from '@entities/ClientFolder'
+import { ClientFolderData } from '@entities/Folder'
 import CardStart from '@containers/Simulator/CardStart'
 import CardDone from '@containers/Simulator/CardDone'
 import { useMemo } from 'react'
@@ -22,15 +22,17 @@ export default function CardAggregator(
     onSound,
     onChange,
     simulator,
+    editable,
     soundSelection
   }:
   {
     isBack?: boolean
-    folder: ClientFolderData,
-    simulator: ClientSimulatorData,
+    editable: boolean
+    folder: ClientFolderData
+    simulator: ClientSimulatorData
     soundSelection: CardSelection | null
-    onChange: (params: OnChangeParamsType) => void,
-    onSound: (selection: CardSelection | null) => void,
+    onChange: (params: OnChangeParamsType) => void
+    onSound: (selection: CardSelection | null) => void
   }
 ) {
   const terms = useMemo(() => [...folder?.terms || []], [folder?.terms])
@@ -42,12 +44,16 @@ export default function CardAggregator(
   return (
     <div className="flex flex-col gap-2">
       {simulator.status === SimulatorStatus.WAITING &&
-        <CardStart folder={folder} />
+        <CardStart
+          folder={folder}
+          editable={editable}
+        />
       }
 
       {simulator.status === SimulatorStatus.FINISHING &&
         <CardFinish
           folder={folder}
+          editable={editable}
           simulator={simulator}
         />
       }
@@ -55,6 +61,7 @@ export default function CardAggregator(
       {simulator.status === SimulatorStatus.DONE &&
         <CardDone
           folder={folder}
+          editable={editable}
           simulator={simulator}
           particlesImage="linear-gradient(180deg, rgba(230,233,233,1) 0%, rgba(230,233,233,1) 10%, rgba(34,139,34,1) 70%, rgba(34,139,34,1) 100%)"
         />
