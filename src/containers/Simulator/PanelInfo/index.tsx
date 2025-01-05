@@ -1,4 +1,4 @@
-import { ClientSimulatorData, SimulatorStatus } from '@entities/Simulator'
+import { SimulatorData, SimulatorStatus } from '@entities/Simulator'
 import RoundInfo from '@components/RoundInfo'
 import { useTranslations } from 'next-intl'
 import { useRef, useEffect } from 'react'
@@ -7,7 +7,7 @@ import clsx from 'clsx'
 
 export default function PanelInfo(
   { process = false, simulator, className = '' }:
-  { process?: boolean, simulator?: ClientSimulatorData | null, className?: string }
+  { process?: boolean, simulator?: SimulatorData | null, className?: string }
 ) {
 
   const refTimer = useRef<HTMLDivElement|null>(null)

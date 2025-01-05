@@ -1,9 +1,8 @@
 'use client'
 
-import { ClientFolderShareData, ClientFolderShareEnum } from '@entities/ModuleShare'
+import { ModuleShareData, ModuleShareEnum } from '@entities/ModuleShare'
 import Button, { ButtonVariant } from '@components/Button'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
-import {ClientFolderData} from '@entities/Folder'
 import SVGFileNew from '@public/svg/file_new.svg'
 import ContentPage from '@containers/ContentPage'
 import React, { useRef, useState } from 'react'
@@ -12,18 +11,14 @@ import Grid from '@containers/Terms/Grid'
 import { useSelector } from 'react-redux'
 
 export default function Share() {
-  const editTermId = useSelector(({ editTermId }: { editTermId: string | null }) => editTermId)
-  const share = useSelector(({ share }: { share: ClientFolderShareData }) => share)
-  const folders = useSelector(({ folders }: { folders: ClientFolderData[] }) => folders)
-
-  const folder = folders.find(({ id }) => id === share.folderId)
+  const share = useSelector(({ share }: { share: ModuleShareData }) => share)
 
   const [ search, setSearch ] = useState<string>('')
 
   const t = useTranslations('Terms')
 
   const ref = useRef<{ onCreate?: () => void }>({})
-  const editable = share.access === ClientFolderShareEnum.editable
+  const editable = share.access === ModuleShareEnum.editable
 
   return (
     <ContentPage
@@ -69,16 +64,13 @@ export default function Share() {
         </>
       )}
     >
-      {folder &&
-        <Grid
-          ref={ref}
-          folder={folder}
-          shareId={share.id}
-          filter={{ search }}
-          editable={editable}
-          editTermId={editTermId}
-        />
-      }
+      <Grid
+        ref={ref}
+        shareId={share.id}
+        filter={{ search }}
+        editable={editable}
+        relation={{ moduleId: share.moduleId }}
+      />
     </ContentPage>
   )
 }

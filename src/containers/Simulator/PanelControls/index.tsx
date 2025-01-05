@@ -1,4 +1,4 @@
-import { ClientSimulatorData, SimulatorStatus } from '@entities/Simulator'
+import { SimulatorData, SimulatorStatus } from '@entities/Simulator'
 import SVGPanelClose from '@public/svg/panel_close.svg'
 import SVGMuteOff from '@public/svg/mute_ipo_off.svg'
 import SVGLoopBack from '@public/svg/loop_back.svg'
@@ -31,7 +31,7 @@ export default function PanelControls(
   {
     process?: boolean
     onClick: (name: string) => void
-    simulator?: ClientSimulatorData | null
+    simulator?: SimulatorData | null
     className?: string
     options?: Partial<PanelControlOptions>
   }

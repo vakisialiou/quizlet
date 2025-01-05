@@ -1,6 +1,6 @@
-import { ClientTermData } from '@entities/Term'
+import { TermData } from '@entities/Term'
 
-export const searchTerms = (items: ClientTermData[], search: string | null, termEditId?: string | null): ClientTermData[] => {
+export const searchTerms = (items: TermData[], search: string | null, termEditId?: string | null): TermData[] => {
   if (!search) {
     return items
   }

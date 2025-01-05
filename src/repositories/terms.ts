@@ -71,6 +71,19 @@ export async function findTermsByUserId(db: PrismaEntry, userId: string) {
   return res.map(term => createTermSelect(term).serialize())
 }
 
+export async function findTermsByModuleId(db: PrismaEntry, moduleId: string) {
+  const res = await db.term.findMany({
+    where: {
+      relationTerms: {
+        some: { moduleId },
+      },
+    },
+    select: { ...TermSelect },
+    distinct: ['id'],
+  })
+  return res.map(term => createTermSelect(term).serialize())
+}
+
 export const createTerm = async (db: PrismaEntry, term: TermData): Promise<string | null> => {
   const res = await db.term.create({
     data: {
