@@ -1,13 +1,12 @@
 import SVGRubyOutline from '@public/svg/ruby/ruby-outline.svg'
-import { ClientFolderData } from '@entities/Folder'
 import Levels, { EnumLevels } from '@entities/Levels'
 import { useMemo } from 'react'
 import clsx from 'clsx'
 
 export default function AchievementIcon(
   {
-    folder,
     size,
+    degreeRate,
     single = false,
     showDefault = false,
     className = '',
@@ -15,13 +14,11 @@ export default function AchievementIcon(
   {
     size: number,
     single?: boolean,
-    showDefault?: boolean,
     className?: string,
-    folder?: ClientFolderData | null,
+    degreeRate: number
+    showDefault?: boolean,
   }
 ) {
-  const degreeRate = folder?.degreeRate || 0
-
   const levels = useMemo(() => {
     return new Levels(degreeRate, single)
   }, [degreeRate, single])

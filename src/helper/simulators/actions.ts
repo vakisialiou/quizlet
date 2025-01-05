@@ -1,8 +1,8 @@
+import { getAvailableTermIds, selectRandomTermId, randomizeTermIds } from '@helper/simulators/general'
 import { SimulatorData, SimulatorStatus } from '@entities/Simulator'
 import { ProgressTrackerAction } from '@entities/ProgressTracker'
-import { getAvailableTermIds } from '@helper/simulators/general'
+import SimulatorSettings from '@entities/SimulatorSettings'
 import SimulatorTracker from '@entities/SimulatorTracker'
-import { selectRandomTermId } from '@helper/simulators'
 import { unique } from '@lib/array'
 
 export const addHistoryId = (historyIds: string[], termId: string | null): string[] => {
@@ -18,7 +18,7 @@ export const addRememberIds = (rememberIds: string[], termId: string | null): st
 }
 
 export function actionTracker(simulator: SimulatorData, trackerAction: ProgressTrackerAction) {
-  const tracker = new SimulatorTracker(simulator)
+  const tracker = new SimulatorTracker(JSON.parse(JSON.stringify(simulator)))
 
   if (simulator.termId) {
     tracker.calculate(trackerAction, simulator.termId)
@@ -33,19 +33,19 @@ export function actionTracker(simulator: SimulatorData, trackerAction: ProgressT
 export function actionContinue(simulator: SimulatorData) {
   const termIds = getAvailableTermIds(simulator, { active: true, continue: true, remember: true })
 
-  return {
+  return actionExtraParamsUpdate({
     ...simulator,
     termId: termIds.length > 0 ? selectRandomTermId(termIds) : null,
     historyIds: addHistoryId(simulator.historyIds, simulator.termId),
     continueIds: addContinueId(simulator.continueIds, simulator.termId),
     status: termIds.length > 0 ? simulator.status : SimulatorStatus.FINISHING
-  }
+  })
 }
 
 export function actionRemember(simulator: SimulatorData) {
   const termIds = getAvailableTermIds(simulator, { active: true, continue: true, remember: true })
 
-  return {
+  return actionExtraParamsUpdate({
     ...simulator,
     termId: termIds.length > 0 ? selectRandomTermId(termIds) : null,
     historyIds: addHistoryId(simulator.historyIds, simulator.termId),
@@ -53,18 +53,18 @@ export function actionRemember(simulator: SimulatorData) {
     status: termIds.length > 0
       ? simulator.status
       : (simulator.continueIds.length === 0 ? SimulatorStatus.DONE : SimulatorStatus.FINISHING)
-  }
+  })
 }
 
 export function actionRestart(simulator: SimulatorData) {
   const termIds = getAvailableTermIds(simulator, { active: false, continue: false, remember: true  })
 
-  return {
+  return actionExtraParamsUpdate({
     ...simulator,
     continueIds: [],
     termId: termIds.length > 0 ? termIds[0] : null,
     status: termIds.length > 0 ? SimulatorStatus.PROCESSING : SimulatorStatus.DONE
-  }
+  })
 }
 
 export function actionBack(simulator: SimulatorData) {
@@ -75,19 +75,30 @@ export function actionBack(simulator: SimulatorData) {
   const historyIds = [...simulator.historyIds]
   const termId = historyIds.splice(-1)[0] || null
 
-  return {
+  return actionExtraParamsUpdate({
     ...simulator,
     termId,
     historyIds,
     needUpdate: true,
     continueIds: [...simulator.continueIds ].filter((uuid) => uuid !== termId),
     rememberIds: [...simulator.rememberIds ].filter((uuid) => uuid !== termId),
-  }
+  })
 }
 
 export function actionDeactivate(simulator: SimulatorData) {
   return {
     ...simulator,
     active: false,
+  }
+}
+
+function actionExtraParamsUpdate(simulator: SimulatorData) {
+  const termIds = [...simulator.termIds].filter((termId) => termId !== simulator.termId)
+  const sliceTermIds = randomizeTermIds(termIds).slice(0, 3)
+  return {
+    ...simulator,
+    settings: new SimulatorSettings(simulator.settings)
+      .setExtraTermIds(simulator.termId ? randomizeTermIds([...sliceTermIds, simulator.termId]) : [])
+      .serialize()
   }
 }

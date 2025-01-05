@@ -1,19 +1,17 @@
-import { ClientSimulatorData } from '@entities/Simulator'
-import { ClientFolderData } from '@entities/Folder'
+import { actionRestart } from '@helper/simulators/actions'
 import CardEmpty from '@containers/Simulator/CardEmpty'
-import { actionRestartSimulators } from '@store/index'
+import { actionUpdateSimulator } from '@store/index'
+import { SimulatorData } from '@entities/Simulator'
 import Button from '@components/Button'
 
 export default function SingleQueueFinish(
   {
-    folder,
     editable,
     simulator
   }:
   {
     editable: boolean,
-    folder: ClientFolderData,
-    simulator: ClientSimulatorData,
+    simulator: SimulatorData,
   }
 ) {
   return (
@@ -29,7 +27,12 @@ export default function SingleQueueFinish(
 
         <div className="text-gray-500 text-lg">
           <Button
-            onClick={() => actionRestartSimulators({ folderId: folder.id, editable })}
+            onClick={() => {
+              actionUpdateSimulator({
+                editable,
+                simulator: actionRestart(simulator)
+              })
+            }}
           >
             Continue
           </Button>

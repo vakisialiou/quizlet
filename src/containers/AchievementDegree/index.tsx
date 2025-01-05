@@ -1,22 +1,17 @@
-import { ClientFolderData } from '@entities/Folder'
-import { useMemo } from 'react'
 import clsx from 'clsx'
 
 export default function AchievementDegree(
   {
     className = '',
     disableTruncate,
-    folder,
+    degreeRate,
   }:
   {
     className?: string,
+    degreeRate: number,
     disableTruncate?: boolean
-    folder?: ClientFolderData | null,
   }
 ) {
-  const degreeRate = useMemo(() => {
-    return folder?.degreeRate || 0
-  }, [folder?.degreeRate])
 
   return (
     <div

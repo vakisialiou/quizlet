@@ -1,4 +1,8 @@
-import { saveFolderData, deleteFolderData } from '@store/fetch/folders'
+import {
+  saveFolderData,
+  updateFolderData,
+  deleteFolderData
+} from '@store/fetch/folders'
 import { unique, remove, upsertObject, removeObject } from '@lib/array'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { ConfigType } from '@store/initial-state'
@@ -6,7 +10,7 @@ import { FolderData } from '@entities/Folder'
 
 export type SaveType = {
   folder: FolderData
-  editId?: string | null
+  editId: string | null
   editable: boolean
 }
 
@@ -35,16 +39,19 @@ export const deleteFolder = createAsyncThunk(
   }
 )
 
-export type UpdateType = Partial<{
-  folders?: FolderData[],
-  editId?: string | null,
-  processIds?: (string)[]
-}>
+export type UpdateType = {
+  folder: FolderData
+  editId: string | null
+  editable: boolean
+}
 
 export const updateFolder = createAsyncThunk(
   '/folder/update',
-  async (payload: UpdateType): Promise<UpdateType> => {
-    return payload
+  async (payload: UpdateType): Promise<boolean> => {
+    if (payload.editable) {
+      return await updateFolderData(payload.folder)
+    }
+    return true
   }
 )
 
@@ -61,8 +68,8 @@ export const folderReducers = (builder: any) => {
     .addCase(saveFolder.pending, (state: ConfigType, action: { meta: { arg: SaveType } }) => {
       const arg = action.meta.arg
       state.edit.processFolderIds = unique([...state.edit.processFolderIds, arg.folder.id])
-      state.edit.folderId = arg.editId !== undefined ? arg.editId : state.edit.folderId
       state.folders = upsertObject([...state.folders], arg.folder) as FolderData[]
+      state.edit.folderId = arg.editId
     })
     .addCase(saveFolder.rejected, (state: ConfigType, action: { meta: { arg: SaveType } }) => {
       const { folder } = action.meta.arg
@@ -89,10 +96,21 @@ export const folderReducers = (builder: any) => {
     })
 
   builder
-    .addCase(updateFolder.fulfilled, (state: ConfigType, action: { meta: { arg: UpdateType }, payload: UpdateType }) => {
-      state.edit.processFolderIds = action.payload.processIds !== undefined ? action.payload.processIds : state.edit.processFolderIds
-      state.edit.folderId = action.payload.editId !== undefined ? action.payload.editId : state.edit.folderId
-      state.folders = action.payload.folders !== undefined ? action.payload.folders : state.folders
+    .addCase(updateFolder.pending, (state: ConfigType, action: { meta: { arg: UpdateType }, payload: UpdateType }) => {
+      const arg = action.meta.arg
+      state.edit.processFolderIds = unique([...state.edit.processFolderIds, arg.folder.id])
+      state.folders = upsertObject([...state.folders], arg.folder) as FolderData[]
+      state.edit.folderId = arg.editId
+    })
+    .addCase(updateFolder.rejected, (state: ConfigType, action: { meta: { arg: SaveType } }) => {
+      const { folder } = action.meta.arg
+      state.folders = removeObject([...state.folders], folder) as FolderData[]
+      state.edit.processFolderIds = remove(state.edit.processFolderIds, folder.id)
+      state.edit.folderId = null
+    })
+    .addCase(updateFolder.fulfilled, (state: ConfigType, action: { meta: { arg: SaveType } }) => {
+      const { folder } = action.meta.arg
+      state.edit.processFolderIds = remove(state.edit.processFolderIds, folder.id)
     })
 
   builder

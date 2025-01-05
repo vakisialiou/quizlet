@@ -1,22 +1,17 @@
-import RelationSimulator, { RelationSimulatorData } from '@entities/RelationSimulator'
-import Simulator, { SimulatorData, SimulatorStatus } from '@entities/Simulator'
+import { RelationSimulatorData } from '@entities/RelationSimulator'
 import { findSimulators, RelationProps } from '@helper/relation'
+import { SimulatorData } from '@entities/Simulator'
+import { shuffle } from '@lib/array'
 
 type UpdateCallback = (simulator: SimulatorData) => SimulatorData
+
+export function getSimulatorById(simulators: SimulatorData[], simulatorId: string): SimulatorData | null {
+  return simulators.find(({ id }) => id === simulatorId) || null
+}
 
 export function findActiveSimulators(relationSimulators: RelationSimulatorData[], simulators: SimulatorData[], relation: RelationProps): SimulatorData[] {
   return findSimulators(relationSimulators, simulators, relation)
     .filter(({ active }) => active)
-}
-
-export function updateActiveSimulator(relationSimulators: RelationSimulatorData[], simulators: SimulatorData[], relation: RelationProps, callback: UpdateCallback): SimulatorData[] {
-  const activeSimulators = findActiveSimulators(relationSimulators, simulators, relation)
-
-  for (let simulator of activeSimulators) {
-    simulators = updateSimulatorById(simulators, simulator.id, callback)
-  }
-
-  return simulators
 }
 
 export function updateSimulatorById(simulators: SimulatorData[], simulatorId: string, callback: UpdateCallback) {
@@ -26,22 +21,6 @@ export function updateSimulatorById(simulators: SimulatorData[], simulatorId: st
     }
     return { ...item }
   })
-}
-
-export const createSimulator = (relation: RelationProps): { simulator: Simulator, relationSimulator: RelationSimulator } => {
-  const simulator = new Simulator(SimulatorStatus.WAITING)
-  // TODO
-  // termId: termIds[0] || null,
-  // settings: { ...settings },
-  // termIds: randomizeTermIds(termIds),
-  // status: SimulatorStatus.PROCESSING
-
-  const relationSimulator = new RelationSimulator()
-    .setSimulatorId(simulator.id)
-    .setFolderId(relation.folderId || null)
-    .setModuleId(relation.moduleId || null)
-
-  return { simulator, relationSimulator }
 }
 
 export type SimulatorTermIdsFilter = {
@@ -68,4 +47,16 @@ export const getAvailableTermIds = (simulator: SimulatorData, filter: SimulatorT
       return !simulator.continueIds.includes(id)
     }
   })
+}
+
+export const randomizeTermIds = (availableTermIds: string[]): string[] => {
+  return shuffle(availableTermIds)
+}
+
+export const selectRandomTermId = (availableTermIds: string[]): string | null => {
+  if (availableTermIds.length > 0) {
+    const termIds = randomizeTermIds(availableTermIds)
+    return termIds[0]
+  }
+  return null
 }

@@ -1,21 +1,25 @@
 'use client'
 
+import { actionUpdateSimulator, actionUpdateModule } from '@store/index'
 import { getPathname, LanguageEnums, useRouter } from '@i18n/routing'
 import SimulatorBody from '@containers/Simulator/SimulatorBody'
 import SVGRubyOutline from '@public/svg/ruby/ruby-outline.svg'
+import { useSimulatorSelect } from '@hooks/useSimulatorSelect'
+import { actionDeactivate } from '@helper/simulators/actions'
+import { getModule, findSimulators } from '@helper/relation'
 import DropdownLanguage from '@containers/DropdownLanguage'
 import Button, { ButtonVariant } from '@components/Button'
-import { actionDeactivateSimulators } from '@store/index'
+import { useModuleSelect } from '@hooks/useModuleSelect'
 import SVGGoogle from '@public/svg/painted/google.svg'
 import SVGPresetNew from '@public/svg/preset_new.svg'
 import FolderTitle from '@containers/FolderTitle'
 import ContentPage from '@containers/ContentPage'
 import Achievement from '@entities/Achievement'
 import ButtonPWA from '@containers/ButtonPWA'
-import { DEMO_FOLDER_ID } from '@helper/demo'
-import {useTranslations} from 'next-intl'
-import {useSelector} from 'react-redux'
-import {signIn} from 'next-auth/react'
+import { DEMO_MODULE_ID } from '@helper/demo'
+import { useTranslations } from 'next-intl'
+import { useSelector } from 'react-redux'
+import { signIn } from 'next-auth/react'
 import { preload } from 'react-dom'
 import { Session } from 'next-auth'
 import React, { memo } from 'react'
@@ -32,6 +36,11 @@ function Landing(
     mainScreenSRC: string
   }
 ) {
+  const editable = false
+  const relation = { moduleId: DEMO_MODULE_ID, folderId: null }
+  const { relationSimulators, simulators } = useSimulatorSelect()
+  const modules = useModuleSelect()
+
   const session = useSelector(({ session }: { session: Session | null }) => session)
 
   const route = useRouter()
@@ -149,22 +158,32 @@ function Landing(
                 <div
                   className="px-[2px] md:px-2 py-4 flex flex-col items-center overflow-hidden gap-4 lg:order-2"
                 >
-                  {/*<FolderTitle
-                    folderId={DEMO_FOLDER_ID}
+                  <FolderTitle
+                    relation={{ moduleId: DEMO_MODULE_ID }}
                     className="w-full max-w-96 items-center"
-                  />*/}
+                  />
 
-                  {/*<SimulatorBody
+                  <SimulatorBody
                     editable={false}
-                    folderId={DEMO_FOLDER_ID}
-                    onDeactivateAction={(folder) => {
-                      actionDeactivateSimulators({
-                        editable: false,
-                        folderId: folder.id,
-                        degreeRate: new Achievement().getRate(folder.simulators)
+                    relation={{ moduleId: DEMO_MODULE_ID }}
+                    onDeactivateAction={(simulatorId) => {
+                      const module = getModule(modules, DEMO_MODULE_ID)
+                      if (!module) {
+                        return
+                      }
+
+                      const moduleSimulators = findSimulators(relationSimulators, simulators, relation)
+                      const updatedModule = { ...module, degreeRate: new Achievement().getRate(moduleSimulators) }
+
+                      actionUpdateModule({ module: updatedModule, editable, editId: null }, () => {
+                        const activeSimulator = moduleSimulators.find(({ id }) => simulatorId)
+                        if (!activeSimulator) {
+                          return
+                        }
+                        actionUpdateSimulator({ simulator: actionDeactivate(activeSimulator), editable })
                       })
                     }}
-                  />*/}
+                  />
                 </div>
 
                 <div className="relative lg:order-1 flex flex-col items-center justify-center text-center">

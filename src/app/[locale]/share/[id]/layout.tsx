@@ -1,8 +1,5 @@
-import { findFoldersByUserId, getFolderById } from '@repositories/folders'
-import { getFolderShareById } from '@repositories/folder-share'
-import ProviderStore from '@app/[locale]/provider-store'
-import { getInitialState } from '@store/initial-state'
-import { getSettings } from '@repositories/settings'
+import { getModuleShareById } from '@repositories/module-share'
+import { getFolderById } from '@repositories/folders'
 import { notFound } from 'next/navigation'
 import { prisma } from '@lib/prisma'
 import { ReactNode } from 'react'
@@ -19,7 +16,7 @@ export default async function Layout(
 ) {
   const { id } = await params
 
-  const share = await getFolderShareById(prisma, id)
+  const share = await getModuleShareById(prisma, id)
   if (!share) {
     return notFound()
   }
@@ -27,24 +24,15 @@ export default async function Layout(
 
   const session = await auth()
   const userId = session?.user?.id || ''
-  const folder = share.ownerUserId !== userId ? await getFolderById(prisma, share.ownerUserId, share.folderId) : null
+  const folder = share.ownerId !== userId ? await getFolderById(prisma, share.ownerId, share.moduleId) : null
 
-  if (!folder && share.ownerUserId !== userId) {
+  if (!folder && share.ownerId !== userId) {
     return notFound()
   }
 
-  const settings = userId ? await getSettings(prisma, userId) : null
-  const folders = userId ? await findFoldersByUserId(prisma, userId) : []
-  const initialState = await getInitialState({
-    session,
-    settings,
-    folders: folder ? [ ...folders, folder ] : folders,
-    share
-  })
-
   return (
-    <ProviderStore initialState={initialState}>
+    <>
       {children}
-    </ProviderStore>
+    </>
   )
 }

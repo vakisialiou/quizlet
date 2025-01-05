@@ -1,4 +1,3 @@
-import { ClientFolderData } from '@entities/Folder'
 import Levels, { EnumLevels } from '@entities/Levels'
 import { useMemo, useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
@@ -7,17 +6,15 @@ import clsx from 'clsx'
 
 export default function AchievementText(
   {
-    folder,
+    degreeRate,
     className = '',
   }:
   {
     className?: string,
-    folder?: ClientFolderData | null,
+    degreeRate: number,
   }
 ) {
   const [ text, setText ] = useState<string | null>(null)
-
-  const degreeRate = folder?.degreeRate || 0
 
   const levels = useMemo(() => {
     return new Levels(degreeRate, true)
@@ -40,7 +37,7 @@ export default function AchievementText(
         setText(t(`textExpert_${index}`))
         break
     }
-  }, [folder?.degreeRate, levels, t])
+  }, [degreeRate, levels, t])
 
   return (
     <div

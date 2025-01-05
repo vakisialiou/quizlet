@@ -1,11 +1,15 @@
+import { actionUpdateSimulator, actionUpdateFolder, actionUpdateModule } from '@store/index'
+import { RelationProps, findSimulators, getFolder, getModule } from '@helper/relation'
 import React, { useEffect, useState, useRef, useLayoutEffect, useMemo } from 'react'
-import { ClientSimulatorData } from '@entities/Simulator'
+import { useSimulatorSelect } from '@hooks/useSimulatorSelect'
 import AchievementDegree from '@containers/AchievementDegree'
+import { actionDeactivate } from '@helper/simulators/actions'
 import AchievementIcon from '@containers/AchievementIcon'
-import { actionDeactivateSimulators } from '@store/index'
-import { ClientFolderData } from '@entities/Folder'
 import AchievementText from '@containers/AchievementText'
+import { useFolderSelect } from '@hooks/useFolderSelect'
+import { useModuleSelect } from '@hooks/useModuleSelect'
 import CardEmpty from '@containers/Simulator/CardEmpty'
+import { SimulatorData } from '@entities/Simulator'
 import Achievement from '@entities/Achievement'
 import clsx from 'clsx'
 
@@ -15,7 +19,7 @@ const randFloat = (min: number, max: number) => {
 
 export default function CardDone(
   {
-    folder,
+    relation,
     editable,
     simulator,
     particlesImage,
@@ -28,8 +32,8 @@ export default function CardDone(
   }:
   {
     editable: boolean
-    folder: ClientFolderData
-    simulator: ClientSimulatorData
+    relation: RelationProps
+    simulator: SimulatorData
     particlesImage?: string
     particlesCount?: number
     particlesDelay?: number
@@ -39,6 +43,10 @@ export default function CardDone(
     onAnimationDone?: () => void
   }
 ) {
+  const { relationSimulators, simulators } = useSimulatorSelect()
+  const folders = useFolderSelect()
+  const modules = useModuleSelect()
+
   const ref = useRef<HTMLDivElement | null>(null)
   const [ exploded, setExploded ] = useState(false)
   const [ containerSize, setContainerSize ] = useState({ width: 0, height: 0 })
@@ -73,19 +81,17 @@ export default function CardDone(
     return () => clearTimeout(timer)
   }, [particlesDelay])
 
-  const simulators = useMemo(() => {
-    return [...folder.simulators || []].map((item) => {
-      return {
-        ...item,
-        active: item.id === simulator.id ? false : item.active
-      }
-    })
-  }, [folder.simulators, simulator.id])
+  const relatedSimulators = useMemo(() => {
+    return findSimulators(relationSimulators, simulators, relation)
+      .map((item) => {
+        const active = item.id === simulator.id ? false : item.active
+        return { ...item, active }
+      })
+  }, [relationSimulators, simulators, relation, simulator.id])
 
-  const virtualFolder = useMemo(() => {
-    const degreeRate = new Achievement().getRate(simulators)
-    return { ...folder, degreeRate }
-  }, [folder, simulators])
+  const virtualDegreeRate = useMemo(() => {
+    return new Achievement().getRate(relatedSimulators)
+  }, [relatedSimulators])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -93,12 +99,32 @@ export default function CardDone(
         onAnimationDone()
       }
 
-      actionDeactivateSimulators({ folderId: folder.id, degreeRate: virtualFolder.degreeRate, editable })
+      if (relation.moduleId) {
+        const module = getModule(modules, relation.moduleId)
+        if (module) {
+          actionUpdateModule({module: {...module, degreeRate: virtualDegreeRate}, editable, editId: null}, () => {
+            actionUpdateSimulator({
+              simulator: actionDeactivate(simulator),
+              editable
+            })
+          })
+        }
+      } else if (relation.folderId) {
+        const folder = getFolder(folders, relation.folderId)
+        if (folder) {
+          actionUpdateFolder({folder: {...folder, degreeRate: virtualDegreeRate}, editable, editId: null}, () => {
+            actionUpdateSimulator({
+              simulator: actionDeactivate(simulator),
+              editable
+            })
+          })
+        }
+      }
 
     }, particlesDelay + particlesDuration.max)
 
     return () => clearTimeout(timer)
-  }, [onAnimationDone, particlesDelay, particlesDuration.max, folder.id, virtualFolder.degreeRate])
+  }, [onAnimationDone, particlesDelay, particlesDuration.max, folders, modules, virtualDegreeRate, editable])
 
   return (
     <CardEmpty
@@ -153,18 +179,18 @@ export default function CardDone(
           <AchievementIcon
             size={72}
             showDefault
-            folder={virtualFolder}
+            degreeRate={virtualDegreeRate}
           />
         </div>
 
         <AchievementDegree
           disableTruncate
-          folder={virtualFolder}
+          degreeRate={virtualDegreeRate}
           className="flex flex-col gap-2 font-bold text-4xl items-center text-gray-600 uppercase"
         />
 
         <AchievementText
-          folder={virtualFolder}
+          degreeRate={virtualDegreeRate}
           className="text-gray-100 text-base font-bold px-4 mt-10"
         />
 

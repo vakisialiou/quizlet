@@ -127,12 +127,12 @@ export default function Modules(
 
                   <div className="flex items-center gap-1">
                     <AchievementIcon
-                      folder={module}
+                      degreeRate={module.degreeRate}
                       size={12}
                     />
 
                     <AchievementDegree
-                      folder={module}
+                      degreeRate={module.degreeRate}
                       className="text-xs font-bold uppercase text-white/50"
                     />
                   </div>

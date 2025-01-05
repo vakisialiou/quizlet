@@ -1,5 +1,4 @@
 import { configureStore, createReducer, EnhancedStore } from '@reduxjs/toolkit'
-import { PayloadStart, PayloadUpdate } from '@store/reducers/simulators'
 import { loggerMiddleware } from '@store/middlewares/logger'
 import * as simulators from '@store/reducers/simulators'
 import * as settings from '@store/reducers/settings'
@@ -110,12 +109,12 @@ export const actionEditTerm = (payload: terms.EditType, callback?: (res: boolean
   execAction(action, callback)
 }
 
-export const actionStartSimulator = (payload: PayloadStart, callback?: (res: boolean) => void): void => {
-  const action = simulators.startSimulator(payload)
+export const actionSaveSimulator = (payload: simulators.PayloadSave, callback?: (res: boolean) => void): void => {
+  const action = simulators.saveSimulator(payload)
   execAction(action, callback)
 }
 
-export const actionUpdateSimulator = (payload: PayloadUpdate, callback?: (res: boolean) => void): void => {
+export const actionUpdateSimulator = (payload: simulators.PayloadUpdate, callback?: (res: boolean) => void): void => {
   const action = simulators.updateSimulator(payload)
   execAction(action, callback)
 }

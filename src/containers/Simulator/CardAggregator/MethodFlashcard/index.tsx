@@ -4,8 +4,8 @@ import { DefaultAnswerLang, DefaultQuestionLang } from '@entities/Term'
 import { getSimulatorNameById } from '@containers/Simulator/constants'
 import { SimulatorMethod } from '@entities/SimulatorSettings'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { ClientSimulatorData } from '@entities/Simulator'
-import { ClientTermData } from '@entities/Term'
+import { SimulatorData } from '@entities/Simulator'
+import { TermData } from '@entities/Term'
 
 type onChangeCallback = (data: HelpDataType) => void
 
@@ -17,8 +17,8 @@ export default function MethodFlashcard(
   }:
   {
     onChange: onChangeCallback,
-    activeTerm?: ClientTermData,
-    simulator: ClientSimulatorData,
+    activeTerm?: TermData,
+    simulator: SimulatorData,
   }
 ) {
   const [ isBackSide, setIsBackSide ] = useState(false)

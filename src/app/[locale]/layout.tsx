@@ -8,6 +8,16 @@ import ProviderResize from './provider-resize'
 import ProviderWorker from './provider-worker'
 import ProviderOnline from './provider-online'
 
+import { findRelationTermsByUserId } from '@repositories/relation-term'
+import { findFoldersByUserId } from '@repositories/folders'
+import { findModulesByUserId } from '@repositories/modules'
+import { findTermsByUserId } from '@repositories/terms'
+import ProviderStore from '@app/[locale]/provider-store'
+import { getInitialState } from '@store/initial-state'
+import { getSettings } from '@repositories/settings'
+import { getDemoInitialData } from '@helper/demo'
+import { prisma } from '@lib/prisma'
+import { auth } from '@auth'
 import React from 'react'
 import './globals.css'
 
@@ -50,16 +60,37 @@ export default async function RootLayout({
  Readonly<{
    children: React.ReactNode,
    params: Promise<{ locale: LanguageEnums }>,
-
  }
 >
 ) {
-  const {locale} = await params
+  const { locale } = await params
   if (!routing.locales.includes(locale)) {
     notFound()
   }
 
+
+  async function createInitialState(locale: LanguageEnums) {
+    const session = await auth()
+    const userId = session?.user?.id || ''
+    if (userId) {
+      return await getInitialState({
+        session,
+        simulators: [],
+        folderGroups: [],
+        relationFolders: [],
+        relationSimulators: [],
+        settings: await getSettings(prisma, userId),
+        folders: await findFoldersByUserId(prisma, userId),
+        modules: await findModulesByUserId(prisma, userId),
+        terms: await findTermsByUserId(prisma, userId),
+        relationTerms: await findRelationTermsByUserId(prisma, userId)
+      })
+    }
+    return getDemoInitialData(locale)
+  }
+
   const messages = await getMessages({ locale })
+  const initialState = await createInitialState(locale)
 
   return (
     <html lang={locale} translate="no">
@@ -73,7 +104,9 @@ export default async function RootLayout({
         <ProviderWorker>
           <ProviderResize>
             <SessionProvider>
-              {children}
+              <ProviderStore initialState={initialState}>
+                {children}
+              </ProviderStore>
             </SessionProvider>
           </ProviderResize>
         </ProviderWorker>

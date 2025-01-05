@@ -4,10 +4,10 @@ import InputCard, {
 } from '@containers/Simulator/CardAggregator/MethodInputCard/InputCard'
 import { DefaultAnswerLang, DefaultQuestionLang } from '@entities/Term'
 import { getSimulatorNameById } from '@containers/Simulator/constants'
-import { SimulatorMethod } from '@entities/SimulatorSettings'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { ClientSimulatorData } from '@entities/Simulator'
-import { ClientTermData } from '@entities/Term'
+import { SimulatorMethod } from '@entities/SimulatorSettings'
+import { SimulatorData } from '@entities/Simulator'
+import { TermData } from '@entities/Term'
 import { shuffle } from '@lib/array'
 import {
   CardStatus,
@@ -25,10 +25,10 @@ export default function MethodInputCard(
     activeTerm,
   }:
     {
-      terms: ClientTermData[],
+      terms: TermData[],
+      activeTerm?: TermData,
       onSubmit: onSubmitCallback,
-      activeTerm?: ClientTermData,
-      simulator: ClientSimulatorData,
+      simulator: SimulatorData,
     }
 )
 {

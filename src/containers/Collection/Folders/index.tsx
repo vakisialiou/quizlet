@@ -9,6 +9,7 @@ import AchievementDegree from '@containers/AchievementDegree'
 import { FolderFrameVariant } from '@components/FolderFrame'
 import AchievementIcon from '@containers/AchievementIcon'
 import SVGAnchorRight from '@public/svg/anchor_right.svg'
+import { useFolderSelect } from '@hooks/useFolderSelect'
 import SVGAnchorLeft from '@public/svg/anchor_left.svg'
 import { useGroupSelect } from '@hooks/useGroupSelect'
 import { useTermSelect } from '@hooks/useTermSelect'
@@ -44,9 +45,10 @@ export default function Folders(
 ) {
   const t = useTranslations('Folders')
 
-  const { folders, relationFolders, folderGroups } = useGroupSelect()
+  const { relationFolders, folderGroups } = useGroupSelect()
   const { simulators, relationSimulators } = useSimulatorSelect()
   const { terms, relationTerms } = useTermSelect()
+  const folders = useFolderSelect()
 
   const moduleFolderGroups = useMemo(() => {
     return sortFolderGroups(findFolderGroups(folderGroups, module.id))
@@ -157,12 +159,12 @@ export default function Folders(
                       <div className="flex gap-2 items-center font-bold">
                         <div className="flex items-center gap-1">
                           <AchievementIcon
-                            folder={folder}
+                            degreeRate={folder.degreeRate}
                             size={12}
                           />
 
                           <AchievementDegree
-                            folder={folder}
+                            degreeRate={folder.degreeRate}
                             className="text-sm font-bold uppercase text-white/50"
                           />
                         </div>

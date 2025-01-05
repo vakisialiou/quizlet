@@ -1,39 +1,47 @@
-import {findSimulatorMethodById, simulatorMethodList} from '@containers/Simulator/constants'
-import {actionStartSimulators, actionUpdateSettingsSimulator} from '@store/index'
-import {filterDeletedTerms, filterEmptyTerms, findTermsByIds} from '@helper/terms'
-import {ClientSettingsData} from '@entities/Settings'
+import { findSimulatorMethodById, simulatorMethodList } from '@containers/Simulator/constants'
+import { actionSaveSimulator, actionUpdateSettingsSimulator } from '@store/index'
+import SimulatorSettings, { SimulatorMethod } from '@entities/SimulatorSettings'
+import { randomizeTermIds, selectRandomTermId } from '@helper/simulators/general'
+import { findSimulators, findTerms, RelationProps } from '@helper/relation'
+import { filterDeletedTerms, filterEmptyTerms } from '@helper/terms'
+import Simulator, { SimulatorStatus } from '@entities/Simulator'
+import { useSimulatorSelect } from '@hooks/useSimulatorSelect'
+import RelationSimulator from '@entities/RelationSimulator'
 import Button, {ButtonVariant} from '@components/Button'
-import {ClientFolderData} from '@entities/Folder'
 import CardEmpty from '@containers/Simulator/CardEmpty'
+import { useTermSelect } from '@hooks/useTermSelect'
+import { SettingsData } from '@entities/Settings'
 import Achievement from '@entities/Achievement'
-import {useTranslations} from 'next-intl'
-import {useSelector} from 'react-redux'
-import {useMemo} from 'react'
+import { useTranslations } from 'next-intl'
+import { useSelector } from 'react-redux'
+import { useMemo } from 'react'
 import clsx from 'clsx'
 
 export default function SingleStart(
   {
     process,
     editable,
-    folder
+    relation
   }:
   {
     process?: boolean,
     editable: boolean,
-    folder?: ClientFolderData | null
+    relation: RelationProps
   }
 ) {
 
-  const settings = useSelector(({ settings }: { settings: ClientSettingsData }) => settings)
+  const { relationTerms, terms } = useTermSelect()
+  const { relationSimulators, simulators } = useSimulatorSelect()
+  const settings = useSelector(({ settings }: { settings: SettingsData }) => settings)
 
   const playTerms = useMemo(() => {
-    const terms = filterDeletedTerms(filterEmptyTerms([...folder?.terms || []]))
-    if (folder?.isModule) {
-      return terms
-    }
-    const termIds = [...folder?.relationTerms || []].map(({ termId }) => termId)
-    return findTermsByIds(terms, termIds)
-  }, [folder?.terms, folder?.relationTerms, folder?.isModule])
+    const relatedTerms = findTerms(relationTerms, terms, relation)
+    return filterDeletedTerms(filterEmptyTerms(relatedTerms))
+  }, [relationTerms, terms, relation])
+
+  const relatedSimulators = useMemo(() => {
+    return findSimulators(relationSimulators, simulators, relation)
+  }, [relationSimulators, simulators, relation])
 
   const t = useTranslations('Simulators')
 
@@ -41,7 +49,7 @@ export default function SingleStart(
     <CardEmpty
       classNameContent="relative"
     >
-      {(process || !folder) &&
+      {(process) &&
         <div className="animate-pulse flex w-full">
           <div className="flex flex-col w-full gap-2 items-center">
             <div className="h-3 bg-gray-500 opacity-40 w-1/3 rounded"></div>
@@ -50,7 +58,7 @@ export default function SingleStart(
         </div>
       }
 
-      {(!process && folder) &&
+      {(!process) &&
         <div className="flex flex-col justify-center text-center gap-4 w-full p-4">
 
           <div className="text-gray-300 text-lg font-bold">
@@ -60,8 +68,8 @@ export default function SingleStart(
           <div className="text-gray-500 text-sm divide-y divide-gray-800 divide-dashed">
             {simulatorMethodList.map(({ id, method, name, inverted }) => {
               const achievement = new Achievement()
-              const methodRate = achievement.getMethodRate(folder.simulators, { method, inverted })
-              const simulators = achievement.findSimulators(folder.simulators, { method, inverted })
+              const methodRate = achievement.getMethodRate(relatedSimulators, { method, inverted })
+              const simulators = achievement.findSimulators(relatedSimulators, { method, inverted })
               return (
                 <label
                   key={id}
@@ -92,7 +100,10 @@ export default function SingleStart(
                     value={settings.simulator.method}
                     checked={settings.simulator.id === id}
                     onChange={() => {
-                      actionUpdateSettingsSimulator({ method, inverted, id })
+                      actionUpdateSettingsSimulator({
+                        simulatorSettings: { method, inverted, id },
+                        editable
+                      })
                     }}
                   />
                 </label>
@@ -105,12 +116,39 @@ export default function SingleStart(
             disabled={!findSimulatorMethodById(settings.simulator.id) || playTerms.length === 0}
             onClick={() => {
               if (playTerms.length > 0) {
-                const termIds = playTerms.map(({id}) => id)
-                actionStartSimulators({
-                  termIds,
+                const termIds = randomizeTermIds(playTerms.map(({id}) => id))
+
+                const simulatorSettings = new SimulatorSettings()
+                  .setId(settings.simulator.id)
+                  .setMethod(settings.simulator.method)
+                  .setInverted(settings.simulator.inverted)
+
+                let termId
+                if (simulatorSettings.method === SimulatorMethod.PICK) {
+                  const extraTermIds = termIds.length > 4 ? randomizeTermIds(termIds).splice(0, 4) : termIds
+                  simulatorSettings.setExtraTermIds(extraTermIds)
+                  termId = selectRandomTermId(extraTermIds)
+                } else {
+                  termId = selectRandomTermId(termIds)
+                }
+
+                const simulator = new Simulator(SimulatorStatus.PROCESSING)
+                  .setSettings(simulatorSettings)
+                  .setTermIds(termIds)
+                  .setTermId(termId)
+                  .setActive(true)
+                  .serialize()
+
+                const relationSimulator = new RelationSimulator()
+                  .setSimulatorId(simulator.id)
+                  .setFolderId(relation.folderId || null)
+                  .setModuleId(relation.moduleId || null)
+                  .serialize()
+
+                actionSaveSimulator({
                   editable,
-                  folderId: folder.id,
-                  settings: settings.simulator
+                  simulator,
+                  relationSimulator,
                 })
               }
             }}

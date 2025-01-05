@@ -100,9 +100,9 @@ export default function Terms({ relation }: { relation: RelationProps }) {
                 className="w-1/2 gap-1"
                 onClick={() => {
                   if (relation.moduleId) {
-                    router.push(`/private/simulator?moduleId=${relation.moduleId}`)
+                    router.push(`/simulator?moduleId=${relation.moduleId}`)
                   } else if (relation.folderId) {
-                    router.push(`/private/simulator?folderId=${relation.folderId}`)
+                    router.push(`/simulator?folderId=${relation.folderId}`)
                   }
                 }}
               >

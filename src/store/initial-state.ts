@@ -50,7 +50,7 @@ export const getInitialState = async (
   }:
   {
     terms?: TermData[]
-    session: Session | null
+    session?: Session | null
     moduleShare?: ModuleShareData | null
     modules?: ModuleData[]
     folders?: FolderData[]
@@ -63,7 +63,7 @@ export const getInitialState = async (
   }
 ): Promise<ConfigType> => {
   return {
-    session,
+    session: session || null,
     edit: {
       moduleId: null,
       processModuleIds: [],

@@ -51,12 +51,12 @@ export default function FolderTitle(
       >
         <div className="flex gap-2 items-center">
           <AchievementIcon
-            folder={folder}
+            degreeRate={module ? module.degreeRate : (folder?.degreeRate || 0)}
             showDefault
             size={12}
           />
           <AchievementDegree
-            folder={folder}
+            degreeRate={module ? module.degreeRate : (folder?.degreeRate || 0)}
             className="text-white/50 text-xs font-bold"
           />
         </div>

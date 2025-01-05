@@ -8,8 +8,8 @@ import { FolderData } from '@entities/Folder'
 import { TermData } from '@entities/Term'
 
 export type RelationProps = {
-  folderId?: string,
-  moduleId?: string,
+  folderId?: string | null,
+  moduleId?: string | null,
 }
 
 export function getModuleByFolderId(folderGroups: FolderGroupData[], relationFolders: RelationFolderData[], modules: ModuleData[], folderId: string): ModuleData | null {

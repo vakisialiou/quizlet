@@ -9,11 +9,11 @@ import {
 } from '@containers/Simulator/CardAggregator/types'
 import { DefaultAnswerLang, DefaultQuestionLang } from '@entities/Term'
 import { getSimulatorNameById } from '@containers/Simulator/constants'
-import { SimulatorMethod } from '@entities/SimulatorSettings'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { ClientSimulatorData } from '@entities/Simulator'
-import { ClientTermData } from '@entities/Term'
+import { SimulatorMethod } from '@entities/SimulatorSettings'
+import { SimulatorData } from '@entities/Simulator'
 import { findTermsByIds } from '@helper/terms'
+import { TermData } from '@entities/Term'
 
 export default function MethodPickCard(
   {
@@ -25,9 +25,9 @@ export default function MethodPickCard(
     soundSelection,
   }:
     {
-      terms: ClientTermData[]
-      activeTerm?: ClientTermData
-      simulator: ClientSimulatorData
+      terms: TermData[]
+      activeTerm?: TermData
+      simulator: SimulatorData
       soundSelection: CardSelection | null
       onChange: (data: HelpDataType) => void
       onSound: (selection: CardSelection | null) => void

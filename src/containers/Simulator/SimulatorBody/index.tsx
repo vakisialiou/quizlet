@@ -1,56 +1,45 @@
 'use client'
 
+import { actionTracker, actionRemember, actionContinue, actionBack } from '@helper/simulators/actions'
 import { CardSelection } from '@containers/Simulator/CardAggregator/MethodPickCard/PickCard'
 import CardAggregator, { OnChangeParamsType } from '@containers/Simulator/CardAggregator'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { CardStatus } from '@containers/Simulator/CardAggregator/types'
 import { ProgressTrackerAction } from '@entities/ProgressTracker'
-import {SimulatorMethod} from '@entities/SimulatorSettings'
-import {ensureFolderTerms, getFolderById} from '@helper/folders'
+import { findActiveSimulators } from '@helper/simulators/general'
 import PanelControls from '@containers/Simulator/PanelControls'
 import TextToSpeech, { TextToSpeechEvents } from '@lib/speech'
-import { SimulatorStatus } from '@entities/Simulator'
-import { ClientFolderData } from '@entities/Folder'
+import { useSimulatorSelect } from '@hooks/useSimulatorSelect'
+import {SimulatorMethod} from '@entities/SimulatorSettings'
 import Button, {ButtonVariant} from '@components/Button'
 import CardEmpty from '@containers/Simulator/CardEmpty'
 import CardStart from '@containers/Simulator/CardStart'
 import PanelInfo from '@containers/Simulator/PanelInfo'
+import { SimulatorStatus } from '@entities/Simulator'
+import { actionUpdateSimulator } from '@store/index'
+import { RelationProps } from '@helper/relation'
 import { useTranslations } from 'next-intl'
-import {useSelector} from 'react-redux'
-import {
-  actionContinueSimulators,
-  actionRememberSimulators,
-  actionBackSimulators,
-  actionUpdateTracker,
-} from '@store/index'
 
 export default function SimulatorBody(
   {
-    folderId,
+    relation,
     editable,
     disableDeactivate,
     onDeactivateAction
   }:
   {
-    folderId: string,
     editable: boolean
+    relation: RelationProps,
     disableDeactivate?: boolean
-    onDeactivateAction: (folder: ClientFolderData) => void
+    onDeactivateAction: (simulatorId: string) => void
   }
 ) {
-  const folders = useSelector(({ folders }: { folders: ClientFolderData[] }) => folders)
-
-  const folder = useMemo(() => {
-    return ensureFolderTerms(folders, getFolderById(folders, folderId))
-  }, [folders, folderId])
-
-  const simulators = useMemo(() => {
-    return folder?.simulators || []
-  }, [folder?.simulators])
+  const { relationSimulators, simulators } = useSimulatorSelect()
 
   const simulator = useMemo(() => {
-    return simulators.find(({ active }) => active)
-  }, [simulators])
+    const activeSimulators = findActiveSimulators(relationSimulators, simulators, relation)
+    return activeSimulators.length > 0 ? activeSimulators[0] : null
+  }, [relationSimulators, simulators, relation])
 
   const speech = useMemo(() => {
     return typeof(window) === 'object' ? new TextToSpeech() : null
@@ -111,15 +100,15 @@ export default function SimulatorBody(
 
           {!simulator &&
             <CardStart
-              folder={folder}
+              relation={relation}
               editable={editable}
             />
           }
 
           <div className="relative">
-            {(folder && simulator) &&
+            {simulator &&
               <CardAggregator
-                folder={folder}
+                relation={relation}
                 editable={editable}
                 simulator={simulator}
                 onChange={onChangeCardDataCallback}
@@ -172,15 +161,10 @@ export default function SimulatorBody(
                     className="w-1/2"
                     variant={ButtonVariant.GREEN}
                     onClick={() => {
-                      if (folder) {
-                        actionUpdateTracker({
-                          editable,
-                          folderId: folder.id,
-                          trackerAction: ProgressTrackerAction.success
-                        }, () => {
-                          actionRememberSimulators({ folderId: folder.id, editable })
-                        })
-                      }
+                      actionUpdateSimulator({
+                        simulator: actionRemember(actionTracker(simulator, ProgressTrackerAction.success)),
+                        editable
+                      })
                     }}
                   >
                     {t('buttonRemember')}
@@ -190,15 +174,10 @@ export default function SimulatorBody(
                     className="w-1/2"
                     variant={ButtonVariant.WHITE}
                     onClick={() => {
-                      if (folder) {
-                        actionUpdateTracker({
-                          editable,
-                          folderId: folder.id,
-                          trackerAction: ProgressTrackerAction.error
-                        }, () => {
-                          actionContinueSimulators({ folderId: folder.id, editable })
-                        })
-                      }
+                      actionUpdateSimulator({
+                        simulator: actionContinue(actionTracker(simulator, ProgressTrackerAction.error)),
+                        editable
+                      })
                     }}
                   >
                     {t('buttonContinue')}
@@ -212,25 +191,15 @@ export default function SimulatorBody(
                   variant={ButtonVariant.WHITE}
                   disabled={!cardStatus || cardStatus === CardStatus.none}
                   onClick={() => {
-                    if (folder) {
-                      const trackerActionMap = {
-                        [SimulatorMethod.PICK]: {
-                          [CardStatus.error]: ProgressTrackerAction.error,
-                          [CardStatus.success]: ProgressTrackerAction.success
-                        },
-                        [SimulatorMethod.INPUT]: {
-                          [CardStatus.error]: ProgressTrackerAction.error,
-                          [CardStatus.success]: ProgressTrackerAction.success
-                        }
-                      } as Record<SimulatorMethod, Record<CardStatus, ProgressTrackerAction>>
-
-                      const trackerAction = trackerActionMap[simulator.settings.method]?.[cardStatus]
-                      actionUpdateTracker({ folderId: folder.id, trackerAction, editable }, () => {
-                        if (cardStatus === CardStatus.success) {
-                          actionRememberSimulators({ folderId: folder.id, editable })
-                        } else {
-                          actionContinueSimulators({ folderId: folder.id, editable })
-                        }
+                    if (cardStatus === CardStatus.success) {
+                      actionUpdateSimulator({
+                        simulator: actionRemember(actionTracker(simulator, ProgressTrackerAction.success)),
+                        editable
+                      })
+                    } else {
+                      actionUpdateSimulator({
+                        simulator: actionContinue(actionTracker(simulator, ProgressTrackerAction.error)),
+                        editable
                       })
                     }
                   }}
@@ -260,16 +229,19 @@ export default function SimulatorBody(
               }
             }}
             onClick={(controlName) => {
-              if (!folder) {
+              if (!simulator) {
                 return
               }
 
               switch (controlName) {
                 case 'deactivate':
-                  onDeactivateAction(folder)
+                  onDeactivateAction(simulator.id)
                   break
                 case 'back':
-                  actionBackSimulators({ folderId: folder.id, editable })
+                  actionUpdateSimulator({
+                    simulator: actionBack(simulator),
+                    editable
+                  })
                   break
                 case 'help':
                   setShowHelp((prevState) => !prevState)

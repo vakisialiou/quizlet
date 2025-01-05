@@ -92,7 +92,7 @@ export default function Collection() {
           router.push(`/private/module/${module.id}`)
         }}
         onPlayModule={(module) => {
-          router.push(`/private/simulator/${module.id}`)
+          router.push(`/simulator?moduleId=${module.id}`)
         }}
       />
 

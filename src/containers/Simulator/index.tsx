@@ -1,26 +1,29 @@
 'use client'
 
 import SimulatorBody from '@containers/Simulator/SimulatorBody'
+import { useSimulatorSelect } from '@hooks/useSimulatorSelect'
+import { actionDeactivate } from '@helper/simulators/actions'
+import { getSimulatorById } from '@helper/simulators/general'
+import Button, { ButtonVariant } from '@components/Button'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
-import Button, {ButtonVariant} from '@components/Button'
+import { actionUpdateSimulator } from '@store/index'
 import ButtonSquare from '@components/ButtonSquare'
 import SVGQuestion from '@public/svg/question.svg'
 import FolderTitle from '@containers/FolderTitle'
 import ContentPage from '@containers/ContentPage'
+import { RelationProps } from '@helper/relation'
 import { useTranslations } from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
+import { useRouter } from '@i18n/routing'
 import Dialog from '@components/Dialog'
 import React, { useState } from 'react'
-import {useRouter} from '@i18n/routing'
-import {
-  actionDeactivateSimulators,
-} from '@store/index'
 
-export default function Simulator({ folderId, editable }: { folderId: string, editable: boolean }) {
+export default function Simulator({ relation, editable }: { relation: RelationProps, editable: boolean }) {
   const router = useRouter()
 
-  const [stopFolderId, setStopFolderId] = useState<string | null>(null)
+  const [ deactivateSimulatorId, setDeactivateSimulatorId] = useState<string | null>(null)
   const [showUserHelp, setShowUserHelp] = useState(false)
+  const { simulators } = useSimulatorSelect()
   const t = useTranslations('Simulators')
 
   return (
@@ -50,7 +53,7 @@ export default function Simulator({ folderId, editable }: { folderId: string, ed
     >
       <div className="p-2">
         <FolderTitle
-          folderId={folderId}
+          relation={relation}
         />
       </div>
 
@@ -59,9 +62,9 @@ export default function Simulator({ folderId, editable }: { folderId: string, ed
       >
         <SimulatorBody
           editable={editable}
-          folderId={folderId}
-          onDeactivateAction={(folder) => {
-            setStopFolderId(folder.id)
+          relation={relation}
+          onDeactivateAction={(simulatorId) => {
+            setDeactivateSimulatorId(simulatorId)
           }}
         />
 
@@ -114,18 +117,23 @@ export default function Simulator({ folderId, editable }: { folderId: string, ed
           </Dialog>
         }
 
-        {stopFolderId &&
+        {deactivateSimulatorId &&
           <Dialog
             title={t('removeDialogTitle')}
             text={t('removeDialogText')}
-            onClose={() => setStopFolderId(null)}
+            onClose={() => setDeactivateSimulatorId(null)}
           >
             <Button
               className="min-w-28 px-4"
               variant={ButtonVariant.GRAY}
               onClick={() => {
-                actionDeactivateSimulators({ folderId: stopFolderId, editable }, () => {
-                  setStopFolderId(null)
+                const deactivatedSimulator = getSimulatorById(simulators, deactivateSimulatorId)
+                if (!deactivatedSimulator) {
+                  return
+                }
+
+                actionUpdateSimulator({ simulator: actionDeactivate(deactivatedSimulator), editable }, () => {
+                  setDeactivateSimulatorId(null)
                 })
               }}
             >
@@ -135,7 +143,7 @@ export default function Simulator({ folderId, editable }: { folderId: string, ed
             <Button
               className="min-w-28 px-4"
               variant={ButtonVariant.WHITE}
-              onClick={() => setStopFolderId(null)}
+              onClick={() => setDeactivateSimulatorId(null)}
             >
               {t('removeDialogButtonCancel')}
             </Button>

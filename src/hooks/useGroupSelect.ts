@@ -1,18 +1,17 @@
 import { RelationFolderData } from '@entities/RelationFolder'
 import { FolderGroupData } from '@entities/FolderGroup'
-import { FolderData } from '@entities/Folder'
+import { ConfigType } from '@store/initial-state'
 import { useSelector } from 'react-redux'
 import { useMemo } from 'react'
 
-type TypeGroupSelect = { folders: FolderData[], folderGroups: FolderGroupData[], relationFolders: RelationFolderData[], }
+type TypeGroupSelect = { folderGroups: FolderGroupData[], relationFolders: RelationFolderData[], }
 
 export function useGroupSelect(): TypeGroupSelect {
-  const folders = useSelector((state: TypeGroupSelect) => state.folders)
-  const folderGroups = useSelector((state: TypeGroupSelect) => state.folderGroups)
-  const relationFolders = useSelector((state: TypeGroupSelect) => state.relationFolders)
+  const folderGroups = useSelector((state: ConfigType) => state.folderGroups)
+  const relationFolders = useSelector((state: ConfigType) => state.relationFolders)
 
   return useMemo(() => {
-    return { folders, folderGroups, relationFolders }
-  }, [folders, folderGroups, relationFolders])
+    return { folderGroups, relationFolders }
+  }, [folderGroups, relationFolders])
 }
 
