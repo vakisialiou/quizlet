@@ -1,20 +1,18 @@
 'use client'
 
-import { actionUpdateSimulator, actionUpdateModule } from '@store/index'
 import { getPathname, LanguageEnums, useRouter } from '@i18n/routing'
 import SimulatorBody from '@containers/Simulator/SimulatorBody'
 import SVGRubyOutline from '@public/svg/ruby/ruby-outline.svg'
 import { useSimulatorSelect } from '@hooks/useSimulatorSelect'
 import { actionDeactivate } from '@helper/simulators/actions'
-import { getModule, findSimulators } from '@helper/relation'
+import { getSimulatorById } from '@helper/simulators/general'
 import DropdownLanguage from '@containers/DropdownLanguage'
 import Button, { ButtonVariant } from '@components/Button'
-import { useModuleSelect } from '@hooks/useModuleSelect'
 import SVGGoogle from '@public/svg/painted/google.svg'
 import SVGPresetNew from '@public/svg/preset_new.svg'
+import { actionUpdateSimulator } from '@store/index'
 import FolderTitle from '@containers/FolderTitle'
 import ContentPage from '@containers/ContentPage'
-import Achievement from '@entities/Achievement'
 import ButtonPWA from '@containers/ButtonPWA'
 import { DEMO_MODULE_ID } from '@helper/demo'
 import { useTranslations } from 'next-intl'
@@ -37,9 +35,7 @@ function Landing(
   }
 ) {
   const editable = false
-  const relation = { moduleId: DEMO_MODULE_ID, folderId: null }
-  const { relationSimulators, simulators } = useSimulatorSelect()
-  const modules = useModuleSelect()
+  const { simulators } = useSimulatorSelect()
 
   const session = useSelector(({ session }: { session: Session | null }) => session)
 
@@ -167,28 +163,17 @@ function Landing(
                     editable={false}
                     relation={{ moduleId: DEMO_MODULE_ID }}
                     onDeactivateAction={(simulatorId) => {
-                      const module = getModule(modules, DEMO_MODULE_ID)
-                      if (!module) {
-                        return
-                      }
-
-                      const moduleSimulators = findSimulators(relationSimulators, simulators, relation)
-                      const updatedModule = { ...module, degreeRate: new Achievement().getRate(moduleSimulators) }
-
-                      actionUpdateModule({ module: updatedModule, editable, editId: null }, () => {
-                        const activeSimulator = moduleSimulators.find(({ id }) => simulatorId)
-                        if (!activeSimulator) {
-                          return
-                        }
+                      const activeSimulator = getSimulatorById(simulators, simulatorId)
+                      if (activeSimulator) {
                         actionUpdateSimulator({ simulator: actionDeactivate(activeSimulator), editable })
-                      })
+                      }
                     }}
                   />
                 </div>
 
                 <div className="relative lg:order-1 flex flex-col items-center justify-center text-center">
                    <h4
-                     className="lg:absolute lg:top-0 max-w-72 text-white/75 font-bold text-sm mb-8"
+                     className="lg:absolute lg:top-0 max-w-72 text-white/25 font-bold text-sm mb-8"
                      dangerouslySetInnerHTML={{__html: t('section2Head1')}}
                    />
 
@@ -206,7 +191,7 @@ function Landing(
 
                 <div className="relative lg:order-3 flex flex-col items-center justify-center text-center">
                   <h4
-                    className="lg:absolute lg:top-0 max-w-72 text-white/75 font-bold text-sm mb-8"
+                    className="lg:absolute lg:top-0 max-w-72 text-white/25 font-bold text-sm mb-8"
                     dangerouslySetInnerHTML={{ __html: t('section2Head2') }}
                   />
 

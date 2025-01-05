@@ -92,7 +92,7 @@ export function actionDeactivate(simulator: SimulatorData) {
   }
 }
 
-function actionExtraParamsUpdate(simulator: SimulatorData) {
+export function actionExtraParamsUpdate(simulator: SimulatorData) {
   const termIds = [...simulator.termIds].filter((termId) => termId !== simulator.termId)
   const sliceTermIds = randomizeTermIds(termIds).slice(0, 3)
   return {

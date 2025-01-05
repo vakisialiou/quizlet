@@ -4,6 +4,7 @@ import SimulatorSettings, { SimulatorMethod } from '@entities/SimulatorSettings'
 import { randomizeTermIds, selectRandomTermId } from '@helper/simulators/general'
 import { findSimulators, findTerms, RelationProps } from '@helper/relation'
 import { filterDeletedTerms, filterEmptyTerms } from '@helper/terms'
+import { actionExtraParamsUpdate } from '@helper/simulators/actions'
 import Simulator, { SimulatorStatus } from '@entities/Simulator'
 import { useSimulatorSelect } from '@hooks/useSimulatorSelect'
 import RelationSimulator from '@entities/RelationSimulator'
@@ -115,6 +116,7 @@ export default function SingleStart(
             variant={ButtonVariant.WHITE}
             disabled={!findSimulatorMethodById(settings.simulator.id) || playTerms.length === 0}
             onClick={() => {
+              console.log({ playTerms })
               if (playTerms.length > 0) {
                 const termIds = randomizeTermIds(playTerms.map(({id}) => id))
 
@@ -123,19 +125,10 @@ export default function SingleStart(
                   .setMethod(settings.simulator.method)
                   .setInverted(settings.simulator.inverted)
 
-                let termId
-                if (simulatorSettings.method === SimulatorMethod.PICK) {
-                  const extraTermIds = termIds.length > 4 ? randomizeTermIds(termIds).splice(0, 4) : termIds
-                  simulatorSettings.setExtraTermIds(extraTermIds)
-                  termId = selectRandomTermId(extraTermIds)
-                } else {
-                  termId = selectRandomTermId(termIds)
-                }
-
                 const simulator = new Simulator(SimulatorStatus.PROCESSING)
+                  .setTermId(selectRandomTermId(termIds))
                   .setSettings(simulatorSettings)
                   .setTermIds(termIds)
-                  .setTermId(termId)
                   .setActive(true)
                   .serialize()
 
@@ -147,8 +140,8 @@ export default function SingleStart(
 
                 actionSaveSimulator({
                   editable,
-                  simulator,
                   relationSimulator,
+                  simulator: actionExtraParamsUpdate(simulator),
                 })
               }
             }}
