@@ -1,8 +1,9 @@
 import Dropdown, {DropdownVariant} from '@components/Dropdown'
-import {actionCreateModulePartitions} from '@store/index'
+import {actionCreateModuleGroup} from '@store/index'
 import Button, {ButtonVariant} from '@components/Button'
 import { useTermSelect } from '@hooks/useTermSelect'
 import { findGroupFolders, findTerms } from '@helper/relation'
+import { filterDeletedTerms } from '@helper/terms'
 import React, {useMemo, useState} from 'react'
 import { ModuleData } from '@entities/Module'
 import { useTranslations } from 'next-intl'
@@ -35,7 +36,7 @@ export default function DialogGroups(
   const [ state, setState ] = useState<{ size: number, process: boolean }>({ size: DEFAULT_GROUP_SIZE, process: false })
 
   const moduleTerms = useMemo(() => {
-    return findTerms(relationTerms, terms, { moduleId: module.id })
+    return filterDeletedTerms(findTerms(relationTerms, terms, { moduleId: module.id }))
   }, [relationTerms, terms, module.id])
 
   return (
@@ -112,7 +113,7 @@ export default function DialogGroups(
         disabled={isGenerateGroupDisabled(moduleTerms, GROUP_SIZE_5)}
         onClick={() => {
           setState({ ...state, process: true })
-          actionCreateModulePartitions({ moduleId: module.id, partitionSize: state.size }, () => {
+          actionCreateModuleGroup({ moduleId: module.id, termIds: moduleTerms.map(({ id }) => id), size: state.size }, () => {
             setState({ ...state, process: false, size: DEFAULT_GROUP_SIZE })
             onClose()
           })

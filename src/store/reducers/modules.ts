@@ -1,19 +1,20 @@
 import { saveModuleData, updateModuleData, deleteModuleData } from '@store/fetch/modules'
 import { unique, remove, upsertObject, removeObject } from '@lib/array'
-import { createPartitions } from '@store/fetch/partitions'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { ConfigType } from '@store/initial-state'
+import {createGroup, TypeCreateGroupResponse} from '@store/fetch/group'
 import { ModuleData } from '@entities/Module'
 
-export type PartitionsType = {
+export type GroupType = {
   moduleId: string,
-  partitionSize: number,
+  termIds: string[],
+  size: number,
 }
 
-export const createModulePartitions = createAsyncThunk(
+export const createModuleGroup = createAsyncThunk(
   '/module/create/partitions',
-  async (payload: PartitionsType): Promise<ModuleData[]> => {
-    return createPartitions(payload.moduleId, payload.partitionSize)
+  async (payload: GroupType): Promise<TypeCreateGroupResponse> => {
+    return createGroup(payload.moduleId, payload.termIds, payload.size)
   }
 )
 
@@ -68,16 +69,17 @@ export const updateModule = createAsyncThunk(
 export const moduleReducers = (builder: any) => {
 
   builder
-    .addCase(createModulePartitions.pending, (state: ConfigType, action: { meta: { arg: PartitionsType } }) => {
+    .addCase(createModuleGroup.pending, (state: ConfigType, action: { meta: { arg: GroupType } }) => {
       state.edit.processModuleIds = unique([...state.edit.processModuleIds, action.meta.arg.moduleId])
     })
-    .addCase(createModulePartitions.rejected, (state: ConfigType, action: { meta: { arg: PartitionsType } }) => {
+    .addCase(createModuleGroup.rejected, (state: ConfigType, action: { meta: { arg: GroupType } }) => {
       state.edit.processModuleIds = remove(state.edit.processModuleIds, action.meta.arg.moduleId)
     })
-    .addCase(createModulePartitions.fulfilled, (state: ConfigType, action: { payload: ModuleData[], meta: { arg: PartitionsType } }) => {
-      for (const item of action.payload) {
-        state.modules = upsertObject([...state.modules], { ...item })
-      }
+    .addCase(createModuleGroup.fulfilled, (state: ConfigType, action: { payload: TypeCreateGroupResponse, meta: { arg: GroupType } }) => {
+      state.folders = [...state.folders, ...action.payload.folders]
+      state.folderGroups = [...state.folderGroups, action.payload.folderGroup]
+      state.relationTerms = [...state.relationTerms, ...action.payload.relationTerms]
+      state.relationFolders = [...state.relationFolders, ...action.payload.relationFolders]
       state.edit.processModuleIds = remove(state.edit.processModuleIds, action.meta.arg.moduleId)
     })
 

@@ -2,7 +2,7 @@ import RelationFolder, { RelationFolderData } from '@entities/RelationFolder'
 import { createManyRelationFolders } from '@repositories/relation-folder'
 import RelationTerm, { RelationTermData } from '@entities/RelationTerm'
 import { createManyRelationTerms } from '@repositories/relation-term'
-import { upsertFolderGroup } from '@repositories/folder-group'
+import {deleteEmptyFolderGroups, upsertFolderGroup} from '@repositories/folder-group'
 import { findTermsByModuleId } from '@repositories/terms'
 import { createManyFolder } from '@repositories/folders'
 import { getModuleById } from '@repositories/modules'
@@ -23,7 +23,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ mod
   }
 
   const body = await req.json()
-  if (!body.partitionSize) {
+  if (!body.size) {
+    return new Response(null, { status: 400 })
+  }
+
+  if (!Array.isArray(body.termIds) || body.termIds.length === 0) {
     return new Response(null, { status: 400 })
   }
 
@@ -34,13 +38,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ mod
     return new Response(null, { status: 400 })
   }
 
-  const terms = filterDeletedTerms(await findTermsByModuleId(prisma, moduleId))
-  if (terms.length === 0) {
-    return new Response(null, { status: 400 })
-  }
-
   let i = 0
-  const groupedArray = chunks(shuffle(terms), Number(body.partitionSize))
+  const groupedArray = chunks(shuffle(body.termIds), Number(body.size))
 
   const folderGroup = new FolderGroup()
     .setName(dateFormat(new Date()))
@@ -57,7 +56,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ mod
     relationFolders: RelationFolderData[]
   }
 
-  for (const terms of groupedArray) {
+  for (const group of groupedArray) {
     ++i
     const folder = new Folder()
       .setName(`${i}`)
@@ -73,10 +72,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ mod
 
     data.relationFolders.push(relationFolder)
 
-    for (const term of terms) {
+    for (const termId of group) {
       const relationTerm = new RelationTerm()
-        .setTermId(term.id)
         .setFolderId(folder.id)
+        .setTermId(termId as string)
         .serialize()
 
       data.relationTerms.push(relationTerm)
@@ -93,7 +92,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ mod
     })
 
     return new Response(JSON.stringify({
-      module,
+      folderGroup,
       folders: data.folders,
       relationTerms: data.relationTerms,
       relationFolders: data.relationFolders,
@@ -102,7 +101,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ mod
       headers: { 'Content-Type': 'application/json' },
     })
 
-  } catch {
+  } catch (e) {
+    console.log(e)
     return new Response(null, { status: 500 })
   }
 }

@@ -89,10 +89,13 @@ export default function Collection() {
         editable={editable}
         editId={edit.moduleId}
         onOpenModule={(module) => {
-          router.push(`/private/module/${module.id}`)
+          router.push(`/private/modules/${module.id}`)
         }}
         onPlayModule={(module) => {
           router.push(`/simulator?moduleId=${module.id}`)
+        }}
+        onPlayFolder={(group, folder) => {
+          router.push(`/simulator?folderId=${folder.id}`)
         }}
       />
 

@@ -36,15 +36,6 @@ export async function findRelationTermsByUserId(db: PrismaEntry, userId: string)
   return res.map(item => createRelationTermSelect(item).serialize())
 }
 
-export async function findRelationTermsByModuleId(db: PrismaEntry, moduleId: string) {
-  const res = await db.relationTerm.findMany({
-    where: { moduleId },
-    select: { ...RelationTermSelect },
-  })
-
-  return res.map(item => createRelationTermSelect(item).serialize())
-}
-
 export async function createManyRelationTerms(db: PrismaEntry, userId: string, items: RelationTermData[]): Promise<number> {
   const res = await db.relationTerm.createMany({
     data: items.map((item) => {
@@ -70,6 +61,14 @@ export async function createRelationTerms(db: PrismaEntry, userId: string, item:
       folderId: item.folderId,
       moduleId: item.moduleId,
     }
+  })
+
+  return res.id
+}
+
+export async function removeRelationTerms(db: PrismaEntry, userId: string, id: string): Promise<string> {
+  const res = await db.relationTerm.delete({
+    where: { userId, id }
   })
 
   return res.id

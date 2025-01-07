@@ -58,16 +58,16 @@ export const createSimulatorSelect = (data: SimulatorResult): Simulator => {
     .setUpdatedAt(data.updatedAt)
 }
 
-export const upsertSimulator = async (db: PrismaEntry, userId: string, data: SimulatorData): Promise<string | null> => {
+export const updateSimulator = async (db: PrismaEntry, userId: string, data: SimulatorData): Promise<string | null> => {
   const termIds = Array.isArray(data.termIds) ? data.termIds : []
   const historyIds = Array.isArray(data.historyIds) ? data.historyIds : []
   const continueIds = Array.isArray(data.continueIds) ? data.continueIds : []
   const rememberIds = Array.isArray(data.rememberIds) ? data.rememberIds : []
   const settings = data.settings || {}
   const tracker = data.tracker || {}
-  const res = await db.simulator.upsert({
-    where: { id: data.id },
-    update: {
+  const res = await db.simulator.update({
+    where: { userId, id: data.id },
+    data: {
       termIds,
       historyIds,
       continueIds,
@@ -79,7 +79,20 @@ export const upsertSimulator = async (db: PrismaEntry, userId: string, data: Sim
       status: data.status,
       updatedAt: new Date(),
     },
-    create: {
+  })
+
+  return res.id
+}
+
+export const createSimulator = async (db: PrismaEntry, userId: string, data: SimulatorData): Promise<string | null> => {
+  const termIds = Array.isArray(data.termIds) ? data.termIds : []
+  const historyIds = Array.isArray(data.historyIds) ? data.historyIds : []
+  const continueIds = Array.isArray(data.continueIds) ? data.continueIds : []
+  const rememberIds = Array.isArray(data.rememberIds) ? data.rememberIds : []
+  const settings = data.settings || {}
+  const tracker = data.tracker || {}
+  const res = await db.simulator.create({
+    data: {
       userId,
       termIds,
       historyIds,
@@ -97,4 +110,13 @@ export const upsertSimulator = async (db: PrismaEntry, userId: string, data: Sim
   })
 
   return res.id
+}
+
+export async function findSimulatorsByUserId(db: PrismaEntry, userId: string) {
+  const res = await db.simulator.findMany({
+    where: { userId },
+    select: { ...SimulatorSelect },
+  })
+
+  return res.map(item => createSimulatorSelect(item).serialize())
 }

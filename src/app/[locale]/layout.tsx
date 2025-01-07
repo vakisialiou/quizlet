@@ -1,14 +1,18 @@
 import { routing, LanguageEnums } from '@i18n/routing'
 import { NextIntlClientProvider } from 'next-intl'
-import { getMessages } from 'next-intl/server'
-import { notFound } from 'next/navigation'
-import localFont from 'next/font/local'
 import { SessionProvider } from 'next-auth/react'
 import ProviderResize from './provider-resize'
 import ProviderWorker from './provider-worker'
 import ProviderOnline from './provider-online'
+import { getMessages } from 'next-intl/server'
+import { notFound } from 'next/navigation'
+import localFont from 'next/font/local'
 
+import { findRelationSimulatorsByUserId } from '@repositories/relation-simulator'
+import { findRelationFoldersByUserId } from '@repositories/relation-folder'
 import { findRelationTermsByUserId } from '@repositories/relation-term'
+import { findFolderGroupsByUserId } from '@repositories/folder-group'
+import { findSimulatorsByUserId } from '@repositories/simulators'
 import { findFoldersByUserId } from '@repositories/folders'
 import { findModulesByUserId } from '@repositories/modules'
 import { findTermsByUserId } from '@repositories/terms'
@@ -75,15 +79,15 @@ export default async function RootLayout({
     if (userId) {
       return await getInitialState({
         session,
-        simulators: [],
-        folderGroups: [],
-        relationFolders: [],
-        relationSimulators: [],
         settings: await getSettings(prisma, userId),
-        folders: await findFoldersByUserId(prisma, userId),
-        modules: await findModulesByUserId(prisma, userId),
         terms: await findTermsByUserId(prisma, userId),
-        relationTerms: await findRelationTermsByUserId(prisma, userId)
+        modules: await findModulesByUserId(prisma, userId),
+        folders: await findFoldersByUserId(prisma, userId),
+        simulators: await findSimulatorsByUserId(prisma, userId),
+        folderGroups: await findFolderGroupsByUserId(prisma, userId),
+        relationTerms: await findRelationTermsByUserId(prisma, userId),
+        relationFolders: await findRelationFoldersByUserId(prisma, userId),
+        relationSimulators: await findRelationSimulatorsByUserId(prisma, userId)
       })
     }
     return getDemoInitialData(locale)

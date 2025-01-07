@@ -30,6 +30,7 @@ import { findTerms } from '@helper/relation'
 import { useTranslations } from 'next-intl'
 import SVGPlay from '@public/svg/play.svg'
 import { useSelector } from 'react-redux'
+import {FolderGroupData} from "@entities/FolderGroup";
 
 enum DropDownIdEnums {
   GENERATE = 'GENERATE',
@@ -60,7 +61,7 @@ export default function Modules(
     filter: TypeFilter
     onOpenModule?: (module: ModuleData) => void
     onPlayModule?: (module: ModuleData) => void
-    onPlayFolder?: (module: FolderData) => void
+    onPlayFolder?: (group: FolderGroupData, folder: FolderData) => void
   }
 ) {
   const { terms, relationTerms } = useTermSelect()
@@ -79,9 +80,9 @@ export default function Modules(
   ]
   const modules = useSelector(({ modules }: { modules: ModuleData[] }) => modules)
 
+  const [ removeFolder, setRemoveFolder ] = useState<{ group: FolderGroupData, folder: FolderData } | null>(null)
   const [ originModule, setOriginModule ] = useState<ModuleData | null>(null)
   const [ removeModule, setRemoveModule ] = useState<ModuleData | null>(null)
-  const [ removeFolder, setRemoveFolder ] = useState<FolderData | null>(null)
   const [ partition, setPartition ] = useState<ModuleData | null>(null)
   const [ share, setShare ] = useState<ModuleData | null>(null)
 
@@ -218,13 +219,13 @@ export default function Modules(
                 <>
                   <Folders
                     module={module}
-                    onPlay={(folder) => {
+                    onPlay={(group, folder) => {
                       if (onPlayFolder) {
-                        onPlayFolder(folder)
+                        onPlayFolder(group, folder)
                       }
                     }}
-                    onRemove={(folder) => {
-                      setRemoveFolder(folder)
+                    onRemove={(group, folder) => {
+                      setRemoveFolder({ group, folder })
                     }}
                   />
                 </>
@@ -254,7 +255,9 @@ export default function Modules(
 
       {removeFolder &&
         <DialogRemoveFolder
-          folder={removeFolder}
+          editable={editable}
+          group={removeFolder.group}
+          folder={removeFolder.folder}
           onClose={() => {
             setRemoveFolder(null)
           }}
@@ -266,6 +269,7 @@ export default function Modules(
 
       {removeModule &&
         <DialogRemoveModule
+          editable={editable}
           module={removeModule}
           onClose={() => {
             setRemoveModule(null)

@@ -61,12 +61,16 @@ export const upsertFolderGroup = async (db: PrismaEntry, userId: string, item: F
   return res.id
 }
 
-export const removeFolderGroup = async (db: PrismaEntry, id: string): Promise<boolean> => {
+export async function deleteFolderGroupById(db: PrismaEntry, userId: string, id: string): Promise<string | null> {
   const res = await db.folderGroup.delete({ where: { id } })
-  return !!res?.id
+  return res.id || null
 }
 
-export const removeFolderGroups = async (db: PrismaEntry, ids: string[]): Promise<boolean> => {
-  const res = await db.folderGroup.deleteMany({ where: { id: { in: ids } } })
-  return res.count > 0
+export async function findFolderGroupsByUserId(db: PrismaEntry, userId: string) {
+  const res = await db.folderGroup.findMany({
+    where: { userId },
+    select: { ...FolderGroupSelect },
+  })
+
+  return res.map(item => createFolderGroupSelect(item).serialize())
 }

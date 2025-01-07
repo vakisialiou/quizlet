@@ -49,24 +49,10 @@ export const createTermSelect = (term: TermResult): Term => {
     .setUpdatedAt(term.updatedAt)
 }
 
-export const getTermById = async (db: PrismaEntry, id: string): Promise<TermData[]> => {
-  const res = await db.term.findMany({
-    where: { id },
-    select: { ...TermSelect },
-  })
-
-  return res.map(term => createTermSelect(term).serialize())
-}
-
 export async function findTermsByUserId(db: PrismaEntry, userId: string) {
   const res = await db.term.findMany({
-    where: {
-      relationTerms: {
-        some: { userId },
-      },
-    },
+    where: { userId },
     select: { ...TermSelect },
-    distinct: ['id'],
   })
   return res.map(term => createTermSelect(term).serialize())
 }
@@ -84,9 +70,23 @@ export async function findTermsByModuleId(db: PrismaEntry, moduleId: string) {
   return res.map(term => createTermSelect(term).serialize())
 }
 
-export const createTerm = async (db: PrismaEntry, term: TermData): Promise<string | null> => {
-  const res = await db.term.create({
-    data: {
+export const upsertTerm = async (db: PrismaEntry, userId: string, term: TermData): Promise<string | null> => {
+  const res = await db.term.upsert({
+    where: { id: term.id },
+    update: {
+      order: term.order,
+      answer: term.answer,
+      deleted: term.deleted,
+      question: term.question,
+      collapsed: term.collapsed,
+      answerLang: term.answerLang,
+      association: term.association,
+      questionLang: term.questionLang,
+      associationLang: term.associationLang,
+      updatedAt: new Date(),
+    },
+    create: {
+      userId,
       id: term.id,
       order: term.order,
       answer: term.answer,
@@ -105,27 +105,7 @@ export const createTerm = async (db: PrismaEntry, term: TermData): Promise<strin
   return res.id
 }
 
-export const updateTerm = async (db: PrismaEntry, term: TermData): Promise<string | null> => {
-  const res = await db.term.update({
-    where: { id: term.id },
-    data: {
-      order: term.order,
-      answer: term.answer,
-      deleted: term.deleted,
-      question: term.question,
-      collapsed: term.collapsed,
-      answerLang: term.answerLang,
-      association: term.association,
-      questionLang: term.questionLang,
-      associationLang: term.associationLang,
-      updatedAt: new Date(),
-    }
-  })
-
-  return res.id
-}
-
-export const removeTerm = async (db: PrismaEntry, id: string): Promise<boolean> => {
-  const res = await db.term.delete({ where: { id } })
+export const removeTerm = async (db: PrismaEntry, userId: string, id: string): Promise<boolean> => {
+  const res = await db.term.delete({ where: { userId, id } })
   return !!res?.id
 }

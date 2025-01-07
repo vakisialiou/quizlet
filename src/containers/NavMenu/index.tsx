@@ -14,7 +14,7 @@ import clsx from 'clsx'
 
 export default function NavMenu({ onClose }: { onClose: () => void }) {
   const pathname = usePathname()
-  const t = useTranslations('Folders')
+  const t = useTranslations('NavMenu')
   const session = useSelector(({ session }: { session: Session | null }) => session)
   const modules = useSelector(({ modules }: { modules: ModuleData[] }) => modules)
 
@@ -25,7 +25,7 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
           id: item.id,
           name: item.name,
           private: true,
-          href: `/private/folder/${item.id}`
+          href: `/private/modules/${item.id}`
         } as NavMenuItemProp
       })
   }, [modules])
@@ -33,14 +33,21 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
   const menuItems = [
     {
       id: 1,
-      name: 'Home',
+      name: t('home'),
       href: `/`,
       private: false,
       children: []
     },
     {
-      id: 2,
-      name: t('headTitle'),
+      id: 20,
+      name: t('terms'),
+      href: `/private/terms`,
+      private: true,
+      children: []
+    },
+    {
+      id: 30,
+      name: t('modules'),
       href: `/private`,
       private: true,
       children: collectionChildren
@@ -118,7 +125,7 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
                         <div
                           className="absolute w-3 h-6 left-4 top-[-0px] border-b border-dashed border-white/25"
                         />
-                        {child.name || <span className="text-gray-500">{t('folderNoName')}</span>}
+                        {child.name || <span className="text-gray-500">{t('moduleNoName')}</span>}
                       </NavMenuItem>
                     )
                   })}

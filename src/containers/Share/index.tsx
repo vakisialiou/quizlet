@@ -69,7 +69,6 @@ export default function Share() {
         shareId={share.id}
         filter={{ search }}
         editable={editable}
-        relation={{ moduleId: share.moduleId }}
       />
     </ContentPage>
   )

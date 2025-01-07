@@ -27,18 +27,25 @@ export const createRelationSimulatorSelect = (data: RelationSimulatorResult) => 
     .setSimulatorId(data.simulatorId)
 }
 
-export const createManyRelationSimulators = async (db: PrismaEntry, userId: string, items: RelationSimulatorData[]): Promise<number> => {
-  const res = await db.relationSimulator.createMany({
-    data: items.map((item) => {
-      return {
-        userId,
-        id: item.id,
-        folderId: item.folderId,
-        moduleId: item.moduleId,
-        simulatorId: item.simulatorId,
-      }
-    })
+export const createRelationSimulator = async (db: PrismaEntry, userId: string, item: RelationSimulatorData): Promise<string | null> => {
+  const res = await db.relationSimulator.create({
+    data: {
+      userId,
+      id: item.id,
+      folderId: item.folderId,
+      moduleId: item.moduleId,
+      simulatorId: item.simulatorId,
+    }
   })
 
-  return res.count
+  return res.id || null
+}
+
+export async function findRelationSimulatorsByUserId(db: PrismaEntry, userId: string) {
+  const res = await db.relationSimulator.findMany({
+    where: { userId },
+    select: { ...RelationSimulatorSelect },
+  })
+
+  return res.map(item => createRelationSimulatorSelect(item).serialize())
 }

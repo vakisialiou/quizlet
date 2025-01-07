@@ -58,6 +58,7 @@ function Dropdown(
     disabled = false,
     className = '',
     classNameMenu = '',
+    classNameContainer = '',
     menu,
     placement = Placement.bottomEnd,
     variant = DropdownVariant.transparent,
@@ -75,6 +76,7 @@ function Dropdown(
     disabled?: boolean,
     className?: string,
     classNameMenu?: string,
+    classNameContainer?: string,
     placement?: Placement,
     variant?: DropdownVariant,
     offsetOptions?: number,
@@ -144,6 +146,7 @@ function Dropdown(
       ref={refElement}
       onClick={onClick}
       className={clsx('flex items-center text-left transition-all', {
+        [classNameContainer]: classNameContainer,
         ['border']: bordered,
 
         ['border-gray-400']: [DropdownVariant.white, DropdownVariant.transparent, DropdownVariant.gray].includes(variant) && bordered,
@@ -190,7 +193,7 @@ function Dropdown(
         createPortal(
           <div
             ref={refMenu}
-            className={clsx('fixed z-10 mt-1 border ring-1 ring-black ring-opacity-5 focus:outline-none select-none px-1', {
+            className={clsx('fixed z-10 border ring-1 ring-black ring-opacity-5 focus:outline-none select-none', {
               [classNameMenu]: classNameMenu,
               ['border-gray-600/50 bg-black shadow-lg']: variant === DropdownVariant.gray,
               ['border-gray-100/50 bg-white shadow-md']: variant === DropdownVariant.white,

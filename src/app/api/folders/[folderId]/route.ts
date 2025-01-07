@@ -1,7 +1,9 @@
 import { removeFolder, upsertFolder, getFolderById } from '@repositories/folders'
+import { deleteFolderGroupById } from '@repositories/folder-group'
+import { RelationFolderData } from '@entities/RelationFolder'
+import { prisma, transaction } from '@lib/prisma'
 import { FolderData } from '@entities/Folder'
 import { NextRequest } from 'next/server'
-import { prisma } from '@lib/prisma'
 import { auth } from '@auth'
 
 export async function PUT(req: NextRequest) {
@@ -40,8 +42,15 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ f
     return new Response(null, { status: 401 })
   }
 
+  const relation = await req.json() as RelationFolderData
+
   try {
-    await removeFolder(prisma, userId, folderId)
+    await transaction(prisma, async (entry) => {
+      await removeFolder(prisma, userId, folderId)
+      if (relation.groupId) {
+        await deleteFolderGroupById(entry, userId, relation.groupId)
+      }
+    })
 
     return new Response(null, { status: 200 })
 

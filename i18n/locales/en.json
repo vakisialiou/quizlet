@@ -286,5 +286,11 @@
     "metaTitle": "All Your Study Flashcards in One Place | QuizerPlay",
     "metaKeywords": "study flashcards, management, creation, editing, deletion, learning organization, QuizerPlay",
     "metaDescription": "Collect and manage all your study flashcards on the QuizerPlay platform. A simple and convenient solution for effective learning."
+  },
+  "NavMenu": {
+    "home": "Home",
+    "terms": "Terms",
+    "modules": "Modules",
+    "moduleNoName": "(Module no name)"
   }
 }

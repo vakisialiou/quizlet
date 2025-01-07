@@ -1,6 +1,7 @@
 import { configureStore, createReducer, EnhancedStore } from '@reduxjs/toolkit'
 import { loggerMiddleware } from '@store/middlewares/logger'
 import * as simulators from '@store/reducers/simulators'
+import * as relations from '@store/reducers/relations'
 import * as settings from '@store/reducers/settings'
 import * as folders from '@store/reducers/folders'
 import * as modules from '@store/reducers/modules'
@@ -21,6 +22,7 @@ function renderStore(initialState?: ConfigType): EnhancedStore {
     preloadedState: initialState,
     reducer: createReducer(initialState, (builder) => {
       simulators.simulatorReducers(builder)
+      relations.relationReducers(builder)
       settings.simulatorReducers(builder)
       modules.moduleReducers(builder)
       folders.folderReducers(builder)
@@ -89,18 +91,23 @@ export const actionUpdateModule = (payload: modules.UpdateType, callback?: (res:
   execAction(action, callback)
 }
 
-export const actionCreateModulePartitions = (payload: modules.PartitionsType, callback?: (res: FolderData[]) => void): void => {
-  const action = modules.createModulePartitions(payload)
+export const actionCreateModuleGroup = (payload: modules.GroupType, callback?: (res: FolderData[]) => void): void => {
+  const action = modules.createModuleGroup(payload)
   execAction(action, callback)
 }
 
-export const actionCreateTerm = (payload: terms.SaveType, callback?: (res: boolean) => void): void => {
-  const action = terms.createTerm(payload)
+export const actionUpsertTerm = (payload: terms.UpsertType, callback?: (res: boolean) => void): void => {
+  const action = terms.upsertTerm(payload)
   execAction(action, callback)
 }
 
-export const actionUpdateTerm = (payload: terms.UpdateType, callback?: (res: boolean) => void): void => {
-  const action = terms.updateTerm(payload)
+export const actionCreateRelationTerm = (payload: relations.CreateType, callback?: (res: boolean) => void): void => {
+  const action = relations.createRelationTerm(payload)
+  execAction(action, callback)
+}
+
+export const actionRemoveRelationTerm = (payload: relations.RemoveType, callback?: (res: boolean) => void): void => {
+  const action = relations.removeRelationTerm(payload)
   execAction(action, callback)
 }
 

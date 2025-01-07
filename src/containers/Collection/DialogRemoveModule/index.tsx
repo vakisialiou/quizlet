@@ -8,11 +8,13 @@ import React, {useState} from 'react'
 
 export default function DialogRemoveModule(
   {
+    editable,
     module,
     onClose,
     onDone
   }:
     {
+      editable: boolean
       module: ModuleData
       onClose: () => void
       onDone: () => void
@@ -36,7 +38,7 @@ export default function DialogRemoveModule(
           }
 
           setProcess(true)
-          actionDeleteModule({ module }, () => {
+          actionDeleteModule({ module, editable }, () => {
             setProcess(false)
             onDone()
           })

@@ -1,14 +1,16 @@
 'use client'
 
+import { actionUpsertTerm, actionCreateRelationTerm, actionEditTerm, actionRemoveRelationTerm } from '@store/index'
 import React, { useCallback, useEffect, useMemo, useState, useImperativeHandle, Ref, forwardRef } from 'react'
-import { actionUpsertTerm, actionEditTerm } from '@store/index'
 import TextToSpeech, { TextToSpeechEvents } from '@lib/speech'
 import Button, { ButtonVariant } from '@components/Button'
 import { ConfigEditType } from '@store/initial-state'
 import { useTermSelect } from '@hooks/useTermSelect'
-import { filterDeletedTerms } from '@helper/terms'
+import { findRelationTerm } from '@helper/relation'
+import RelationTerm from '@entities/RelationTerm'
 import {searchTerms} from '@helper/search-terms'
 import Term, { TermData } from '@entities/Term'
+import { RelationProps} from '@helper/relation'
 import {sortTerms} from '@helper/sort-terms'
 import TermCard from '@containers/TermCard'
 import {useTranslations} from 'next-intl'
@@ -21,36 +23,37 @@ export type TypeFilterGrid = {
 
 function Grid(
   {
+    relation,
     shareId,
     editable,
-    filter
+    filter,
+    relatedTerms
   }:
   {
     editable: boolean
     shareId: string | null
+    relation: RelationProps
     filter: TypeFilterGrid
+    relatedTerms: TermData[]
   },
   ref: Ref<{ onCreate?: () => void }>
 ) {
+  const { relationTerms } = useTermSelect()
+
   const [ originItem, setOriginItem ] = useState<TermData | null>(null)
   const [removeTerm, setRemoveTerm] = useState<TermData | null>(null)
 
-  const { terms } = useTermSelect()
   const edit = useSelector(({ edit }: { edit: ConfigEditType }) => edit)
 
-  const visibleTerms = useMemo(() => {
-    return filterDeletedTerms(terms)
-  }, [terms])
-
   const filteredTerms = useMemo(() => {
-    let rawItems = [...visibleTerms]
+    let rawItems = [...relatedTerms]
 
     if (filter.search) {
       rawItems = searchTerms(rawItems, filter.search, edit.termId)
     }
 
     return sortTerms(rawItems)
-  }, [visibleTerms, filter, edit.termId])
+  }, [relatedTerms, filter, edit.termId])
 
   const speech = useMemo(() => {
     return typeof(window) === 'object' ? new TextToSpeech() : null
@@ -72,13 +75,21 @@ function Grid(
 
   const onCreate = useCallback(() => {
     const term = new Term()
-      .setOrder(visibleTerms.length + 1)
+      .setOrder(relatedTerms.length + 1)
+      .serialize()
+
+    const relationTerm = new RelationTerm()
+      .setModuleId(relation.moduleId || null)
+      .setFolderId(relation.folderId || null)
+      .setTermId(term.id)
       .serialize()
 
     actionUpsertTerm({ term, editId: term.id, editable, shareId }, () => {
-      setOriginItem(term)
+      actionCreateRelationTerm({ relationTerm, editable }, () => {
+        setOriginItem(term)
+      })
     })
-  }, [visibleTerms])
+  }, [relatedTerms])
 
   useImperativeHandle(ref, () => ({ onCreate }))
 
@@ -86,7 +97,7 @@ function Grid(
 
   return (
     <>
-      {editable && visibleTerms.length === 0 &&
+      {editable && relatedTerms.length === 0 &&
         <div className="flex flex-col items-center justify-center gap-2 p-4">
           <div className="text-white/50 text-sm italic text-center">
             {t('noCardsHelper', { btnName: t('footButtonCreateTerm') })}
@@ -182,16 +193,16 @@ function Grid(
             className="min-w-28 px-4"
             variant={ButtonVariant.GRAY}
             onClick={() => {
-              actionUpsertTerm({
-                term: { ...removeTerm, deleted: true },
-                editId: null,
-                editable,
-                shareId
-              }, () => {
-                setRemoveTerm(null)
+              const relationTerm = findRelationTerm(relationTerms, relation, removeTerm.id)
+              if (!relationTerm) {
+                return
+              }
+
+              actionRemoveRelationTerm({ relationTerm, editable }, () => {
                 if (originItem && originItem.id === removeTerm.id) {
                   setOriginItem(null)
                 }
+                setRemoveTerm(null)
               })
             }}
           >

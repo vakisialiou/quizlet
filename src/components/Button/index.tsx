@@ -24,7 +24,7 @@ export default function Button(
     border = true,
     shadow = true,
     active = false,
-    rounded = true,
+    rounded = false,
     disabled = false,
     size = ButtonSize.H12,
     variant = ButtonVariant.GRAY

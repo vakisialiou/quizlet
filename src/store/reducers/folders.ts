@@ -1,9 +1,11 @@
 import {
   saveFolderData,
   updateFolderData,
-  deleteFolderData
+  deleteFolderData,
+  TypeDeleteRelation
 } from '@store/fetch/folders'
 import { unique, remove, upsertObject, removeObject } from '@lib/array'
+import { FolderGroupData } from '@entities/FolderGroup'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { ConfigType } from '@store/initial-state'
 import { FolderData } from '@entities/Folder'
@@ -25,7 +27,7 @@ export const saveFolder = createAsyncThunk(
 )
 
 export type DeleteType = {
-  folder: FolderData,
+  relation: TypeDeleteRelation,
   editable: boolean
 }
 
@@ -33,7 +35,7 @@ export const deleteFolder = createAsyncThunk(
   '/folder/delete',
   async (payload: DeleteType): Promise<boolean> => {
     if (payload.editable) {
-      return await deleteFolderData(payload.folder.id)
+      return await deleteFolderData(payload.relation)
     }
     return true
   }
@@ -84,15 +86,22 @@ export const folderReducers = (builder: any) => {
 
   builder
     .addCase(deleteFolder.pending, (state: ConfigType, action: { meta: { arg: DeleteType } }) => {
-      state.edit.processFolderIds = unique([...state.edit.processFolderIds, action.meta.arg.folder.id])
+      const { folderId } = action.meta.arg.relation
+      state.edit.processFolderIds = unique([...state.edit.processFolderIds, folderId])
     })
     .addCase(deleteFolder.rejected, (state: ConfigType, action: { meta: { arg: DeleteType } }) => {
-      state.edit.processFolderIds = remove(state.edit.processFolderIds, action.meta.arg.folder.id)
+      const { folderId } = action.meta.arg.relation
+      state.edit.processFolderIds = remove(state.edit.processFolderIds, folderId)
     })
     .addCase(deleteFolder.fulfilled, (state: ConfigType, action: { meta: { arg: DeleteType } }) => {
-      const { folder } = action.meta.arg
-      state.folders = upsertObject(state.folders, folder)
-      state.edit.processFolderIds = remove(state.edit.processFolderIds, folder.id)
+      const { folderId, groupId } = action.meta.arg.relation
+      state.folders = removeObject(state.folders, { id: folderId } as FolderData)
+      state.relationFolders = [...state.relationFolders].filter((relation) => relation.folderId !== folderId)
+
+      state.edit.processFolderIds = remove(state.edit.processFolderIds, folderId)
+      if (groupId) {
+        state.folderGroups = removeObject(state.folderGroups, { id: groupId } as FolderGroupData)
+      }
     })
 
   builder

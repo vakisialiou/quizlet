@@ -38,3 +38,12 @@ export const createManyRelationFolders = async (db: PrismaEntry, userId: string,
 
   return res.count
 }
+
+export async function findRelationFoldersByUserId(db: PrismaEntry, userId: string) {
+  const res = await db.relationFolder.findMany({
+    where: { userId },
+    select: { ...RelationFolderSelect },
+  })
+
+  return res.map(item => createRelationFolderSelect(item).serialize())
+}

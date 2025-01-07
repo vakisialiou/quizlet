@@ -11,6 +11,7 @@ import AchievementIcon from '@containers/AchievementIcon'
 import SVGAnchorRight from '@public/svg/anchor_right.svg'
 import { useFolderSelect } from '@hooks/useFolderSelect'
 import SVGAnchorLeft from '@public/svg/anchor_left.svg'
+import { FolderGroupData } from '@entities/FolderGroup'
 import { useGroupSelect } from '@hooks/useGroupSelect'
 import { useTermSelect } from '@hooks/useTermSelect'
 import Levels, {EnumLevels} from '@entities/Levels'
@@ -39,8 +40,8 @@ export default function Folders(
   }:
   {
     module: ModuleData
-    onPlay?: (folder: FolderData) => void
-    onRemove?: (folder: FolderData) => void,
+    onPlay?: (group: FolderGroupData, folder: FolderData) => void
+    onRemove?: (group: FolderGroupData, folder: FolderData) => void,
   }
 ) {
   const t = useTranslations('Folders')
@@ -144,12 +145,12 @@ export default function Folders(
                         switch (id) {
                           case DropDownIdEnums.STUDY:
                             if (onPlay) {
-                              onPlay(folder)
+                              onPlay(group, folder)
                             }
                             break
                           case DropDownIdEnums.REMOVE_FOLDER:
                             if (onRemove) {
-                              onRemove(folder)
+                              onRemove(group, folder)
                             }
                             break
                         }
@@ -188,7 +189,7 @@ export default function Folders(
                     )}
                     onClickBody={() => {
                       if (onPlay) {
-                        onPlay(folder)
+                        onPlay(group, folder)
                       }
                     }}
                   >
