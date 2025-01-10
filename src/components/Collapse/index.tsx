@@ -50,15 +50,7 @@ export default function Collapse(
         </div>
       </div>
 
-      {!value &&
-        <div
-          className={clsx('flex w-full', {
-            [classNameBody]: classNameBody
-          })}
-        >
-          {children}
-        </div>
-      }
+      {!value && children}
     </div>
   )
 }

@@ -16,13 +16,12 @@ import TermCard from '@containers/TermCard'
 import {useTranslations} from 'next-intl'
 import { useSelector } from 'react-redux'
 import Dialog from '@components/Dialog'
-import SearchTermList from "@containers/SearchTermList";
 
 export type TypeFilterGrid = {
   search: string | null,
 }
 
-function ModuleTerms(
+function RelatedTerms(
   {
     relatedTerms,
     relation,
@@ -37,11 +36,10 @@ function ModuleTerms(
     filter: TypeFilterGrid
     relatedTerms: TermData[]
   },
-  ref: Ref<{ onCreate?: () => void, onToggleAdd?: () => void }>
+  ref: Ref<{ onCreate?: () => void }>
 ) {
   const { relationTerms } = useTermSelect()
 
-  const [ showSearchTerms, setShowSearchTerms ] = useState(false)
   const [ originItem, setOriginItem ] = useState<TermData | null>(null)
   const [removeTerm, setRemoveTerm] = useState<TermData | null>(null)
 
@@ -93,11 +91,7 @@ function ModuleTerms(
     })
   }, [relatedTerms])
 
-  const onToggleAdd = useCallback(() => {
-    setShowSearchTerms(!showSearchTerms)
-  }, [showSearchTerms])
-
-  useImperativeHandle(ref, () => ({ onCreate, onToggleAdd }))
+  useImperativeHandle(ref, () => ({ onCreate }))
 
   const t = useTranslations('Module')
 
@@ -182,25 +176,6 @@ function ModuleTerms(
         })}
       </div>
 
-      {showSearchTerms &&
-        <SearchTermList
-          excludeTerms={relatedTerms}
-          className="fixed left-0 top-[64px] w-full h-[calc(100%-64px)] z-10"
-          onClick={(term) => {
-            const relationTerm = new RelationTerm()
-              .setModuleId(relation.moduleId || null)
-              .setFolderId(relation.folderId || null)
-              .setTermId(term.id)
-              .serialize()
-
-            actionCreateRelationTerm({ relationTerm, editable })
-          }}
-          onClose={() => {
-            setShowSearchTerms(false)
-          }}
-        />
-      }
-
       {removeTerm &&
         <Dialog
           title={removeTerm.question || removeTerm.answer || t('removeDialogTitle')}
@@ -239,4 +214,4 @@ function ModuleTerms(
   )
 }
 
-export default forwardRef(ModuleTerms)
+export default forwardRef(RelatedTerms)

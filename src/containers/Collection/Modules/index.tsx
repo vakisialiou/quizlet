@@ -1,24 +1,24 @@
 'use client'
 
-import DialogRemoveModule from '@containers/Collection/DialogRemoveModule'
-import DialogRemoveFolder from '@containers/Collection/DialogRemoveFolder'
+import DialogRemoveModule from '@containers/DialogRemoveModule'
+import DialogRemoveFolder from '@containers/DialogRemoveFolder'
 import MetaLabel, {MetaLabelVariant} from '@components/MetaLabel'
 import { findActiveSimulators } from '@helper/simulators/general'
-import DialogGroups from '@containers/Collection/DialogGroups'
 import { useSimulatorSelect } from '@hooks/useSimulatorSelect'
 import AchievementDegree from '@containers/AchievementDegree'
-import DialogShare from '@containers/Collection/DialogShare'
 import {FolderFrameVariant} from '@components/FolderFrame'
 import AchievementIcon from '@containers/AchievementIcon'
+import { FolderGroupData } from '@entities/FolderGroup'
 import {sortDesc, sortTop} from '@helper/sort-modules'
 import { searchModules } from '@helper/search-modules'
 import Folders from '@containers/Collection/Folders'
 import { useTermSelect } from '@hooks/useTermSelect'
+import DialogGroups from '@containers/DialogGroups'
 import SVGEdit from '@public/svg/greasepencil.svg'
 import { filterDeletedTerms } from '@helper/terms'
 import Folder from '@containers/Collection/Folder'
 import { getLastStudyModule } from '@helper/study'
-import SVGFileNew from '@public/svg/file_new.svg'
+import DialogShare from '@containers/DialogShare'
 import SVGGroups from '@public/svg/syntax_on.svg'
 import { actionUpdateModule } from '@store/index'
 import React, { useMemo, useState } from 'react'
@@ -30,7 +30,6 @@ import { findTerms } from '@helper/relation'
 import { useTranslations } from 'next-intl'
 import SVGPlay from '@public/svg/play.svg'
 import { useSelector } from 'react-redux'
-import {FolderGroupData} from "@entities/FolderGroup";
 
 enum DropDownIdEnums {
   GENERATE = 'GENERATE',
@@ -70,8 +69,7 @@ export default function Modules(
   const t = useTranslations('Modules')
 
   const dropdownParentItems = [
-    {id: DropDownIdEnums.EDIT_FOLDER, name: t('dropDownEditModule'), icon: SVGEdit },
-    {id: DropDownIdEnums.OPEN_FOLDER, name: t('dropDownOpenModule'), icon: SVGFileNew },
+    {id: DropDownIdEnums.OPEN_FOLDER, name: t('dropDownEditModule'), icon: SVGEdit },
     {id: DropDownIdEnums.STUDY, name: t('dropDownStudyModule'), icon: SVGPlay },
     {id: DropDownIdEnums.GENERATE, name: t('dropDownGenerateGroups'), icon: SVGGroups },
     {id: DropDownIdEnums.SHARE, name: t('dropDownGenerateShare'), icon: SVGLinked },
@@ -144,11 +142,6 @@ export default function Modules(
                 items: dropdownParentItems,
                 onSelect: (id) => {
                   switch (id) {
-                    case DropDownIdEnums.EDIT_FOLDER:
-                      actionUpdateModule({ editId: module.id, module, editable }, () => {
-                        setOriginModule(module)
-                      })
-                      break
                     case DropDownIdEnums.OPEN_FOLDER:
                       if (onOpenModule) {
                         onOpenModule(module)
@@ -216,19 +209,17 @@ export default function Modules(
               }}
             >
               {!module.collapsed &&
-                <>
-                  <Folders
-                    module={module}
-                    onPlay={(group, folder) => {
-                      if (onPlayFolder) {
-                        onPlayFolder(group, folder)
-                      }
-                    }}
-                    onRemove={(group, folder) => {
-                      setRemoveFolder({ group, folder })
-                    }}
-                  />
-                </>
+                <Folders
+                  module={module}
+                  onPlay={(group, folder) => {
+                    if (onPlayFolder) {
+                      onPlayFolder(group, folder)
+                    }
+                  }}
+                  onRemove={(group, folder) => {
+                    setRemoveFolder({ group, folder })
+                  }}
+                />
               }
             </Folder>
           )

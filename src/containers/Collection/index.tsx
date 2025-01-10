@@ -4,7 +4,6 @@ import Button, { ButtonVariant } from '@components/Button'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
 import SVGNewFolder from '@public/svg/new_folder.svg'
 import { ConfigEditType } from '@store/initial-state'
-import Module, { ModuleData } from '@entities/Module'
 import Modules from '@containers/Collection/Modules'
 import ButtonSquare from '@components/ButtonSquare'
 import SVGQuestion from '@public/svg/question.svg'
@@ -16,6 +15,7 @@ import { useRouter } from '@i18n/routing'
 import { useSelector } from 'react-redux'
 import Dialog from '@components/Dialog'
 import React, { useState } from 'react'
+import Module from '@entities/Module'
 
 export default function Collection() {
   const editable = true
@@ -48,23 +48,26 @@ export default function Collection() {
         />
       )}
       footer={(
-        <div className="flex w-full justify-center lg:justify-end">
-          <Button
-            variant={ButtonVariant.WHITE}
-            className="w-full lg:w-auto px-8 gap-1"
-            onClick={() => {
-              const module = new Module().serialize()
-              actionSaveModule({ module, editId: module.id, editable })
-            }}
-          >
-            <SVGNewFolder
-              width={28}
-              height={28}
-              className="text-gray-700"
-            />
+        <div className="flex w-full justify-center text-center">
+          <div className="flex gap-2 w-full max-w-96">
+            <Button
+              variant={ButtonVariant.WHITE}
+              className="w-full"
+              onClick={() => {
+                const module = new Module().serialize()
+                actionSaveModule({ module, editId: null, editable })
+                router.push(`/private/modules/${module.id}`)
+              }}
+            >
+              <SVGNewFolder
+                width={28}
+                height={28}
+                className="text-gray-700"
+              />
 
-            {t('footButtonCreateModule')}
-          </Button>
+              {t('footButtonCreateModule')}
+            </Button>
+          </div>
         </div>
       )}
       rightControls={(

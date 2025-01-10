@@ -1,11 +1,11 @@
 'use client'
 
-import { findTerms, RelationProps } from '@helper/relation'
+import {findTerms, getFolder, RelationProps} from '@helper/relation'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
 import Button, {ButtonVariant} from '@components/Button'
 import React, { useMemo, useState, useRef } from 'react'
 import { actionCreateRelationTerm } from '@store/index'
-import SearchTermList from '@containers/SearchTermList'
+// import SearchTermList from '@containers/SearchTermList'
 import { useTermSelect } from '@hooks/useTermSelect'
 import ButtonSquare from '@components/ButtonSquare'
 import SVGQuestion from '@public/svg/question.svg'
@@ -15,15 +15,24 @@ import ContentPage from '@containers/ContentPage'
 import SVGFileNew from '@public/svg/file_new.svg'
 import FolderTitle from '@containers/FolderTitle'
 import SVGZoomIn from '@public/svg/zoom_in.svg'
-import Grid from '@containers/Module/ModuleTerms'
+// import Grid from '@containers/Module/ModuleTerms'
 import { useTranslations } from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
 import {useRouter} from '@i18n/routing'
 import Dialog from '@components/Dialog'
 import clsx from 'clsx'
+import RelatedTerms from "@containers/RelatedTerms";
+import FormFolder from '@containers/FormFolder'
+import { useFolderSelect } from "@hooks/useFolderSelect";
 
 export default function Folder({ editable, relation }: { editable: boolean, relation: RelationProps }) {
   const router = useRouter()
+
+  const folders = useFolderSelect()
+  const folder = useMemo(() => {
+    return relation.folderId ? getFolder(folders, relation.folderId) : null
+  }, [folders, relation])
+
   const { terms, relationTerms } = useTermSelect()
 
   const relatedTerms = useMemo(() => {
@@ -114,37 +123,27 @@ export default function Folder({ editable, relation }: { editable: boolean, rela
         </>
       )}
     >
-      <FolderTitle
-        className="mb-4"
-        relation={relation}
-      />
+      {folder &&
+        <div className="flex flex-col gap-2">
+          <FolderTitle
+            className="mb-4"
+            relation={relation}
+          />
 
-      <Grid
-        ref={ref}
-        shareId={null}
-        filter={{ search }}
-        editable={editable}
-        relation={relation}
-        relatedTerms={relatedTerms}
-      />
+          <FormFolder
+            folder={folder}
+            editable={editable}
+          />
 
-      {showSearchTerms &&
-        <SearchTermList
-          excludeTerms={relatedTerms}
-          className="absolute left-1.5 top-1.5 w-[calc(100%-20px)] h-[calc(100%-12px)] z-10 border border-white/15"
-          onClick={(term) => {
-            const relationTerm = new RelationTerm()
-              .setModuleId(relation.moduleId || null)
-              .setFolderId(relation.folderId || null)
-              .setTermId(term.id)
-              .serialize()
-
-            actionCreateRelationTerm({ relationTerm, editable })
-          }}
-          onClose={() => {
-            setShowSearchTerms(false)
-          }}
-        />
+          <RelatedTerms
+            ref={ref}
+            shareId={null}
+            filter={{ search }}
+            editable={editable}
+            relation={relation}
+            relatedTerms={relatedTerms}
+          />
+        </div>
       }
 
       {showUserHelp &&

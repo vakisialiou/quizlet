@@ -1,44 +1,47 @@
 'use client'
 
-import { actionCreateRelationTerm, actionUpdateModule } from '@store/index'
-import { findTerms, getModule, RelationProps } from '@helper/relation'
-import AchievementDegree from '@containers/AchievementDegree'
+import {actionCreateRelationTerm, actionUpdateModule} from '@store/index'
+import {findTerms, getModule, RelationProps} from '@helper/relation'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
 import AchievementIcon from '@containers/AchievementIcon'
 import Button, {ButtonVariant} from '@components/Button'
-import React, {useMemo, useState, useRef, useCallback} from 'react'
-import { useModuleSelect } from '@hooks/useModuleSelect'
-import ModuleTerms from '@containers/Module/ModuleTerms'
-import SearchTermList from '@containers/SearchTermList'
-import { useTermSelect } from '@hooks/useTermSelect'
-import ButtonSquare from '@components/ButtonSquare'
+import React, {useCallback, useMemo, useRef, useState} from 'react'
+import {useModuleSelect} from '@hooks/useModuleSelect'
+import RelatedTerms from '@containers/RelatedTerms'
+import {useTermSelect} from '@hooks/useTermSelect'
+import ButtonSquare, {ButtonSquareVariant} from '@components/ButtonSquare'
 import SVGQuestion from '@public/svg/question.svg'
-import { filterDeletedTerms } from '@helper/terms'
-import RelationTerm from '@entities/RelationTerm'
+import {filterDeletedTerms} from '@helper/terms'
 import ContentPage from '@containers/ContentPage'
 import SVGGroups from '@public/svg/syntax_on.svg'
 import SVGFileNew from '@public/svg/file_new.svg'
-import SVGZoomIn from '@public/svg/zoom_in.svg'
+import SVGFileBlank from '@public/svg/file_blank.svg'
 import FolderCart from '@components/FolderCart'
-import Collapse from '@components/Collapse'
 import Textarea from '@components/Textarea'
-import { useTranslations } from 'next-intl'
+import {useTranslations} from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
 import {useRouter} from '@i18n/routing'
 import Dialog from '@components/Dialog'
 import Input from '@components/Input'
-import FolderTitle from '@containers/FolderTitle'
-import clsx from 'clsx'
 import {ModuleData} from "@entities/Module";
 import Dropdown from "@components/Dropdown";
-import DialogGroups from "@containers/Collection/DialogGroups";
+import DialogGroups from "@containers/DialogGroups";
+import DialogRemoveFolder from "@containers/DialogRemoveFolder";
 import {GROUP_SIZE_5, isGenerateGroupDisabled} from "@helper/groups";
 import Folders from "@containers/Collection/Folders";
+import SVGThreeDots from "@public/svg/three_dots.svg";
+import RelationTerm from "@entities/RelationTerm";
+import TermsDropdownMenu from "@containers/TermsDropdownMenu";
+import {FolderGroupData} from "@entities/FolderGroup";
+import {FolderData} from "@entities/Folder";
+import FormModule from '@containers/FormModule'
+
 
 export default function Module({ editable, relation }: { editable: boolean, relation: RelationProps }) {
   const router = useRouter()
   const { terms, relationTerms } = useTermSelect()
   const [ showPartition, setShowPartition ] = useState<Boolean>(false)
+  const [ removeFolder, setRemoveFolder ] = useState<{ group: FolderGroupData, folder: FolderData } | null>(null)
 
   const modules = useModuleSelect()
   const module = useMemo(() => {
@@ -56,29 +59,6 @@ export default function Module({ editable, relation }: { editable: boolean, rela
   const t = useTranslations('Module')
 
   const ref = useRef<{ onCreate?: () => void, onToggleAdd?: () => void }>({})
-
-  const timeoutId = useRef<NodeJS.Timeout | null>(null)
-  const onChangeUpdate = useCallback((module: ModuleData) => {
-    actionUpdateModule({ module, editId: module.id, editable: false })
-    if (!editable) {
-      return
-    }
-
-    if (timeoutId.current) {
-      clearTimeout(timeoutId.current)
-    }
-
-    timeoutId.current = setTimeout(() => {
-      actionUpdateModule({ module, editId: module.id, editable })
-    }, 200)
-  }, [editable])
-
-  const onChangeSave = useCallback((module: ModuleData) => {
-    if (timeoutId.current) {
-      clearTimeout(timeoutId.current)
-    }
-    actionUpdateModule({ module, editId: null, editable })
-  }, [editable])
 
   return (
     <ContentPage
@@ -125,124 +105,138 @@ export default function Module({ editable, relation }: { editable: boolean, rela
         </>
       )}
       footer={(
-        <>
-          <div className="flex w-full justify-center text-center">
-            <div className="flex gap-2 w-full max-w-96">
-              <Button
-                variant={ButtonVariant.WHITE}
-                className="w-1/2 gap-1"
-                onClick={() => {
-                  if (ref.current?.onCreate) {
-                    ref.current?.onCreate()
-                  }
-                }}
-              >
-                <SVGFileNew
-                  width={28}
-                  height={28}
-                  className="text-gray-700"
-                />
-                Создать
-                {/*{t('footButtonCreateTerm')}*/}
-              </Button>
+        <div className="flex w-full justify-center text-center">
+          <div className="flex gap-2 w-full max-w-96">
+            <Button
+              variant={ButtonVariant.WHITE}
+              className="w-1/2 gap-1"
+              onClick={() => {
+                if (ref.current?.onCreate) {
+                  ref.current?.onCreate()
+                }
+              }}
+            >
+              <SVGFileBlank
+                width={28}
+                height={28}
+                className="text-gray-700"
+              />
+              Создать
+              {/*{t('footButtonCreateTerm')}*/}
+            </Button>
 
-              <Button
-                variant={ButtonVariant.WHITE}
-                className="w-1/2 gap-1"
-                onClick={() => {
-                  if (ref.current?.onToggleAdd) {
-                    ref.current?.onToggleAdd()
-                  }
-                }}
-              >
-                <SVGZoomIn
-                  width={28}
-                  height={28}
-                  className="text-gray-700"
-                />
+            <Button
+              variant={ButtonVariant.WHITE}
+              className="w-1/2 gap-1"
+              onClick={() => {
+                if (ref.current?.onToggleAdd) {
+                  ref.current?.onToggleAdd()
+                }
+              }}
+            >
+              <SVGFileNew
+                width={28}
+                height={28}
+                className="text-gray-700"
+              />
 
-                Добавить
-                {/*{t('footButtonPlay')}*/}
-              </Button>
-            </div>
+              Добавить
+              {/*{t('footButtonPlay')}*/}
+            </Button>
           </div>
-        </>
+        </div>
       )}
     >
       {module &&
         <div className="flex flex-col gap-2">
-          <Input
-            autoFocus
-            value={module.name || ''}
-            onBlur={() => onChangeSave(module)}
-            onChange={(e) => onChangeUpdate({ ...module, name: e.target.value })}
+          <FormModule
+            module={module}
+            editable={editable}
           />
 
-          <Textarea
-            value={module.description || ''}
-            onBlur={() => onChangeSave(module)}
-            onChange={(e) => onChangeUpdate({ ...module, description: e.target.value })}
-          />
-
-          <Collapse
+          <FolderCart
+            hover={false}
             title={'Группы'}
+            dropdown={{ hidden: true }}
             controls={(
               <ButtonSquare
                 size={24}
                 icon={SVGGroups}
                 disabled={isGenerateGroupDisabled(relatedTerms, GROUP_SIZE_5)}
                 onClick={() => {
-
+                  setShowPartition(true)
                 }}
               />
             )}
           >
             <Folders
               module={module}
-              onPlay={() => {
-
+              onEdit={(group, folder) => {
+                router.push(`/private/folders/${folder.id}`)
               }}
-              onRemove={() => {
-
+              onPlay={(group, folder) => {
+                router.push(`/simulator?folderId=${folder.id}`)
+              }}
+              onRemove={(group, folder) => {
+                setRemoveFolder({ group, folder })
               }}
             />
-          </Collapse>
+          </FolderCart>
 
 
-          <Collapse
+          <FolderCart
+            hover={false}
             title={'Термины'}
+            dropdown={{
+              hidden: true
+            }}
             controls={(
               <>
                 <ButtonSquare
-                  size={24}
-                  icon={SVGFileNew}
+                  size={18}
+                  icon={SVGFileBlank}
                   onClick={() => {
                     if (ref.current?.onCreate) {
                       ref.current?.onCreate()
                     }
                   }}
                 />
-                <ButtonSquare
-                  size={24}
-                  icon={SVGZoomIn}
-                  onClick={() => {
-                    if (ref.current?.onToggleAdd) {
-                      ref.current?.onToggleAdd()
-                    }
-                  }}
-                />
+                <Dropdown
+                  caret
+                  className="px-2 min-w-8 h-8 items-center"
+                  menu={(
+                    <TermsDropdownMenu
+                      excludeTerms={relatedTerms}
+                      className="w-56"
+                      onClick={(term) => {
+                        const relationTerm = new RelationTerm()
+                          .setModuleId(relation.moduleId || null)
+                          .setFolderId(relation.folderId || null)
+                          .setTermId(term.id)
+                          .serialize()
+
+                        actionCreateRelationTerm({ relationTerm, editable })
+                      }}
+                    />
+                  )}
+                >
+                  <SVGFileNew
+                    width={18}
+                    height={18}
+                  />
+                </Dropdown>
               </>
             )}
           >
             {editable && relatedTerms.length === 0 &&
-              <div className="flex flex-col items-center justify-center gap-2 p-4">
+              <div className="flex flex-col w-full items-center justify-center gap-2 p-4">
                 <div className="text-white/50 text-sm italic text-center">
                   {t('noCardsHelper', { btnName: t('footButtonCreateTerm') })}
                 </div>
               </div>
             }
 
-            <ModuleTerms
+            <RelatedTerms
               ref={ref}
               shareId={null}
               filter={{ search }}
@@ -250,8 +244,22 @@ export default function Module({ editable, relation }: { editable: boolean, rela
               relation={relation}
               relatedTerms={relatedTerms}
             />
-          </Collapse>
+          </FolderCart>
         </div>
+      }
+
+      {removeFolder &&
+        <DialogRemoveFolder
+          editable={editable}
+          group={removeFolder.group}
+          folder={removeFolder.folder}
+          onClose={() => {
+            setRemoveFolder(null)
+          }}
+          onDone={() => {
+            setRemoveFolder(null)
+          }}
+        />
       }
 
       {(module && showPartition) &&
