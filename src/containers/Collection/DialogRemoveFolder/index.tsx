@@ -27,7 +27,7 @@ export default function DialogRemoveFolder(
     editable: boolean
   }
 ) {
-  const t = useTranslations('Folders')
+  const t = useTranslations('Modules')
   const [process, setProcess] = useState(false)
   const { relationFolders, folderGroups } = useGroupSelect()
   const folders = useFolderSelect()

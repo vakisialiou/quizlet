@@ -16,18 +16,19 @@ import TermCard from '@containers/TermCard'
 import {useTranslations} from 'next-intl'
 import { useSelector } from 'react-redux'
 import Dialog from '@components/Dialog'
+import SearchTermList from "@containers/SearchTermList";
 
 export type TypeFilterGrid = {
   search: string | null,
 }
 
-function Grid(
+function ModuleTerms(
   {
+    relatedTerms,
     relation,
     shareId,
     editable,
-    filter,
-    relatedTerms
+    filter
   }:
   {
     editable: boolean
@@ -36,10 +37,11 @@ function Grid(
     filter: TypeFilterGrid
     relatedTerms: TermData[]
   },
-  ref: Ref<{ onCreate?: () => void }>
+  ref: Ref<{ onCreate?: () => void, onToggleAdd?: () => void }>
 ) {
   const { relationTerms } = useTermSelect()
 
+  const [ showSearchTerms, setShowSearchTerms ] = useState(false)
   const [ originItem, setOriginItem ] = useState<TermData | null>(null)
   const [removeTerm, setRemoveTerm] = useState<TermData | null>(null)
 
@@ -91,22 +93,18 @@ function Grid(
     })
   }, [relatedTerms])
 
-  useImperativeHandle(ref, () => ({ onCreate }))
+  const onToggleAdd = useCallback(() => {
+    setShowSearchTerms(!showSearchTerms)
+  }, [showSearchTerms])
 
-  const t = useTranslations('Terms')
+  useImperativeHandle(ref, () => ({ onCreate, onToggleAdd }))
+
+  const t = useTranslations('Module')
 
   return (
     <>
-      {editable && relatedTerms.length === 0 &&
-        <div className="flex flex-col items-center justify-center gap-2 p-4">
-          <div className="text-white/50 text-sm italic text-center">
-            {t('noCardsHelper', { btnName: t('footButtonCreateTerm') })}
-          </div>
-        </div>
-      }
-
       <div
-        className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2"
+        className="w-full grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2"
       >
         {filteredTerms.map((term, index) => {
           return (
@@ -184,6 +182,25 @@ function Grid(
         })}
       </div>
 
+      {showSearchTerms &&
+        <SearchTermList
+          excludeTerms={relatedTerms}
+          className="fixed left-0 top-[64px] w-full h-[calc(100%-64px)] z-10"
+          onClick={(term) => {
+            const relationTerm = new RelationTerm()
+              .setModuleId(relation.moduleId || null)
+              .setFolderId(relation.folderId || null)
+              .setTermId(term.id)
+              .serialize()
+
+            actionCreateRelationTerm({ relationTerm, editable })
+          }}
+          onClose={() => {
+            setShowSearchTerms(false)
+          }}
+        />
+      }
+
       {removeTerm &&
         <Dialog
           title={removeTerm.question || removeTerm.answer || t('removeDialogTitle')}
@@ -222,4 +239,4 @@ function Grid(
   )
 }
 
-export default forwardRef(Grid)
+export default forwardRef(ModuleTerms)

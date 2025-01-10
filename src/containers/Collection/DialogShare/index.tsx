@@ -29,7 +29,7 @@ export default function DialogShare(
     onClose: () => void
   }
 ) {
-  const t = useTranslations('Folders')
+  const t = useTranslations('Modules')
   const locale = useLocale()
 
   const [ state, setState ] = useState<TypeShare>({

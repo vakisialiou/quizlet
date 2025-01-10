@@ -42,7 +42,7 @@ export default function Folder(
     variant?: FolderFrameVariant
   }
 ) {
-  const t = useTranslations('Folders')
+  const t = useTranslations('Modules')
 
   const ref = useRef<HTMLDivElement | null>(null)
 

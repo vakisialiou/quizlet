@@ -67,12 +67,12 @@
 
     "warn": "Вы находитесь в оффлайн-режиме. <br/>Попробуйте подключиться к сети."
   },
-  "Folders": {
+  "Modules": {
     "metaTitle": "Учебные модули | QuizerPlay",
     "metaKeywords": "модули, термины, учебные группы, тренажеры, QuizerPlay, обучение, создание модулей, управление терминами",
     "metaDescription": "Управляйте учебными модулями, терминами и тренажерами на QuizerPlay. Создавайте, изучайте и оптимизируйте свой образовательный процесс.",
 
-    "headTitle": "Коллекции",
+    "headTitle": "Модули",
     "searchPlaceholder": "Поиск...",
     "footButtonCreateModule": "Создать модуль",
     "dropDownEditModule": "Редактировать модуль",
@@ -137,12 +137,76 @@
     "userHelpSection9Text": "Нажмите на иконку ⋮ в группе и выберите пункт \"Изучить\".",
     "userHelpButtonClose": "Закрыть"
   },
+  "Module": {
+    "metaTitle": "Учебный модуль | QuizerPlay",
+    "metaKeywords": "модуль, создание новых терминов, добавление терминов, редактирование, изучение карточек, QuizerPlay",
+    "metaDescription": "Создавайте, редактируйте и изучайте модуль в QuizerPlay.",
+
+    "headTitle": "Моуль",
+    "searchPlaceholder": "Поиск...",
+    "footButtonCreateTerm": "Добавить",
+    "footButtonPlay": "Изучать",
+    "userHelpTitle": "Подсказка",
+    "userHelpSection1Title": "Как создать карточку?",
+    "userHelpSection1Text": "Чтобы добавить новую карточку, нажмите белую кнопку, расположенную в нижней части экрана.",
+    "userHelpSection2Title": "Как приступить к изучению?",
+    "userHelpSection2Text": "Чтобы начать изучение, нажмите на зеленую кнопку, расположенную в нижней части экрана.",
+    "userHelpSection3Title": "Почему кнопка для изучения заблокирована?",
+    "userHelpSection3Text": "Если кнопка недоступна, это может означать, что нет карточек для изучения или что значения созданных карточек некорректны для изучения.",
+    "userHelpButtonClose": "Закрыть",
+    "removeDialogTitle": "Без имени",
+    "removeDialogText": "Вы уверены, что хотите удалить карточку?",
+    "removeDialogButtonApprove": "Удалить",
+    "removeDialogButtonCancel": "Отменить",
+
+    "noCardsHelper": "Для создания новой карточки нажмите кнопку \"{btnName}\".",
+    "cardDropDownEdit": "Редактировать",
+    "cardDropDownRemove": "Удалить",
+    "cardQuestionHintR": "Передняя сторона не заполнена",
+    "cardQuestionHintW": "Введите текст для передней...",
+    "cardAnswerHintR": "Обратная сторона не заполнена",
+    "cardAnswerHintW": "Введите текст для обратной...",
+    "cardAssociationHintR": "Ассоциация не задана",
+    "cardAssociationHintW": "Ваша ассоциация..."
+  },
+  "Folder": {
+    "metaTitle": "Учебная группа | QuizerPlay",
+    "metaKeywords": "карточки, управление карточками, добавление карточек, редактирование карточек, удаление карточек, изучение карточек, QuizerPlay",
+    "metaDescription": "Создавайте, редактируйте и изучайте карточки с терминами на платформе QuizerPlay. Управляйте вашим образовательным контентом легко и эффективно.",
+
+    "headTitle": "Группа",
+    "searchPlaceholder": "Поиск...",
+    "footButtonCreateTerm": "Добавить",
+    "footButtonPlay": "Изучать",
+    "userHelpTitle": "Подсказка",
+    "userHelpSection1Title": "Как создать карточку?",
+    "userHelpSection1Text": "Чтобы добавить новую карточку, нажмите белую кнопку, расположенную в нижней части экрана.",
+    "userHelpSection2Title": "Как приступить к изучению?",
+    "userHelpSection2Text": "Чтобы начать изучение, нажмите на зеленую кнопку, расположенную в нижней части экрана.",
+    "userHelpSection3Title": "Почему кнопка для изучения заблокирована?",
+    "userHelpSection3Text": "Если кнопка недоступна, это может означать, что нет карточек для изучения или что значения созданных карточек некорректны для изучения.",
+    "userHelpButtonClose": "Закрыть",
+    "removeDialogTitle": "Без имени",
+    "removeDialogText": "Вы уверены, что хотите удалить карточку?",
+    "removeDialogButtonApprove": "Удалить",
+    "removeDialogButtonCancel": "Отменить",
+
+    "noCardsHelper": "Для создания новой карточки нажмите кнопку \"{btnName}\".",
+    "cardDropDownEdit": "Редактировать",
+    "cardDropDownRemove": "Удалить",
+    "cardQuestionHintR": "Передняя сторона не заполнена",
+    "cardQuestionHintW": "Введите текст для передней...",
+    "cardAnswerHintR": "Обратная сторона не заполнена",
+    "cardAnswerHintW": "Введите текст для обратной...",
+    "cardAssociationHintR": "Ассоциация не задана",
+    "cardAssociationHintW": "Ваша ассоциация..."
+  },
   "Terms": {
     "metaTitle": "Управление карточками | QuizerPlay",
     "metaKeywords": "карточки, управление карточками, добавление карточек, редактирование карточек, удаление карточек, изучение карточек, QuizerPlay",
     "metaDescription": "Создавайте, редактируйте и изучайте карточки с терминами на платформе QuizerPlay. Управляйте вашим образовательным контентом легко и эффективно.",
 
-    "headTitle": "Flashcards",
+    "headTitle": "Термины",
     "searchPlaceholder": "Поиск...",
     "footButtonCreateTerm": "Добавить",
     "footButtonPlay": "Изучать",

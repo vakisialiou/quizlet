@@ -6,7 +6,7 @@ import React from 'react'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: LanguageEnums }>}) {
   const { locale } = await params
-  const t = await getTranslations({ locale, namespace: 'Folders' })
+  const t = await getTranslations({ locale, namespace: 'Modules' })
 
   return {
     title: t('metaTitle'),

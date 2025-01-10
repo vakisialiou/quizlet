@@ -44,7 +44,7 @@ export default function Folders(
     onRemove?: (group: FolderGroupData, folder: FolderData) => void,
   }
 ) {
-  const t = useTranslations('Folders')
+  const t = useTranslations('Modules')
 
   const { relationFolders, folderGroups } = useGroupSelect()
   const { simulators, relationSimulators } = useSimulatorSelect()

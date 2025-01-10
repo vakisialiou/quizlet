@@ -15,7 +15,7 @@ export default function AchievementDegree(
 
   return (
     <div
-      className={clsx('flex gap-2', {
+      className={clsx('flex', {
         [className]: className,
         ['truncate ...']: !disableTruncate
       })}

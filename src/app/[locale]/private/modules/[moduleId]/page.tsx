@@ -1,12 +1,12 @@
 import { generateMetaAlternates } from '@helper/meta'
 import { getTranslations } from 'next-intl/server'
 import { LanguageEnums } from '@i18n/constants'
-import RelatedTerms from '@containers/RelatedTerms'
+import Module from '@containers/Module'
 import React from 'react'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: LanguageEnums, moduleId: string }>}) {
   const { locale, moduleId } = await params
-  const t = await getTranslations({ locale, namespace: 'Terms' })
+  const t = await getTranslations({ locale, namespace: 'Module' })
 
   return {
     title: t('metaTitle'),
@@ -20,7 +20,7 @@ export default async function Page({ params }: { params: Promise<{ moduleId: str
   const { moduleId } = await params
 
   return (
-    <RelatedTerms
+    <Module
       editable={true}
       relation={{ moduleId }}
     />

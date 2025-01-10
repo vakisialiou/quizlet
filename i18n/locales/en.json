@@ -67,12 +67,12 @@
 
     "warn": "You are in offline mode. <br/>Try connecting to the network."
   },
-  "Folders": {
+  "Modules": {
     "metaTitle": "Learning Modules | QuizerPlay",
     "metaKeywords": "modules, terms, study groups, simulators, QuizerPlay, learning, creating modules, managing terms",
     "metaDescription": "Manage learning modules, terms, and simulators on QuizerPlay. Create, study, and optimize your educational process.",
 
-    "headTitle": "Collections",
+    "headTitle": "Modules",
     "searchPlaceholder": "Search...",
     "footButtonCreateModule": "Create module",
     "dropDownEditModule": "Edit module",
@@ -137,12 +137,76 @@
     "userHelpSection9Text": "Click the ⋮ icon in the group and select \"Study.\"",
     "userHelpButtonClose": "Close"
   },
+  "Module": {
+    "metaTitle": "Learning Module | QuizerPlay",
+    "metaKeywords": "cards, card management, adding cards, editing cards, deleting cards, studying cards, QuizerPlay",
+    "metaDescription": "Create, edit, and study cards with terms on the QuizerPlay platform. Manage your educational content easily and efficiently.",
+
+    "headTitle": "Module",
+    "searchPlaceholder": "Search...",
+    "footButtonCreateTerm": "Add",
+    "footButtonPlay": "Study",
+    "userHelpTitle": "Help",
+    "userHelpSection1Title": "How to create a card?",
+    "userHelpSection1Text": "To add a new card, press the white button located at the bottom of the screen.",
+    "userHelpSection2Title": "How to start studying?",
+    "userHelpSection2Text": "To start studying, press the green button located at the bottom of the screen.",
+    "userHelpSection3Title": "Why is the study button disabled?",
+    "userHelpSection3Text": "If the button is unavailable, it may mean there are no cards to study or that the values of the created cards are invalid for studying.",
+    "userHelpButtonClose": "Close",
+    "removeDialogTitle": "Unnamed",
+    "removeDialogText": "Are you sure you want to delete the card?",
+    "removeDialogButtonApprove": "Delete",
+    "removeDialogButtonCancel": "Cancel",
+
+    "noCardsHelper": "To create a new card, click the \"{btnName}\" button.",
+    "cardDropDownEdit": "Edit",
+    "cardDropDownRemove": "Remove",
+    "cardQuestionHintR": "Front side is not filled",
+    "cardQuestionHintW": "Enter text for the front...",
+    "cardAnswerHintR": "Back side is not filled",
+    "cardAnswerHintW": "Enter text for the back...",
+    "cardAssociationHintR": "Association not set",
+    "cardAssociationHintW": "Your association ..."
+  },
+  "Folder": {
+    "metaTitle": "Learning Group | QuizerPlay",
+    "metaKeywords": "cards, card management, adding cards, editing cards, deleting cards, studying cards, QuizerPlay",
+    "metaDescription": "Create, edit, and study cards with terms on the QuizerPlay platform. Manage your educational content easily and efficiently.",
+
+    "headTitle": "Group",
+    "searchPlaceholder": "Search...",
+    "footButtonCreateTerm": "Add",
+    "footButtonPlay": "Study",
+    "userHelpTitle": "Help",
+    "userHelpSection1Title": "How to create a card?",
+    "userHelpSection1Text": "To add a new card, press the white button located at the bottom of the screen.",
+    "userHelpSection2Title": "How to start studying?",
+    "userHelpSection2Text": "To start studying, press the green button located at the bottom of the screen.",
+    "userHelpSection3Title": "Why is the study button disabled?",
+    "userHelpSection3Text": "If the button is unavailable, it may mean there are no cards to study or that the values of the created cards are invalid for studying.",
+    "userHelpButtonClose": "Close",
+    "removeDialogTitle": "Unnamed",
+    "removeDialogText": "Are you sure you want to delete the card?",
+    "removeDialogButtonApprove": "Delete",
+    "removeDialogButtonCancel": "Cancel",
+
+    "noCardsHelper": "To create a new card, click the \"{btnName}\" button.",
+    "cardDropDownEdit": "Edit",
+    "cardDropDownRemove": "Remove",
+    "cardQuestionHintR": "Front side is not filled",
+    "cardQuestionHintW": "Enter text for the front...",
+    "cardAnswerHintR": "Back side is not filled",
+    "cardAnswerHintW": "Enter text for the back...",
+    "cardAssociationHintR": "Association not set",
+    "cardAssociationHintW": "Your association ..."
+  },
   "Terms": {
     "metaTitle": "Card Management | QuizerPlay",
     "metaKeywords": "cards, card management, adding cards, editing cards, deleting cards, studying cards, QuizerPlay",
     "metaDescription": "Create, edit, and study cards with terms on the QuizerPlay platform. Manage your educational content easily and efficiently.",
 
-    "headTitle": "Flashcards",
+    "headTitle": "Terms",
     "searchPlaceholder": "Search...",
     "footButtonCreateTerm": "Add",
     "footButtonPlay": "Study",

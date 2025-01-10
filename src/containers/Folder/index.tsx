@@ -1,28 +1,28 @@
 'use client'
 
-import { filterDeletedTerms, filterEmptyTerms } from '@helper/terms'
-import SearchTermList from '@containers/RelatedTerms/SearchTermList'
 import { findTerms, RelationProps } from '@helper/relation'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
 import Button, {ButtonVariant} from '@components/Button'
 import React, { useMemo, useState, useRef } from 'react'
 import { actionCreateRelationTerm } from '@store/index'
+import SearchTermList from '@containers/SearchTermList'
 import { useTermSelect } from '@hooks/useTermSelect'
 import ButtonSquare from '@components/ButtonSquare'
 import SVGQuestion from '@public/svg/question.svg'
+import { filterDeletedTerms } from '@helper/terms'
 import RelationTerm from '@entities/RelationTerm'
 import ContentPage from '@containers/ContentPage'
 import SVGFileNew from '@public/svg/file_new.svg'
 import FolderTitle from '@containers/FolderTitle'
-import Grid from '@containers/RelatedTerms/Grid'
 import SVGZoomIn from '@public/svg/zoom_in.svg'
+import Grid from '@containers/Module/ModuleTerms'
 import { useTranslations } from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
 import {useRouter} from '@i18n/routing'
 import Dialog from '@components/Dialog'
 import clsx from 'clsx'
 
-export default function RelatedTerms({ editable, relation }: { editable: boolean, relation: RelationProps }) {
+export default function Folder({ editable, relation }: { editable: boolean, relation: RelationProps }) {
   const router = useRouter()
   const { terms, relationTerms } = useTermSelect()
 
@@ -34,7 +34,7 @@ export default function RelatedTerms({ editable, relation }: { editable: boolean
   const [ showUserHelp, setShowUserHelp ] = useState(false)
   const [ showSearchTerms, setShowSearchTerms ] = useState(false)
 
-  const t = useTranslations('Terms')
+  const t = useTranslations('Folder')
 
   const ref = useRef<{ onCreate?: () => void }>({})
 

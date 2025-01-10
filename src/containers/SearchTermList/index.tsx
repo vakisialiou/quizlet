@@ -88,11 +88,13 @@ export default function SearchTermList(
               onClick={() => {
                 onClick(term)
               }}
-              className={clsx('flex flex-col px-3 py-2 text-sm text-start transition-colors cursor-pointer', {
+              className={clsx('relative flex flex-col px-3 py-2 text-sm text-start transition-colors cursor-pointer', {
                 ['hover:text-gray-200 hover:bg-gray-900 active:bg-gray-800']: true,
-                ['text-gray-500 text-gray-300 bg-white/5']: true
+                ['text-gray-500 text-gray-300 bg-black']: true
               })}
             >
+              <div className="absolute left-0 top-0 w-full h-full bg-white/10" />
+
               <div className="flex justify-between">
                 <div>{term.question || 'Not set'}</div>
                 <div className="uppercase">{term.questionLang || DefaultQuestionLang}</div>

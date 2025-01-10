@@ -19,7 +19,7 @@ import React, { useState } from 'react'
 
 export default function Collection() {
   const editable = true
-  const t = useTranslations('Folders')
+  const t = useTranslations('Modules')
 
   const edit = useSelector(({ edit }: { edit: ConfigEditType }) => edit)
 

@@ -67,7 +67,7 @@ export default function Modules(
   const { terms, relationTerms } = useTermSelect()
   const { simulators, relationSimulators } = useSimulatorSelect()
 
-  const t = useTranslations('Folders')
+  const t = useTranslations('Modules')
 
   const dropdownParentItems = [
     {id: DropDownIdEnums.EDIT_FOLDER, name: t('dropDownEditModule'), icon: SVGEdit },

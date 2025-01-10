@@ -38,7 +38,7 @@ export default function FolderTitle(
     }
   }, [folderGroups, relationFolders, modules, folders, relation])
 
-  const t = useTranslations('Folders')
+  const t = useTranslations('Modules')
 
   return (
     <div

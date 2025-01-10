@@ -32,7 +32,7 @@ export default function DialogGroups(
 ) {
   const { relationTerms, terms } = useTermSelect()
 
-  const t = useTranslations('Folders')
+  const t = useTranslations('Modules')
   const [ state, setState ] = useState<{ size: number, process: boolean }>({ size: DEFAULT_GROUP_SIZE, process: false })
 
   const moduleTerms = useMemo(() => {

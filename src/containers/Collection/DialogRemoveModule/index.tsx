@@ -20,7 +20,7 @@ export default function DialogRemoveModule(
       onDone: () => void
     }
 ) {
-  const t = useTranslations('Folders')
+  const t = useTranslations('Modules')
   const [process, setProcess] = useState(false)
 
   return (
