@@ -1,15 +1,13 @@
-import { RelationFolderData } from '@entities/RelationFolder'
+import { actionDeleteFolder, actionRemoveRelationFolder } from '@store/index'
 import Button, { ButtonVariant } from '@components/Button'
-import { useFolderSelect } from '@hooks/useFolderSelect'
 import { useGroupSelect } from '@hooks/useGroupSelect'
-import {FolderGroupData} from '@entities/FolderGroup'
-import { findGroupFolders } from '@helper/relation'
-import { actionDeleteFolder } from '@store/index'
+import { FolderGroupData } from '@entities/FolderGroup'
+import { getRelationFolder } from '@helper/relation'
 import { FolderData } from '@entities/Folder'
 import { useTranslations } from 'next-intl'
 import Spinner from '@components/Spinner'
 import Dialog from '@components/Dialog'
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 
 export default function DialogRemoveFolder(
   {
@@ -20,8 +18,8 @@ export default function DialogRemoveFolder(
     editable
   }:
   {
-    group: FolderGroupData
     folder: FolderData
+    group: FolderGroupData,
     onClose: () => void
     onDone: () => void
     editable: boolean
@@ -29,8 +27,7 @@ export default function DialogRemoveFolder(
 ) {
   const t = useTranslations('Modules')
   const [process, setProcess] = useState(false)
-  const { relationFolders, folderGroups } = useGroupSelect()
-  const folders = useFolderSelect()
+  const { relationFolders } = useGroupSelect()
 
   return (
     <Dialog
@@ -46,18 +43,17 @@ export default function DialogRemoveFolder(
             return
           }
 
-          setProcess(true)
-
-          const groupFolders = findGroupFolders(relationFolders, folders, group.id)
-
-          const relation = {
-            folderId: folder.id,
-            groupId: groupFolders.length === 1 ? group.id : null
+          const relationFolder = getRelationFolder(relationFolders, group.id, folder.id)
+          if (!relationFolder) {
+            return
           }
 
-          actionDeleteFolder({ relation, editable }, () => {
-            setProcess(false)
-            onDone()
+          setProcess(true)
+          actionRemoveRelationFolder({ relationFolder, editable }, () => {
+            actionDeleteFolder({ folderId: folder.id, editable }, () => {
+              setProcess(false)
+              onDone()
+            })
           })
         }}
       >

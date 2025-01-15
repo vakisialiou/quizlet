@@ -1,39 +1,36 @@
 'use client'
 
-import DialogRemoveModule from '@containers/DialogRemoveModule'
-import DialogRemoveFolder from '@containers/DialogRemoveFolder'
+import {actionUpdateFolderGroup, actionUpdateModule} from '@store/index'
 import MetaLabel, {MetaLabelVariant} from '@components/MetaLabel'
 import { findActiveSimulators } from '@helper/simulators/general'
+import DialogRemoveModule from '@containers/DialogRemoveModule'
 import { useSimulatorSelect } from '@hooks/useSimulatorSelect'
 import AchievementDegree from '@containers/AchievementDegree'
+import SVGNewCollection from '@public/svg/collection_new.svg'
 import {FolderFrameVariant} from '@components/FolderFrame'
 import AchievementIcon from '@containers/AchievementIcon'
-import { FolderGroupData } from '@entities/FolderGroup'
 import {sortDesc, sortTop} from '@helper/sort-modules'
 import { searchModules } from '@helper/search-modules'
-import Folders from '@containers/Collection/Folders'
 import { useTermSelect } from '@hooks/useTermSelect'
-import DialogGroups from '@containers/DialogGroups'
+import Groups from '@containers/Collection/Groups'
 import SVGEdit from '@public/svg/greasepencil.svg'
 import { filterDeletedTerms } from '@helper/terms'
 import Folder from '@containers/Collection/Folder'
 import { getLastStudyModule } from '@helper/study'
 import DialogShare from '@containers/DialogShare'
-import SVGGroups from '@public/svg/syntax_on.svg'
-import { actionUpdateModule } from '@store/index'
 import React, { useMemo, useState } from 'react'
+import FolderGroup from '@entities/FolderGroup'
 import SVGLinked from '@public/svg/linked.svg'
 import { ModuleData } from '@entities/Module'
-import { FolderData } from '@entities/Folder'
 import SVGTrash from '@public/svg/trash.svg'
 import { findTerms } from '@helper/relation'
 import { useTranslations } from 'next-intl'
 import SVGPlay from '@public/svg/play.svg'
 import { useSelector } from 'react-redux'
+import {useRouter} from '@i18n/routing'
 
 enum DropDownIdEnums {
-  GENERATE = 'GENERATE',
-  EDIT_FOLDER = 'EDIT_FOLDER',
+  GROUP_CREATE = 'GROUP_CREATE',
   OPEN_FOLDER = 'OPEN_FOLDER',
   REMOVE_FOLDER = 'REMOVE_FOLDER',
   SHARE = 'SHARE',
@@ -50,19 +47,14 @@ export default function Modules(
     editId,
     editable,
     filter = {},
-    onOpenModule,
-    onPlayModule,
-    onPlayFolder,
   }:
   {
     editable: boolean
     editId: string | null
     filter: TypeFilter
-    onOpenModule?: (module: ModuleData) => void
-    onPlayModule?: (module: ModuleData) => void
-    onPlayFolder?: (group: FolderGroupData, folder: FolderData) => void
   }
 ) {
+  const router = useRouter()
   const { terms, relationTerms } = useTermSelect()
   const { simulators, relationSimulators } = useSimulatorSelect()
 
@@ -71,19 +63,16 @@ export default function Modules(
   const dropdownParentItems = [
     {id: DropDownIdEnums.OPEN_FOLDER, name: t('dropDownEditModule'), icon: SVGEdit },
     {id: DropDownIdEnums.STUDY, name: t('dropDownStudyModule'), icon: SVGPlay },
-    {id: DropDownIdEnums.GENERATE, name: t('dropDownGenerateGroups'), icon: SVGGroups },
+    {id: DropDownIdEnums.GROUP_CREATE, name: t('dropDownCreateGroup'), icon: SVGNewCollection },
     {id: DropDownIdEnums.SHARE, name: t('dropDownGenerateShare'), icon: SVGLinked },
     {id: '2', divider: true },
     {id: DropDownIdEnums.REMOVE_FOLDER, name: t('dropDownRemoveModule'), icon: SVGTrash },
   ]
   const modules = useSelector(({ modules }: { modules: ModuleData[] }) => modules)
 
-  const [ removeFolder, setRemoveFolder ] = useState<{ group: FolderGroupData, folder: FolderData } | null>(null)
   const [ originModule, setOriginModule ] = useState<ModuleData | null>(null)
   const [ removeModule, setRemoveModule ] = useState<ModuleData | null>(null)
-  const [ partition, setPartition ] = useState<ModuleData | null>(null)
   const [ share, setShare ] = useState<ModuleData | null>(null)
-
 
   const lastStudyModule = useMemo(() => {
     return getLastStudyModule(modules, relationSimulators, simulators)
@@ -143,20 +132,21 @@ export default function Modules(
                 onSelect: (id) => {
                   switch (id) {
                     case DropDownIdEnums.OPEN_FOLDER:
-                      if (onOpenModule) {
-                        onOpenModule(module)
-                      }
+                      router.push(`/private/modules/${module.id}`)
                       break
                     case DropDownIdEnums.STUDY:
-                      if (onPlayModule) {
-                        onPlayModule(module)
-                      }
+                      router.push(`/simulator?moduleId=${module.id}`)
                       break
                     case DropDownIdEnums.REMOVE_FOLDER:
                       setRemoveModule(module)
                       break
-                    case DropDownIdEnums.GENERATE:
-                      setPartition(module)
+                    case DropDownIdEnums.GROUP_CREATE:
+                      actionUpdateFolderGroup({
+                        folderGroup: new FolderGroup()
+                          .setModuleId(module.id)
+                          .serialize(),
+                        editable
+                      })
                       break
                     case DropDownIdEnums.SHARE:
                       setShare(module)
@@ -209,16 +199,9 @@ export default function Modules(
               }}
             >
               {!module.collapsed &&
-                <Folders
+                <Groups
                   module={module}
-                  onPlay={(group, folder) => {
-                    if (onPlayFolder) {
-                      onPlayFolder(group, folder)
-                    }
-                  }}
-                  onRemove={(group, folder) => {
-                    setRemoveFolder({ group, folder })
-                  }}
+                  editable={editable}
                 />
               }
             </Folder>
@@ -231,29 +214,6 @@ export default function Modules(
           module={share}
           onClose={() => {
             setShare(null)
-          }}
-        />
-      }
-
-      {partition &&
-        <DialogGroups
-          module={partition}
-          onClose={() => {
-            setPartition(null)
-          }}
-        />
-      }
-
-      {removeFolder &&
-        <DialogRemoveFolder
-          editable={editable}
-          group={removeFolder.group}
-          folder={removeFolder.folder}
-          onClose={() => {
-            setRemoveFolder(null)
-          }}
-          onDone={() => {
-            setRemoveFolder(null)
           }}
         />
       }

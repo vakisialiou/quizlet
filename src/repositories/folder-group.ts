@@ -61,8 +61,8 @@ export const upsertFolderGroup = async (db: PrismaEntry, userId: string, item: F
   return res.id
 }
 
-export async function deleteFolderGroupById(db: PrismaEntry, userId: string, id: string): Promise<string | null> {
-  const res = await db.folderGroup.delete({ where: { id } })
+export async function removeFolderGroupById(db: PrismaEntry, userId: string, id: string): Promise<string | null> {
+  const res = await db.folderGroup.delete({ where: { userId, id } })
   return res.id || null
 }
 

@@ -8,14 +8,14 @@ datasource db {
 }
 
 model User {
-  id            String        @id @default(uuid())
-  name          String?
-  username      String?       @unique
-  email         String?       @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
+  id                 String              @id @default(uuid())
+  name               String?
+  username           String?             @unique
+  email              String?             @unique
+  emailVerified      DateTime?
+  image              String?
+  accounts           Account[]
+  sessions           Session[]
   terms              Term[]
   modules            Module[]
   folders            Folder[]
@@ -89,7 +89,7 @@ model Term {
   deleted         Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user            User     @relation(fields: [userId], references: [id])
 
   relationTerms RelationTerm[]
 
@@ -114,7 +114,7 @@ model Simulator {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
 
   relationSimulators RelationSimulator[]
 
@@ -131,10 +131,9 @@ model Module {
   collapsed   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id])
   degreeRate  Float    @default(0)
   markers     Json?
-
 
   folderGroups       FolderGroup[]
   moduleShares       ModuleShare[]
@@ -146,17 +145,17 @@ model Module {
 }
 
 model Folder {
-  id          String   @id @default(uuid())
-  userId      String   @db.VarChar(36)
-  name        String?  @db.VarChar(255)
-  order       Int      @default(0)
-  collapsed   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  degreeRate  Float    @default(0)
-  markers     Json?
+  id         String   @id @default(uuid())
+  userId     String   @db.VarChar(36)
+  name       String?  @db.VarChar(255)
+  order      Int      @default(0)
+  collapsed  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  degreeRate Float    @default(0)
+  markers    Json?
 
-  user               User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id])
 
   relationTerms      RelationTerm[]
   relationFolders    RelationFolder[]
@@ -174,8 +173,8 @@ model FolderGroup {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user            User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  module          Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  user            User             @relation(fields: [userId], references: [id])
+  module          Module           @relation(fields: [moduleId], references: [id])
   relationFolders RelationFolder[]
 
   @@unique([id])
@@ -183,31 +182,32 @@ model FolderGroup {
 }
 
 model RelationFolder {
-  id            String   @id @default(uuid())
-  userId        String   @db.VarChar(36)
-  groupId       String   @db.VarChar(36)
-  folderId      String   @db.VarChar(36)
+  id       String @id @default(uuid())
+  userId   String @db.VarChar(36)
+  groupId  String @db.VarChar(36)
+  folderId String @db.VarChar(36)
 
-  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  folder      Folder      @relation(fields: [folderId], references: [id], onDelete: Cascade)
-  folderGroup FolderGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id])
+  folder      Folder      @relation(fields: [folderId], references: [id])
+  folderGroup FolderGroup @relation(fields: [groupId], references: [id])
 
   @@unique([id])
   @@unique([groupId, folderId])
+  @@index([userId, groupId])
   @@index([userId, id])
 }
 
 model RelationSimulator {
-  id          String   @id @default(uuid())
-  userId      String   @db.VarChar(36)
-  simulatorId String   @db.VarChar(36)
-  folderId    String?  @db.VarChar(36)
-  moduleId    String?  @db.VarChar(36)
+  id          String  @id @default(uuid())
+  userId      String  @db.VarChar(36)
+  simulatorId String  @db.VarChar(36)
+  folderId    String? @db.VarChar(36)
+  moduleId    String? @db.VarChar(36)
 
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  folder    Folder?    @relation(fields: [folderId], references: [id], onDelete: Cascade)
-  module    Module?    @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  simulator Simulator  @relation(fields: [simulatorId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id])
+  folder    Folder?   @relation(fields: [folderId], references: [id])
+  module    Module?   @relation(fields: [moduleId], references: [id])
+  simulator Simulator @relation(fields: [simulatorId], references: [id])
 
   @@unique([id])
   @@unique([folderId, simulatorId])
@@ -216,16 +216,16 @@ model RelationSimulator {
 }
 
 model RelationTerm {
-  id        String   @id @default(uuid())
-  userId    String   @db.VarChar(36)
-  termId    String   @db.VarChar(36)
-  folderId  String?  @db.VarChar(36)
-  moduleId  String?  @db.VarChar(36)
+  id       String  @id @default(uuid())
+  userId   String  @db.VarChar(36)
+  termId   String  @db.VarChar(36)
+  folderId String? @db.VarChar(36)
+  moduleId String? @db.VarChar(36)
 
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  term   Term    @relation(fields: [termId], references: [id], onDelete: Cascade)
-  folder Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
-  module Module? @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  user   User    @relation(fields: [userId], references: [id])
+  term   Term    @relation(fields: [termId], references: [id])
+  folder Folder? @relation(fields: [folderId], references: [id])
+  module Module? @relation(fields: [moduleId], references: [id])
 
   @@unique([id])
   @@unique([folderId, termId])
@@ -239,7 +239,7 @@ model Settings {
   simulator Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
 
   @@unique([id])
   @@unique([userId])
@@ -251,15 +251,15 @@ enum ModuleShareAccess {
 }
 
 model ModuleShare {
-  id          String            @id @default(uuid())
-  ownerId     String            @db.VarChar(36)
-  moduleId    String            @db.VarChar(36)
-  access      ModuleShareAccess @default(readonly)
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  id        String            @id @default(uuid())
+  ownerId   String            @db.VarChar(36)
+  moduleId  String            @db.VarChar(36)
+  access    ModuleShareAccess @default(readonly)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
 
-  user   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  module Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [ownerId], references: [id])
+  module Module @relation(fields: [moduleId], references: [id])
 
   @@unique([id])
   @@unique([moduleId, access])

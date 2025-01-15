@@ -6,6 +6,7 @@ import * as settings from '@store/reducers/settings'
 import * as folders from '@store/reducers/folders'
 import * as modules from '@store/reducers/modules'
 import { ConfigType } from '@store/initial-state'
+import * as groups from '@store/reducers/groups'
 import * as terms from '@store/reducers/terms'
 import { FolderData } from '@entities/Folder'
 
@@ -24,6 +25,7 @@ function renderStore(initialState?: ConfigType): EnhancedStore {
       simulators.simulatorReducers(builder)
       relations.relationReducers(builder)
       settings.simulatorReducers(builder)
+      groups.folderGroupReducers(builder)
       modules.moduleReducers(builder)
       folders.folderReducers(builder)
       terms.termReducers(builder)
@@ -56,11 +58,6 @@ const execAction = <T>(action: any, callback?: CallbackType<T>): void => {
   getStore().dispatch(action).unwrap().then(callback)
 }
 
-export const actionSaveFolder = (payload: folders.SaveType, callback?: (res: boolean) => void): void => {
-  const action = folders.saveFolder(payload)
-  execAction(action, callback)
-}
-
 export const actionDeleteFolder = (payload: folders.DeleteType, callback?: (res: boolean) => void): void => {
   const action = folders.deleteFolder(payload)
   execAction(action, callback)
@@ -68,16 +65,6 @@ export const actionDeleteFolder = (payload: folders.DeleteType, callback?: (res:
 
 export const actionUpdateFolder = (payload: folders.UpdateType, callback?: (res: folders.UpdateType) => void): void => {
   const action = folders.updateFolder(payload)
-  execAction(action, callback)
-}
-
-export const actionUpdateFolderItem = (payload: FolderData, callback?: (res: FolderData) => void): void => {
-  const action = folders.updateFolderItem(payload)
-  execAction(action, callback)
-}
-
-export const actionSaveModule = (payload: modules.SaveType, callback?: (res: boolean) => void): void => {
-  const action = modules.saveModule(payload)
   execAction(action, callback)
 }
 
@@ -91,23 +78,28 @@ export const actionUpdateModule = (payload: modules.UpdateType, callback?: (res:
   execAction(action, callback)
 }
 
-export const actionCreateModuleGroup = (payload: modules.GroupType, callback?: (res: FolderData[]) => void): void => {
-  const action = modules.createModuleGroup(payload)
-  execAction(action, callback)
-}
-
 export const actionUpsertTerm = (payload: terms.UpsertType, callback?: (res: boolean) => void): void => {
   const action = terms.upsertTerm(payload)
   execAction(action, callback)
 }
 
-export const actionCreateRelationTerm = (payload: relations.CreateType, callback?: (res: boolean) => void): void => {
+export const actionCreateRelationTerm = (payload: relations.CreateRelationTermType, callback?: (res: boolean) => void): void => {
   const action = relations.createRelationTerm(payload)
   execAction(action, callback)
 }
 
-export const actionRemoveRelationTerm = (payload: relations.RemoveType, callback?: (res: boolean) => void): void => {
+export const actionRemoveRelationTerm = (payload: relations.CreateRelationTermType, callback?: (res: boolean) => void): void => {
   const action = relations.removeRelationTerm(payload)
+  execAction(action, callback)
+}
+
+export const actionCreateRelationFolder = (payload: relations.CreateRelationFolderType, callback?: (res: boolean) => void): void => {
+  const action = relations.createRelationFolder(payload)
+  execAction(action, callback)
+}
+
+export const actionRemoveRelationFolder = (payload: relations.RemoveRelationFolderType, callback?: (res: boolean) => void): void => {
+  const action = relations.removeRelationFolder(payload)
   execAction(action, callback)
 }
 
@@ -128,5 +120,15 @@ export const actionUpdateSimulator = (payload: simulators.PayloadUpdate, callbac
 
 export const actionUpdateSettingsSimulator = (payload: settings.PayloadUpdate, callback?: (res: boolean) => void): void => {
   const action = settings.updateSettingsSimulator(payload)
+  execAction(action, callback)
+}
+
+export const actionUpdateFolderGroup = (payload: groups.UpdateType, callback?: (res: boolean) => void): void => {
+  const action = groups.updateFolderGroup(payload)
+  execAction(action, callback)
+}
+
+export const actionRemoveFolderGroup = (payload: groups.RemoveType, callback?: (res: boolean) => void): void => {
+  const action = groups.removeFolderGroup(payload)
   execAction(action, callback)
 }

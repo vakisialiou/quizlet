@@ -2,13 +2,12 @@
 
 import Button, { ButtonVariant } from '@components/Button'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
-import SVGNewFolder from '@public/svg/new_folder.svg'
+import SVGNewPreset from '@public/svg/preset_new.svg'
 import { ConfigEditType } from '@store/initial-state'
 import Modules from '@containers/Collection/Modules'
 import ButtonSquare from '@components/ButtonSquare'
 import SVGQuestion from '@public/svg/question.svg'
 import ContentPage from '@containers/ContentPage'
-import { actionSaveModule } from '@store/index'
 import { useTranslations } from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
 import { useRouter } from '@i18n/routing'
@@ -51,18 +50,17 @@ export default function Collection() {
         <div className="flex w-full justify-center text-center">
           <div className="flex gap-2 w-full max-w-96">
             <Button
+              disabled={!editable}
               variant={ButtonVariant.WHITE}
               className="w-full"
               onClick={() => {
                 const module = new Module().serialize()
-                actionSaveModule({ module, editId: null, editable })
                 router.push(`/private/modules/${module.id}`)
               }}
             >
-              <SVGNewFolder
+              <SVGNewPreset
                 width={28}
                 height={28}
-                className="text-gray-700"
               />
 
               {t('footButtonCreateModule')}
@@ -91,15 +89,6 @@ export default function Collection() {
         filter={{ search }}
         editable={editable}
         editId={edit.moduleId}
-        onOpenModule={(module) => {
-          router.push(`/private/modules/${module.id}`)
-        }}
-        onPlayModule={(module) => {
-          router.push(`/simulator?moduleId=${module.id}`)
-        }}
-        onPlayFolder={(group, folder) => {
-          router.push(`/simulator?folderId=${folder.id}`)
-        }}
       />
 
       {showUserHelp &&

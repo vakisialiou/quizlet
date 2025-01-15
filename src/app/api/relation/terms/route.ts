@@ -14,7 +14,7 @@ export async function PUT(req: Request) {
   const body = await req.json()
 
   try {
-    await createRelationTerms(prisma, userId, body.relationTerm as RelationTermData)
+    await createRelationTerms(prisma, userId, body.relation as RelationTermData)
     return new Response(null, { status: 200 })
 
   } catch {
@@ -33,7 +33,7 @@ export async function DELETE(req: Request) {
   const body = await req.json()
 
   try {
-    await removeRelationTerms(prisma, userId, body.relationTerm.id as string)
+    await removeRelationTerms(prisma, userId, body.relation.id as string)
     return new Response(null, { status: 200 })
 
   } catch {

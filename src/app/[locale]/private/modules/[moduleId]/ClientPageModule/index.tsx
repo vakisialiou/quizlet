@@ -1,64 +1,72 @@
 'use client'
 
-import {actionCreateRelationTerm, actionUpdateModule} from '@store/index'
-import {findTerms, getModule, RelationProps} from '@helper/relation'
+import { actionUpdateModule, actionCreateRelationTerm } from '@store/index'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import TermsDropdownMenu from '@containers/TermsDropdownMenu'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
 import AchievementIcon from '@containers/AchievementIcon'
 import Button, {ButtonVariant} from '@components/Button'
-import React, {useCallback, useMemo, useRef, useState} from 'react'
+import { findTerms, getModule } from '@helper/relation'
 import {useModuleSelect} from '@hooks/useModuleSelect'
-import RelatedTerms from '@containers/RelatedTerms'
-import {useTermSelect} from '@hooks/useTermSelect'
-import ButtonSquare, {ButtonSquareVariant} from '@components/ButtonSquare'
-import SVGQuestion from '@public/svg/question.svg'
-import {filterDeletedTerms} from '@helper/terms'
-import ContentPage from '@containers/ContentPage'
-import SVGGroups from '@public/svg/syntax_on.svg'
-import SVGFileNew from '@public/svg/file_new.svg'
 import SVGFileBlank from '@public/svg/file_blank.svg'
+import Groups from '@containers/Collection/Groups'
+import RelatedTerms from '@containers/RelatedTerms'
+import ButtonSquare from '@components/ButtonSquare'
+import {useTermSelect} from '@hooks/useTermSelect'
+import SVGQuestion from '@public/svg/question.svg'
+import ContentPage from '@containers/ContentPage'
+import SVGFileNew from '@public/svg/file_new.svg'
+import RelationTerm from '@entities/RelationTerm'
+import {filterDeletedTerms} from '@helper/terms'
+import FormModule from '@containers/FormModule'
 import FolderCart from '@components/FolderCart'
-import Textarea from '@components/Textarea'
+import Dropdown from '@components/Dropdown'
 import {useTranslations} from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
 import {useRouter} from '@i18n/routing'
 import Dialog from '@components/Dialog'
-import Input from '@components/Input'
-import {ModuleData} from "@entities/Module";
-import Dropdown from "@components/Dropdown";
-import DialogGroups from "@containers/DialogGroups";
-import DialogRemoveFolder from "@containers/DialogRemoveFolder";
-import {GROUP_SIZE_5, isGenerateGroupDisabled} from "@helper/groups";
-import Folders from "@containers/Collection/Folders";
-import SVGThreeDots from "@public/svg/three_dots.svg";
-import RelationTerm from "@entities/RelationTerm";
-import TermsDropdownMenu from "@containers/TermsDropdownMenu";
-import {FolderGroupData} from "@entities/FolderGroup";
-import {FolderData} from "@entities/Folder";
-import FormModule from '@containers/FormModule'
+import Module from '@entities/Module'
 
-
-export default function Module({ editable, relation }: { editable: boolean, relation: RelationProps }) {
+export default function ClientPageModule({ editable, moduleId }: { editable: boolean, moduleId: string }) {
   const router = useRouter()
   const { terms, relationTerms } = useTermSelect()
-  const [ showPartition, setShowPartition ] = useState<Boolean>(false)
-  const [ removeFolder, setRemoveFolder ] = useState<{ group: FolderGroupData, folder: FolderData } | null>(null)
 
   const modules = useModuleSelect()
   const module = useMemo(() => {
-    return relation.moduleId ? getModule(modules, relation.moduleId) : null
-  }, [modules, relation])
+    return getModule(modules, moduleId)
+  }, [modules, moduleId])
+
+  const initRef = useRef(true)
+
+  useEffect(() => {
+    if (module) {
+      return
+    }
+
+    if (!initRef.current) {
+      return
+    }
+
+    initRef.current = false
+
+    actionUpdateModule({
+      editable,
+      editId: null,
+      module: new Module().setId(moduleId).serialize()
+    })
+  }, [module, moduleId])
 
 
   const relatedTerms = useMemo(() => {
-    return filterDeletedTerms(findTerms(relationTerms, terms, relation))
-  }, [relationTerms, terms, relation])
+    return filterDeletedTerms(findTerms(relationTerms, terms, { moduleId }))
+  }, [relationTerms, terms, moduleId])
 
   const [ search, setSearch ] = useState<string>('')
   const [ showUserHelp, setShowUserHelp ] = useState(false)
 
   const t = useTranslations('Module')
 
-  const ref = useRef<{ onCreate?: () => void, onToggleAdd?: () => void }>({})
+  const ref = useRef<{ onCreate?: () => void }>({})
 
   return (
     <ContentPage
@@ -106,44 +114,22 @@ export default function Module({ editable, relation }: { editable: boolean, rela
       )}
       footer={(
         <div className="flex w-full justify-center text-center">
-          <div className="flex gap-2 w-full max-w-96">
-            <Button
-              variant={ButtonVariant.WHITE}
-              className="w-1/2 gap-1"
-              onClick={() => {
-                if (ref.current?.onCreate) {
-                  ref.current?.onCreate()
-                }
-              }}
-            >
-              <SVGFileBlank
-                width={28}
-                height={28}
-                className="text-gray-700"
-              />
-              Создать
-              {/*{t('footButtonCreateTerm')}*/}
-            </Button>
-
-            <Button
-              variant={ButtonVariant.WHITE}
-              className="w-1/2 gap-1"
-              onClick={() => {
-                if (ref.current?.onToggleAdd) {
-                  ref.current?.onToggleAdd()
-                }
-              }}
-            >
-              <SVGFileNew
-                width={28}
-                height={28}
-                className="text-gray-700"
-              />
-
-              Добавить
-              {/*{t('footButtonPlay')}*/}
-            </Button>
-          </div>
+          <Button
+            variant={ButtonVariant.WHITE}
+            className="w-full max-w-96"
+            onClick={() => {
+              if (ref.current?.onCreate) {
+                ref.current?.onCreate()
+              }
+            }}
+          >
+            <SVGFileBlank
+              width={28}
+              height={28}
+              className="text-gray-700"
+            />
+            {t('footButtonCreateTerm')}
+          </Button>
         </div>
       )}
     >
@@ -157,29 +143,14 @@ export default function Module({ editable, relation }: { editable: boolean, rela
           <FolderCart
             hover={false}
             title={'Группы'}
-            dropdown={{ hidden: true }}
+            dropdown={{hidden: true}}
             controls={(
-              <ButtonSquare
-                size={24}
-                icon={SVGGroups}
-                disabled={isGenerateGroupDisabled(relatedTerms, GROUP_SIZE_5)}
-                onClick={() => {
-                  setShowPartition(true)
-                }}
-              />
+              <></>
             )}
           >
-            <Folders
+            <Groups
               module={module}
-              onEdit={(group, folder) => {
-                router.push(`/private/folders/${folder.id}`)
-              }}
-              onPlay={(group, folder) => {
-                router.push(`/simulator?folderId=${folder.id}`)
-              }}
-              onRemove={(group, folder) => {
-                setRemoveFolder({ group, folder })
-              }}
+              editable={editable}
             />
           </FolderCart>
 
@@ -210,8 +181,7 @@ export default function Module({ editable, relation }: { editable: boolean, rela
                       className="w-56"
                       onClick={(term) => {
                         const relationTerm = new RelationTerm()
-                          .setModuleId(relation.moduleId || null)
-                          .setFolderId(relation.folderId || null)
+                          .setModuleId(moduleId)
                           .setTermId(term.id)
                           .serialize()
 
@@ -241,34 +211,11 @@ export default function Module({ editable, relation }: { editable: boolean, rela
               shareId={null}
               filter={{ search }}
               editable={editable}
-              relation={relation}
+              relation={{ moduleId }}
               relatedTerms={relatedTerms}
             />
           </FolderCart>
         </div>
-      }
-
-      {removeFolder &&
-        <DialogRemoveFolder
-          editable={editable}
-          group={removeFolder.group}
-          folder={removeFolder.folder}
-          onClose={() => {
-            setRemoveFolder(null)
-          }}
-          onDone={() => {
-            setRemoveFolder(null)
-          }}
-        />
-      }
-
-      {(module && showPartition) &&
-        <DialogGroups
-          module={module}
-          onClose={() => {
-            setShowPartition(false)
-          }}
-        />
       }
 
       {showUserHelp &&

@@ -2,6 +2,7 @@
 
 import HeaderPageTitle from '@containers/HeaderPageTitle'
 import Button, {ButtonVariant} from '@components/Button'
+import SVGFileBlank from '@public/svg/file_blank.svg'
 import ButtonSquare from '@components/ButtonSquare'
 import SVGQuestion from '@public/svg/question.svg'
 import ContentPage from '@containers/ContentPage'
@@ -60,7 +61,7 @@ export default function Terms() {
                   }
                 }}
               >
-                <SVGFileNew
+                <SVGFileBlank
                   width={28}
                   height={28}
                   className="text-gray-700"

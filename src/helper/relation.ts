@@ -33,19 +33,23 @@ export function findRelationFolders(relationFolders: RelationFolderData[], group
   return relationFolders.filter((item) => item.groupId === groupId)
 }
 
+export function getRelationFolder(relationFolders: RelationFolderData[], groupId: string, folderId: string): RelationFolderData | null {
+  return relationFolders.find((item) => item.groupId === groupId && item.folderId === folderId) || null
+}
+
 export function findGroupFolders(relationFolders: RelationFolderData[], folders: FolderData[], groupId: string): FolderData[] {
-  const folderIds = relationFolders.filter((item) => item.groupId === groupId)
+  const folderIds = findRelationFolders(relationFolders, groupId)
     .map((relation) => relation.folderId)
 
   return folders.filter((item) => folderIds.includes(item.id))
 }
 
 export function getModule(modules: ModuleData[], moduleId: string): ModuleData | null {
-  return modules.find(({ id }) => moduleId) || null
+  return modules.find(({ id }) => id === moduleId) || null
 }
 
 export function getFolder(folders: FolderData[], folderId: string): FolderData | null {
-  return folders.find(({ id }) => folderId) || null
+  return folders.find(({ id }) => id === folderId) || null
 }
 
 export function getContainer(modules: ModuleData[], folders: FolderData[], relation: RelationProps): FolderData|ModuleData|null {

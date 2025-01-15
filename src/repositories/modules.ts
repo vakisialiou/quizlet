@@ -67,7 +67,7 @@ export const getModuleById = async (db: PrismaEntry, userId: string, id: string)
 export const upsertModule = async (db: PrismaEntry, userId: string, item: ModuleData): Promise<string | null> => {
   const markers = Array.isArray(item.markers) ? item.markers as string[] : []
   const res = await db.module.upsert({
-    where: { id: item.id },
+    where: { userId, id: item.id },
     update: {
       markers,
       name: item.name,

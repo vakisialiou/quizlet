@@ -3,7 +3,7 @@ import { actionUpdateFolder } from '@store/index'
 import { FolderData } from '@entities/Folder'
 import Input from '@components/Input'
 
-export default function FolderFolder(
+export default function FormFolder(
   {
     folder,
     editable

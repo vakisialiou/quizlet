@@ -39,7 +39,45 @@ export const createManyRelationFolders = async (db: PrismaEntry, userId: string,
   return res.count
 }
 
-export async function findRelationFoldersByUserId(db: PrismaEntry, userId: string) {
+export const createRelationFolder = async (db: PrismaEntry, userId: string, relation: RelationFolderData): Promise<string> => {
+  const res = await db.relationFolder.create({
+    data: {
+      userId,
+      id: relation.id,
+      groupId: relation.groupId,
+      folderId: relation.folderId,
+    }
+  })
+
+  return res.id
+}
+
+export const removeRelationFolder = async (db: PrismaEntry, userId: string, id: string): Promise<string> => {
+  const res = await db.relationFolder.delete({
+    where: { userId, id }
+  })
+
+  return res.id
+}
+
+export const removeRelationFoldersByGroupId = async (db: PrismaEntry, userId: string, groupId: string): Promise<number> => {
+  const res = await db.relationFolder.deleteMany({
+    where: { userId, groupId }
+  })
+
+  return res.count
+}
+
+export async function getRelationFolder(db: PrismaEntry, groupId: string, folderId: string): Promise<RelationFolderData | null> {
+  const res = await db.relationFolder.findFirst({
+    where: { groupId, folderId },
+    select: { ...RelationFolderSelect },
+  })
+
+  return res ? createRelationFolderSelect(res).serialize() : null
+}
+
+export async function findRelationFoldersByUserId(db: PrismaEntry, userId: string): Promise<RelationFolderData[]> {
   const res = await db.relationFolder.findMany({
     where: { userId },
     select: { ...RelationFolderSelect },

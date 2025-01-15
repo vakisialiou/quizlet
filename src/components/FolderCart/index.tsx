@@ -46,7 +46,7 @@ export default function FolderCart(
       onClickBody={onClickBody}
       head={(
         <div
-          className={clsx('w-full flex items-center justify-between h-8 min-h-8 relative px-1 border-b', {
+          className={clsx('w-full flex items-center justify-between h-8 min-h-8 relative z-0 px-1 border-b', {
             ['border-white/15']: !disabled,
             ['border-white/10']: disabled,
           })}
