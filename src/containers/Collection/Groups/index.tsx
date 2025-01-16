@@ -1,20 +1,24 @@
 'use client'
 
-import {actionRemoveFolderGroup, actionUpdateFolderGroup} from '@store/index'
 import { findFolderGroups, findGroupFolders } from '@helper/relation'
+import DialogRemoveGroup from '@containers/DialogRemoveGroup'
 import { useFolderSelect } from '@hooks/useFolderSelect'
 import React, {Fragment, useMemo, useState} from 'react'
 import { FolderGroupData } from '@entities/FolderGroup'
 import { useGroupSelect } from '@hooks/useGroupSelect'
+import { actionUpdateFolderGroup } from '@store/index'
 import SVGNewFolder from '@public/svg/new_folder.svg'
 import SVGThreeDots from '@public/svg/three_dots.svg'
 import Folders from '@containers/Collection/Folders'
 import SVGEdit from '@public/svg/greasepencil.svg'
 import { sortFolderGroups } from '@helper/groups'
+import { ConfigType } from '@store/initial-state'
 import { ModuleData } from '@entities/Module'
 import SVGTrash from '@public/svg/trash.svg'
 import Dropdown from '@components/Dropdown'
+import { useTranslations } from 'next-intl'
 import { useRouter } from '@i18n/routing'
+import { useSelector } from 'react-redux'
 import Input from '@components/Input'
 import Folder from '@entities/Folder'
 
@@ -34,21 +38,29 @@ export default function Groups(
     editable: boolean,
   }
 ) {
-  const router = useRouter()
+  const t = useTranslations('Groups')
 
+  const editGroupId = useSelector((state: ConfigType) => state.edit.groupId)
   const { relationFolders, folderGroups } = useGroupSelect()
   const folders = useFolderSelect()
+  const router = useRouter()
 
   const moduleFolderGroups = useMemo(() => {
     return sortFolderGroups(findFolderGroups(folderGroups, module.id))
   }, [folderGroups, module])
 
-  const [ editGroup, setEditGroup ] = useState<FolderGroupData | null>(null)
+  const [ originGroup, setOriginGroup ] = useState<FolderGroupData | null>(null)
+  const [ removeGroup, setRemoveGroup ] = useState<FolderGroupData | null>(null)
 
   return (
     <div className="flex flex-col gap-2">
+      {moduleFolderGroups.length === 0 &&
+        <div className="italic text-xs text-center text-white/50">
+          {t('emptyList')}
+        </div>
+      }
       {moduleFolderGroups.map((group) => {
-        const edit = (editGroup && editGroup.id === group.id)
+        const edit = (editGroupId === group.id)
         const groupFolders = findGroupFolders(relationFolders, folders, group.id)
         return (
           <Fragment
@@ -58,24 +70,38 @@ export default function Groups(
               {edit &&
                 <Input
                   autoFocus
-                  value={editGroup.name || ''}
+                  value={group.name || ''}
                   onBlur={() => {
-                    actionUpdateFolderGroup({ editable, folderGroup: editGroup }, () => {
-                      setEditGroup(null)
+                    actionUpdateFolderGroup({
+                      editable,
+                      folderGroup: group,
+                      editId: null
                     })
                   }}
                   onChange={(e) => {
-                    setEditGroup({ ...editGroup, name: e.target.value })
+                    actionUpdateFolderGroup({
+                      editable: false,
+                      editId: group.id,
+                      folderGroup: { ...group, name: e.target.value }
+                    })
                   }}
                   onKeyUp={(e) => {
                     switch (e.keyCode) {
                       case 13:
-                        actionUpdateFolderGroup({ editable, folderGroup: editGroup }, () => {
-                          setEditGroup(null)
+                        actionUpdateFolderGroup({
+                          editable,
+                          folderGroup: group,
+                          editId: null
                         })
                         break
                       case 27:
-                        setEditGroup(null)
+                        if (originGroup) {
+                          actionUpdateFolderGroup({
+                            editable,
+                            folderGroup: originGroup,
+                            editId: null
+                          })
+                        }
                         break
                     }
                   }}
@@ -83,7 +109,7 @@ export default function Groups(
               }
               {!edit &&
                 <span className="text-white/55 text-sm pl-[9px] pt-[1px] truncate ...">
-                  {group.name}
+                  {group.name || t('groupNoName')}
                 </span>
               }
               <Dropdown
@@ -92,23 +118,25 @@ export default function Groups(
                   e.preventDefault()
                 }}
                 items={[
-                  { id: DropDownIdEnums.EDIT_GROUP, name: 'Редактировать группу', icon: SVGEdit },
-                  { id: DropDownIdEnums.CREATE_FOLDER, name: 'Добавить папку', icon: SVGNewFolder },
+                  { id: DropDownIdEnums.CREATE_FOLDER, name: t('dropdownAdd'), icon: SVGNewFolder },
+                  { id: DropDownIdEnums.EDIT_GROUP, name: t('dropdownEdit'), icon: SVGEdit },
                   { id: 3, divider: true },
-                  { id: DropDownIdEnums.REMOVE_GROUP, name: 'Удалить группу', icon: SVGTrash }
+                  { id: DropDownIdEnums.REMOVE_GROUP, name: t('dropdownRemove'), icon: SVGTrash }
                 ]}
                 className="w-8 min-w-8 h-8 items-center"
                 onSelect={(id) => {
                   switch (id) {
                     case DropDownIdEnums.EDIT_GROUP:
-                      setEditGroup(group)
+                      actionUpdateFolderGroup({ editable: false, folderGroup: group, editId: group.id }, () => {
+                        setOriginGroup(group)
+                      })
                       break
                     case DropDownIdEnums.CREATE_FOLDER:
                       const folder = new Folder().serialize()
                       router.push(`/private/groups/${group.id}/${folder.id}`)
                       break
                     case DropDownIdEnums.REMOVE_GROUP:
-                      actionRemoveFolderGroup({ folderGroup: group, editable })
+                      setRemoveGroup(group)
                       break
                   }
                 }}
@@ -130,6 +158,19 @@ export default function Groups(
           </Fragment>
         )
       })}
+
+      {removeGroup &&
+        <DialogRemoveGroup
+          editable={editable}
+          group={removeGroup}
+          onClose={() => {
+            setRemoveGroup(null)
+          }}
+          onDone={() => {
+            setRemoveGroup(null)
+          }}
+        />
+      }
     </div>
   )
 }

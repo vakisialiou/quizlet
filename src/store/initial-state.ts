@@ -13,6 +13,8 @@ import { Session } from 'next-auth'
 export type ConfigEditType = {
   moduleId: string | null
   processModuleIds: string[]
+  groupId: string | null
+  processGroupIds: string[]
   folderId: string | null
   processFolderIds: string[]
   termId: string | null
@@ -67,6 +69,8 @@ export const getInitialState = async (
     edit: {
       moduleId: null,
       processModuleIds: [],
+      groupId: null,
+      processGroupIds: [],
       folderId: null,
       processFolderIds: [],
       termId: null,

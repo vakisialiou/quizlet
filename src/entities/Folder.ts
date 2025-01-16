@@ -9,20 +9,24 @@ export type FolderData = {
   id: string
   name: string | null
   collapsed: boolean
+  termsCollapsed: boolean
   order: number,
   degreeRate: number,
   markers: FolderMarkersEnum[]
   updatedAt: Date
+  createdAt: Date
 }
 
 export default class Folder {
   id: string
   order: number
   collapsed: boolean
+  termsCollapsed: boolean
   name: string | null
   degreeRate: number
   markers: FolderMarkersEnum[]
   updatedAt: Date
+  createdAt: Date
 
   constructor() {
     this.id = v4()
@@ -30,8 +34,10 @@ export default class Folder {
     this.degreeRate = 0
     this.name = null
     this.collapsed = false
+    this.termsCollapsed = false
     this.markers = []
     this.updatedAt = new Date()
+    this.createdAt = new Date()
   }
 
   setCollapsed(value: boolean): Folder {
@@ -39,8 +45,18 @@ export default class Folder {
     return this
   }
 
+  setTermsCollapsed(value: boolean): Folder {
+    this.termsCollapsed = value
+    return this
+  }
+
   setUpdatedAt(value: Date): Folder {
     this.updatedAt = value
+    return this
+  }
+
+  setCreatedAt(value: Date): Folder {
+    this.createdAt = value
     return this
   }
 

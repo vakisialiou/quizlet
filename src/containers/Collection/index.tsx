@@ -6,23 +6,18 @@ import SVGNewPreset from '@public/svg/preset_new.svg'
 import { ConfigEditType } from '@store/initial-state'
 import Modules from '@containers/Collection/Modules'
 import ButtonSquare from '@components/ButtonSquare'
-import SVGQuestion from '@public/svg/question.svg'
 import ContentPage from '@containers/ContentPage'
 import { useTranslations } from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
 import { useRouter } from '@i18n/routing'
 import { useSelector } from 'react-redux'
-import Dialog from '@components/Dialog'
 import React, { useState } from 'react'
 import Module from '@entities/Module'
 
 export default function Collection() {
   const editable = true
   const t = useTranslations('Modules')
-
   const edit = useSelector(({ edit }: { edit: ConfigEditType }) => edit)
-
-  const [ showUserHelp, setShowUserHelp ] = useState(false)
   const [search, setSearch] = useState<string>('')
 
   const router = useRouter()
@@ -71,12 +66,6 @@ export default function Collection() {
       rightControls={(
         <>
           <ButtonSquare
-            icon={SVGQuestion}
-            disabled={showUserHelp}
-            onClick={() => setShowUserHelp(true)}
-          />
-
-          <ButtonSquare
             icon={SVGBack}
             onClick={() => {
               router.push(`/`)
@@ -90,87 +79,6 @@ export default function Collection() {
         editable={editable}
         editId={edit.moduleId}
       />
-
-      {showUserHelp &&
-        <Dialog
-          title={t('userHelpTitle')}
-          onClose={() => setShowUserHelp(false)}
-          text={(
-            <div className="flex flex-col gap-4 text-gray-800">
-              <div className="flex flex-col gap-1">
-                <div className="font-bold">
-                  {t('userHelpSection1Title')}
-                </div>
-                {t('userHelpSection1Text')}
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <div className="font-bold">
-                  {t('userHelpSection2Title')}
-                </div>
-                {t('userHelpSection2Text')}
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <div className="font-bold">
-                  {t('userHelpSection3Title')}
-                </div>
-                {t('userHelpSection3Text')}
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <div className="font-bold">
-                  {t('userHelpSection4Title')}
-                </div>
-                {t('userHelpSection4Text')}
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <div className="font-bold">
-                  {t('userHelpSection5Title')}
-                </div>
-                {t('userHelpSection5Text')}
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <div className="font-bold">
-                  {t('userHelpSection6Title')}
-                </div>
-                {t('userHelpSection6Text')}
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <div className="font-bold">
-                  {t('userHelpSection7Title')}
-                </div>
-                {t('userHelpSection7Text')}
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <div className="font-bold">
-                  {t('userHelpSection8Title')}
-                </div>
-                {t('userHelpSection8Text')}
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <div className="font-bold">
-                  {t('userHelpSection9Title')}
-                </div>
-                {t('userHelpSection9Text')}
-              </div>
-            </div>
-          )}
-        >
-          <Button
-            className="min-w-28 px-4"
-            variant={ButtonVariant.GRAY}
-            onClick={() => setShowUserHelp(false)}
-          >
-          {t('userHelpButtonClose')}
-          </Button>
-        </Dialog>
-      }
     </ContentPage>
   )
 }

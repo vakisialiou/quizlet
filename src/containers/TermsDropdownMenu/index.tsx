@@ -1,22 +1,27 @@
 import { TermData, DefaultAnswerLang, DefaultAssociationLang, DefaultQuestionLang } from '@entities/Term'
+import React, { useMemo, useState, SyntheticEvent } from 'react'
+import SVGFileBlank from '@public/svg/file_blank.svg'
 import { useTermSelect } from '@hooks/useTermSelect'
 import { searchTerms } from '@helper/search-terms'
 import { filterDeletedTerms } from '@helper/terms'
-import React, { useMemo, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import Search from '@components/Search'
 import clsx from 'clsx'
 
 export default function TermsDropdownList(
   {
     onClick,
-    className = '',
-    excludeTerms
+    onCreate,
+    excludeTerms,
+    className = ''
   }: {
     className?: string
     onClick: (term: TermData) => void
+    onCreate: (e: SyntheticEvent) => void
     excludeTerms: TermData[]
   }
 ) {
+  const t = useTranslations('Terms')
   const { terms } = useTermSelect()
   const [ search, setSearch ] = useState('')
 
@@ -44,30 +49,46 @@ export default function TermsDropdownList(
         autoFocus
         value={search}
         className="py-2 px-2.5"
-        placeholder="Search term"
+        placeholder={t('termSearch')}
         onClear={() => setSearch('')}
         onChange={(e) => {
           setSearch(e.target.value)
         }}
       />
 
-      <div className="w-full h-[1px] border-b border-white/15" />
+      <div
+        onClick={onCreate}
+        className={clsx('relative flex gap-2 items-center px-3 py-2 text-sm text-start transition-colors cursor-pointer mx-2.5', {
+          ['hover:text-gray-200 hover:bg-gray-900 active:bg-gray-800']: true,
+          ['text-gray-500 bg-black']: true
+        })}
+      >
+        <div className="absolute left-0 top-0 w-full h-full bg-white/10"/>
+
+        <SVGFileBlank
+          width={18}
+          height={18}
+        />
+        {t('termCreate')}
+      </div>
+
+      <div className="w-full h-[1px] border-b border-white/15 mt-2"/>
 
       <div
         className="flex flex-col py-2 pl-2.5 pr-0.5 gap-0.5 max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100/50 active:scrollbar-thumb-gray-400"
-        style={{ scrollbarGutter: 'stable' }}
+        style={{scrollbarGutter: 'stable'}}
       >
         {dropdownTerms.length === 0 &&
           <div className="px-4 text-white/50 italic w-full text-center text-xs font-bold">
             {search &&
               <div>
-                Ничего не найдено.
+                {t('emptySearchList')}
               </div>
             }
 
             {!search &&
               <div>
-                Список терминов пуст.
+                {t('emptyList')}
               </div>
             }
           </div>
@@ -85,7 +106,7 @@ export default function TermsDropdownList(
                 ['text-gray-500 bg-black']: true
               })}
             >
-              <div className="absolute left-0 top-0 w-full h-full bg-white/10" />
+              <div className="absolute left-0 top-0 w-full h-full bg-white/10"/>
 
               <div className="flex justify-between">
                 <div>{term.question || 'Not set'}</div>

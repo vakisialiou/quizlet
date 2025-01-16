@@ -203,20 +203,18 @@
     "headTitle": "Terms",
     "searchPlaceholder": "Search...",
     "footButtonCreateTerm": "Create",
-    "userHelpTitle": "Help",
-    "userHelpSection1Title": "How to create a card?",
-    "userHelpSection1Text": "To add a new card, press the white button located at the bottom of the screen.",
-    "userHelpSection2Title": "How to start studying?",
-    "userHelpSection2Text": "To start studying, press the green button located at the bottom of the screen.",
-    "userHelpSection3Title": "Why is the study button disabled?",
-    "userHelpSection3Text": "If the button is unavailable, it may mean there are no cards to study or that the values of the created cards are invalid for studying.",
+    "userHelpTitle": "Инфо",
+    "userHelpSection1Title": "Что такое термин?",
+    "userHelpSection1Text": "Термин — это элемент, который содержит информацию для формирования учебной карточки.",
+    "userHelpSection2Title": "Я добавил термины, как мне приступить к изучению?",
+    "userHelpSection2Text": "Для изучения нужно создать модуль или группу внутри него, куда вы добавите термины. Новые термины можно создавать прямо в модуле, и они всегда будут доступны на этой странице.",
     "userHelpButtonClose": "Close",
     "removeDialogTitle": "Unnamed",
     "removeDialogText": "Are you sure you want to delete the card?",
     "removeDialogButtonApprove": "Delete",
     "removeDialogButtonCancel": "Cancel",
 
-    "noCardsHelper": "To create a new card, click the \"{btnName}\" button.",
+    "noCardsHelper": "Для создания новой карточки нажмите кнопку \"{btnName}\".",
     "cardDropDownEdit": "Edit",
     "cardDropDownRemove": "Remove",
     "cardQuestionHintR": "Front side is not filled",
@@ -224,7 +222,9 @@
     "cardAnswerHintR": "Back side is not filled",
     "cardAnswerHintW": "Enter text for the back...",
     "cardAssociationHintR": "Association not set",
-    "cardAssociationHintW": "Your association ..."
+    "cardAssociationHintW": "Your association ...",
+
+    "btnAddTerm": "Add term"
   },
   "Simulators": {
     "metaTitle": "Training Simulators | QuizerPlay",

@@ -36,6 +36,7 @@ export const createFolderGroupSelect = (data: FolderGroupResult) => {
     .setName(data.name)
     .setModuleId(data.moduleId)
     .setUpdatedAt(data.updatedAt)
+    .setCreatedAt(data.createdAt)
     .setRelationFolders(
       data.relationFolders.map((item) => createRelationFolderSelect(item))
     )

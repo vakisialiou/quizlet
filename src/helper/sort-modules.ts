@@ -3,7 +3,7 @@ import { ModuleData } from '@entities/Module'
 export const sortDesc = (items: ModuleData[]): ModuleData[] => {
   return [...items].sort((a, b) => {
     if (a.order === b.order) {
-      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     }
     return b.order - a.order
   })
@@ -12,7 +12,7 @@ export const sortDesc = (items: ModuleData[]): ModuleData[] => {
 export const sortAsc = (items: ModuleData[]): ModuleData[] => {
   return [...items].sort((a, b) => {
     if (a.order === b.order) {
-      return new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()
+      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     }
     return a.order - b.order
   })

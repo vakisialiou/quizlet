@@ -12,10 +12,10 @@ import AchievementIcon from '@containers/AchievementIcon'
 import {sortDesc, sortTop} from '@helper/sort-modules'
 import { searchModules } from '@helper/search-modules'
 import { useTermSelect } from '@hooks/useTermSelect'
+import Module from '@containers/Collection/Module'
 import Groups from '@containers/Collection/Groups'
 import SVGEdit from '@public/svg/greasepencil.svg'
 import { filterDeletedTerms } from '@helper/terms'
-import Folder from '@containers/Collection/Folder'
 import { getLastStudyModule } from '@helper/study'
 import DialogShare from '@containers/DialogShare'
 import React, { useMemo, useState } from 'react'
@@ -61,10 +61,10 @@ export default function Modules(
   const t = useTranslations('Modules')
 
   const dropdownParentItems = [
-    {id: DropDownIdEnums.OPEN_FOLDER, name: t('dropDownEditModule'), icon: SVGEdit },
     {id: DropDownIdEnums.STUDY, name: t('dropDownStudyModule'), icon: SVGPlay },
+    {id: DropDownIdEnums.OPEN_FOLDER, name: t('dropDownEditModule'), icon: SVGEdit },
     {id: DropDownIdEnums.GROUP_CREATE, name: t('dropDownCreateGroup'), icon: SVGNewCollection },
-    {id: DropDownIdEnums.SHARE, name: t('dropDownGenerateShare'), icon: SVGLinked },
+    // {id: DropDownIdEnums.SHARE, name: t('dropDownGenerateShare'), icon: SVGLinked },
     {id: '2', divider: true },
     {id: DropDownIdEnums.REMOVE_FOLDER, name: t('dropDownRemoveModule'), icon: SVGTrash },
   ]
@@ -105,7 +105,7 @@ export default function Modules(
           const isLastStudy = lastStudyModule?.id === module.id
 
           return (
-            <Folder
+            <Module
               key={index}
               data={module}
               collapsed={module.collapsed}
@@ -141,10 +141,13 @@ export default function Modules(
                       setRemoveModule(module)
                       break
                     case DropDownIdEnums.GROUP_CREATE:
+                      const folderGroup = new FolderGroup()
+                      .setModuleId(module.id)
+                      .serialize()
+
                       actionUpdateFolderGroup({
-                        folderGroup: new FolderGroup()
-                          .setModuleId(module.id)
-                          .serialize(),
+                        editId: folderGroup.id,
+                        folderGroup,
                         editable
                       })
                       break
@@ -204,7 +207,7 @@ export default function Modules(
                   editable={editable}
                 />
               }
-            </Folder>
+            </Module>
           )
         })}
       </div>

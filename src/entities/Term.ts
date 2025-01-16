@@ -33,6 +33,7 @@ export type TermData = {
   deleted: boolean
   collapsed: boolean
   updatedAt: Date
+  createdAt: Date
 }
 
 export default class Term {
@@ -47,6 +48,7 @@ export default class Term {
   deleted: boolean
   collapsed: boolean
   updatedAt: Date
+  createdAt: Date
 
   constructor() {
     this.order = 0
@@ -60,10 +62,16 @@ export default class Term {
     this.deleted = false
     this.collapsed = false
     this.updatedAt = new Date()
+    this.createdAt = new Date()
   }
 
   setUpdatedAt(value: Date): Term {
     this.updatedAt = value
+    return this
+  }
+
+  setCreatedAt(value: Date): Term {
+    this.createdAt = value
     return this
   }
 

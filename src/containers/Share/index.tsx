@@ -57,7 +57,7 @@ export default function Share() {
                   height={28}
                   className="text-gray-700"
                 />
-                {t('footButtonCreateTerm')}
+                {t('btnAddTerm')}
               </Button>
             </div>
           </div>

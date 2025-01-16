@@ -84,14 +84,18 @@ function Dropdown(
     onClick?: ((e: BaseSyntheticEvent) => void),
     onSelect?: (id: string | number) => void,
   },
-  ref: Ref<{ element: HTMLDivElement | null, menu: HTMLDivElement | null }>
+  ref: Ref<{ element?: HTMLDivElement | null, menu?: HTMLDivElement | null, close?: (value: boolean) => void }>
 ) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
   const refMenu = useRef<HTMLDivElement | null>(null)
   const refElement = useRef<HTMLDivElement | null>(null)
 
-  useImperativeHandle(ref, () => ({ element: refElement.current, menu: refMenu.current }))
+  useImperativeHandle(ref, () => ({
+    element: refElement.current,
+    menu: refMenu.current,
+    close: setIsOpen
+  }))
 
   const toggleDropdown = useCallback(() => {
     setIsOpen((prevState) => !prevState)

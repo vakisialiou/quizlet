@@ -1,16 +1,16 @@
-import { ReactNode, useCallback, useEffect, useRef } from 'react'
 import FolderCart, {DropDownProps} from '@components/FolderCart'
-import { FolderFrameVariant } from '@components/FolderFrame'
+import {ReactNode, useCallback, useEffect, useRef} from 'react'
+import {FolderFrameVariant} from '@components/FolderFrame'
 import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
 import ButtonSquare from '@components/ButtonSquare'
-import { ModuleData } from '@entities/Module'
+import {ModuleData} from '@entities/Module'
 import Textarea from '@components/Textarea'
 import {useTranslations} from 'next-intl'
 import Input from '@components/Input'
 import Clamp from '@components/Clamp'
 import clsx from 'clsx'
 
-export default function Folder(
+export default function Module(
   {
     data,
     title,
@@ -84,7 +84,9 @@ export default function Folder(
     >
       <div
         ref={ref}
-        className="flex flex-col gap-1 w-full font-bold text-white/50 text-sm overflow-hidden justify-center min-h-8"
+        className={clsx('flex flex-col gap-1 w-full font-bold text-white/50 text-sm overflow-hidden justify-center min-h-8', {
+          ['border-b border-white/15 pb-2 mb-2']: !collapsed,
+        })}
       >
         {edit &&
           <Input
@@ -138,20 +140,18 @@ export default function Folder(
           <div className="flex items-center h-8 pt-[1px] mx-[9px] text-white/75">
             <div className="max-w-full truncate ...">
               <span className="max-w-full select-text">
-                {data.name || <span className="italic">{t('folderNoName')}</span>}
+                {data.name || <span className="italic">{t('moduleNoName')}</span>}
               </span>
             </div>
           </div>
         }
 
-        {(!edit && data.description && !collapsed) &&
+        {(!edit && data.description) &&
           <div className="flex pt-[1px] mx-[9px]">
             <Clamp
               rows={3}
               key={edit ? 1 : 0}
               className="max-w-full w-full"
-              btnClumpMore={'Show more'}
-              btnClumpLess={'Show less'}
             >
               {data.description}
             </Clamp>

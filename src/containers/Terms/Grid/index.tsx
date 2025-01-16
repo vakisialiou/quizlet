@@ -89,7 +89,7 @@ function Grid(
       {editable && visibleTerms.length === 0 &&
         <div className="flex flex-col items-center justify-center gap-2 p-4">
           <div className="text-white/50 text-sm italic text-center">
-            {t('noCardsHelper', { btnName: t('footButtonCreateTerm') })}
+            {t('noCardsHelper')}
           </div>
         </div>
       }

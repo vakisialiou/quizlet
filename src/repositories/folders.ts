@@ -7,7 +7,9 @@ export type FolderSelectType = {
   order: boolean,
   markers: boolean,
   collapsed: boolean,
+  termsCollapsed: boolean,
   updatedAt: boolean,
+  createdAt: boolean,
   degreeRate: boolean,
 }
 
@@ -17,7 +19,9 @@ export const FolderSelect = {
   order: true,
   markers: true,
   collapsed: true,
+  termsCollapsed: true,
   updatedAt: true,
+  createdAt: true,
   degreeRate: true,
 } as FolderSelectType
 
@@ -34,7 +38,9 @@ export const createFolderSelect = (folder: FolderResult) => {
     .setOrder(folder.order)
     .setCollapsed(folder.collapsed)
     .setUpdatedAt(folder.updatedAt)
+    .setCreatedAt(folder.createdAt)
     .setDegreeRate(folder.degreeRate)
+    .setTermsCollapsed(folder.termsCollapsed)
 }
 
 export const findFoldersByUserId = async (db: PrismaEntry, userId: string): Promise<FolderData[]> => {
@@ -71,6 +77,7 @@ export const upsertFolder = async (db: PrismaEntry, userId: string, item: Folder
       order: item.order,
       collapsed: item.collapsed,
       degreeRate: item.degreeRate,
+      termsCollapsed: item.termsCollapsed,
       updatedAt: new Date(),
     },
     create: {
@@ -81,6 +88,7 @@ export const upsertFolder = async (db: PrismaEntry, userId: string, item: Folder
       order: item.order,
       collapsed: item.collapsed,
       degreeRate: item.degreeRate,
+      termsCollapsed: item.termsCollapsed,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -104,6 +112,7 @@ export const createManyFolder = async (db: PrismaEntry, userId: string, items: F
         order: item.order,
         collapsed: item.collapsed,
         degreeRate: item.degreeRate,
+        termsCollapsed: item.termsCollapsed,
         createdAt,
         updatedAt
       }

@@ -8,7 +8,10 @@ export type ModuleSelectType = {
   order: boolean,
   markers: boolean,
   collapsed: boolean,
+  termsCollapsed: boolean,
+  groupsCollapsed: boolean,
   updatedAt: boolean,
+  createdAt: boolean,
   degreeRate: boolean,
 }
 
@@ -19,7 +22,10 @@ export const ModuleSelect = {
   order: true,
   markers: true,
   collapsed: true,
+  termsCollapsed: true,
+  groupsCollapsed: true,
   updatedAt: true,
+  createdAt: true,
   degreeRate: true,
 } as ModuleSelectType
 
@@ -36,8 +42,11 @@ export const createModuleSelect = (data: ModuleResult) => {
     .setOrder(data.order)
     .setCollapsed(data.collapsed)
     .setUpdatedAt(data.updatedAt)
+    .setCreatedAt(data.createdAt)
     .setDegreeRate(data.degreeRate)
     .setDescription(data.description)
+    .setTermsCollapsed(data.termsCollapsed)
+    .setGroupsCollapsed(data.groupsCollapsed)
 }
 
 export const findModulesByUserId = async (db: PrismaEntry, userId: string): Promise<ModuleData[]> => {
@@ -75,6 +84,8 @@ export const upsertModule = async (db: PrismaEntry, userId: string, item: Module
       collapsed: item.collapsed,
       degreeRate: item.degreeRate,
       description: item.description,
+      termsCollapsed: item.termsCollapsed,
+      groupsCollapsed: item.groupsCollapsed,
       updatedAt: new Date(),
     },
     create: {
@@ -86,6 +97,8 @@ export const upsertModule = async (db: PrismaEntry, userId: string, item: Module
       collapsed: item.collapsed,
       degreeRate: item.degreeRate,
       description: item.description,
+      termsCollapsed: item.termsCollapsed,
+      groupsCollapsed: item.groupsCollapsed,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -110,6 +123,8 @@ export const createManyModules = async (db: PrismaEntry, userId: string, items: 
         collapsed: item.collapsed,
         degreeRate: item.degreeRate,
         description: item.description,
+        termsCollapsed: item.termsCollapsed,
+        groupsCollapsed: item.groupsCollapsed,
         createdAt,
         updatedAt
       }

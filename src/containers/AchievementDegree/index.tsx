@@ -21,8 +21,8 @@ export default function AchievementDegree(
       })}
     >
       <span>
-          {degreeRate.toFixed(1)}%
-        </span>
+        {degreeRate.toFixed(1)}%
+      </span>
     </div>
   )
 }

@@ -7,6 +7,7 @@ export type FolderGroupData = {
   moduleId: string,
   relationFolders: RelationFolderData[]
   updatedAt: Date,
+  createdAt: Date,
 }
 
 export default class FolderGroup {
@@ -15,6 +16,7 @@ export default class FolderGroup {
   moduleId: string | null
   relationFolders: RelationFolder[]
   updatedAt: Date
+  createdAt: Date
 
   constructor() {
     this.id = v4()
@@ -22,10 +24,16 @@ export default class FolderGroup {
     this.moduleId = null
     this.relationFolders = []
     this.updatedAt = new Date()
+    this.createdAt = new Date()
   }
 
   setUpdatedAt(value: Date): FolderGroup {
     this.updatedAt = value
+    return this
+  }
+
+  setCreatedAt(value: Date): FolderGroup {
+    this.createdAt = value
     return this
   }
 

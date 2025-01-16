@@ -3,21 +3,14 @@
 import HeaderPageTitle from '@containers/HeaderPageTitle'
 import Button, {ButtonVariant} from '@components/Button'
 import SVGFileBlank from '@public/svg/file_blank.svg'
-import ButtonSquare from '@components/ButtonSquare'
-import SVGQuestion from '@public/svg/question.svg'
 import ContentPage from '@containers/ContentPage'
-import SVGFileNew from '@public/svg/file_new.svg'
 import React, { useState, useRef } from 'react'
 import { useTranslations } from 'next-intl'
 import Grid from '@containers/Terms/Grid'
-import Dialog from '@components/Dialog'
 
 export default function Terms() {
-  const [ search, setSearch ] = useState<string>('')
-  const [ showUserHelp, setShowUserHelp ] = useState(false)
-
   const t = useTranslations('Terms')
-
+  const [ search, setSearch ] = useState<string>('')
   const ref = useRef<{ onCreate?: () => void }>({})
 
   return (
@@ -39,15 +32,6 @@ export default function Terms() {
           }}
         />
       )}
-      rightControls={(
-        <>
-          <ButtonSquare
-            icon={SVGQuestion}
-            disabled={showUserHelp}
-            onClick={() => setShowUserHelp(true)}
-          />
-        </>
-      )}
       footer={(
         <>
           <div className="flex w-full justify-center text-center">
@@ -66,7 +50,7 @@ export default function Terms() {
                   height={28}
                   className="text-gray-700"
                 />
-                Создать
+                {t('btnAddTerm')}
               </Button>
             </div>
           </div>
@@ -79,40 +63,6 @@ export default function Terms() {
         editable={true}
         filter={{ search }}
       />
-
-      {showUserHelp &&
-        <Dialog
-          title={t('userHelpTitle')}
-          onClose={() => setShowUserHelp(false)}
-          text={(
-            <div className="flex flex-col gap-4 text-gray-800">
-
-              <div className="flex flex-col gap-1">
-                <div className="font-bold">{t('userHelpSection1Title')}</div>
-                {t('userHelpSection1Text')}
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <div className="font-bold">{t('userHelpSection2Title')}</div>
-                {t('userHelpSection2Text')}
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <div className="font-bold">{t('userHelpSection3Title')}</div>
-                {t('userHelpSection3Text')}
-              </div>
-            </div>
-          )}
-        >
-          <Button
-            className="min-w-28 px-4"
-            variant={ButtonVariant.GRAY}
-            onClick={() => setShowUserHelp(false)}
-          >
-            {t('userHelpButtonClose')}
-          </Button>
-        </Dialog>
-      }
     </ContentPage>
   )
 }

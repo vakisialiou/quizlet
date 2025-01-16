@@ -11,12 +11,12 @@ export default async function Layout(
     params
   }: Readonly<{
     children: ReactNode,
-    params: Promise<{ id: string }>
+    params: Promise<{ shareId: string }>
   }>
 ) {
-  const { id } = await params
+  const { shareId } = await params
 
-  const share = await getModuleShareById(prisma, id)
+  const share = await getModuleShareById(prisma, shareId)
   if (!share) {
     return notFound()
   }

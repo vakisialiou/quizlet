@@ -28,51 +28,47 @@ export default function FolderTitle(
   const { folder, module } = useMemo(() => {
     if (relation.folderId) {
       return {
-        module: getModuleByFolderId(folderGroups, relationFolders, modules, relation.folderId),
+        module: null,
         folder: getFolder(folders, relation.folderId),
       }
     }
-    return {
-      module: relation.moduleId ? getModule(modules, relation.moduleId) : null,
-      folder: null,
+    if (relation.moduleId) {
+      return {
+        module: getModule(modules, relation.moduleId),
+        folder: null,
+      }
     }
+
+    return { module: null, folder: null }
   }, [folderGroups, relationFolders, modules, folders, relation])
 
   const t = useTranslations('Modules')
 
   return (
     <div
-      className={clsx('flex flex-col px-2 md:px-0 pb-3 border-b border-white/10', {
+      className={clsx('flex items-center justify-between p-2 h-12 border-b border-white/10', {
         [className]: className,
       })}
     >
+      <div className="text-white/50 text-base font-bold truncate ...">
+        {folder?.name || module?.name || t('moduleNoName')}
+      </div>
+
       <div
         className="flex gap-2 items-center uppercase"
       >
         <div className="flex gap-2 items-center">
-          <AchievementIcon
-            degreeRate={module ? module.degreeRate : (folder?.degreeRate || 0)}
-            showDefault
-            size={12}
-          />
           <AchievementDegree
-            degreeRate={module ? module.degreeRate : (folder?.degreeRate || 0)}
+            degreeRate={module?.degreeRate || folder?.degreeRate || 0}
             className="text-white/50 text-xs font-bold"
+          />
+          <AchievementIcon
+            degreeRate={module?.degreeRate || folder?.degreeRate || 0}
+            showDefault
+            size={16}
           />
         </div>
 
-        {(module && folder) &&
-          <div className="text-white/50 text-xs font-bold">
-            {folder?.name
-              ? t('folderName', { num: folder?.name })
-              : t('folderNoName')
-            }
-          </div>
-        }
-      </div>
-
-      <div className="text-white/50 text-base font-bold truncate ...">
-        {module?.name || t('folderNoName')}
       </div>
     </div>
   )

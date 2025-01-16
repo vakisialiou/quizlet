@@ -15,6 +15,7 @@ import { useTermSelect } from '@hooks/useTermSelect'
 import Levels, {EnumLevels} from '@entities/Levels'
 import { getLastStudyFolder } from '@helper/study'
 import { filterDeletedTerms } from '@helper/terms'
+import SVGEdit from '@public/svg/greasepencil.svg'
 import React, { useMemo, useState } from 'react'
 import FolderCart from '@components/FolderCart'
 import { FolderData } from '@entities/Folder'
@@ -40,7 +41,7 @@ export default function Folders(
     }
 ) {
   const router = useRouter()
-  const t = useTranslations('Modules')
+  const t = useTranslations('Folders')
 
   const folders = useFolderSelect()
   const { relationFolders } = useGroupSelect()
@@ -79,13 +80,13 @@ export default function Folders(
               items: [
                 {
                   id: DropDownIdEnums.EDIT_FOLDER,
-                  name: t('dropDownEdit'),
-                  icon: SVGPlay,
+                  name: t('dropdownEdit'),
+                  icon: SVGEdit,
                 },
                 {id: '1', divider: true},
                 {
                   id: DropDownIdEnums.REMOVE_FOLDER,
-                  name: t('dropDownRemove'),
+                  name: t('dropdownRemove'),
                   icon: SVGTrash
                 },
               ],
@@ -122,12 +123,12 @@ export default function Folders(
                     disabled={disabled}
                     variant={MetaLabelVariant.amber}
                   >
-                    {t('groupLabelActive')}
+                    {t('labelActive')}
                   </MetaLabel>
                 }
 
                 <MetaLabel disabled={disabled}>
-                  {t('groupLabelTerms', {count: notRemovedTerms.length})}
+                  {t('labelTerms', {count: notRemovedTerms.length})}
                 </MetaLabel>
               </>
             )}
@@ -145,7 +146,7 @@ export default function Folders(
                 })}
               >
                 <div className="text-xs font-bold uppercase">
-                  {t('folderName', {num: folder.name})}
+                  {folder.name || t('folderNoName')}
                 </div>
 
                 <div className="flex gap-2 items-center text-base">
@@ -153,7 +154,7 @@ export default function Folders(
                     width={18}
                     height={18}
                   />
-                  {t('groupButtonStartStudy')}
+                  {t('btnStartStudy')}
                 </div>
               </div>
             </div>

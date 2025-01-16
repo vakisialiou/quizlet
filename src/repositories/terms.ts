@@ -14,6 +14,7 @@ export type TermSelectType = {
   deleted: boolean,
   collapsed: boolean,
   updatedAt: boolean
+  createdAt: boolean
 }
 
 export const TermSelect = {
@@ -27,7 +28,8 @@ export const TermSelect = {
   associationLang: true,
   deleted: true,
   collapsed: true,
-  updatedAt: true
+  updatedAt: true,
+  createdAt: true
 } as TermSelectType
 
 type TermResult = Prisma.TermGetPayload<{
@@ -47,6 +49,7 @@ export const createTermSelect = (term: TermResult): Term => {
     .setDeleted(term.deleted)
     .setCollapsed(term.collapsed)
     .setUpdatedAt(term.updatedAt)
+    .setCreatedAt(term.createdAt)
 }
 
 export async function findTermsByUserId(db: PrismaEntry, userId: string) {

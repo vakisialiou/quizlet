@@ -1,9 +1,6 @@
-import { actionDeleteFolder, actionRemoveRelationFolder } from '@store/index'
 import Button, { ButtonVariant } from '@components/Button'
-import { useGroupSelect } from '@hooks/useGroupSelect'
 import { FolderGroupData } from '@entities/FolderGroup'
-import { getRelationFolder } from '@helper/relation'
-import { FolderData } from '@entities/Folder'
+import { actionRemoveFolderGroup } from '@store/index'
 import { useTranslations } from 'next-intl'
 import Spinner from '@components/Spinner'
 import Dialog from '@components/Dialog'
@@ -12,28 +9,25 @@ import React, { useState } from 'react'
 export default function DialogRemoveFolder(
   {
     group,
-    folder,
     onClose,
     onDone,
     editable
   }:
   {
-    folder: FolderData
     group: FolderGroupData,
     onClose: () => void
     onDone: () => void
     editable: boolean
   }
 ) {
-  const t = useTranslations('Folders')
+  const t = useTranslations('Groups')
   const [process, setProcess] = useState(false)
-  const { relationFolders } = useGroupSelect()
 
   return (
     <Dialog
       onClose={onClose}
       text={t('removeDialogText')}
-      title={folder.name || t('folderNoName')}
+      title={group.name || t('groupNoName')}
     >
       <Button
         className="min-w-28 px-4"
@@ -43,17 +37,10 @@ export default function DialogRemoveFolder(
             return
           }
 
-          const relationFolder = getRelationFolder(relationFolders, group.id, folder.id)
-          if (!relationFolder) {
-            return
-          }
-
           setProcess(true)
-          actionRemoveRelationFolder({ relationFolder, editable }, () => {
-            actionDeleteFolder({ folderId: folder.id, editable }, () => {
-              setProcess(false)
-              onDone()
-            })
+          actionRemoveFolderGroup({ folderGroup: group, editable }, () => {
+            setProcess(false)
+            onDone()
           })
         }}
       >

@@ -10,21 +10,27 @@ export type ModuleData = {
   name: string | null
   description: string | null
   collapsed: boolean
+  termsCollapsed: boolean
+  groupsCollapsed: boolean
   order: number,
   degreeRate: number,
   markers: ModuleMarkersEnum[]
   updatedAt: Date
+  createdAt: Date
 }
 
 export default class Module {
   id: string
   order: number
   collapsed: boolean
+  termsCollapsed: boolean
+  groupsCollapsed: boolean
   name: string | null
   description: string | null
   degreeRate: number
   markers: ModuleMarkersEnum[]
   updatedAt: Date
+  createdAt: Date
 
   constructor() {
     this.id = v4()
@@ -33,8 +39,11 @@ export default class Module {
     this.name = null
     this.description = null
     this.collapsed = false
+    this.termsCollapsed = false
+    this.groupsCollapsed = false
     this.markers = []
     this.updatedAt = new Date()
+    this.createdAt = new Date()
   }
 
   setCollapsed(value: boolean): Module {
@@ -42,8 +51,23 @@ export default class Module {
     return this
   }
 
+  setTermsCollapsed(value: boolean): Module {
+    this.termsCollapsed = value
+    return this
+  }
+
+  setGroupsCollapsed(value: boolean): Module {
+    this.groupsCollapsed = value
+    return this
+  }
+
   setUpdatedAt(value: Date): Module {
     this.updatedAt = value
+    return this
+  }
+
+  setCreatedAt(value: Date): Module {
+    this.createdAt = value
     return this
   }
 
