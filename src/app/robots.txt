@@ -1,7 +1,5 @@
 User-agent: *
 
-Disallow: /ru/private
-Disallow: /en/private
 Disallow: /ru/offline
 Disallow: /en/offline
 Disallow: /api

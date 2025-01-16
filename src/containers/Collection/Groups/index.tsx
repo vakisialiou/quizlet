@@ -71,6 +71,7 @@ export default function Groups(
                 <Input
                   autoFocus
                   value={group.name || ''}
+                  placeholder={t('namePlaceholder')}
                   onBlur={() => {
                     actionUpdateFolderGroup({
                       editable,
@@ -118,8 +119,8 @@ export default function Groups(
                   e.preventDefault()
                 }}
                 items={[
-                  { id: DropDownIdEnums.CREATE_FOLDER, name: t('dropdownAdd'), icon: SVGNewFolder },
                   { id: DropDownIdEnums.EDIT_GROUP, name: t('dropdownEdit'), icon: SVGEdit },
+                  { id: DropDownIdEnums.CREATE_FOLDER, name: t('dropdownAdd'), icon: SVGNewFolder },
                   { id: 3, divider: true },
                   { id: DropDownIdEnums.REMOVE_GROUP, name: t('dropdownRemove'), icon: SVGTrash }
                 ]}

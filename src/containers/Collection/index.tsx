@@ -5,10 +5,8 @@ import HeaderPageTitle from '@containers/HeaderPageTitle'
 import SVGNewPreset from '@public/svg/preset_new.svg'
 import { ConfigEditType } from '@store/initial-state'
 import Modules from '@containers/Collection/Modules'
-import ButtonSquare from '@components/ButtonSquare'
 import ContentPage from '@containers/ContentPage'
 import { useTranslations } from 'next-intl'
-import SVGBack from '@public/svg/back.svg'
 import { useRouter } from '@i18n/routing'
 import { useSelector } from 'react-redux'
 import React, { useState } from 'react'
@@ -58,20 +56,10 @@ export default function Collection() {
                 height={28}
               />
 
-              {t('footButtonCreateModule')}
+              {t('btnCreateModule')}
             </Button>
           </div>
         </div>
-      )}
-      rightControls={(
-        <>
-          <ButtonSquare
-            icon={SVGBack}
-            onClick={() => {
-              router.push(`/`)
-            }}
-          />
-        </>
       )}
     >
       <Modules

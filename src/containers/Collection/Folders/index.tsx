@@ -154,7 +154,7 @@ export default function Folders(
                     width={18}
                     height={18}
                   />
-                  {t('btnStartStudy')}
+                  {t('btnPlay')}
                 </div>
               </div>
             </div>

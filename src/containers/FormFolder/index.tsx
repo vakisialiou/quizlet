@@ -1,6 +1,7 @@
 import React, { useCallback, useRef } from 'react'
 import { actionUpdateFolder } from '@store/index'
 import { FolderData } from '@entities/Folder'
+import { useTranslations } from 'next-intl'
 import Input from '@components/Input'
 
 export default function FormFolder(
@@ -13,7 +14,7 @@ export default function FormFolder(
     editable: boolean
   }
 ) {
-
+  const t = useTranslations('Folder')
   const timeoutId = useRef<NodeJS.Timeout | null>(null)
   const onChangeUpdate = useCallback((folder: FolderData) => {
     actionUpdateFolder({ folder, editId: folder.id, editable: false })
@@ -42,6 +43,7 @@ export default function FormFolder(
       <Input
         autoFocus
         value={folder.name || ''}
+        placeholder={t('namePlaceholder')}
         onBlur={() => onChangeSave(folder)}
         onChange={(e) => onChangeUpdate({ ...folder, name: e.target.value })}
       />

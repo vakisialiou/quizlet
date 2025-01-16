@@ -7,7 +7,7 @@
     "mainDesc1": "Создавайте собственные карточки, используйте симуляторы, которые превращают изучение в игру, и повышайте свои навыки каждый день.",
     "mainDesc2": "Присоединяйтесь к тысячам пользователей, уже добившихся успеха с QuizerPlay!",
     "mainButtonSignIn": "Начать сейчас с Google",
-    "mainButtonGoTo": "Открыть коллекцию",
+
     "section0Title": "Попробовать <br/> демо-симулятор",
     "section0Block1Title": "Слова для изучения",
     "section0Block2Title": "Группируйте слова в небольшие части и учитесь с увлекательными симуляторами!",
@@ -48,9 +48,7 @@
     "section4Text": "Упростите обучение: структурируйте знания и наслаждайтесь развитием.",
     "section4ButtonSignIn": "Продолжить с Google",
     "pwa_install": "Установить приложение",
-    "footer": "© 2024. Все права защищены. Платформа {appName} для Обучения.",
-
-    "helpSection1Title": "Нажмите на кнопку, чтобы открыть раздел «Коллекция», где вы сможете создавать модули и добавлять в них термины для удобного управления и изучения."
+    "footer": "© 2024. Все права защищены. Платформа {appName} для Обучения."
   },
   "Offline": {
     "metaTitle": "Оффлайн-режим | QuizerPlay",
@@ -59,13 +57,12 @@
     "warn": "Вы находитесь в оффлайн-режиме. <br/>Попробуйте подключиться к сети."
   },
   "Modules": {
-    "headTitle": "Модули",
+    "headTitle": "Курсы",
     "searchPlaceholder": "Поиск...",
-    "footButtonCreateModule": "Создать модуль",
+    "btnCreateModule": "Создать учебный курс",
     "dropDownEditModule": "Редактировать",
-    "dropDownOpenModule": "Добавить flashcard",
-    "dropDownStudyModule": "Изучить",
-    "dropDownCreateGroup": "Добавить группу",
+    "dropDownStudyModule": "Изучить курс",
+    "dropDownCreateGroup": "Добавить раздел",
     "dropDownGenerateShare": "Поделиться ссылкой",
     "dropDownRemoveModule": "Удалить",
     "shareDialogTitle": "Поделиться ссылкой",
@@ -75,84 +72,65 @@
     "shareDialogReadonly": "Только просмотр",
     "shareDialogEditable": "Просмотр и редактирование",
     "shareDialogButtonCopy": "Копировать",
+    "labelActive": "Активный",
+    "labelTerms": "Карточки {count}",
+    "noModulesHelper": "Для добавления нового модуля нажмите кнопку \"{btnName}\"."
+  },
+  "Module": {
+    "headTitle": "Учебный курс",
+    "searchPlaceholder": "Поиск...",
+    "btnPlay": "Изучить",
     "moduleNoName": "(Без имени)",
-    "removeDialogText": "Вы уверены, что хотите удалить этот элемент?",
+    "removeDialogText": "Вы уверены, что хотите удалить учебный курс?",
     "removeDialogButtonApprove": "Удалить",
     "removeDialogButtonCancel": "Отменить",
-    "folderLabelActive": "Активный",
-    "folderLabelTerms": "Термины {count}",
-    "noFoldersHelper": "Для добавления нового модуля нажмите кнопку \"{btnName}\".",
-    "folderOpen": "Открыть",
-    "folderPlay": "Изучить",
-    "folderGenerate": "Generate",
-    "folderEditNamePlaceholder": "Название модуля",
-    "folderEditDescPlaceholder": "Описание",
-    "groupLabelTerms": "Термины {count}"
+    "noCardsHelper": "Вы еще не добавили ни одной карточки.",
+    "namePlaceholder": "Название курса",
+    "textPlaceholder": "Текст",
+    "groupsTitle": "Разделы",
+    "termsTitle": "Карточки"
   },
   "Groups": {
-    "removeDialogText": "Вы уверены, что хотите удалить группу?",
+    "removeDialogText": "Вы уверены, что хотите удалить раздел?",
     "removeDialogButtonApprove": "Удалить",
     "removeDialogButtonCancel": "Отменить",
     "groupNoName": "(Без имени)",
-    "dropdownAdd": "Добавить папку",
+    "dropdownAdd": "Добавить категорию",
     "dropdownEdit": "Редактировать",
     "dropdownRemove": "Удалить",
-    "emptyList": "Вы еще не создали ни одной группы."
+    "namePlaceholder": "Название раздела",
+    "emptyList": "Вы еще не создали ни одного раздела."
   },
   "Folders": {
     "headTitle": "Папка",
     "termsTitle": "Термины",
     "folderNoName": "(Без имени)",
-    "searchPlaceholder": "Поиск...",
-    "footButtonPlay": "Изучить",
     "removeDialogText": "Вы уверены, что хотите удалить папку?",
     "removeDialogButtonApprove": "Удалить",
     "removeDialogButtonCancel": "Отменить",
-    "noCardsHelper": "Вы еще не добавили ни одного термина.",
-    "cardDropDownEdit": "Редактировать",
-    "cardDropDownRemove": "Удалить",
-    "cardQuestionHintR": "Передняя сторона не заполнена",
-    "cardQuestionHintW": "Введите текст для передней...",
-    "cardAnswerHintR": "Обратная сторона не заполнена",
-    "cardAnswerHintW": "Введите текст для обратной...",
-    "cardAssociationHintR": "Ассоциация не задана",
-    "cardAssociationHintW": "Ваша ассоциация...",
     "dropdownEdit": "Редактировать",
     "dropdownRemove": "Удалить",
     "labelTerms": "Термины {count}",
     "labelActive": "Активный",
-    "btnStartStudy": "Изучить"
+    "btnPlay": "Изучить"
   },
-  "Module": {
-    "metaTitle": "Учебный модуль | QuizerPlay",
-    "metaKeywords": "модуль, создание новых терминов, добавление терминов, редактирование, изучение карточек, QuizerPlay",
-    "metaDescription": "Создавайте, редактируйте и изучайте модуль в QuizerPlay.",
-    "headTitle": "Модуль",
+  "Folder": {
+    "headTitle": "Категория",
+    "termsTitle": "Карточки",
+    "btnPlay": "Изучить",
+    "namePlaceholder": "Название категории",
+    "noCardsHelper": "Вы еще не добавили ни одной карточки.",
+    "searchPlaceholder": "Поиск..."
+  },
+  "Terms": {
+    "headTitle": "Карточки",
     "searchPlaceholder": "Поиск...",
-    "footButtonPlay": "Изучить",
+    "btnAddTerm": "Добавить карточку",
     "removeDialogTitle": "Без имени",
     "removeDialogText": "Вы уверены, что хотите удалить карточку?",
     "removeDialogButtonApprove": "Удалить",
     "removeDialogButtonCancel": "Отменить",
-    "noCardsHelper": "Вы еще не добавили ни одного термина.",
-    "cardDropDownEdit": "Редактировать",
-    "cardDropDownRemove": "Удалить",
-    "cardQuestionHintR": "Передняя сторона не заполнена",
-    "cardQuestionHintW": "Введите текст для передней...",
-    "cardAnswerHintR": "Обратная сторона не заполнена",
-    "cardAnswerHintW": "Введите текст для обратной...",
-    "cardAssociationHintR": "Ассоциация не задана",
-    "cardAssociationHintW": "Ваша ассоциация..."
-  },
-  "Terms": {
-    "headTitle": "Термины",
-    "searchPlaceholder": "Поиск...",
-    "btnAddTerm": "Добавить термин",
-    "removeDialogTitle": "Без имени",
-    "removeDialogText": "Вы уверены, что хотите удалить термин?",
-    "removeDialogButtonApprove": "Удалить",
-    "removeDialogButtonCancel": "Отменить",
-    "noCardsHelper": "Вы еще не создали ни одного термина.",
+    "noCardsHelper": "Вы еще не создали ни одной карточки.",
     "cardDropDownEdit": "Редактировать",
     "cardDropDownRemove": "Удалить",
     "cardQuestionHintR": "Передняя сторона не заполнена",
@@ -162,9 +140,9 @@
     "cardAssociationHintR": "Ассоциация не задана",
     "cardAssociationHintW": "Ваша ассоциация...",
     "emptySearchList": "Ничего не найдено.",
-    "emptyList": "Список терминов пуст.",
-    "termCreate": "Создать термин",
-    "termSearch": "Найти термин"
+    "emptyList": "Список карточек пуст.",
+    "termCreate": "Создать карточку",
+    "termSearch": "Найти..."
   },
   "Simulators": {
     "metaTitle": "Тренажеры для обучения | QuizerPlay",
@@ -268,9 +246,8 @@
     "metaDescription": "Соберите и управляйте всеми вашими учебными карточками на платформе QuizerPlay. Простое и удобное решение для эффективного обучения."
   },
   "NavMenu": {
-    "home": "Главная",
-    "terms": "Термины",
-    "modules": "Модули",
-    "moduleNoName": "(Без имени)"
+    "terms": "Карточки",
+    "modules": "Курсы",
+    "noName": "(Без имени)"
   }
 }

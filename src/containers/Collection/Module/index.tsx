@@ -42,7 +42,7 @@ export default function Module(
     variant?: FolderFrameVariant
   }
 ) {
-  const t = useTranslations('Modules')
+  const t = useTranslations('Module')
 
   const ref = useRef<HTMLDivElement | null>(null)
 
@@ -97,7 +97,7 @@ export default function Module(
             autoComplete="off"
             className="z-10 w-full"
             defaultValue={data.name || ''}
-            placeholder={t('folderEditNamePlaceholder')}
+            placeholder={t('namePlaceholder')}
             onChange={(e) => {
               onChange('name', e.target.value)
             }}
@@ -122,7 +122,7 @@ export default function Module(
             autoComplete="off"
             className="z-10 w-full"
             defaultValue={data.description || ''}
-            placeholder={t('folderEditDescPlaceholder')}
+            placeholder={t('textPlaceholder')}
             onChange={(e) => {
               onChange('description', e.target.value)
             }}

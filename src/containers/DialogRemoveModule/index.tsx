@@ -20,14 +20,14 @@ export default function DialogRemoveModule(
       onDone: () => void
     }
 ) {
-  const t = useTranslations('Modules')
+  const t = useTranslations('Module')
   const [process, setProcess] = useState(false)
 
   return (
     <Dialog
       onClose={onClose}
       text={t('removeDialogText')}
-      title={module.name || t('removeDialogTitle')}
+      title={module.name || t('moduleNoName')}
     >
       <Button
         className="min-w-28 px-4"

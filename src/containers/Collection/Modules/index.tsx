@@ -92,7 +92,7 @@ export default function Modules(
         {visibleModules.length === 0 &&
           <div className="flex flex-col items-center justify-center gap-2 p-4">
             <div className="text-white/50 text-sm italic text-center">
-              {t('noFoldersHelper', { btnName: t('footButtonCreateModule') })}
+              {t('noModulesHelper', { btnName: t('btnCreateModule') })}
             </div>
           </div>
         }
@@ -163,12 +163,12 @@ export default function Modules(
                     <MetaLabel
                       variant={MetaLabelVariant.amber}
                     >
-                      {t('folderLabelActive')}
+                      {t('labelActive')}
                     </MetaLabel>
                   }
 
                   <MetaLabel>
-                    {t('folderLabelTerms', { count: notRemovedTerms.length })}
+                    {t('labelTerms', { count: notRemovedTerms.length })}
                   </MetaLabel>
                 </>
               )}

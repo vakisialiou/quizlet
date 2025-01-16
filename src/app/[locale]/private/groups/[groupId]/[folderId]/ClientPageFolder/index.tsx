@@ -20,7 +20,6 @@ import { filterDeletedTerms } from '@helper/terms'
 import SVGFileNew from '@public/svg/file_new.svg'
 import RelationTerm from '@entities/RelationTerm'
 import ContentPage from '@containers/ContentPage'
-import FolderTitle from '@containers/FolderTitle'
 import FolderCart from '@components/FolderCart'
 import FormFolder from '@containers/FormFolder'
 import Dropdown from '@components/Dropdown'
@@ -71,7 +70,7 @@ export default function ClientPageFolder({ editable, groupId, folderId }: { edit
 
   const [ search, setSearch ] = useState<string>('')
 
-  const t = useTranslations('Folders')
+  const t = useTranslations('Folder')
 
   const ref = useRef<{ onCreate?: () => void }>({})
   const refDropdownTerms = useRef<{ close?: () => void }>({})
@@ -117,18 +116,13 @@ export default function ClientPageFolder({ editable, groupId, folderId }: { edit
               width={28}
               height={28}
             />
-            {t('footButtonPlay')}
+            {t('btnPlay')}
           </Button>
         </div>
       )}
     >
       {folder &&
         <div className="flex flex-col gap-2">
-          <FolderTitle
-            className="mb-4"
-            relation={{ folderId }}
-          />
-
           <FormFolder
             folder={folder}
             editable={editable}

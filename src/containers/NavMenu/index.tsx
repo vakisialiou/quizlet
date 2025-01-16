@@ -32,25 +32,18 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
 
   const menuItems = [
     {
-      id: 1,
-      name: t('home'),
+      id: 20,
+      name: t('modules'),
       href: `/`,
-      private: false,
-      children: []
+      private: true,
+      children: collectionChildren
     },
     {
-      id: 20,
+      id: 30,
       name: t('terms'),
       href: `/private/terms`,
       private: true,
       children: []
-    },
-    {
-      id: 30,
-      name: t('modules'),
-      href: `/private`,
-      private: true,
-      children: collectionChildren
     },
   ] as NavMenuItemProp[]
 
@@ -125,7 +118,7 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
                         <div
                           className="absolute w-3 h-6 left-4 top-[-0px] border-b border-dashed border-white/25"
                         />
-                        {child.name || <span className="text-gray-500">{t('moduleNoName')}</span>}
+                        {child.name || <span className="text-gray-500">{t('noName')}</span>}
                       </NavMenuItem>
                     )
                   })}

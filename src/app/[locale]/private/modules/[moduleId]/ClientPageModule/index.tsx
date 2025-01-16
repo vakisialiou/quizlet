@@ -11,10 +11,10 @@ import SVGNewCollection from '@public/svg/collection_new.svg'
 import TermsDropdownMenu from '@containers/TermsDropdownMenu'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
 import AchievementIcon from '@containers/AchievementIcon'
+import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
 import Button, {ButtonVariant} from '@components/Button'
 import { findTerms, getModule } from '@helper/relation'
 import {useModuleSelect} from '@hooks/useModuleSelect'
-import SVGFileBlank from '@public/svg/file_blank.svg'
 import Groups from '@containers/Collection/Groups'
 import RelatedTerms from '@containers/RelatedTerms'
 import ButtonSquare from '@components/ButtonSquare'
@@ -32,8 +32,7 @@ import SVGBack from '@public/svg/back.svg'
 import SVGPlay from '@public/svg/play.svg'
 import {useRouter} from '@i18n/routing'
 import Module from '@entities/Module'
-import SVGArrowDown from "@public/svg/downarrow_hlt.svg";
-import clsx from "clsx";
+import clsx from 'clsx'
 
 export default function ClientPageModule({ editable, moduleId }: { editable: boolean, moduleId: string }) {
   const router = useRouter()
@@ -124,7 +123,7 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
               width={28}
               height={28}
             />
-            {t('footButtonPlay')}
+            {t('btnPlay')}
           </Button>
         </div>
       )}
@@ -138,7 +137,7 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
 
           <FolderCart
             hover={false}
-            title={'Группы'}
+            title={t('groupsTitle')}
             dropdown={{hidden: true}}
             controls={(
               <>
@@ -186,7 +185,7 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
 
           <FolderCart
             hover={false}
-            title={'Термины'}
+            title={t('termsTitle')}
             dropdown={{
               hidden: true
             }}

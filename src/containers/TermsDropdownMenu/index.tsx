@@ -58,7 +58,7 @@ export default function TermsDropdownList(
 
       <div
         onClick={onCreate}
-        className={clsx('relative flex gap-2 items-center px-3 py-2 text-sm text-start transition-colors cursor-pointer mx-2.5', {
+        className={clsx('relative flex gap-2 items-center px-3 py-2 text-sm text-start transition-colors cursor-pointer mx-2.5 border border-white/25', {
           ['hover:text-gray-200 hover:bg-gray-900 active:bg-gray-800']: true,
           ['text-gray-500 bg-black']: true
         })}

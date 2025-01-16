@@ -2,6 +2,7 @@ import React, { useCallback, useRef } from 'react'
 import { actionUpdateModule } from '@store/index'
 import { ModuleData } from '@entities/Module'
 import Textarea from '@components/Textarea'
+import { useTranslations } from 'next-intl'
 import Input from '@components/Input'
 
 export default function FolderModule(
@@ -14,7 +15,7 @@ export default function FolderModule(
     editable: boolean
   }
 ) {
-
+  const t = useTranslations('Module')
   const timeoutId = useRef<NodeJS.Timeout | null>(null)
   const onChangeUpdate = useCallback((module: ModuleData) => {
     actionUpdateModule({ module, editId: module.id, editable: false })
@@ -43,6 +44,7 @@ export default function FolderModule(
       <Input
         autoFocus
         value={module.name || ''}
+        placeholder={t('namePlaceholder')}
         onBlur={() => onChangeSave(module)}
         onChange={(e) => onChangeUpdate({ ...module, name: e.target.value })}
       />
@@ -50,6 +52,7 @@ export default function FolderModule(
       <Textarea
         value={module.description || ''}
         onBlur={() => onChangeSave(module)}
+        placeholder={t('textPlaceholder')}
         onChange={(e) => onChangeUpdate({ ...module, description: e.target.value })}
       />
     </div>
