@@ -10,7 +10,6 @@ export default function Collapse(
     children,
     collapsed = false,
     className = '',
-    classNameBody = '',
   }:
   {
     collapsed?: boolean
@@ -18,7 +17,6 @@ export default function Collapse(
     children: ReactNode
     controls?: ReactNode
     className?: string
-    classNameBody?: string
   }
 ) {
   const [ value, setCollapsed ] = useState(collapsed)

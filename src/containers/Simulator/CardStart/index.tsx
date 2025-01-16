@@ -1,6 +1,5 @@
 import { findSimulatorMethodById, simulatorMethodList } from '@containers/Simulator/constants'
 import { actionSaveSimulator, actionUpdateSettingsSimulator } from '@store/index'
-import SimulatorSettings, { SimulatorMethod } from '@entities/SimulatorSettings'
 import { randomizeTermIds, selectRandomTermId } from '@helper/simulators/general'
 import { findSimulators, findTerms, RelationProps } from '@helper/relation'
 import { filterDeletedTerms, filterEmptyTerms } from '@helper/terms'
@@ -8,6 +7,7 @@ import { actionExtraParamsUpdate } from '@helper/simulators/actions'
 import Simulator, { SimulatorStatus } from '@entities/Simulator'
 import { useSimulatorSelect } from '@hooks/useSimulatorSelect'
 import RelationSimulator from '@entities/RelationSimulator'
+import SimulatorSettings from '@entities/SimulatorSettings'
 import Button, {ButtonVariant} from '@components/Button'
 import CardEmpty from '@containers/Simulator/CardEmpty'
 import { useTermSelect } from '@hooks/useTermSelect'
@@ -116,7 +116,6 @@ export default function SingleStart(
             variant={ButtonVariant.WHITE}
             disabled={!findSimulatorMethodById(settings.simulator.id) || playTerms.length === 0}
             onClick={() => {
-              console.log({ playTerms })
               if (playTerms.length > 0) {
                 const termIds = randomizeTermIds(playTerms.map(({id}) => id))
 

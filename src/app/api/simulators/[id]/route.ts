@@ -29,8 +29,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
   }
 
   if (relationSimulator.moduleId) {
-    const module = await getModuleById(prisma, userId, relationSimulator.moduleId)
-    if (!module) {
+    const course = await getModuleById(prisma, userId, relationSimulator.moduleId)
+    if (!course) {
       return new Response(null, {status: 400})
     }
   }

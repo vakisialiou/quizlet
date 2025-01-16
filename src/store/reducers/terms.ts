@@ -27,6 +27,7 @@ export type EditType = {
 
 export const editTerm = createAsyncThunk(
   '/term/edit',
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async (payload: EditType): Promise<boolean> => {
     return true
   }

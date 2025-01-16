@@ -39,7 +39,6 @@ function RelatedTerms(
   ref: Ref<{ onCreate?: () => void }>
 ) {
   const { relationTerms } = useTermSelect()
-
   const [ originItem, setOriginItem ] = useState<TermData | null>(null)
   const [removeTerm, setRemoveTerm] = useState<TermData | null>(null)
 
@@ -89,7 +88,7 @@ function RelatedTerms(
         setOriginItem(term)
       })
     })
-  }, [relatedTerms])
+  }, [editable, relation, relatedTerms, shareId])
 
   useImperativeHandle(ref, () => ({ onCreate }))
 

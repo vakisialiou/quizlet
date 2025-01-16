@@ -89,14 +89,75 @@ export default function SimulatorBody(
   const t = useTranslations('Simulators')
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col items-center">
       <PanelInfo
         className="mb-6"
         relation={relation}
         simulator={simulator}
       />
 
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-2">
+        <PanelControls
+          simulator={simulator}
+          className="w-72"
+          options={{
+            sound: {
+              active: soundSelection.type === 'sound',
+              disabled: !speech || showHelp || !cardData?.helpData?.text || !cardData?.helpData?.lang
+            },
+            deactivate: {
+              disabled: disableDeactivate
+            },
+            help: {
+              disabled: !cardData?.helpData?.association,
+              active: showHelp
+            }
+          }}
+          onClick={(controlName) => {
+            if (!simulator) {
+              return
+            }
+
+            switch (controlName) {
+              case 'deactivate':
+                onDeactivateAction(simulator.id)
+                break
+              case 'back':
+                actionUpdateSimulator({
+                  simulator: actionBack(simulator),
+                  editable
+                })
+                break
+              case 'help':
+                setShowHelp((prevState) => !prevState)
+                break
+              case 'sound':
+                if (simulator && cardData && speech) {
+                  if (soundSelection.type === 'sound') {
+                    speech.stop()
+                    return
+                  }
+
+                  const text = cardData?.helpData?.text
+                  const lang = cardData?.helpData?.lang
+
+                  if (lang && text) {
+                    speech
+                      .stop()
+                      .setLang(lang)
+                      .setVoice(speech.selectVoice(lang))
+                      .speak(text)
+                    setSoundSelection({
+                      type: 'sound',
+                      data: {id: '', lang, text} as CardSelection
+                    })
+                  }
+                }
+                break
+            }
+          }}
+        />
+
         <div className="flex flex-col gap-2 w-72">
 
           {!simulator &&
@@ -211,68 +272,6 @@ export default function SimulatorBody(
             </div>
           }
 
-        </div>
-
-        <div className="w-full">
-          <PanelControls
-            simulator={simulator}
-            options={{
-              sound: {
-                active: soundSelection.type === 'sound',
-                disabled: !speech || showHelp || !cardData?.helpData?.text || !cardData?.helpData?.lang
-              },
-              deactivate: {
-                disabled: disableDeactivate
-              },
-              help: {
-                disabled: !cardData?.helpData?.association,
-                active: showHelp
-              }
-            }}
-            onClick={(controlName) => {
-              if (!simulator) {
-                return
-              }
-
-              switch (controlName) {
-                case 'deactivate':
-                  onDeactivateAction(simulator.id)
-                  break
-                case 'back':
-                  actionUpdateSimulator({
-                    simulator: actionBack(simulator),
-                    editable
-                  })
-                  break
-                case 'help':
-                  setShowHelp((prevState) => !prevState)
-                  break
-                case 'sound':
-                  if (simulator && cardData && speech) {
-                    if (soundSelection.type === 'sound') {
-                      speech.stop()
-                      return
-                    }
-
-                    const text = cardData?.helpData?.text
-                    const lang = cardData?.helpData?.lang
-
-                    if (lang && text) {
-                      speech
-                        .stop()
-                        .setLang(lang)
-                        .setVoice(speech.selectVoice(lang))
-                        .speak(text)
-                      setSoundSelection({
-                        type: 'sound',
-                        data: {id: '', lang, text} as CardSelection
-                      })
-                    }
-                  }
-                  break
-              }
-            }}
-          />
         </div>
       </div>
     </div>

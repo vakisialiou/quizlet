@@ -100,9 +100,9 @@ export default function CardDone(
       }
 
       if (relation.moduleId) {
-        const module = getModule(modules, relation.moduleId)
-        if (module) {
-          actionUpdateModule({module: {...module, degreeRate: virtualDegreeRate}, editable, editId: null}, () => {
+        const course = getModule(modules, relation.moduleId)
+        if (course) {
+          actionUpdateModule({module: {...course, degreeRate: virtualDegreeRate}, editable, editId: null}, () => {
             actionUpdateSimulator({
               simulator: actionDeactivate(simulator),
               editable
@@ -124,7 +124,7 @@ export default function CardDone(
     }, particlesDelay + particlesDuration.max)
 
     return () => clearTimeout(timer)
-  }, [onAnimationDone, particlesDelay, particlesDuration.max, folders, modules, virtualDegreeRate, editable])
+  }, [onAnimationDone, particlesDelay, particlesDuration.max, folders, modules, virtualDegreeRate, simulator, editable, relation])
 
   return (
     <CardEmpty

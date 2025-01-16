@@ -18,8 +18,8 @@ export const getLastStudyModule = (modules: ModuleData[], relationSimulators: Re
     simulator: null,
   } as LastStudyModule
 
-  for (const module of modules) {
-    const moduleSimulators = findSimulators(relationSimulators, simulators, { moduleId: module.id })
+  for (const course of modules) {
+    const moduleSimulators = findSimulators(relationSimulators, simulators, { moduleId: course.id })
     const [ simulator ] = sortSimulatorsDesc(moduleSimulators)
 
     if (!simulator) {
@@ -27,7 +27,7 @@ export const getLastStudyModule = (modules: ModuleData[], relationSimulators: Re
     }
 
     if (!last.timestamp) {
-      last.module = module
+      last.module = course
       last.simulator = simulator
       last.timestamp = new Date(simulator.createdAt).getTime()
       continue
@@ -35,7 +35,7 @@ export const getLastStudyModule = (modules: ModuleData[], relationSimulators: Re
 
     const timestamp = new Date(simulator.createdAt).getTime()
     if (last.timestamp < timestamp) {
-      last.module = module
+      last.module = course
       last.simulator = simulator
       last.timestamp = timestamp
     }

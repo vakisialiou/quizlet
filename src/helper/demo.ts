@@ -13,7 +13,7 @@ export const DEMO_MODULE_ID = '263f57eb-967d-47fd-84a7-0d424be143dc'
 export const getDemoInitialData = async (locale: LanguageEnums): Promise<ConfigType> => {
   const t = await getTranslations({ locale, namespace: 'Landing' })
 
-  const module = new Module()
+  const course = new Module()
     .setId(DEMO_MODULE_ID)
     .setCollapsed(false)
     .setName(t('section0Block1Title'))
@@ -114,7 +114,7 @@ export const getDemoInitialData = async (locale: LanguageEnums): Promise<ConfigT
 
   const relationTerms = terms.map(({ id }) => {
     return new RelationTerm()
-      .setModuleId(module.id)
+      .setModuleId(course.id)
       .setTermId(id)
       .serialize()
   })
@@ -136,14 +136,14 @@ export const getDemoInitialData = async (locale: LanguageEnums): Promise<ConfigT
   const relationSimulators = [
     new RelationSimulator()
       .setSimulatorId(simulator.id)
-      .setModuleId(module.id)
+      .setModuleId(course.id)
       .serialize()
   ]
 
   return getInitialState({
     terms,
     relationTerms,
-    modules: [module],
+    modules: [course],
     relationSimulators,
     simulators: [simulator],
   })

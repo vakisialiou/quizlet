@@ -11,8 +11,8 @@ export async function PUT(req: NextRequest) {
     return new Response(null, { status: 401 })
   }
 
-  const module = await req.json()
-  await upsertModule(prisma, userId, module as ModuleData)
+  const course = await req.json()
+  await upsertModule(prisma, userId, course as ModuleData)
   return new Response(null, { status: 200 })
 }
 

@@ -20,7 +20,6 @@ import { getLastStudyModule } from '@helper/study'
 import DialogShare from '@containers/DialogShare'
 import React, { useMemo, useState } from 'react'
 import FolderGroup from '@entities/FolderGroup'
-import SVGLinked from '@public/svg/linked.svg'
 import { ModuleData } from '@entities/Module'
 import SVGTrash from '@public/svg/trash.svg'
 import { findTerms } from '@helper/relation'
@@ -79,7 +78,7 @@ export default function Modules(
   }, [modules, relationSimulators, simulators])
 
   const visibleModules = useMemo(() => {
-    let rawModules = searchModules([...modules || []], filter.search || null, editId)
+    const rawModules = searchModules([...modules || []], filter.search || null, editId)
     return sortTop(sortDesc(rawModules), lastStudyModule?.id || null)
       .slice(0, filter.limit || Infinity)
   }, [modules, editId, filter, lastStudyModule])

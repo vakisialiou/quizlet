@@ -60,7 +60,7 @@ export default function ClientPageFolder({ editable, groupId, folderId }: { edit
     actionUpdateFolder({ editable, editId: null, folder: newFolder }, () => {
       actionCreateRelationFolder({ editable, relationFolder })
     })
-  }, [folder, folderId])
+  }, [folder, folderId, editable, groupId])
 
   const { terms, relationTerms } = useTermSelect()
 

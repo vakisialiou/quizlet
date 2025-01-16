@@ -1,8 +1,6 @@
-import {getModule, RelationProps, getFolder, getModuleByFolderId} from '@helper/relation'
+import {getModule, RelationProps, getFolder } from '@helper/relation'
 import AchievementDegree from '@containers/AchievementDegree'
-import { RelationFolderData } from '@entities/RelationFolder'
 import AchievementIcon from '@containers/AchievementIcon'
-import { FolderGroupData } from '@entities/FolderGroup'
 import { FolderData } from '@entities/Folder'
 import { ModuleData } from '@entities/Module'
 import { useTranslations } from 'next-intl'
@@ -22,8 +20,6 @@ export default function FolderTitle(
 ) {
   const folders = useSelector(({ folders }: { folders: FolderData[] }) => folders)
   const modules = useSelector(({ modules }: { modules: ModuleData[] }) => modules)
-  const folderGroups = useSelector(({ folderGroups }: { folderGroups: FolderGroupData[] }) => folderGroups)
-  const relationFolders = useSelector(({ relationFolders }: { relationFolders: RelationFolderData[] }) => relationFolders)
 
   const { folder, module } = useMemo(() => {
     if (relation.folderId) {
@@ -40,7 +36,7 @@ export default function FolderTitle(
     }
 
     return { module: null, folder: null }
-  }, [folderGroups, relationFolders, modules, folders, relation])
+  }, [modules, folders, relation])
 
   const t = useTranslations('Module')
 

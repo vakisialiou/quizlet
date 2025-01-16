@@ -32,7 +32,7 @@ export default function RoundInfo(
 
         {value !== undefined &&
           <span
-            className={clsx('text-sm font-bold font-mono', {
+            className={clsx('text-xs font-bold font-mono', {
               ['text-white/50']: variant === RoundInfoVariant.default,
               ['text-amber-600']: variant === RoundInfoVariant.danger,
               ['text-red-800']: variant === RoundInfoVariant.warning,

@@ -2,9 +2,8 @@
 
 import {
   actionUpdateModule,
-  actionCreateRelationTerm,
   actionUpdateFolderGroup,
-  actionUpdateFolder
+  actionCreateRelationTerm,
 } from '@store/index'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import SVGNewCollection from '@public/svg/collection_new.svg'
@@ -39,14 +38,14 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
   const { terms, relationTerms } = useTermSelect()
 
   const modules = useModuleSelect()
-  const module = useMemo(() => {
+  const course = useMemo(() => {
     return getModule(modules, moduleId)
   }, [modules, moduleId])
 
   const initRef = useRef(true)
 
   useEffect(() => {
-    if (module) {
+    if (course) {
       return
     }
 
@@ -61,7 +60,7 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
       editId: null,
       module: new Module().setId(moduleId).serialize()
     })
-  }, [module, moduleId])
+  }, [course, editable, moduleId])
 
   const relatedTerms = useMemo(() => {
     return filterDeletedTerms(findTerms(relationTerms, terms, { moduleId }))
@@ -86,7 +85,7 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
           title={(
             <div className="flex gap-2 items-center">
               <AchievementIcon
-                degreeRate={module ? module.degreeRate : 0}
+                degreeRate={course ? course.degreeRate : 0}
                 showDefault
                 size={18}
               />
@@ -128,10 +127,10 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
         </div>
       )}
     >
-      {module &&
+      {course &&
         <div className="flex flex-col gap-2">
           <FormModule
-            module={module}
+            module={course}
             editable={editable}
           />
 
@@ -146,7 +145,7 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
                   icon={SVGNewCollection}
                   onClick={() => {
                     const folderGroup = new FolderGroup()
-                      .setModuleId(module.id)
+                      .setModuleId(course.id)
                       .serialize()
 
                     actionUpdateFolderGroup({
@@ -164,19 +163,19 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
                     actionUpdateModule({
                       editable,
                       editId: null,
-                      module: { ...module, groupsCollapsed: !module.groupsCollapsed }
+                      module: { ...course, groupsCollapsed: !course.groupsCollapsed }
                     })
                   }}
                   classNameIcon={clsx('', {
-                    ['rotate-180']: !module.groupsCollapsed
+                    ['rotate-180']: !course.groupsCollapsed
                   })}
                 />
               </>
             )}
           >
-            {!module.groupsCollapsed &&
+            {!course.groupsCollapsed &&
               <Groups
-                module={module}
+                module={course}
                 editable={editable}
               />
             }
@@ -204,14 +203,14 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
                           refDropdownTerms.current.close()
                         }
 
-                        actionUpdateModule({ editable, editId: null, module: { ...module, termsCollapsed: false }}, () => {
+                        actionUpdateModule({ editable, editId: null, module: { ...course, termsCollapsed: false }}, () => {
                           if (ref.current?.onCreate) {
                             ref.current?.onCreate()
                           }
                         })
                       }}
                       onClick={(term) => {
-                        actionUpdateModule({ editable, editId: null, module: { ...module, termsCollapsed: false }}, () => {
+                        actionUpdateModule({ editable, editId: null, module: { ...course, termsCollapsed: false }}, () => {
                           const relationTerm = new RelationTerm()
                             .setModuleId(moduleId)
                             .setTermId(term.id)
@@ -236,17 +235,17 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
                     actionUpdateModule({
                       editable,
                       editId: null,
-                      module: { ...module, termsCollapsed: !module.termsCollapsed }
+                      module: { ...course, termsCollapsed: !course.termsCollapsed }
                     })
                   }}
                   classNameIcon={clsx('', {
-                    ['rotate-180']: !module.termsCollapsed
+                    ['rotate-180']: !course.termsCollapsed
                   })}
                 />
               </>
             )}
           >
-            {!module.termsCollapsed &&
+            {!course.termsCollapsed &&
               <>
                 {editable && relatedTerms.length === 0 &&
                   <div className="italic text-xs text-center text-white/50">

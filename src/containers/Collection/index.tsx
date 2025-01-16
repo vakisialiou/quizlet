@@ -47,8 +47,8 @@ export default function Collection() {
               variant={ButtonVariant.WHITE}
               className="w-full"
               onClick={() => {
-                const module = new Module().serialize()
-                router.push(`/private/modules/${module.id}`)
+                const course = new Module().serialize()
+                router.push(`/private/modules/${course.id}`)
               }}
             >
               <SVGNewPreset
