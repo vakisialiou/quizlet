@@ -102,7 +102,7 @@ export default function Folders(
               }
             }}
             title={(
-              <div className="flex gap-2 items-center font-bold">
+              <div className="flex gap-2 items-center">
                 <div className="flex items-center gap-1">
                   <AchievementIcon
                     degreeRate={folder.degreeRate}
@@ -111,7 +111,7 @@ export default function Folders(
 
                   <AchievementDegree
                     degreeRate={folder.degreeRate}
-                    className="text-sm font-bold uppercase text-white/50"
+                    className="text-xs font-bold uppercase text-white/50"
                   />
                 </div>
               </div>

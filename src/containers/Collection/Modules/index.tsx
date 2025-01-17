@@ -110,7 +110,7 @@ export default function Modules(
               collapsed={module.collapsed}
               variant={isLastStudy ? FolderFrameVariant.blue : FolderFrameVariant.default}
               title={(
-                <div className="flex gap-2 items-center font-bold">
+                <div className="flex gap-2 items-center">
 
                   <div className="flex items-center gap-1">
                     <AchievementIcon
