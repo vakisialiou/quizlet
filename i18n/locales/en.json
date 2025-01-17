@@ -106,7 +106,7 @@
     "searchPlaceholder": "Search...",
     "btnCreateModule": "Create a Learning Course",
     "dropDownEditModule": "Edit",
-    "dropDownStudyModule": "Study Course",
+    "dropDownStudyModule": "Start Study",
     "dropDownCreateGroup": "Add Section",
     "dropDownGenerateShare": "Share Link",
     "dropDownRemoveModule": "Delete",
@@ -186,8 +186,9 @@
     "cardAssociationHintW": "Your association...",
     "emptySearchList": "Nothing found.",
     "emptyList": "The card list is empty.",
-    "termCreate": "Create Card",
-    "termSearch": "Find..."
+    "tabAllCards": "All",
+    "tabRelatedCards": "Learning Course",
+    "termSearch": "Find Card..."
   },
   "Simulators": {
     "metaTitle": "Learning Simulators | QuizerPlay",

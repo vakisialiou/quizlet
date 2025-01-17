@@ -2,16 +2,16 @@
 
 import { actionUpsertTerm, actionCreateRelationTerm, actionEditTerm, actionRemoveRelationTerm } from '@store/index'
 import React, { useCallback, useEffect, useMemo, useState, useImperativeHandle, Ref, forwardRef } from 'react'
+import { sortTerms, sortTermsWithRelations } from '@helper/sort-terms'
+import RelationTerm, {RelatedTermData} from '@entities/RelationTerm'
 import TextToSpeech, { TextToSpeechEvents } from '@lib/speech'
 import Button, { ButtonVariant } from '@components/Button'
+import { searchRelatedTerms } from '@helper/search-terms'
 import { ConfigEditType } from '@store/initial-state'
 import { useTermSelect } from '@hooks/useTermSelect'
 import { findRelationTerm } from '@helper/relation'
-import RelationTerm from '@entities/RelationTerm'
-import {searchTerms} from '@helper/search-terms'
 import Term, { TermData } from '@entities/Term'
 import { RelationProps} from '@helper/relation'
-import {sortTerms} from '@helper/sort-terms'
 import TermCard from '@containers/TermCard'
 import {useTranslations} from 'next-intl'
 import { useSelector } from 'react-redux'
@@ -34,7 +34,7 @@ function RelatedTerms(
     shareId: string | null
     relation: RelationProps
     filter: TypeFilterGrid
-    relatedTerms: TermData[]
+    relatedTerms: RelatedTermData[]
   },
   ref: Ref<{ onCreate?: () => void }>
 ) {
@@ -48,10 +48,10 @@ function RelatedTerms(
     let rawItems = [...relatedTerms]
 
     if (filter.search) {
-      rawItems = searchTerms(rawItems, filter.search, edit.termId)
+      rawItems = searchRelatedTerms(rawItems, filter.search, edit.termId)
     }
 
-    return sortTerms(rawItems)
+    return sortTermsWithRelations(rawItems)
   }, [relatedTerms, filter, edit.termId])
 
   const speech = useMemo(() => {
@@ -74,12 +74,12 @@ function RelatedTerms(
 
   const onCreate = useCallback(() => {
     const term = new Term()
-      .setOrder(relatedTerms.length + 1)
       .serialize()
 
     const relationTerm = new RelationTerm()
       .setModuleId(relation.moduleId || null)
       .setFolderId(relation.folderId || null)
+      .setOrder(relatedTerms.length + 1)
       .setTermId(term.id)
       .serialize()
 
@@ -92,14 +92,14 @@ function RelatedTerms(
 
   useImperativeHandle(ref, () => ({ onCreate }))
 
-  const t = useTranslations('Module')
+  const t = useTranslations('Terms')
 
   return (
     <>
       <div
         className="w-full grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2"
       >
-        {filteredTerms.map((term, index) => {
+        {filteredTerms.map(({ term }, index) => {
           return (
             <div
               key={term.id}

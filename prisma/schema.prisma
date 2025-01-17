@@ -78,7 +78,6 @@ model VerificationToken {
 model Term {
   id              String   @id @default(uuid())
   userId          String   @db.VarChar(36)
-  order           Int      @default(0)
   question        String?  @db.VarChar(255)
   questionLang    String?  @default("ru") @db.VarChar(5)
   answer          String?  @db.VarChar(255)
@@ -219,11 +218,13 @@ model RelationSimulator {
 }
 
 model RelationTerm {
-  id       String  @id @default(uuid())
-  userId   String  @db.VarChar(36)
-  termId   String  @db.VarChar(36)
-  folderId String? @db.VarChar(36)
-  moduleId String? @db.VarChar(36)
+  id        String   @id @default(uuid())
+  userId    String   @db.VarChar(36)
+  termId    String   @db.VarChar(36)
+  folderId  String?  @db.VarChar(36)
+  moduleId  String?  @db.VarChar(36)
+  createdAt DateTime @default(now())
+  order     Int      @default(0)
 
   user   User    @relation(fields: [userId], references: [id])
   term   Term    @relation(fields: [termId], references: [id])

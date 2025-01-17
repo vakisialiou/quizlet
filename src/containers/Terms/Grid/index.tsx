@@ -72,7 +72,6 @@ function Grid(
 
   const onCreate = useCallback(() => {
     const term = new Term()
-      .setOrder(visibleTerms.length + 1)
       .serialize()
 
     actionUpsertTerm({ term, editId: term.id, editable, shareId }, () => {

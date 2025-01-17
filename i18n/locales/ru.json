@@ -104,7 +104,7 @@
     "searchPlaceholder": "Поиск...",
     "btnCreateModule": "Создать учебный курс",
     "dropDownEditModule": "Редактировать",
-    "dropDownStudyModule": "Изучить курс",
+    "dropDownStudyModule": "Начать изучение",
     "dropDownCreateGroup": "Добавить раздел",
     "dropDownGenerateShare": "Поделиться ссылкой",
     "dropDownRemoveModule": "Удалить",
@@ -184,8 +184,9 @@
     "cardAssociationHintW": "Ваша ассоциация...",
     "emptySearchList": "Ничего не найдено.",
     "emptyList": "Список карточек пуст.",
-    "termCreate": "Создать карточку",
-    "termSearch": "Найти..."
+    "tabAllCards": "Все",
+    "tabRelatedCards": "Учебный курс",
+    "termSearch": "Найти карточку..."
   },
   "Simulators": {
     "metaTitle": "Тренажеры для обучения | QuizerPlay",

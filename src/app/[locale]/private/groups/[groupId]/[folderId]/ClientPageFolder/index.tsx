@@ -5,22 +5,24 @@ import {
   actionCreateRelationFolder,
   actionCreateRelationTerm
 } from '@store/index'
+import { findTermsWithRelations, getFolder } from '@helper/relation'
 import React, { useMemo, useState, useRef, useEffect } from 'react'
 import TermsDropdownMenu from '@containers/TermsDropdownMenu'
+import { sortTermsWithRelations } from '@helper/sort-terms'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
 import Button, {ButtonVariant} from '@components/Button'
 import { useFolderSelect } from '@hooks/useFolderSelect'
 import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
-import { findTerms, getFolder } from '@helper/relation'
+import { useGroupSelect } from '@hooks/useGroupSelect'
 import RelationFolder from '@entities/RelationFolder'
 import { useTermSelect } from '@hooks/useTermSelect'
 import RelatedTerms from '@containers/RelatedTerms'
 import ButtonSquare from '@components/ButtonSquare'
-import { filterDeletedTerms } from '@helper/terms'
 import SVGFileNew from '@public/svg/file_new.svg'
 import RelationTerm from '@entities/RelationTerm'
 import ContentPage from '@containers/ContentPage'
 import FolderCart from '@components/FolderCart'
+import { getGroupById } from '@helper/relation'
 import FormFolder from '@containers/FormFolder'
 import Dropdown from '@components/Dropdown'
 import { useTranslations } from 'next-intl'
@@ -32,6 +34,11 @@ import clsx from 'clsx'
 
 export default function ClientPageFolder({ editable, groupId, folderId }: { editable: boolean, groupId: string, folderId: string }) {
   const router = useRouter()
+
+  const { folderGroups } = useGroupSelect()
+  const group = useMemo(() => {
+    return getGroupById(folderGroups, groupId)
+  }, [folderGroups, groupId])
 
   const folders = useFolderSelect()
   const folder = useMemo(() => {
@@ -65,8 +72,12 @@ export default function ClientPageFolder({ editable, groupId, folderId }: { edit
   const { terms, relationTerms } = useTermSelect()
 
   const relatedTerms = useMemo(() => {
-    return filterDeletedTerms(findTerms(relationTerms, terms, { folderId }))
+    return sortTermsWithRelations(findTermsWithRelations(relationTerms, terms, { folderId }))
   }, [relationTerms, terms, folderId])
+
+  const excludeTermIds = useMemo(() => {
+    return relatedTerms.map(({ term }) => term.id)
+  }, [relatedTerms])
 
   const [ search, setSearch ] = useState<string>('')
 
@@ -142,7 +153,8 @@ export default function ClientPageFolder({ editable, groupId, folderId }: { edit
                   className="px-1 min-w-8 h-8 items-center"
                   menu={(
                     <TermsDropdownMenu
-                      excludeTerms={relatedTerms}
+                      moduleId={group?.moduleId}
+                      excludeTermIds={excludeTermIds}
                       className="w-56"
                       onCreate={() => {
                         if (refDropdownTerms.current.close) {

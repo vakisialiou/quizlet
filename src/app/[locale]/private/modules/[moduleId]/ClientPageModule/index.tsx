@@ -5,14 +5,15 @@ import {
   actionUpdateFolderGroup,
   actionCreateRelationTerm,
 } from '@store/index'
+import { findTermsWithRelations, getModule } from '@helper/relation'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import SVGNewCollection from '@public/svg/collection_new.svg'
 import TermsDropdownMenu from '@containers/TermsDropdownMenu'
+import { sortTermsWithRelations } from '@helper/sort-terms'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
 import AchievementIcon from '@containers/AchievementIcon'
 import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
 import Button, {ButtonVariant} from '@components/Button'
-import { findTerms, getModule } from '@helper/relation'
 import {useModuleSelect} from '@hooks/useModuleSelect'
 import Groups from '@containers/Collection/Groups'
 import RelatedTerms from '@containers/RelatedTerms'
@@ -21,7 +22,6 @@ import {useTermSelect} from '@hooks/useTermSelect'
 import ContentPage from '@containers/ContentPage'
 import SVGFileNew from '@public/svg/file_new.svg'
 import RelationTerm from '@entities/RelationTerm'
-import {filterDeletedTerms} from '@helper/terms'
 import FormModule from '@containers/FormModule'
 import FolderGroup from '@entities/FolderGroup'
 import FolderCart from '@components/FolderCart'
@@ -63,8 +63,12 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
   }, [course, editable, moduleId])
 
   const relatedTerms = useMemo(() => {
-    return filterDeletedTerms(findTerms(relationTerms, terms, { moduleId }))
+    return sortTermsWithRelations(findTermsWithRelations(relationTerms, terms, { moduleId }))
   }, [relationTerms, terms, moduleId])
+
+  const excludeTermIds = useMemo(() => {
+    return relatedTerms.map(({ term }) => term.id)
+  }, [relatedTerms])
 
   const [ search, setSearch ] = useState<string>('')
   const t = useTranslations('Module')
@@ -136,54 +140,6 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
 
           <FolderCart
             hover={false}
-            title={t('groupsTitle')}
-            dropdown={{hidden: true}}
-            controls={(
-              <>
-                <ButtonSquare
-                  size={18}
-                  icon={SVGNewCollection}
-                  onClick={() => {
-                    const folderGroup = new FolderGroup()
-                      .setModuleId(course.id)
-                      .serialize()
-
-                    actionUpdateFolderGroup({
-                      editId: folderGroup.id,
-                      folderGroup,
-                      editable
-                    })
-                  }}
-                />
-
-                <ButtonSquare
-                  size={24}
-                  icon={SVGArrowDown}
-                  onClick={() => {
-                    actionUpdateModule({
-                      editable,
-                      editId: null,
-                      module: { ...course, groupsCollapsed: !course.groupsCollapsed }
-                    })
-                  }}
-                  classNameIcon={clsx('', {
-                    ['rotate-180']: !course.groupsCollapsed
-                  })}
-                />
-              </>
-            )}
-          >
-            {!course.groupsCollapsed &&
-              <Groups
-                module={course}
-                editable={editable}
-              />
-            }
-          </FolderCart>
-
-
-          <FolderCart
-            hover={false}
             title={t('termsTitle')}
             dropdown={{
               hidden: true
@@ -196,7 +152,7 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
                   className="px-1 min-w-8 h-8 items-center"
                   menu={(
                     <TermsDropdownMenu
-                      excludeTerms={relatedTerms}
+                      excludeTermIds={excludeTermIds}
                       className="w-56"
                       onCreate={() => {
                         if (refDropdownTerms.current.close) {
@@ -262,6 +218,53 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
                   relatedTerms={relatedTerms}
                 />
               </>
+            }
+          </FolderCart>
+
+          <FolderCart
+            hover={false}
+            title={t('groupsTitle')}
+            dropdown={{hidden: true}}
+            controls={(
+              <>
+                <ButtonSquare
+                  size={18}
+                  icon={SVGNewCollection}
+                  onClick={() => {
+                    const folderGroup = new FolderGroup()
+                      .setModuleId(course.id)
+                      .serialize()
+
+                    actionUpdateFolderGroup({
+                      editId: folderGroup.id,
+                      folderGroup,
+                      editable
+                    })
+                  }}
+                />
+
+                <ButtonSquare
+                  size={24}
+                  icon={SVGArrowDown}
+                  onClick={() => {
+                    actionUpdateModule({
+                      editable,
+                      editId: null,
+                      module: { ...course, groupsCollapsed: !course.groupsCollapsed }
+                    })
+                  }}
+                  classNameIcon={clsx('', {
+                    ['rotate-180']: !course.groupsCollapsed
+                  })}
+                />
+              </>
+            )}
+          >
+            {!course.groupsCollapsed &&
+              <Groups
+                module={course}
+                editable={editable}
+              />
             }
           </FolderCart>
         </div>

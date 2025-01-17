@@ -1,6 +1,6 @@
+import { RelatedTermData, RelationTermData } from '@entities/RelationTerm'
 import { RelationSimulatorData } from '@entities/RelationSimulator'
 import { RelationFolderData } from '@entities/RelationFolder'
-import { RelationTermData } from '@entities/RelationTerm'
 import { FolderGroupData } from '@entities/FolderGroup'
 import { SimulatorData } from '@entities/Simulator'
 import { ModuleData } from '@entities/Module'
@@ -20,9 +20,13 @@ export function getModuleByFolderId(folderGroups: FolderGroupData[], relationFol
 export function getGroupByFolderId(folderGroups: FolderGroupData[], relationFolders: RelationFolderData[], folderId: string): FolderGroupData | null {
   const relationFolder = relationFolders.find((item) => item.folderId === folderId)
   if (relationFolder) {
-    return folderGroups.find(({ id }) => id === relationFolder.groupId) || null
+    return getGroupById(folderGroups, relationFolder.groupId)
   }
   return null
+}
+
+export function getGroupById(folderGroups: FolderGroupData[], groupId: string): FolderGroupData | null {
+  return folderGroups.find(({ id }) => id === groupId) || null
 }
 
 export function findFolderGroups(folderGroups: FolderGroupData[], moduleId: string): FolderGroupData[] {
@@ -78,6 +82,20 @@ export function findTerms(relationTerms: RelationTermData[], terms: TermData[], 
     .map((relation) => relation.termId)
 
   return terms.filter((term) => termIds.includes(term.id))
+}
+
+export function findTermsWithRelations(relationTerms: RelationTermData[], terms: TermData[], relation: RelationProps): RelatedTermData[] {
+  const map = terms.reduce((map, term) => {
+    map[term.id] = term
+    return map
+  }, {} as {[key: string]: TermData})
+
+  return findRelationTerms(relationTerms, relation)
+    .map((relation) => {
+      const term = map[relation.termId] || null
+      return { relation, term }
+    })
+    .filter(({ term }) => term)
 }
 
 export function findRelationTerm(relationTerms: RelationTermData[], relation: RelationProps, termId: string): RelationTermData | null {

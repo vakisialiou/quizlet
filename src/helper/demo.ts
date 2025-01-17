@@ -21,7 +21,6 @@ export const getDemoInitialData = async (locale: LanguageEnums): Promise<ConfigT
 
   const terms = [
     new Term()
-      .setOrder(1)
       .setAnswerLang('en')
       .setQuestionLang('ru')
       .setAssociationLang('en')
@@ -30,7 +29,6 @@ export const getDemoInitialData = async (locale: LanguageEnums): Promise<ConfigT
       .setAssociation('Absorb knowledge through reading books or listening to lectures.')
       .serialize(),
     new Term()
-      .setOrder(2)
       .setAnswerLang('en')
       .setQuestionLang('ru')
       .setAssociationLang('en')
@@ -39,7 +37,6 @@ export const getDemoInitialData = async (locale: LanguageEnums): Promise<ConfigT
       .setAssociation('Repeat difficult words and phrases to solidify them in your memory.')
       .serialize(),
     new Term()
-      .setOrder(3)
       .setAnswerLang('en')
       .setQuestionLang('ru')
       .setAssociationLang('en')
@@ -48,7 +45,6 @@ export const getDemoInitialData = async (locale: LanguageEnums): Promise<ConfigT
       .setAssociation('Regularly repeat words and phrases to improve memorization.')
       .serialize(),
     new Term()
-      .setOrder(4)
       .setAnswerLang('en')
       .setQuestionLang('ru')
       .setAssociationLang('en')
@@ -57,7 +53,6 @@ export const getDemoInitialData = async (locale: LanguageEnums): Promise<ConfigT
       .setAssociation('Cement information in your memory through repetition and practice.')
       .serialize(),
     new Term()
-      .setOrder(5)
       .setAnswerLang('en')
       .setQuestionLang('ru')
       .setAssociationLang('en')
@@ -66,7 +61,6 @@ export const getDemoInitialData = async (locale: LanguageEnums): Promise<ConfigT
       .setAssociation('Translate words from one language to another for better understanding.')
       .serialize(),
     new Term()
-      .setOrder(6)
       .setAnswerLang('en')
       .setQuestionLang('ru')
       .setAssociationLang('en')
@@ -75,7 +69,6 @@ export const getDemoInitialData = async (locale: LanguageEnums): Promise<ConfigT
       .setAssociation('Explain the material to others to strengthen your own knowledge.')
       .serialize(),
     new Term()
-      .setOrder(7)
       .setAnswerLang('en')
       .setQuestionLang('ru')
       .setAssociationLang('en')
@@ -84,7 +77,6 @@ export const getDemoInitialData = async (locale: LanguageEnums): Promise<ConfigT
       .setAssociation('Test your knowledge and track your progress.')
       .serialize(),
     new Term()
-      .setOrder(8)
       .setAnswerLang('en')
       .setQuestionLang('ru')
       .setAssociationLang('en')
@@ -93,7 +85,6 @@ export const getDemoInitialData = async (locale: LanguageEnums): Promise<ConfigT
       .setAssociation('Apply new words in real-life situations to keep them in your memory.')
       .serialize(),
     new Term()
-      .setOrder(9)
       .setAnswerLang('en')
       .setQuestionLang('ru')
       .setAssociationLang('en')
@@ -102,7 +93,6 @@ export const getDemoInitialData = async (locale: LanguageEnums): Promise<ConfigT
       .setAssociation('Enhance your knowledge through daily practice.')
       .serialize(),
     new Term()
-      .setOrder(10)
       .setAnswerLang('en')
       .setQuestionLang('ru')
       .setAssociationLang('en')
@@ -112,9 +102,10 @@ export const getDemoInitialData = async (locale: LanguageEnums): Promise<ConfigT
       .serialize()
   ]
 
-  const relationTerms = terms.map(({ id }) => {
+  const relationTerms = terms.map(({ id }, index) => {
     return new RelationTerm()
       .setModuleId(course.id)
+      .setOrder(index)
       .setTermId(id)
       .serialize()
   })

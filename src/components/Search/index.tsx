@@ -1,5 +1,5 @@
 import { BaseSyntheticEvent, FocusEventHandler, KeyboardEventHandler } from 'react'
-import Input, { InputVariantFocus, InputVariant } from '@components/Input'
+import Input, {InputVariantFocus, InputVariant, InputSize} from '@components/Input'
 import ButtonSquare from '@components/ButtonSquare'
 import SVGZoomAll from '@public/svg/viewzoom.svg'
 import SVGClose from '@public/svg/x.svg'
@@ -15,6 +15,8 @@ export enum SearchVariantFocus {
   blue = InputVariantFocus.blue
 }
 
+export { InputSize }
+
 export type SearchProps = {
   className?: string
   rounded?: boolean
@@ -23,6 +25,7 @@ export type SearchProps = {
   placeholder?: string
   defaultValue?: string
   value?: string
+  size?: InputSize,
   variant?: SearchVariant
   variantFocus?: SearchVariantFocus
   onChange?: (e: BaseSyntheticEvent) => void
@@ -38,6 +41,7 @@ export default function Search(
     rounded,
     bordered,
     autoFocus = false,
+    size = InputSize.h8,
     variant = SearchVariant.gray,
     variantFocus = SearchVariantFocus.blue,
     placeholder,
@@ -66,12 +70,16 @@ export default function Search(
         })}
       >
         <SVGZoomAll
-          width={24}
-          height={24}
-          className="text-gray-700 ml-2 min-w-6"
+          width={size === InputSize.h6 ? 18 : 24}
+          height={size === InputSize.h6 ? 18 : 24}
+          className={clsx('text-gray-700 min-w-6', {
+            ['ml-1']: size === InputSize.h6,
+            ['ml-2']: size !== InputSize.h6
+          })}
         />
 
         <Input
+          size={size}
           value={value}
           onBlur={onBlur}
           onFocus={onFocus}

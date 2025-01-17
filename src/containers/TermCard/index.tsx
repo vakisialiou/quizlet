@@ -3,9 +3,11 @@ import Dropdown, { DropdownVariant } from '@components/Dropdown'
 import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
 import Button, { ButtonSize } from '@components/Button'
 import { useCallback, useEffect, useRef } from 'react'
+import SVGPencil from '@public/svg/greasepencil.svg'
 import ButtonSquare from '@components/ButtonSquare'
 import RowRead from '@containers/TermCard/RowRead'
 import FolderCart from '@components/FolderCart'
+import SVGTrash from '@public/svg/trash.svg'
 import SVGError from '@public/svg/error.svg'
 import { useTranslations } from 'next-intl'
 import Input from '@components/Input'
@@ -118,8 +120,8 @@ export default function TermCard(
       dropdown={{
         hidden: readonly,
         items: [
-          {id: 1, name: t('cardDropDownEdit')},
-          {id: 2, name: t('cardDropDownRemove')},
+          { id: 1, name: t('cardDropDownEdit'), icon: SVGPencil },
+          { id: 2, name: t('cardDropDownRemove'), icon: SVGTrash },
         ],
         onSelect: (id) => {
           switch (id) {

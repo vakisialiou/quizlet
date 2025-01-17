@@ -1,10 +1,11 @@
 import { TermData, DefaultAnswerLang, DefaultAssociationLang, DefaultQuestionLang } from '@entities/Term'
 import React, { useMemo, useState, SyntheticEvent } from 'react'
-import SVGFileBlank from '@public/svg/file_blank.svg'
 import { useTermSelect } from '@hooks/useTermSelect'
 import { searchTerms } from '@helper/search-terms'
 import { filterDeletedTerms } from '@helper/terms'
+import { findTerms } from '@helper/relation'
 import { useTranslations } from 'next-intl'
+import SVGAdd from '@public/svg/add.svg'
 import Search from '@components/Search'
 import clsx from 'clsx'
 
@@ -12,32 +13,38 @@ export default function TermsDropdownList(
   {
     onClick,
     onCreate,
-    excludeTerms,
+    moduleId,
+    excludeTermIds,
     className = ''
   }: {
+    moduleId?: string
     className?: string
     onClick: (term: TermData) => void
     onCreate: (e: SyntheticEvent) => void
-    excludeTerms: TermData[]
+    excludeTermIds: string[]
   }
 ) {
   const t = useTranslations('Terms')
-  const { terms } = useTermSelect()
+  const { terms, relationTerms } = useTermSelect()
   const [ search, setSearch ] = useState('')
+  const [ showModuleTerms, setShowModuleTerms ] = useState(!!moduleId)
 
-  const dropdownTerms = useMemo(() => {
-    const excludeTermIds = excludeTerms.reduce((previousValue, currentValue) => {
-      return { ...previousValue, [currentValue.id]: true }
+  const rawTerms = useMemo(() => {
+    return showModuleTerms ? findTerms(relationTerms, terms, { moduleId }) : terms
+  }, [showModuleTerms, terms, relationTerms, moduleId])
+
+  const excludedTerms = useMemo(() => {
+    const excludeTermIdsMap = excludeTermIds.reduce((map, id) => {
+      return { ...map, [id]: true }
     }, {}) as { [key: string]: boolean }
 
-    const visibleTerms = filterDeletedTerms(terms)
-      .filter(({ id }) => !excludeTermIds[id])
+    return filterDeletedTerms(rawTerms)
+      .filter(({ id }) => !excludeTermIdsMap[id])
+  }, [rawTerms, excludeTermIds])
 
-    if (search) {
-      return searchTerms(visibleTerms, search)
-    }
-    return visibleTerms
-  }, [excludeTerms, terms, search])
+  const dropdownTerms = useMemo(() => {
+    return search ? searchTerms(excludedTerms, search) : excludedTerms
+  }, [excludedTerms, search])
 
   return (
     <div
@@ -56,23 +63,49 @@ export default function TermsDropdownList(
         }}
       />
 
-      <div
-        onClick={onCreate}
-        className={clsx('relative flex gap-2 items-center px-3 py-2 text-sm text-start transition-colors cursor-pointer mx-2.5 border border-white/25', {
-          ['hover:text-gray-200 hover:bg-gray-900 active:bg-gray-800']: true,
-          ['text-gray-500 bg-black']: true
-        })}
-      >
-        <div className="absolute left-0 top-0 w-full h-full bg-white/10"/>
+      <div className="flex gap-1 px-2 border-b border-white/25 text-xs text-white/50">
+        <div
+          className={clsx('border-t border-l border-r border-white/25 rounded-t flex items-center px-2 py-1', {
+            ['cursor-pointer hover:bg-white/10 active:bg-white/15']: showModuleTerms,
+            ['bg-white/15']: !showModuleTerms
+          })}
+          onClick={() => {
+            if (showModuleTerms) {
+              setShowModuleTerms(false)
+            }
+          }}
+        >
+          {t('tabAllCards')}
+        </div>
 
-        <SVGFileBlank
-          width={18}
-          height={18}
-        />
-        {t('termCreate')}
+        {moduleId &&
+          <div
+            className={clsx('border-t border-l border-r border-white/25 rounded-t flex items-center px-2 py-1', {
+              ['cursor-pointer hover:bg-white/10 active:bg-white/15']: !showModuleTerms,
+              ['bg-white/15']: showModuleTerms
+            })}
+            onClick={() => {
+              if (!showModuleTerms) {
+                setShowModuleTerms(true)
+              }
+            }}
+          >
+            {t('tabRelatedCards')}
+          </div>
+        }
+
+        <div
+          onClick={onCreate}
+          className={clsx('border-t border-l border-r border-white/25 rounded-t flex items-center px-2 py-1', {
+            ['cursor-pointer hover:bg-white/10 active:bg-white/15']: true,
+          })}
+        >
+          <SVGAdd
+            width={18}
+            height={18}
+          />
+        </div>
       </div>
-
-      <div className="w-full h-[1px] border-b border-white/15 mt-2"/>
 
       <div
         className="flex flex-col py-2 pl-2.5 pr-0.5 gap-0.5 max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100/50 active:scrollbar-thumb-gray-400"

@@ -3,16 +3,20 @@ import { Prisma, PrismaEntry } from '@lib/prisma'
 
 export type RelationTermSelectType = {
   id: boolean
+  order: boolean
   termId: boolean
   folderId: boolean
   moduleId: boolean
+  createdAt: boolean
 }
 
 export const RelationTermSelect = {
   id: true,
+  order: true,
   termId: true,
   folderId: true,
-  moduleId: true
+  moduleId: true,
+  createdAt: true
 } as RelationTermSelectType
 
 type RelationTermResult = Prisma.RelationTermGetPayload<{
@@ -22,9 +26,11 @@ type RelationTermResult = Prisma.RelationTermGetPayload<{
 export function createRelationTermSelect(data: RelationTermResult) {
   return new RelationTerm()
     .setId(data.id)
+    .setOrder(data.order)
     .setTermId(data.termId)
     .setFolderId(data.folderId)
     .setModuleId(data.moduleId)
+    .setCreatedAt(data.createdAt)
 }
 
 export async function findRelationTermsByUserId(db: PrismaEntry, userId: string) {
@@ -42,9 +48,11 @@ export async function createManyRelationTerms(db: PrismaEntry, userId: string, i
       return {
         userId,
         id: item.id,
+        order: item.order,
         termId: item.termId,
         folderId: item.folderId,
         moduleId: item.moduleId,
+        createdAt: new Date(),
       }
     })
   })
@@ -57,9 +65,11 @@ export async function createRelationTerms(db: PrismaEntry, userId: string, item:
     data: {
       userId,
       id: item.id,
+      order: item.order,
       termId: item.termId,
       folderId: item.folderId,
       moduleId: item.moduleId,
+      createdAt: new Date(),
     }
   })
 
