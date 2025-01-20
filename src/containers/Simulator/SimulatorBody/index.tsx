@@ -242,7 +242,7 @@ export default function SimulatorBody(
                       })
                     }}
                   >
-                    {t('buttonContinue')}
+                    {t('buttonRepeat')}
                   </Button>
                 </>
               }
