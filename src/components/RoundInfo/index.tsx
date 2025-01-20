@@ -11,28 +11,32 @@ export default function RoundInfo(
   {
     title,
     value,
+    className = '',
     variant = RoundInfoVariant.default,
   }:
   {
-    title?: string,
+    title?: string
+    className?: string
     value?: ReactNode | string | number
     variant?: RoundInfoVariant
   }
 ) {
   return (
     <div
-      className="flex rounded-full items-center justify-center bg-gray-500/10 w-20 h-20 shadow-sm shadow-gray-400"
+      className={clsx('flex rounded-full items-center justify-center bg-gray-500/10 w-20 h-20 shadow-sm shadow-gray-400', {
+        [className]: className
+      })}
     >
-      <div className="flex font-mono flex-col w-full h-full items-center justify-center border border-white/10 rounded-full shadow-inner shadow-white/10">
+      <div className="flex flex-col w-full h-full items-center justify-center border border-white/10 rounded-full shadow-inner shadow-white/10">
         {title &&
-          <span className="uppercase text-gray-600 font-bold text-[10px]">
+          <span className="uppercase text-gray-600 font-bold text-xs mt-2">
             {title}
           </span>
         }
 
         {value !== undefined &&
           <span
-            className={clsx('text-xs font-bold font-mono', {
+            className={clsx('text-lg font-bold font-mono', {
               ['text-white/50']: variant === RoundInfoVariant.default,
               ['text-amber-600']: variant === RoundInfoVariant.danger,
               ['text-red-800']: variant === RoundInfoVariant.warning,

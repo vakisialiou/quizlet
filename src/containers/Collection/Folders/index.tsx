@@ -26,6 +26,7 @@ import {useRouter} from '@i18n/routing'
 import clsx from 'clsx'
 
 enum DropDownIdEnums {
+  STUDY_FOLDER   = 'STUDY_FOLDER',
   REMOVE_FOLDER = 'REMOVE_FOLDER',
   EDIT_FOLDER   = 'EDIT_FOLDER',
 }
@@ -55,26 +56,21 @@ export default function Folders(
   const [ removeFolder, setRemoveFolder ] = useState<{ group: FolderGroupData, folder: FolderData } | null>(null)
 
   const groupFolders = findGroupFolders(relationFolders, folders, group.id)
-  let disabled = false
+
   return (
     <div
       className="gap-2 grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
     >
-      {groupFolders.map((folder, index) => {
+      {groupFolders.map((folder) => {
         const activeSimulators = findActiveSimulators(relationSimulators, simulators, {folderId: folder.id})
         const folderTerms = findTerms(relationTerms, terms, {folderId: folder.id})
         const notRemovedTerms = filterDeletedTerms(folderTerms)
         const isLastStudy = lastStudyFolder?.id === folder.id
 
-        const prevFolder = folders[index - 1]
-        const prevDegreeRate = prevFolder?.degreeRate !== undefined ? prevFolder.degreeRate : 100
-        disabled = disabled || !new Levels(prevDegreeRate, true).hasLevel(EnumLevels.expert)
-
         return (
           <FolderCart
             hover={true}
             key={folder.id}
-            disabled={disabled}
             variant={isLastStudy ? FolderFrameVariant.yellow : FolderFrameVariant.default}
             dropdown={{
               items: [
@@ -83,7 +79,12 @@ export default function Folders(
                   name: t('dropdownEdit'),
                   icon: SVGEdit,
                 },
-                {id: '1', divider: true},
+                {
+                  id: DropDownIdEnums.STUDY_FOLDER,
+                  name: t('dropdownStudy'),
+                  icon: SVGPlay,
+                },
+                {id: 1, divider: true},
                 {
                   id: DropDownIdEnums.REMOVE_FOLDER,
                   name: t('dropdownRemove'),
@@ -92,6 +93,9 @@ export default function Folders(
               ],
               onSelect: (id) => {
                 switch (id) {
+                  case DropDownIdEnums.STUDY_FOLDER:
+                    router.push(`/simulator?folderId=${folder.id}`)
+                    break
                   case DropDownIdEnums.EDIT_FOLDER:
                     router.push(`/private/groups/${group.id}/${folder.id}`)
                     break
@@ -120,14 +124,13 @@ export default function Folders(
               <>
                 {activeSimulators.length > 0 &&
                   <MetaLabel
-                    disabled={disabled}
                     variant={MetaLabelVariant.amber}
                   >
                     {t('labelActive')}
                   </MetaLabel>
                 }
 
-                <MetaLabel disabled={disabled}>
+                <MetaLabel>
                   {t('labelTerms', {count: notRemovedTerms.length})}
                 </MetaLabel>
               </>
@@ -141,8 +144,7 @@ export default function Folders(
             >
               <div
                 className={clsx('flex gap-2 items-center justify-between w-full', {
-                  ['text-white/50']: !disabled,
-                  ['text-white/15']: disabled
+                  ['text-white/50']: true,
                 })}
               >
                 <div className="text-xs font-bold uppercase">

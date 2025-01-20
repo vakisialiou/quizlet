@@ -59,7 +59,7 @@ export default function Groups(
           {t('emptyList')}
         </div>
       }
-      {moduleFolderGroups.map((group) => {
+      {moduleFolderGroups.map((group, index) => {
         const edit = (editGroupId === group.id)
         const groupFolders = findGroupFolders(relationFolders, folders, group.id)
         return (
@@ -119,9 +119,9 @@ export default function Groups(
                   e.preventDefault()
                 }}
                 items={[
-                  { id: DropDownIdEnums.EDIT_GROUP, name: t('dropdownEdit'), icon: SVGEdit },
                   { id: DropDownIdEnums.CREATE_FOLDER, name: t('dropdownAdd'), icon: SVGNewFolder },
-                  { id: 3, divider: true },
+                  { id: DropDownIdEnums.EDIT_GROUP, name: t('dropdownEdit'), icon: SVGEdit },
+                  { id: 1, divider: true },
                   { id: DropDownIdEnums.REMOVE_GROUP, name: t('dropdownRemove'), icon: SVGTrash }
                 ]}
                 className="w-8 min-w-8 h-8 items-center"
@@ -154,6 +154,10 @@ export default function Groups(
                 group={group}
                 editable={editable}
               />
+            }
+
+            {index < (moduleFolderGroups.length - 1) &&
+              <div className="border-b border-white/15 my-2" />
             }
 
           </Fragment>

@@ -33,7 +33,7 @@ function Grid(
   ref: Ref<{ onCreate?: () => void }>
 ) {
   const [ originItem, setOriginItem ] = useState<TermData | null>(null)
-  const [removeTerm, setRemoveTerm] = useState<TermData | null>(null)
+  const [ removeTerm, setRemoveTerm ] = useState<TermData | null>(null)
 
   const { terms } = useTermSelect()
   const edit = useSelector(({ edit }: { edit: ConfigEditType }) => edit)

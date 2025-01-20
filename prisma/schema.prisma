@@ -181,6 +181,7 @@ model FolderGroup {
 
   @@unique([id])
   @@index([userId, id])
+  @@index([userId, moduleId])
 }
 
 model RelationFolder {
@@ -262,7 +263,7 @@ model ModuleShare {
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
 
-  user   User   @relation(fields: [ownerId], references: [id])
+  owner  User   @relation(fields: [ownerId], references: [id])
   module Module @relation(fields: [moduleId], references: [id])
 
   @@unique([id])

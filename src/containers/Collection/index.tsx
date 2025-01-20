@@ -41,29 +41,27 @@ export default function Collection() {
       )}
       footer={(
         <div className="flex w-full justify-center text-center">
-          <div className="flex gap-2 w-full max-w-96">
-            <Button
-              disabled={!editable}
-              variant={ButtonVariant.WHITE}
-              className="w-full"
-              onClick={() => {
-                const course = new Module().serialize()
-                router.push(`/private/modules/${course.id}`)
-              }}
-            >
-              <SVGNewPreset
-                width={28}
-                height={28}
-              />
+          <Button
+            disabled={!editable}
+            variant={ButtonVariant.WHITE}
+            className="gap-2 w-full max-w-96"
+            onClick={() => {
+              const course = new Module().serialize()
+              router.push(`/private/modules/${course.id}`)
+            }}
+          >
+            <SVGNewPreset
+              width={28}
+              height={28}
+            />
 
-              {t('btnCreateModule')}
-            </Button>
-          </div>
+            {t('btnCreateModule')}
+          </Button>
         </div>
       )}
     >
       <Modules
-        filter={{ search }}
+        filter={{search}}
         editable={editable}
         editId={edit.moduleId}
       />

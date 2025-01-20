@@ -1,4 +1,3 @@
-import { RelationFolderSelectType, RelationFolderSelect, createRelationFolderSelect } from '@repositories/relation-folder'
 import FolderGroup, { FolderGroupData } from '@entities/FolderGroup'
 import { Prisma, PrismaEntry } from '@lib/prisma'
 
@@ -9,9 +8,6 @@ export type FolderGroupSelectType = {
   moduleId: boolean,
   createdAt: boolean,
   updatedAt: boolean,
-  relationFolders: {
-    select: RelationFolderSelectType
-  },
 }
 
 export const FolderGroupSelect = {
@@ -21,9 +17,6 @@ export const FolderGroupSelect = {
   moduleId: true,
   createdAt: true,
   updatedAt: true,
-  relationFolders: {
-    select: { ...RelationFolderSelect }
-  },
 } as FolderGroupSelectType
 
 type FolderGroupResult = Prisma.FolderGroupGetPayload<{
@@ -37,9 +30,6 @@ export const createFolderGroupSelect = (data: FolderGroupResult) => {
     .setModuleId(data.moduleId)
     .setUpdatedAt(data.updatedAt)
     .setCreatedAt(data.createdAt)
-    .setRelationFolders(
-      data.relationFolders.map((item) => createRelationFolderSelect(item))
-    )
 }
 
 export const upsertFolderGroup = async (db: PrismaEntry, userId: string, item: FolderGroupData): Promise<string | null> => {
@@ -70,6 +60,15 @@ export async function removeFolderGroupById(db: PrismaEntry, userId: string, id:
 export async function findFolderGroupsByUserId(db: PrismaEntry, userId: string) {
   const res = await db.folderGroup.findMany({
     where: { userId },
+    select: { ...FolderGroupSelect },
+  })
+
+  return res.map(item => createFolderGroupSelect(item).serialize())
+}
+
+export async function findFolderGroupsByModuleId(db: PrismaEntry, userId: string, moduleId: string) {
+  const res = await db.folderGroup.findMany({
+    where: { userId, moduleId },
     select: { ...FolderGroupSelect },
   })
 

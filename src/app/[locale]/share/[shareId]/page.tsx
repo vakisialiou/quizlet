@@ -15,6 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
 }
 
 export default async function Page() {
+  return (<div>ss</div>)
   return (
     <Share />
   )

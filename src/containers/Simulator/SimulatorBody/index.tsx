@@ -91,7 +91,7 @@ export default function SimulatorBody(
   return (
     <div className="flex flex-col items-center">
       <PanelInfo
-        className="mb-6"
+        className="mb-4"
         relation={relation}
         simulator={simulator}
       />

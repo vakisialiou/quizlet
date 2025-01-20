@@ -1,4 +1,4 @@
-import { configureStore, createReducer, EnhancedStore } from '@reduxjs/toolkit'
+import { configureStore, createReducer, Store } from '@reduxjs/toolkit'
 import { loggerMiddleware } from '@store/middlewares/logger'
 import * as simulators from '@store/reducers/simulators'
 import * as relations from '@store/reducers/relations'
@@ -11,13 +11,15 @@ import * as terms from '@store/reducers/terms'
 
 const DEBUG = false
 
-declare global {
-  interface Window {
-    __store__: EnhancedStore
-  }
+interface TypeCache {
+  store: Store | null
 }
 
-function renderStore(initialState?: ConfigType): EnhancedStore {
+const cache: TypeCache = {
+  store: null,
+}
+
+export function renderStore(initialState?: ConfigType): Store {
   return configureStore({
     preloadedState: initialState,
     reducer: createReducer(initialState, (builder) => {
@@ -39,22 +41,26 @@ function renderStore(initialState?: ConfigType): EnhancedStore {
   })
 }
 
-export const presetStore = (initialState?: ConfigType): EnhancedStore => {
-  if (typeof window === 'object') {
-    window.__store__ = renderStore(initialState)
-    return window.__store__
+export const createStore = (initialState?: ConfigType): Store => {
+  if (!cache.store) {
+    cache.store = renderStore(initialState)
   }
-  return renderStore(initialState)
+  return cache.store
 }
 
-const getStore = (): EnhancedStore => {
-  return window.__store__
+const getStore = (): Store | null => {
+  return cache.store
 }
 
 type CallbackType<T> = (res: T) => void;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const execAction = <T>(action: any, callback?: CallbackType<T>): void => {
-  getStore().dispatch(action).unwrap().then(callback)
+  const store = getStore()
+  if (store) {
+    store.dispatch(action).unwrap().then(callback)
+  } else {
+    console.warn('Create store before use action.')
+  }
 }
 
 export const actionDeleteFolder = (payload: folders.DeleteType, callback?: (res: boolean) => void): void => {

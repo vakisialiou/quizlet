@@ -5,6 +5,8 @@ import { prisma } from '@lib/prisma'
 import { ReactNode } from 'react'
 import { auth } from '@auth'
 
+import { getModuleById } from '@repositories/modules'
+
 export default async function Layout(
   {
     children,
@@ -21,12 +23,11 @@ export default async function Layout(
     return notFound()
   }
 
-
   const session = await auth()
   const userId = session?.user?.id || ''
-  const folder = share.ownerId !== userId ? await getFolderById(prisma, share.ownerId, share.moduleId) : null
+  const course = share.ownerId !== userId ? await getModuleById(prisma, share.ownerId, share.moduleId) : null
 
-  if (!folder && share.ownerId !== userId) {
+  if (!course && share.ownerId !== userId) {
     return notFound()
   }
 

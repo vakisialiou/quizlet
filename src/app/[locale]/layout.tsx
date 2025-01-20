@@ -24,6 +24,7 @@ import { prisma } from '@lib/prisma'
 import { auth } from '@auth'
 import React from 'react'
 import './globals.css'
+import {findModuleSharesByOwnerId} from "@repositories/module-share";
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -72,7 +73,6 @@ export default async function RootLayout({
     notFound()
   }
 
-
   async function createInitialState(locale: LanguageEnums) {
     const session = await auth()
     const userId = session?.user?.id || ''
@@ -85,6 +85,7 @@ export default async function RootLayout({
         folders: await findFoldersByUserId(prisma, userId),
         simulators: await findSimulatorsByUserId(prisma, userId),
         folderGroups: await findFolderGroupsByUserId(prisma, userId),
+        moduleShares: await findModuleSharesByOwnerId(prisma, userId),
         relationTerms: await findRelationTermsByUserId(prisma, userId),
         relationFolders: await findRelationFoldersByUserId(prisma, userId),
         relationSimulators: await findRelationSimulatorsByUserId(prisma, userId)

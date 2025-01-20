@@ -25,10 +25,10 @@ export type ConfigType = {
   edit: ConfigEditType,
   terms: TermData[]
   modules: ModuleData[]
-  moduleShare: ModuleShareData | null
   folders: FolderData[]
   simulators: SimulatorData[]
   folderGroups: FolderGroupData[]
+  moduleShares: ModuleShareData[]
   relationTerms: RelationTermData[]
   relationFolders: RelationFolderData[]
   relationSimulators: RelationSimulatorData[]
@@ -45,19 +45,19 @@ export const getInitialState = async (
     settings,
     simulators,
     folderGroups,
+    moduleShares,
     relationTerms,
     relationFolders,
     relationSimulators,
-    moduleShare
   }:
   {
     terms?: TermData[]
     session?: Session | null
-    moduleShare?: ModuleShareData | null
     modules?: ModuleData[]
     folders?: FolderData[]
     simulators?: SimulatorData[]
     folderGroups?: FolderGroupData[]
+    moduleShares?: ModuleShareData[]
     relationTerms?: RelationTermData[]
     relationFolders?: RelationFolderData[]
     relationSimulators?: RelationSimulatorData[]
@@ -81,10 +81,10 @@ export const getInitialState = async (
     folders: folders || [],
     simulators: simulators || [],
     folderGroups: folderGroups || [],
+    moduleShares: moduleShares || [],
     relationTerms: relationTerms || [],
     relationFolders: relationFolders || [],
     relationSimulators: relationSimulators || [],
-    moduleShare: moduleShare || null,
     settings: new Settings().setSimulator(settings?.simulator || null).serialize(),
   }
 }

@@ -151,6 +151,7 @@
     "removeDialogText": "Вы уверены, что хотите удалить папку?",
     "removeDialogButtonApprove": "Удалить",
     "removeDialogButtonCancel": "Отменить",
+    "dropdownStudy": "Изучить",
     "dropdownEdit": "Редактировать",
     "dropdownRemove": "Удалить",
     "labelTerms": "Термины {count}",

@@ -116,7 +116,7 @@ export default function ClientPageFolder({ editable, groupId, folderId }: { edit
       footer={(
         <div className="flex w-full justify-center text-center">
           <Button
-            className="w-full max-w-96"
+            className="gap-2 w-full max-w-96"
             variant={ButtonVariant.GREEN}
             disabled={relatedTerms.length === 0}
             onClick={() => {

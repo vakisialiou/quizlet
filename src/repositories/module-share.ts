@@ -10,9 +10,9 @@ export type ModuleShareSelectType = {
 
 export const ModuleShareSelect = {
   id: true,
+  access: true,
   ownerId: true,
   moduleId: true,
-  access: true,
 } as ModuleShareSelectType
 
 type ModuleShareResult = Prisma.ModuleShareGetPayload<{
@@ -25,20 +25,30 @@ export const createModuleShareSelect = (data: ModuleShareResult) => {
     .setOwnerId(data.ownerId)
     .setModuleId(data.moduleId)
     .setAccess(data.access as ModuleShareEnum)
-
 }
 
 export const getModuleShareById = async (db: PrismaEntry, id: string): Promise<ModuleShareData | null> => {
-  const folder = await db.moduleShare.findUnique({
+  const data = await db.moduleShare.findUnique({
     where: { id },
     select: { ...ModuleShareSelect },
   })
 
-  if (folder) {
-    return createModuleShareSelect(folder).serialize()
+  if (data) {
+    return createModuleShareSelect(data).serialize()
   }
 
   return null
+}
+
+export const findModuleSharesByOwnerId = async (db: PrismaEntry, ownerId: string): Promise<ModuleShareData[]> => {
+  const data = await db.moduleShare.findMany({
+    where: { ownerId },
+    select: { ...ModuleShareSelect },
+  })
+
+  return data.map((item) => {
+    return createModuleShareSelect(item).serialize()
+  })
 }
 
 export const upsertModuleShare = async (db: PrismaEntry, userId: string, item: ModuleShareData): Promise<string | null> => {
