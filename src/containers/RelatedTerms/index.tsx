@@ -2,9 +2,9 @@
 
 import { actionUpsertTerm, actionCreateRelationTerm, actionEditTerm, actionRemoveRelationTerm } from '@store/index'
 import React, { useCallback, useEffect, useMemo, useState, useImperativeHandle, Ref, forwardRef } from 'react'
-import { sortTerms, sortTermsWithRelations } from '@helper/sort-terms'
 import RelationTerm, {RelatedTermData} from '@entities/RelationTerm'
 import TextToSpeech, { TextToSpeechEvents } from '@lib/speech'
+import { sortTermsWithRelations } from '@helper/sort-terms'
 import Button, { ButtonVariant } from '@components/Button'
 import { searchRelatedTerms } from '@helper/search-terms'
 import { ConfigEditType } from '@store/initial-state'

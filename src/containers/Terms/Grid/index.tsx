@@ -77,7 +77,7 @@ function Grid(
     actionUpsertTerm({ term, editId: term.id, editable, shareId }, () => {
       setOriginItem(term)
     })
-  }, [visibleTerms, editable, shareId])
+  }, [editable, shareId])
 
   useImperativeHandle(ref, () => ({ onCreate }))
 

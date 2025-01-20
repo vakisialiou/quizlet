@@ -1,5 +1,4 @@
 import { getModuleShareById } from '@repositories/module-share'
-import { getFolderById } from '@repositories/folders'
 import { notFound } from 'next/navigation'
 import { prisma } from '@lib/prisma'
 import { ReactNode } from 'react'
