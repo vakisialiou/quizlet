@@ -41,23 +41,17 @@ export function renderStore(initialState?: ConfigType): Store {
   })
 }
 
-export const createStore = (initialState?: ConfigType): Store => {
-  if (!cache.store) {
-    cache.store = renderStore(initialState)
-  }
-  return cache.store
-}
 
-const getStore = (): Store | null => {
+export const createStore = (initialState?: ConfigType): Store => {
+  cache.store = renderStore(initialState)
   return cache.store
 }
 
 type CallbackType<T> = (res: T) => void;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const execAction = <T>(action: any, callback?: CallbackType<T>): void => {
-  const store = getStore()
-  if (store) {
-    store.dispatch(action).unwrap().then(callback)
+  if (cache.store) {
+    cache.store.dispatch(action).unwrap().then(callback)
   } else {
     console.warn('Create store before use action.')
   }
