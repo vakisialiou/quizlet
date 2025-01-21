@@ -24,7 +24,7 @@ export default function MetaLabel(
 
   return (
     <div
-      className={clsx('flex items-center rounded-full px-4 h-4 text-[10px] select-none text-nowrap', {
+      className={clsx('flex items-center rounded-full px-2 h-4 text-[10px] select-none text-nowrap', {
         ['bg-gray-700 text-gray-300']: !disabled && variant === MetaLabelVariant.gray,
         ['bg-gray-700/50 text-gray-300/50']: disabled && variant === MetaLabelVariant.gray,
 

@@ -118,7 +118,6 @@
     "shareDialogEditable": "View and Edit",
     "shareDialogButtonCopy": "Copy",
     "labelActive": "Active",
-    "labelTerms": "Cards {count}",
     "noModulesHelper": "To add a new module, click the \"{btnName}\" button."
   },
   "Module": {
@@ -139,10 +138,17 @@
     "removeDialogText": "Are you sure you want to delete the section?",
     "removeDialogButtonApprove": "Delete",
     "removeDialogButtonCancel": "Cancel",
+    "createDialogTitle": "Create Categories",
+    "createDialogLabel": "Number of cards in the category",
+    "createDialogSize": "{size} cards",
+    "createDialogButtonApply": "Create",
+    "createDialogButtonCancel": "Cancel",
+    "createDialogWarn": "The module does not contain enough cards for automatic category generation.",
     "groupNoName": "(No Name)",
-    "dropdownAdd": "Add Category",
+    "dropdownAdd": "Create One Category",
     "dropdownEdit": "Edit Section",
     "dropdownRemove": "Delete Section",
+    "dropdownGenerate": "Auto-Generate Categories",
     "namePlaceholder": "Section Name",
     "emptyList": "You haven't created any sections yet."
   },
@@ -156,7 +162,6 @@
     "dropdownStudy": "Study Category",
     "dropdownEdit": "Edit Category",
     "dropdownRemove": "Delete Category",
-    "labelTerms": "Terms {count}",
     "labelActive": "Active",
     "btnPlay": "Study"
   },

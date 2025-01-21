@@ -8,6 +8,7 @@ import * as modules from '@store/reducers/modules'
 import { ConfigType } from '@store/initial-state'
 import * as groups from '@store/reducers/groups'
 import * as terms from '@store/reducers/terms'
+import { MultiFolders } from '@helper/folders'
 
 const DEBUG = false
 
@@ -64,6 +65,11 @@ export const actionDeleteFolder = (payload: folders.DeleteType, callback?: (res:
 
 export const actionUpdateFolder = (payload: folders.UpdateType, callback?: (res: folders.UpdateType) => void): void => {
   const action = folders.updateFolder(payload)
+  execAction(action, callback)
+}
+
+export const actionGenerateFolders = (payload: folders.GenerateType, callback?: (res: MultiFolders) => void): void => {
+  const action = folders.generateMultiFolders(payload)
   execAction(action, callback)
 }
 

@@ -1,11 +1,17 @@
 import {
   upsertFolderData,
   deleteFolderData,
+  generateFoldersData
 } from '@store/fetch/folders'
 import { unique, remove, upsertObject, removeObject } from '@lib/array'
+import { createMultiFolders, MultiFolders } from '@helper/folders'
+import { FolderGroupData } from '@entities/FolderGroup'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { ConfigType } from '@store/initial-state'
 import { FolderData } from '@entities/Folder'
+import { TermData } from '@entities/Term'
+import {RelationFolderData} from "@entities/RelationFolder";
+import {RelationTermData} from "@entities/RelationTerm";
 
 export type DeleteType = {
   folderId: string,
@@ -35,6 +41,24 @@ export const updateFolder = createAsyncThunk(
       return await upsertFolderData(payload.folder)
     }
     return true
+  }
+)
+
+export type GenerateType = {
+  group: FolderGroupData
+  terms: TermData[]
+  editable: boolean
+  size: number
+}
+
+export const generateMultiFolders = createAsyncThunk(
+  '/folder/generate/multi',
+  async (payload: GenerateType): Promise<MultiFolders> => {
+    const data = createMultiFolders(payload.group, payload.terms, payload.size)
+    if (payload.editable) {
+      await generateFoldersData(data)
+    }
+    return data
   }
 )
 
@@ -72,6 +96,20 @@ export const folderReducers = (builder: any) => {
       state.folders = removeObject(state.folders, { id: folderId } as FolderData)
       state.relationFolders = [...state.relationFolders].filter((relation) => relation.folderId !== folderId)
       state.edit.processFolderIds = remove(state.edit.processFolderIds, folderId)
+    })
 
+  builder
+    .addCase(generateMultiFolders.fulfilled, (state: ConfigType, action: { meta: { arg: GenerateType }, payload: MultiFolders }) => {
+      const { folders, relationFolders, relationTerms } = action.payload
+
+      for (const folder of folders) {
+        state.folders = upsertObject([...state.folders], folder) as FolderData[]
+      }
+      for (const relationFolder of relationFolders) {
+        state.relationFolders = upsertObject([...state.relationFolders], relationFolder) as RelationFolderData[]
+      }
+      for (const relationTerm of relationTerms) {
+        state.relationTerms = upsertObject([...state.relationTerms], relationTerm) as RelationTermData[]
+      }
     })
 }

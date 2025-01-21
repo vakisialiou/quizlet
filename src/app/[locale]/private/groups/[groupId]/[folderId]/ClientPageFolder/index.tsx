@@ -24,6 +24,7 @@ import ContentPage from '@containers/ContentPage'
 import FolderCart from '@components/FolderCart'
 import { getGroupById } from '@helper/relation'
 import FormFolder from '@containers/FormFolder'
+import MetaLabel from '@components/MetaLabel'
 import Dropdown from '@components/Dropdown'
 import { useTranslations } from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
@@ -120,7 +121,7 @@ export default function ClientPageFolder({ editable, groupId, folderId }: { edit
             variant={ButtonVariant.GREEN}
             disabled={relatedTerms.length === 0}
             onClick={() => {
-              router.push(`/simulator?folderId=${folderId}`)
+              router.push(`/private/simulator/folder/${folderId}`)
             }}
           >
             <SVGPlay
@@ -145,6 +146,7 @@ export default function ClientPageFolder({ editable, groupId, folderId }: { edit
             dropdown={{
               hidden: true
             }}
+            labels={<MetaLabel>{relatedTerms.length}</MetaLabel>}
             controls={(
               <>
                 <Dropdown

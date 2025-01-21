@@ -23,6 +23,7 @@ import SVGPlay from '@public/svg/play.svg'
 import {useTranslations} from 'next-intl'
 import {useRouter} from '@i18n/routing'
 import clsx from 'clsx'
+import {sortFoldersAsc} from "@helper/sort-folders";
 
 enum DropDownIdEnums {
   STUDY_FOLDER   = 'STUDY_FOLDER',
@@ -54,7 +55,9 @@ export default function Folders(
 
   const [ removeFolder, setRemoveFolder ] = useState<{ group: FolderGroupData, folder: FolderData } | null>(null)
 
-  const groupFolders = findGroupFolders(relationFolders, folders, group.id)
+  const groupFolders = useMemo(() => {
+    return sortFoldersAsc(findGroupFolders(relationFolders, folders, group.id))
+  }, [relationFolders, folders, group.id])
 
   return (
     <div
@@ -93,7 +96,7 @@ export default function Folders(
               onSelect: (id) => {
                 switch (id) {
                   case DropDownIdEnums.STUDY_FOLDER:
-                    router.push(`/simulator?folderId=${folder.id}`)
+                    router.push(`/private/simulator/folder/${folder.id}`)
                     break
                   case DropDownIdEnums.EDIT_FOLDER:
                     router.push(`/private/groups/${group.id}/${folder.id}`)
@@ -130,12 +133,12 @@ export default function Folders(
                 }
 
                 <MetaLabel>
-                  {t('labelTerms', {count: notRemovedTerms.length})}
+                  {notRemovedTerms.length}
                 </MetaLabel>
               </>
             )}
             onClickBody={() => {
-              router.push(`/simulator?folderId=${folder.id}`)
+              router.push(`/private/simulator/folder/${folder.id}`)
             }}
           >
             <div
@@ -146,7 +149,7 @@ export default function Folders(
                   ['text-white/50']: true,
                 })}
               >
-                <div className="text-xs font-bold uppercase">
+                <div className="text-xs font-bold uppercase truncate ...">
                   {folder.name || t('folderNoName')}
                 </div>
 

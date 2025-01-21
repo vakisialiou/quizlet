@@ -116,7 +116,6 @@
     "shareDialogEditable": "Просмотр и редактирование",
     "shareDialogButtonCopy": "Копировать",
     "labelActive": "Активный",
-    "labelTerms": "Карточки {count}",
     "noModulesHelper": "Для добавления нового модуля нажмите кнопку \"{btnName}\"."
   },
   "Module": {
@@ -137,8 +136,15 @@
     "removeDialogText": "Вы уверены, что хотите удалить раздел?",
     "removeDialogButtonApprove": "Удалить",
     "removeDialogButtonCancel": "Отменить",
+    "createDialogTitle": "Создать категории",
+    "createDialogLabel": "Количество карточек в категории",
+    "createDialogSize": "{size} карточек",
+    "createDialogButtonApply": "Создать",
+    "createDialogButtonCancel": "Отменить",
+    "createDialogWarn": "Модуль содержит недостаточно карточек для автоматической генерации категорий.",
     "groupNoName": "(Без имени)",
-    "dropdownAdd": "Добавить категорию",
+    "dropdownAdd": "Создать категорию",
+    "dropdownGenerate": "Сгенерировать категории",
     "dropdownEdit": "Редактировать",
     "dropdownRemove": "Удалить",
     "namePlaceholder": "Название раздела",
@@ -154,7 +160,6 @@
     "dropdownStudy": "Изучить",
     "dropdownEdit": "Редактировать",
     "dropdownRemove": "Удалить",
-    "labelTerms": "Термины {count}",
     "labelActive": "Активный",
     "btnPlay": "Изучить"
   },
@@ -190,9 +195,6 @@
     "termSearch": "Найти карточку..."
   },
   "Simulators": {
-    "metaTitle": "Тренажеры для обучения | QuizerPlay",
-    "metaKeywords": "тренажеры, обучение, Pick, Flashcard, Input, симуляторы, изучение, образовательные игры, QuizerPlay",
-    "metaDescription": "Используйте тренажеры на платформе QuizerPlay для эффективного обучения. Выберите симулятор и начните учить термины с увлекательными методами.",
     "headTitle": "Тренажер",
     "buttonRemember": "Запомнил",
     "buttonRepeat": "Повторить",

@@ -1,6 +1,7 @@
 'use client'
 
 import { findFolderGroups, findGroupFolders } from '@helper/relation'
+import DialogCreateFolders from '@containers/DialogCreateFolders'
 import DialogRemoveGroup from '@containers/DialogRemoveGroup'
 import { useFolderSelect } from '@hooks/useFolderSelect'
 import React, {Fragment, useMemo, useState} from 'react'
@@ -8,6 +9,7 @@ import { FolderGroupData } from '@entities/FolderGroup'
 import { useGroupSelect } from '@hooks/useGroupSelect'
 import { actionUpdateFolderGroup } from '@store/index'
 import SVGNewFolder from '@public/svg/new_folder.svg'
+import SVGCreate from '@public/svg/asset_manager.svg'
 import SVGThreeDots from '@public/svg/three_dots.svg'
 import Folders from '@containers/Collection/Folders'
 import SVGEdit from '@public/svg/greasepencil.svg'
@@ -24,6 +26,7 @@ import Folder from '@entities/Folder'
 
 enum DropDownIdEnums {
   CREATE_FOLDER = 'CREATE_FOLDER',
+  CREATE_FOLDERS = 'CREATE_FOLDERS',
   REMOVE_GROUP = 'REMOVE_GROUP',
   EDIT_GROUP   = 'EDIT_GROUP',
 }
@@ -49,6 +52,7 @@ export default function Groups(
     return sortFolderGroups(findFolderGroups(folderGroups, module.id))
   }, [folderGroups, module])
 
+  const [ createFolders, setCreateFolders ] = useState<FolderGroupData | null>(null)
   const [ originGroup, setOriginGroup ] = useState<FolderGroupData | null>(null)
   const [ removeGroup, setRemoveGroup ] = useState<FolderGroupData | null>(null)
 
@@ -120,6 +124,7 @@ export default function Groups(
                 }}
                 items={[
                   { id: DropDownIdEnums.CREATE_FOLDER, name: t('dropdownAdd'), icon: SVGNewFolder },
+                  { id: DropDownIdEnums.CREATE_FOLDERS, name: t('dropdownGenerate'), icon: SVGCreate },
                   { id: DropDownIdEnums.EDIT_GROUP, name: t('dropdownEdit'), icon: SVGEdit },
                   { id: 1, divider: true },
                   { id: DropDownIdEnums.REMOVE_GROUP, name: t('dropdownRemove'), icon: SVGTrash }
@@ -138,6 +143,9 @@ export default function Groups(
                       break
                     case DropDownIdEnums.REMOVE_GROUP:
                       setRemoveGroup(group)
+                      break
+                    case DropDownIdEnums.CREATE_FOLDERS:
+                      setCreateFolders(group)
                       break
                   }
                 }}
@@ -173,6 +181,19 @@ export default function Groups(
           }}
           onDone={() => {
             setRemoveGroup(null)
+          }}
+        />
+      }
+
+      {createFolders &&
+        <DialogCreateFolders
+          editable={editable}
+          group={createFolders}
+          onClose={() => {
+            setCreateFolders(null)
+          }}
+          onDone={() => {
+            setCreateFolders(null)
           }}
         />
       }

@@ -134,7 +134,7 @@ export default function Modules(
                       router.push(`/private/modules/${module.id}`)
                       break
                     case DropDownIdEnums.STUDY:
-                      router.push(`/simulator?moduleId=${module.id}`)
+                      router.push(`/private/simulator/module/${module.id}`)
                       break
                     case DropDownIdEnums.REMOVE_FOLDER:
                       setRemoveModule(module)
@@ -167,7 +167,7 @@ export default function Modules(
                   }
 
                   <MetaLabel>
-                    {t('labelTerms', { count: notRemovedTerms.length })}
+                    {notRemovedTerms.length}
                   </MetaLabel>
                 </>
               )}

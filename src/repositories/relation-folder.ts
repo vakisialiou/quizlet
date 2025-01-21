@@ -3,14 +3,18 @@ import { Prisma, PrismaEntry } from '@lib/prisma'
 
 export type RelationFolderSelectType = {
   id: boolean
+  order: boolean
   groupId: boolean
   folderId: boolean
+  createdAt: boolean
 }
 
 export const RelationFolderSelect = {
   id: true,
+  order: true,
   groupId: true,
   folderId: true,
+  createdAt: true
 } as RelationFolderSelectType
 
 type RelationFolderResult = Prisma.RelationFolderGetPayload<{
@@ -20,8 +24,10 @@ type RelationFolderResult = Prisma.RelationFolderGetPayload<{
 export const createRelationFolderSelect = (data: RelationFolderResult) => {
   return new RelationFolder()
     .setId(data.id)
+    .setOrder(data.order)
     .setGroupId(data.groupId)
     .setFolderId(data.folderId)
+    .setCreatedAt(data.createdAt)
 }
 
 export const createManyRelationFolders = async (db: PrismaEntry, userId: string, items: RelationFolderData[]): Promise<number> => {
@@ -30,8 +36,10 @@ export const createManyRelationFolders = async (db: PrismaEntry, userId: string,
       return {
         userId,
         id: item.id,
+        order: item.order,
         groupId: item.groupId,
         folderId: item.folderId,
+        createdAt: new Date(),
       }
     })
   })
@@ -44,8 +52,10 @@ export const createRelationFolder = async (db: PrismaEntry, userId: string, rela
     data: {
       userId,
       id: relation.id,
+      order: relation.order,
       groupId: relation.groupId,
       folderId: relation.folderId,
+      createdAt: new Date(),
     }
   })
 

@@ -25,8 +25,9 @@ import RelationTerm from '@entities/RelationTerm'
 import FormModule from '@containers/FormModule'
 import FolderGroup from '@entities/FolderGroup'
 import FolderCart from '@components/FolderCart'
+import MetaLabel from '@components/MetaLabel'
 import Dropdown from '@components/Dropdown'
-import {useTranslations} from 'next-intl'
+import { useTranslations } from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
 import SVGPlay from '@public/svg/play.svg'
 import {useRouter} from '@i18n/routing'
@@ -119,7 +120,7 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
             variant={ButtonVariant.GREEN}
             disabled={relatedTerms.length === 0}
             onClick={() => {
-              router.push(`/simulator?moduleId=${moduleId}`)
+              router.push(`/private/simulator/module/${moduleId}`)
             }}
           >
             <SVGPlay
@@ -144,6 +145,7 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
             dropdown={{
               hidden: true
             }}
+            labels={<MetaLabel>{relatedTerms.length}</MetaLabel>}
             controls={(
               <>
                 <Dropdown

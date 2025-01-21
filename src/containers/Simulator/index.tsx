@@ -17,7 +17,16 @@ import { useRouter } from '@i18n/routing'
 import Dialog from '@components/Dialog'
 import React, { useState } from 'react'
 
-export default function Simulator({ relation, editable }: { relation: RelationProps, editable: boolean }) {
+export default function Simulator(
+  {
+    relation,
+    editable,
+  }:
+  {
+    relation: RelationProps
+    editable: boolean
+  }
+) {
   const router = useRouter()
 
   const [ deactivateSimulatorId, setDeactivateSimulatorId] = useState<string | null>(null)
