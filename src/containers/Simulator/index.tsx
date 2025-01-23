@@ -7,8 +7,8 @@ import { actionUpdateSimulator } from '@store/action-main'
 import Button, { ButtonVariant } from '@components/Button'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
 import { useMainSelector } from '@hooks/useMainSelector'
+import TitleSimulator from '@containers/TitleSimulator'
 import ButtonSquare from '@components/ButtonSquare'
-import FolderTitle from '@containers/FolderTitle'
 import ContentPage from '@containers/ContentPage'
 import { RelationProps } from '@helper/relation'
 import { useTranslations } from 'next-intl'
@@ -50,7 +50,7 @@ export default function Simulator(
         </>
       )}
     >
-      <FolderTitle
+      <TitleSimulator
         relation={relation}
       />
 

@@ -171,7 +171,8 @@
     "btnPlay": "Study",
     "namePlaceholder": "Category Name",
     "noCardsHelper": "You haven't added any cards yet.",
-    "searchPlaceholder": "Search..."
+    "searchPlaceholder": "Search...",
+    "folderNoName": "(No Name)"
   },
   "Terms": {
     "headTitle": "Cards",
@@ -250,7 +251,10 @@
   "Share": {
     "metaTitle": "All your learning cards in one place | QuizerPlay",
     "metaKeywords": "learning cards, management, creation, editing, deletion, learning organization, QuizerPlay",
-    "metaDescription": "Collect and manage all your learning cards on the QuizerPlay platform. A simple and convenient solution for effective learning."
+    "metaDescription": "Collect and manage all your learning cards on the QuizerPlay platform. A simple and convenient solution for effective learning.",
+    "headTitle": "Cards",
+    "searchPlaceholder": "Search...",
+    "btnAddTerm": "Add Card"
   },
   "NavMenu": {
     "terms": "Cards",

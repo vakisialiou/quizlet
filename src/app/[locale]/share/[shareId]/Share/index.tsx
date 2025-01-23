@@ -1,10 +1,10 @@
 'use client'
 
-import { ShareConfigType } from '@store/initial-state-share'
 import Button, { ButtonVariant } from '@components/Button'
 import { useShareSelector } from '@hooks/useShapeSelector'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
 import { ModuleShareEnum } from '@entities/ModuleShare'
+import TitleModule from '@containers/TitleModule'
 import SVGFileNew from '@public/svg/file_new.svg'
 import ContentPage from '@containers/ContentPage'
 import React, { useRef, useState } from 'react'
@@ -14,9 +14,10 @@ import Grid from './Grid'
 export default function Share() {
   const [ search, setSearch ] = useState<string>('')
 
-  const share = useShareSelector((state: ShareConfigType) => state.share)
+  const share = useShareSelector((state) => state.share)
+  const course = useShareSelector((state) => state.module)
 
-  const t = useTranslations('Terms')
+  const t = useTranslations('Share')
 
   const ref = useRef<{ onCreate?: () => void }>({})
   const editable = share.access === ModuleShareEnum.editable
@@ -65,6 +66,11 @@ export default function Share() {
         </>
       )}
     >
+      <TitleModule
+        module={course}
+        className="mb-4"
+      />
+
       <Grid
         ref={ref}
         share={share}

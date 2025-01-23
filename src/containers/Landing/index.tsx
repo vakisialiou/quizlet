@@ -9,8 +9,8 @@ import DropdownLanguage from '@containers/DropdownLanguage'
 import Button, { ButtonVariant } from '@components/Button'
 import { actionUpdateSimulator } from '@store/action-main'
 import { useMainSelector } from '@hooks/useMainSelector'
+import TitleSimulator from '@containers/TitleSimulator'
 import SVGGoogle from '@public/svg/painted/google.svg'
-import FolderTitle from '@containers/FolderTitle'
 import ContentPage from '@containers/ContentPage'
 import ButtonPWA from '@containers/ButtonPWA'
 import { DEMO_MODULE_ID } from '@helper/demo'
@@ -123,7 +123,7 @@ function Landing(
               <div
                 className="px-[2px] md:px-2 py-4 flex flex-col items-center overflow-hidden gap-4 lg:order-2"
               >
-                <FolderTitle
+                <TitleSimulator
                   relation={{ moduleId: DEMO_MODULE_ID }}
                   className="w-full max-w-96 items-center"
                 />
