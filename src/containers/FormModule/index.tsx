@@ -1,6 +1,8 @@
+import Dropdown, { DropdownPlacement } from '@components/Dropdown'
+import { ModuleData, ModuleMarkersEnum } from '@entities/Module'
 import { actionUpdateModule } from '@store/action-main'
-import React, {useCallback, useRef} from 'react'
-import { ModuleData } from '@entities/Module'
+import React, { useCallback, useRef } from 'react'
+import MetaLabel from '@components/MetaLabel'
 import Textarea from '@components/Textarea'
 import { useTranslations } from 'next-intl'
 import Input from '@components/Input'
@@ -16,6 +18,8 @@ export default function FolderModule(
   }
 ) {
   const t = useTranslations('Module')
+  const tl = useTranslations('Labels')
+
   const timeoutId = useRef<NodeJS.Timeout | null>(null)
   const onChangeUpdate = useCallback((module: ModuleData) => {
     actionUpdateModule({ module, editId: module.id, editable: false })
@@ -39,6 +43,11 @@ export default function FolderModule(
     actionUpdateModule({ module, editId: null, editable })
   }, [editable])
 
+  const labels = [
+    {id: ModuleMarkersEnum.focus, name: tl('focus')},
+    {id: ModuleMarkersEnum.important, name: tl('important')}
+  ]
+
   const SHOW_DESC = false
 
   return (
@@ -50,6 +59,49 @@ export default function FolderModule(
         onBlur={() => onChangeSave(module)}
         onChange={(e) => onChangeUpdate({ ...module, name: e.target.value })}
       />
+
+      <div className="flex items-center justify-between gap-1">
+        <Dropdown
+          caret
+          items={labels}
+          selected={module.markers}
+          className="h-8 px-2 gap-1 text-sm"
+          placement={DropdownPlacement.bottomStart}
+          onSelect={(id) => {
+            const marker = id as ModuleMarkersEnum
+            const markers = [...module.markers]
+            const index = markers.indexOf(marker)
+            if (index === -1) {
+              markers.push(marker)
+            } else {
+              markers.splice(index, 1)
+            }
+            onChangeSave({ ...module, markers })
+          }}
+        >
+          Labels
+        </Dropdown>
+
+        {module.markers.length > 0 &&
+          <div className="flex gap-1 items-center">
+            {module.markers.map((marker) => {
+              const item = labels.find(({ id }) => marker === id)
+              if (!item) {
+                return
+              }
+
+              return (
+                <MetaLabel
+                  key={marker}
+                  className="px-2"
+                >
+                  {item.name}
+                </MetaLabel>
+              )
+            })}
+          </div>
+        }
+      </div>
 
       {SHOW_DESC &&
         <Textarea

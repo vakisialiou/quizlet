@@ -192,7 +192,7 @@ export default function TermCard(
                 items={languages}
                 ref={refQuestionLang}
                 variant={DropdownVariant.gray}
-                selected={data.questionLang || DefaultQuestionLang}
+                selected={[data.questionLang || DefaultQuestionLang]}
                 onClick={(e) => e.preventDefault()}
                 onSelect={(id) => {
                   onChange('questionLang', id as string)
@@ -262,7 +262,7 @@ export default function TermCard(
                   ref={refAnswerLang}
                   variant={DropdownVariant.gray}
                   onClick={(e) => e.preventDefault()}
-                  selected={data.answerLang || DefaultAnswerLang}
+                  selected={[data.answerLang || DefaultAnswerLang]}
                   onSelect={(id) => {
                     onChange('answerLang', id as string)
                   }}
@@ -342,7 +342,7 @@ export default function TermCard(
                   ref={refAssociationLang}
                   variant={DropdownVariant.gray}
                   onClick={(e) => e.preventDefault()}
-                  selected={data.associationLang || DefaultAssociationLang}
+                  selected={[data.associationLang || DefaultAssociationLang]}
                   onSelect={(id) => {
                     onChange('associationLang', id as string)
                   }}

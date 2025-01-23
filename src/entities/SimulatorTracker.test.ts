@@ -7,7 +7,7 @@ describe('SimulatorTracker methods', () => {
   const termIds = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
 
   describe(`Simulator method ${SimulatorMethod.PICK}`, () => {
-    const simulator = new Simulator('simulator-1', SimulatorStatus.PROCESSING)
+    const simulator = new Simulator(SimulatorStatus.PROCESSING)
     simulator.setTermIds(termIds)
     simulator.setSettings(
       new SimulatorSettings()
@@ -101,7 +101,7 @@ describe('SimulatorTracker methods', () => {
   })
 
   describe(`Simulator type ${SimulatorMethod.FLASHCARD}`, () => {
-    const simulator = new Simulator('simulator-2', SimulatorStatus.PROCESSING)
+    const simulator = new Simulator(SimulatorStatus.PROCESSING)
     simulator.setTermIds(termIds)
     simulator.setSettings(
       new SimulatorSettings()
@@ -195,7 +195,7 @@ describe('SimulatorTracker methods', () => {
   })
 
   describe(`Simulator type ${SimulatorMethod.INPUT}`, () => {
-    const simulator = new Simulator('simulator-3', SimulatorStatus.PROCESSING)
+    const simulator = new Simulator(SimulatorStatus.PROCESSING)
     simulator.setTermIds(termIds)
     simulator.setSettings(
       new SimulatorSettings()

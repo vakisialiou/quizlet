@@ -11,6 +11,7 @@ import localFont from 'next/font/local'
 import { findRelationSimulatorsByUserId } from '@repositories/relation-simulator'
 import { findRelationFoldersByUserId } from '@repositories/relation-folder'
 import { findRelationTermsByUserId } from '@repositories/relation-term'
+import { findModuleSharesByOwnerId } from '@repositories/module-share'
 import { findFolderGroupsByUserId } from '@repositories/folder-group'
 import { findSimulatorsByUserId } from '@repositories/simulators'
 import { findFoldersByUserId } from '@repositories/folders'
@@ -24,7 +25,6 @@ import { prisma } from '@lib/prisma'
 import { auth } from '@auth'
 import React from 'react'
 import './globals.css'
-import {findModuleSharesByOwnerId} from "@repositories/module-share";
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',

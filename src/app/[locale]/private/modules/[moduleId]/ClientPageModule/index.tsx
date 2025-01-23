@@ -60,9 +60,12 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
     actionUpdateModule({
       editable,
       editId: null,
-      module: new Module().setId(moduleId).serialize()
+      module: new Module()
+        .setId(moduleId)
+        .setOrder(modules.length + 1)
+        .serialize()
     })
-  }, [course, editable, moduleId])
+  }, [course, editable, moduleId, modules.length])
 
   const relatedTerms = useMemo(() => {
     return sortTermsWithRelations(findTermsWithRelations(relationTerms, terms, { moduleId }))

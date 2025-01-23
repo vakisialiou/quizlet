@@ -79,8 +79,8 @@ export const actionUpdateSimulator = (payload: simulators.PayloadUpdate, callbac
   executeMainAction(action, callback)
 }
 
-export const actionUpdateSettingsSimulator = (payload: settings.PayloadUpdate, callback?: (res: boolean) => void): void => {
-  const action = settings.updateSettingsSimulator(payload)
+export const actionUpdateSettings = (payload: settings.UpdateSettings, callback?: (res: boolean) => void): void => {
+  const action = settings.updateSettings(payload)
   executeMainAction(action, callback)
 }
 

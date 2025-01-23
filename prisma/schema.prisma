@@ -246,7 +246,8 @@ model RelationTerm {
 model Settings {
   id        String   @id @default(uuid())
   userId    String   @db.VarChar(36)
-  simulator Json
+  modules   Json?
+  simulator Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id])

@@ -1,36 +1,28 @@
-import { SimulatorSettingsData } from '@entities/SimulatorSettings'
-import { upsertSettingsSimulator } from '@store/fetch/settings'
+import { upsertSettings } from '@store/fetch/settings'
 import { ConfigType } from '@store/initial-state-main'
 import { createAsyncThunk } from '@reduxjs/toolkit'
+import { SettingsData } from '@entities/Settings'
 
-export type PayloadUpdate = {
+export type UpdateSettings = {
   editable: boolean,
-  simulatorSettings: Partial<SimulatorSettingsData>
+  settings: SettingsData
 }
 
-export const updateSettingsSimulator = createAsyncThunk(
-  '/update/settings/simulator',
-  async (payload: PayloadUpdate, api): Promise<SimulatorSettingsData> => {
-    const state = api.getState() as ConfigType
-    const originSettings = { ...state.settings.simulator }
-
+export const updateSettings = createAsyncThunk(
+  '/update/settings',
+  async (payload: UpdateSettings): Promise<boolean> => {
     if (payload.editable) {
-      const settings = { ...originSettings, ...payload.simulatorSettings }
-      await upsertSettingsSimulator(settings)
-      return settings
+      await upsertSettings(payload.settings)
     }
 
-    return originSettings
+    return true
   }
 )
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const simulatorReducers = (builder: any) => {
   builder
-    .addCase(updateSettingsSimulator.pending, (state: ConfigType, action: { meta: { arg: PayloadUpdate } }) => {
-      state.settings.simulator = { ...state.settings.simulator, ...action.meta.arg.simulatorSettings }
-    })
-    .addCase(updateSettingsSimulator.rejected, (state: ConfigType, action: { payload: SimulatorSettingsData, meta: { arg: PayloadUpdate } }) => {
-      state.settings.simulator = { ...action.payload }
+    .addCase(updateSettings.fulfilled, (state: ConfigType, action: { meta: { arg: UpdateSettings } }) => {
+      state.settings = { ...state.settings, ...action.meta.arg.settings }
     })
 }

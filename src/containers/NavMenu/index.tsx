@@ -1,8 +1,8 @@
 import NavMenuItem, { NavMenuItemProp } from '@containers/NavMenu/NavMenuItem'
+import { sortModules, ORDER_DEFAULT } from '@helper/sort-modules'
 import { useMainSelector } from '@hooks/useMainSelector'
 import SVGPanelClose from '@public/svg/panel_close.svg'
 import ButtonSquare from '@components/ButtonSquare'
-import { sortDesc } from '@helper/sort-modules'
 import { ModuleData } from '@entities/Module'
 import { usePathname } from '@i18n/routing'
 import { useTranslations } from 'next-intl'
@@ -20,7 +20,7 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
   const modules = useMainSelector(({ modules }: { modules: ModuleData[] }) => modules)
 
   const collectionChildren = useMemo(() => {
-    return sortDesc([...modules])
+    return sortModules([...modules], ORDER_DEFAULT)
       .map((item) => {
         return {
           id: item.id,

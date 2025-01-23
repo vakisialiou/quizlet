@@ -21,8 +21,8 @@ export default function DropdownLanguage(
     <Dropdown
       caret
       className="py-1 px-2"
-      variant={DropdownVariant.gray}
       items={localeDropdownList}
+      variant={DropdownVariant.gray}
     >
       <span className="pr-2">
         {localeDropdownValue?.name || 'Language'}

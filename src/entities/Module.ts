@@ -2,7 +2,8 @@ import { v4 } from 'uuid'
 
 export enum ModuleMarkersEnum {
   active = 'active',
-  inactive = 'inactive',
+  focus = 'focus',
+  important = 'important',
 }
 
 export type ModuleData = {

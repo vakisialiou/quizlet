@@ -1,6 +1,7 @@
 'use client'
 
 import {actionUpdateFolderGroup, actionUpdateModule} from '@store/action-main'
+import {sortModules, OrderEnum, ORDER_DEFAULT} from '@helper/sort-modules'
 import MetaLabel, {MetaLabelVariant} from '@components/MetaLabel'
 import { findActiveSimulators } from '@helper/simulators/general'
 import DialogRemoveModule from '@containers/DialogRemoveModule'
@@ -8,24 +9,24 @@ import AchievementDegree from '@containers/AchievementDegree'
 import SVGNewCollection from '@public/svg/collection_new.svg'
 import {FolderFrameVariant} from '@components/FolderFrame'
 import AchievementIcon from '@containers/AchievementIcon'
+import { findTermsWithRelations } from '@helper/relation'
 import { useMainSelector } from '@hooks/useMainSelector'
-import {sortDesc, sortTop} from '@helper/sort-modules'
 import { searchModules } from '@helper/search-modules'
+import { ModuleMarkersEnum } from '@entities/Module'
 import Module from '@containers/Collection/Module'
 import Groups from '@containers/Collection/Groups'
 import SVGEdit from '@public/svg/greasepencil.svg'
-import { filterDeletedTerms } from '@helper/terms'
 import { getLastStudyModule } from '@helper/study'
 import DialogShare from '@containers/DialogShare'
+import { ModuleFilter } from '@entities/Settings'
 import React, { useMemo, useState } from 'react'
 import FolderGroup from '@entities/FolderGroup'
 import SVGLinked from '@public/svg/linked.svg'
 import { ModuleData } from '@entities/Module'
 import SVGTrash from '@public/svg/trash.svg'
-import { findTerms } from '@helper/relation'
 import { useTranslations } from 'next-intl'
 import SVGPlay from '@public/svg/play.svg'
-import {useRouter} from '@i18n/routing'
+import { useRouter } from '@i18n/routing'
 
 enum DropDownIdEnums {
   GROUP_CREATE = 'GROUP_CREATE',
@@ -35,21 +36,23 @@ enum DropDownIdEnums {
   STUDY = 'STUDY',
 }
 
-export type TypeFilter = {
-  limit?: number,
-  search?: string | null
+export type TypeOptions = {
+  limit: number | null,
+  search: string | null
+  order: OrderEnum,
+  filter: ModuleFilter
 }
 
 export default function Modules(
   {
     editId,
     editable,
-    filter = {},
+    options,
   }:
   {
     editable: boolean
     editId: string | null
-    filter: TypeFilter
+    options: TypeOptions
   }
 ) {
   const router = useRouter()
@@ -60,6 +63,12 @@ export default function Modules(
   const relationSimulators = useMainSelector(({ relationSimulators }) => relationSimulators)
 
   const t = useTranslations('Modules')
+  const tl = useTranslations('Labels')
+
+  const labels = [
+    {id: ModuleMarkersEnum.focus, name: tl('focus')},
+    {id: ModuleMarkersEnum.important, name: tl('important')}
+  ]
 
   const dropdownParentItems = [
     {id: DropDownIdEnums.GROUP_CREATE, name: t('dropDownCreateGroup'), icon: SVGNewCollection },
@@ -79,10 +88,10 @@ export default function Modules(
   }, [modules, relationSimulators, simulators])
 
   const visibleModules = useMemo(() => {
-    const rawModules = searchModules([...modules || []], filter.search || null, editId)
-    return sortTop(sortDesc(rawModules), lastStudyModule?.id || null)
-      .slice(0, filter.limit || Infinity)
-  }, [modules, editId, filter, lastStudyModule])
+    const rawModules = searchModules([...modules || []], options.search || null, editId)
+    return sortModules(rawModules, options.order || ORDER_DEFAULT)
+      .slice(0, options.limit || Infinity)
+  }, [modules, editId, options])
 
   return (
     <>
@@ -97,17 +106,26 @@ export default function Modules(
           </div>
         }
 
-        {visibleModules.map((module, index) => {
-          const moduleTerms = findTerms(relationTerms, terms, { moduleId: module.id })
-          const notRemovedTerms = filterDeletedTerms(moduleTerms)
+        {visibleModules.map((module) => {
+          const notRemovedTerms =findTermsWithRelations(relationTerms, terms, { moduleId: module.id })
           const activeSimulators = findActiveSimulators(relationSimulators, simulators, { moduleId: module.id })
 
           const isLastStudy = lastStudyModule?.id === module.id
 
+          if (options.filter.marker === ModuleMarkersEnum.active && activeSimulators.length === 0) {
+            return
+          }
+
+          if (options.filter.marker && [ModuleMarkersEnum.focus, ModuleMarkersEnum.important].includes(options.filter.marker)) {
+            if (!module.markers.includes(options.filter.marker)) {
+              return
+            }
+          }
+
           return (
             <Module
-              key={index}
               data={module}
+              key={module.id}
               collapsed={module.collapsed}
               variant={isLastStudy ? FolderFrameVariant.blue : FolderFrameVariant.default}
               title={(
@@ -161,11 +179,28 @@ export default function Modules(
                 <>
                   {activeSimulators.length > 0 &&
                     <MetaLabel
+                      className="px-2"
                       variant={MetaLabelVariant.amber}
                     >
-                      {t('labelActive')}
+                      {tl('active')}
                     </MetaLabel>
                   }
+
+                  {module.markers.map((marker) => {
+                    const item = labels.find(({ id }) => marker === id)
+                    if (!item) {
+                      return
+                    }
+
+                    return (
+                      <MetaLabel
+                        key={marker}
+                        className="px-2"
+                      >
+                        {item.name}
+                      </MetaLabel>
+                    )
+                  })}
 
                   <MetaLabel>
                     {notRemovedTerms.length}

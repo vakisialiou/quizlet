@@ -101,6 +101,17 @@
     "metaDescription": "You are in offline mode. Try connecting to the network to continue using QuizerPlay.",
     "warn": "You are in offline mode. <br/>Try connecting to the network."
   },
+  "Labels": {
+    "all": "All",
+    "focus": "Focus",
+    "active": "Active",
+    "important": "Important"
+  },
+  "Orders": {
+    "name": "By Name",
+    "custom": "By Custom",
+    "date": "By Date"
+  },
   "Modules": {
     "headTitle": "Courses",
     "searchPlaceholder": "Search...",
@@ -117,7 +128,6 @@
     "shareDialogReadonly": "Read-Only",
     "shareDialogEditable": "View and Edit",
     "shareDialogButtonCopy": "Copy",
-    "labelActive": "Active",
     "noModulesHelper": "To add a new module, click the \"{btnName}\" button."
   },
   "Module": {

@@ -1,6 +1,6 @@
 import { findSimulatorMethodById, simulatorMethodList } from '@containers/Simulator/constants'
-import { actionSaveSimulator, actionUpdateSettingsSimulator } from '@store/action-main'
 import { randomizeTermIds, selectRandomTermId } from '@helper/simulators/general'
+import { actionSaveSimulator, actionUpdateSettings } from '@store/action-main'
 import { findSimulators, findTerms, RelationProps } from '@helper/relation'
 import { filterDeletedTerms, filterEmptyTerms } from '@helper/terms'
 import { actionExtraParamsUpdate } from '@helper/simulators/actions'
@@ -99,9 +99,12 @@ export default function SingleStart(
                     value={settings.simulator.method}
                     checked={settings.simulator.id === id}
                     onChange={() => {
-                      actionUpdateSettingsSimulator({
-                        simulatorSettings: { method, inverted, id },
-                        editable
+                      actionUpdateSettings({
+                        editable,
+                        settings: {
+                          ...settings,
+                          simulator: { ...settings.simulator, method, inverted, id }
+                        },
                       })
                     }}
                   />

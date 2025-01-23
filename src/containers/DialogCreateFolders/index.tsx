@@ -71,7 +71,7 @@ export default function DialogCreateFolders(
           <Dropdown
             caret
             bordered
-            selected={state.size}
+            selected={[state.size]}
             variant={DropdownVariant.white}
             className="py-2 px-2 justify-between"
             items={[

@@ -18,7 +18,7 @@ import { createPortal } from 'react-dom'
 import Divide from '@components/Divide'
 import clsx from 'clsx'
 
-enum Placement {
+export enum DropdownPlacement {
   top = 'top',
   topStart = 'top-start',
   topEnd = 'top-end',
@@ -51,16 +51,17 @@ export enum DropdownVariant {
 
 function Dropdown(
   {
+    closeOnSelect = true,
     bordered = false,
     children,
-    selected,
+    selected = [],
     caret = false,
     disabled = false,
     className = '',
     classNameMenu = '',
     classNameContainer = '',
     menu,
-    placement = Placement.bottomEnd,
+    placement = DropdownPlacement.bottomEnd,
     variant = DropdownVariant.transparent,
     offsetOptions = 4,
     items = [],
@@ -70,14 +71,15 @@ function Dropdown(
   {
     menu?: ReactNode,
     children: ReactNode,
-    selected?: string | number | null,
+    selected?: (string | number | null)[],
     caret?: boolean,
+    closeOnSelect?: boolean,
     bordered?: boolean,
     disabled?: boolean,
     className?: string,
     classNameMenu?: string,
     classNameContainer?: string,
-    placement?: Placement,
+    placement?: DropdownPlacement,
     variant?: DropdownVariant,
     offsetOptions?: number,
     items?: (DropdownItemType)[],
@@ -205,7 +207,7 @@ function Dropdown(
             })}
           >
             {items.length > 0 &&
-              <div className="py-1">
+              <div>
                 {items.map((item: DropdownItemType) => {
                   if (item.divider) {
                     return (
@@ -224,6 +226,8 @@ function Dropdown(
                   }
 
                   const IconComponent = item.icon
+
+                  const isItemSelected = selected.includes(item.id)
                   return (
                     <Component
                       {...attr}
@@ -232,18 +236,20 @@ function Dropdown(
                         ['cursor-pointer']: !item.disabled,
                         ['disabled pointer-events-none opacity-30']: item.disabled,
 
-                        ['text-gray-400 hover:text-gray-200 hover:bg-gray-900 active:bg-gray-800']: item.id !== selected && variant === DropdownVariant.gray,
-                        ['text-gray-900 hover:text-gray-100 hover:bg-gray-600 active:bg-gray-500']: item.id !== selected && variant === DropdownVariant.white,
-                        ['text-gray-500 hover:text-gray-200 hover:bg-gray-900 active:bg-gray-800']: item.id !== selected && variant === DropdownVariant.transparent,
+                        ['text-gray-400 hover:text-gray-200 hover:bg-gray-900 active:bg-gray-800']: !isItemSelected && variant === DropdownVariant.gray,
+                        ['text-gray-900 hover:text-gray-100 hover:bg-gray-600 active:bg-gray-500']: !isItemSelected && variant === DropdownVariant.white,
+                        ['text-gray-500 hover:text-gray-200 hover:bg-gray-900 active:bg-gray-800']: !isItemSelected && variant === DropdownVariant.transparent,
 
-                        ['bg-gray-800 text-gray-400']: item.id === selected && variant === DropdownVariant.gray,
-                        ['bg-gray-700 text-gray-200']: item.id === selected && variant === DropdownVariant.white,
-                        ['bg-gray-800 text-gray-300']: item.id === selected && variant === DropdownVariant.transparent,
+                        ['bg-gray-800 text-gray-400']: isItemSelected&& variant === DropdownVariant.gray,
+                        ['bg-gray-700 text-gray-200']: isItemSelected && variant === DropdownVariant.white,
+                        ['bg-gray-800 text-gray-300']: isItemSelected && variant === DropdownVariant.transparent,
 
                         [item.className || '']: item.className
                       })}
                       onClick={() => {
-                        setIsOpen(false)
+                        if (closeOnSelect) {
+                          setIsOpen(false)
+                        }
                         if (onSelect) {
                           onSelect(item.id)
                         }

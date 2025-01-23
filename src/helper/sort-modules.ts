@@ -1,31 +1,48 @@
 import { ModuleData } from '@entities/Module'
 
-export const sortDesc = (items: ModuleData[]): ModuleData[] => {
-  return [...items].sort((a, b) => {
-    if (a.order === b.order) {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    }
-    return b.order - a.order
-  })
+function sortByNum(a: number, b: number, asc: boolean): number {
+  return asc ? a - b : b - a
 }
 
-export const sortAsc = (items: ModuleData[]): ModuleData[] => {
-  return [...items].sort((a, b) => {
-    if (a.order === b.order) {
-      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-    }
-    return a.order - b.order
-  })
+function sortByStr(a: string | null, b: string | null, asc: boolean): number {
+  const aa = a || ''
+  const bb = b || ''
+  return asc ? aa.localeCompare(bb) : bb.localeCompare(aa)
 }
 
-export const sortTop = (items: ModuleData[], topModuleId: string | null): ModuleData[] => {
+function sortByDate(a: Date, b: Date, asc: boolean): number {
+  const aa = new Date(a).getTime()
+  const bb = new Date(b).getTime()
+  return asc ? aa - bb : bb - aa
+}
+
+export enum OrderEnum {
+  nameAsc = 'name-asc',
+  nameDesc = 'name-desc',
+  customAsc = 'custom-asc',
+  customDesc = 'custom-desc',
+  dateAsc = 'date-asc',
+  dateDesc = 'date-desc',
+}
+
+export const ORDER_DEFAULT = OrderEnum.dateDesc
+
+export function sortModules(items: ModuleData[], order: OrderEnum): ModuleData[] {
   return [...items].sort((a, b) => {
-    if (topModuleId === a.id) {
-      return -1
+    switch (order) {
+      default:
+      case OrderEnum.customAsc:
+        return sortByNum(a.order, b.order, true)
+      case OrderEnum.nameAsc:
+        return sortByStr(a.name, b.name, true)
+      case OrderEnum.dateAsc:
+        return sortByDate(a.updatedAt, b.updatedAt, true)
+      case OrderEnum.customDesc:
+        return sortByNum(a.order, b.order, false)
+      case OrderEnum.nameDesc:
+        return sortByStr(a.name, b.name, false)
+      case OrderEnum.dateDesc:
+        return sortByDate(a.updatedAt, b.updatedAt, false)
     }
-    if (topModuleId === b.id) {
-      return 1
-    }
-    return 0
   })
 }

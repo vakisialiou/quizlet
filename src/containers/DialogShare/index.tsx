@@ -94,9 +94,9 @@ export default function DialogShare(
             caret
             bordered
             disabled={!state.link}
-            selected={state.access}
-            className="py-2 px-2 justify-between"
+            selected={[state.access]}
             variant={DropdownVariant.white}
+            className="py-2 px-2 justify-between"
             items={[
               {
                 id: ModuleShareEnum.readonly,

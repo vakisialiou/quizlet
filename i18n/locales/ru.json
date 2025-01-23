@@ -99,6 +99,17 @@
     "metaDescription": "Вы находитесь в оффлайн-режиме. Попробуйте подключиться к сети для продолжения работы с QuizerPlay.",
     "warn": "Вы находитесь в оффлайн-режиме. <br/>Попробуйте подключиться к сети."
   },
+  "Labels": {
+    "all": "Все",
+    "focus": "Фокус",
+    "active": "Активный",
+    "important": "Важный"
+  },
+  "Orders": {
+    "name": "По имени",
+    "custom": "По умолчанию",
+    "date": "По дате"
+  },
   "Modules": {
     "headTitle": "Курсы",
     "searchPlaceholder": "Поиск...",
@@ -115,7 +126,6 @@
     "shareDialogReadonly": "Только просмотр",
     "shareDialogEditable": "Просмотр и редактирование",
     "shareDialogButtonCopy": "Копировать",
-    "labelActive": "Активный",
     "noModulesHelper": "Для добавления нового модуля нажмите кнопку \"{btnName}\"."
   },
   "Module": {
