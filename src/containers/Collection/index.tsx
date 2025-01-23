@@ -2,20 +2,19 @@
 
 import Button, { ButtonVariant } from '@components/Button'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
+import { useMainSelector } from '@hooks/useMainSelector'
 import SVGNewPreset from '@public/svg/preset_new.svg'
-import { ConfigEditType } from '@store/initial-state'
 import Modules from '@containers/Collection/Modules'
 import ContentPage from '@containers/ContentPage'
 import { useTranslations } from 'next-intl'
 import { useRouter } from '@i18n/routing'
-import { useSelector } from 'react-redux'
 import React, { useState } from 'react'
 import Module from '@entities/Module'
 
 export default function Collection() {
   const editable = true
   const t = useTranslations('Modules')
-  const edit = useSelector(({ edit }: { edit: ConfigEditType }) => edit)
+  const edit = useMainSelector(({ edit }) => edit)
   const [search, setSearch] = useState<string>('')
 
   const router = useRouter()

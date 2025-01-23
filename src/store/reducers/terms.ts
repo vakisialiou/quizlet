@@ -1,13 +1,12 @@
 import { unique, remove, upsertObject } from '@lib/array'
+import { ConfigType } from '@store/initial-state-main'
 import { upsertTermData } from '@store/fetch/terms'
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { ConfigType } from '@store/initial-state'
 import { TermData } from '@entities/Term'
 
 export type UpsertType = {
   term: TermData,
   editId: string | null
-  shareId: string | null
   editable: boolean,
 }
 
@@ -15,7 +14,7 @@ export const upsertTerm = createAsyncThunk(
   '/term/upsert',
   async (payload: UpsertType): Promise<boolean> => {
     if (payload.editable) {
-      return await upsertTermData(payload.term, payload.shareId)
+      return await upsertTermData(payload.term, null)
     }
     return true
   }

@@ -1,8 +1,8 @@
 import Dropdown, {DropdownVariant} from '@components/Dropdown'
+import { actionGenerateFolders } from '@store/action-main'
 import Button, {ButtonVariant} from '@components/Button'
+import { useMainSelector } from '@hooks/useMainSelector'
 import { FolderGroupData } from '@entities/FolderGroup'
-import { actionGenerateFolders } from '@store/index'
-import { useTermSelect } from '@hooks/useTermSelect'
 import { filterDeletedTerms } from '@helper/terms'
 import React, {useMemo, useState} from 'react'
 import SVGError from '@public/svg/error.svg'
@@ -32,7 +32,8 @@ export default function DialogCreateFolders(
       editable: boolean
     }
 ) {
-  const { relationTerms, terms } = useTermSelect()
+  const terms = useMainSelector(({ terms }) => terms)
+  const relationTerms = useMainSelector(({ relationTerms }) => relationTerms)
 
   const t = useTranslations('Groups')
   const [ state, setState ] = useState<{ size: number, process: boolean }>({ size: DEFAULT_GROUP_SIZE, process: false })

@@ -6,9 +6,9 @@ import { HelpDataType } from '@containers/Simulator/CardAggregator/types'
 import { SimulatorData, SimulatorStatus } from '@entities/Simulator'
 import { SimulatorMethod } from '@entities/SimulatorSettings'
 import CardFinish from '@containers/Simulator/CardFinish'
+import { useMainSelector } from '@hooks/useMainSelector'
 import CardStart from '@containers/Simulator/CardStart'
 import CardDone from '@containers/Simulator/CardDone'
-import { useTermSelect } from '@hooks/useTermSelect'
 import { RelationProps } from '@helper/relation'
 import { useMemo } from 'react'
 
@@ -36,7 +36,7 @@ export default function CardAggregator(
     onSound: (selection: CardSelection | null) => void
   }
 ) {
-  const { terms } = useTermSelect()
+  const terms = useMainSelector(({ terms }) => terms)
 
   const activeTerm = useMemo(() => {
     return terms.find(({ id }) => id === simulator.termId)

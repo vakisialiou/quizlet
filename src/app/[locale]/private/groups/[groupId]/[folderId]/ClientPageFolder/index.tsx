@@ -4,18 +4,16 @@ import {
   actionUpdateFolder,
   actionCreateRelationFolder,
   actionCreateRelationTerm
-} from '@store/index'
+} from '@store/action-main'
 import { findTermsWithRelations, getFolder } from '@helper/relation'
 import React, { useMemo, useState, useRef, useEffect } from 'react'
 import TermsDropdownMenu from '@containers/TermsDropdownMenu'
 import { sortTermsWithRelations } from '@helper/sort-terms'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
 import Button, {ButtonVariant} from '@components/Button'
-import { useFolderSelect } from '@hooks/useFolderSelect'
+import { useMainSelector } from '@hooks/useMainSelector'
 import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
-import { useGroupSelect } from '@hooks/useGroupSelect'
 import RelationFolder from '@entities/RelationFolder'
-import { useTermSelect } from '@hooks/useTermSelect'
 import RelatedTerms from '@containers/RelatedTerms'
 import ButtonSquare from '@components/ButtonSquare'
 import SVGFileNew from '@public/svg/file_new.svg'
@@ -36,12 +34,12 @@ import clsx from 'clsx'
 export default function ClientPageFolder({ editable, groupId, folderId }: { editable: boolean, groupId: string, folderId: string }) {
   const router = useRouter()
 
-  const { folderGroups } = useGroupSelect()
+  const folderGroups = useMainSelector(({ folderGroups }) => folderGroups)
   const group = useMemo(() => {
     return getGroupById(folderGroups, groupId)
   }, [folderGroups, groupId])
 
-  const folders = useFolderSelect()
+  const folders = useMainSelector(({ folders }) => folders)
   const folder = useMemo(() => {
     return getFolder(folders, folderId)
   }, [folders, folderId])
@@ -70,7 +68,8 @@ export default function ClientPageFolder({ editable, groupId, folderId }: { edit
     })
   }, [folder, folderId, editable, groupId])
 
-  const { terms, relationTerms } = useTermSelect()
+  const terms = useMainSelector(({ terms }) => terms)
+  const relationTerms = useMainSelector(({ relationTerms }) => relationTerms)
 
   const relatedTerms = useMemo(() => {
     return sortTermsWithRelations(findTermsWithRelations(relationTerms, terms, { folderId }))
@@ -215,7 +214,6 @@ export default function ClientPageFolder({ editable, groupId, folderId }: { edit
 
                 <RelatedTerms
                   ref={ref}
-                  shareId={null}
                   filter={{search}}
                   editable={editable}
                   relation={{ folderId }}

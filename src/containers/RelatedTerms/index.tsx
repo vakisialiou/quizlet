@@ -1,20 +1,18 @@
 'use client'
 
-import { actionUpsertTerm, actionCreateRelationTerm, actionEditTerm, actionRemoveRelationTerm } from '@store/index'
-import React, { useCallback, useEffect, useMemo, useState, useImperativeHandle, Ref, forwardRef } from 'react'
+import { actionUpsertTerm, actionCreateRelationTerm, actionEditTerm, actionRemoveRelationTerm } from '@store/action-main'
+import React, { useCallback, useMemo, useState, useImperativeHandle, Ref, forwardRef } from 'react'
 import RelationTerm, {RelatedTermData} from '@entities/RelationTerm'
-import TextToSpeech, { TextToSpeechEvents } from '@lib/speech'
 import { sortTermsWithRelations } from '@helper/sort-terms'
 import Button, { ButtonVariant } from '@components/Button'
 import { searchRelatedTerms } from '@helper/search-terms'
-import { ConfigEditType } from '@store/initial-state'
-import { useTermSelect } from '@hooks/useTermSelect'
+import { useMainSelector } from '@hooks/useMainSelector'
 import { findRelationTerm } from '@helper/relation'
 import Term, { TermData } from '@entities/Term'
 import { RelationProps} from '@helper/relation'
+import { useSpeech } from '@hooks/useSpeech'
 import TermCard from '@containers/TermCard'
 import {useTranslations} from 'next-intl'
-import { useSelector } from 'react-redux'
 import Dialog from '@components/Dialog'
 
 export type TypeFilterGrid = {
@@ -25,24 +23,22 @@ function RelatedTerms(
   {
     relatedTerms,
     relation,
-    shareId,
     editable,
     filter
   }:
   {
     editable: boolean
-    shareId: string | null
     relation: RelationProps
     filter: TypeFilterGrid
     relatedTerms: RelatedTermData[]
   },
   ref: Ref<{ onCreate?: () => void }>
 ) {
-  const { relationTerms } = useTermSelect()
   const [ originItem, setOriginItem ] = useState<TermData | null>(null)
   const [removeTerm, setRemoveTerm] = useState<TermData | null>(null)
 
-  const edit = useSelector(({ edit }: { edit: ConfigEditType }) => edit)
+  const relationTerms = useMainSelector(({ relationTerms }) => relationTerms)
+  const edit = useMainSelector(({ edit }) => edit)
 
   const filteredTerms = useMemo(() => {
     let rawItems = [...relatedTerms]
@@ -54,23 +50,7 @@ function RelatedTerms(
     return sortTermsWithRelations(rawItems)
   }, [relatedTerms, filter, edit.termId])
 
-  const speech = useMemo(() => {
-    return typeof(window) === 'object' ? new TextToSpeech() : null
-  }, [])
-
-  const [ soundInfo, setSoundInfo ] = useState<{ playingName: string | null, termId: string | null }>({ playingName: null, termId: null })
-
-  useEffect(() => {
-    if (speech) {
-      const onEndCallback = () => {
-        setSoundInfo({ playingName: null, termId: null })
-      }
-      speech.addEventListener(TextToSpeechEvents.end, onEndCallback)
-      return () => {
-        speech.removeEventListener(TextToSpeechEvents.end, onEndCallback)
-      }
-    }
-  }, [speech, setSoundInfo])
+  const { speech, soundInfo, setSoundInfo } = useSpeech<{ playingName: string | null, termId: string | null }>({ playingName: null, termId: null })
 
   const onCreate = useCallback(() => {
     const term = new Term()
@@ -83,12 +63,12 @@ function RelatedTerms(
       .setTermId(term.id)
       .serialize()
 
-    actionUpsertTerm({ term, editId: term.id, editable, shareId }, () => {
+    actionUpsertTerm({ term, editId: term.id, editable }, () => {
       actionCreateRelationTerm({ relationTerm, editable }, () => {
         setOriginItem(term)
       })
     })
-  }, [editable, relation, relatedTerms, shareId])
+  }, [editable, relation, relatedTerms])
 
   useImperativeHandle(ref, () => ({ onCreate }))
 
@@ -117,11 +97,10 @@ function RelatedTerms(
                     term: {...term, collapsed: !term.collapsed},
                     editId: null,
                     editable,
-                    shareId
                   })
                 }}
                 onSave={() => {
-                  actionUpsertTerm({ term, editId: null, editable, shareId }, () => {
+                  actionUpsertTerm({ term, editId: null, editable }, () => {
                     if (originItem) {
                       setOriginItem(null)
                     }
@@ -136,7 +115,6 @@ function RelatedTerms(
                     term: originItem,
                     editId: null,
                     editable,
-                    shareId
                   }, () => {
                     setOriginItem(null)
                   })
@@ -152,7 +130,6 @@ function RelatedTerms(
                     editId: updatedTerm.id,
                     term: updatedTerm,
                     editable: false,
-                    shareId
                   })
                 }}
                 onRemove={() => setRemoveTerm(term)}

@@ -1,17 +1,16 @@
 'use client'
 
-import {actionUpdateFolderGroup, actionUpdateModule} from '@store/index'
+import {actionUpdateFolderGroup, actionUpdateModule} from '@store/action-main'
 import MetaLabel, {MetaLabelVariant} from '@components/MetaLabel'
 import { findActiveSimulators } from '@helper/simulators/general'
 import DialogRemoveModule from '@containers/DialogRemoveModule'
-import { useSimulatorSelect } from '@hooks/useSimulatorSelect'
 import AchievementDegree from '@containers/AchievementDegree'
 import SVGNewCollection from '@public/svg/collection_new.svg'
 import {FolderFrameVariant} from '@components/FolderFrame'
 import AchievementIcon from '@containers/AchievementIcon'
+import { useMainSelector } from '@hooks/useMainSelector'
 import {sortDesc, sortTop} from '@helper/sort-modules'
 import { searchModules } from '@helper/search-modules'
-import { useTermSelect } from '@hooks/useTermSelect'
 import Module from '@containers/Collection/Module'
 import Groups from '@containers/Collection/Groups'
 import SVGEdit from '@public/svg/greasepencil.svg'
@@ -20,12 +19,12 @@ import { getLastStudyModule } from '@helper/study'
 import DialogShare from '@containers/DialogShare'
 import React, { useMemo, useState } from 'react'
 import FolderGroup from '@entities/FolderGroup'
+import SVGLinked from '@public/svg/linked.svg'
 import { ModuleData } from '@entities/Module'
 import SVGTrash from '@public/svg/trash.svg'
 import { findTerms } from '@helper/relation'
 import { useTranslations } from 'next-intl'
 import SVGPlay from '@public/svg/play.svg'
-import { useSelector } from 'react-redux'
 import {useRouter} from '@i18n/routing'
 
 enum DropDownIdEnums {
@@ -54,8 +53,11 @@ export default function Modules(
   }
 ) {
   const router = useRouter()
-  const { terms, relationTerms } = useTermSelect()
-  const { simulators, relationSimulators } = useSimulatorSelect()
+  const terms = useMainSelector(({ terms }) => terms)
+  const modules = useMainSelector(({ modules }) => modules)
+  const simulators = useMainSelector(({ simulators }) => simulators)
+  const relationTerms = useMainSelector(({ relationTerms }) => relationTerms)
+  const relationSimulators = useMainSelector(({ relationSimulators }) => relationSimulators)
 
   const t = useTranslations('Modules')
 
@@ -63,11 +65,10 @@ export default function Modules(
     {id: DropDownIdEnums.GROUP_CREATE, name: t('dropDownCreateGroup'), icon: SVGNewCollection },
     {id: DropDownIdEnums.OPEN_FOLDER, name: t('dropDownEditModule'), icon: SVGEdit },
     {id: DropDownIdEnums.STUDY, name: t('dropDownStudyModule'), icon: SVGPlay },
-    // {id: DropDownIdEnums.SHARE, name: t('dropDownGenerateShare'), icon: SVGLinked },
+    {id: DropDownIdEnums.SHARE, name: t('dropDownGenerateShare'), icon: SVGLinked },
     {id: 1, divider: true },
     {id: DropDownIdEnums.REMOVE_FOLDER, name: t('dropDownRemoveModule'), icon: SVGTrash },
   ]
-  const modules = useSelector(({ modules }: { modules: ModuleData[] }) => modules)
 
   const [ originModule, setOriginModule ] = useState<ModuleData | null>(null)
   const [ removeModule, setRemoveModule ] = useState<ModuleData | null>(null)

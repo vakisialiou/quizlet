@@ -4,8 +4,8 @@ import {
 } from '@store/fetch/folders-group'
 import {upsertObject, removeObject, unique, remove} from '@lib/array'
 import { FolderGroupData } from '@entities/FolderGroup'
+import { ConfigType } from '@store/initial-state-main'
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { ConfigType } from '@store/initial-state'
 
 export type RemoveType = {
   folderGroup: FolderGroupData,

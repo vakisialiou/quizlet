@@ -8,16 +8,16 @@ import { CardStatus } from '@containers/Simulator/CardAggregator/types'
 import { ProgressTrackerAction } from '@entities/ProgressTracker'
 import { findActiveSimulators } from '@helper/simulators/general'
 import PanelControls from '@containers/Simulator/PanelControls'
-import TextToSpeech, { TextToSpeechEvents } from '@lib/speech'
-import { useSimulatorSelect } from '@hooks/useSimulatorSelect'
 import {SimulatorMethod} from '@entities/SimulatorSettings'
+import { actionUpdateSimulator } from '@store/action-main'
 import Button, {ButtonVariant} from '@components/Button'
+import { useMainSelector } from '@hooks/useMainSelector'
 import CardEmpty from '@containers/Simulator/CardEmpty'
 import CardStart from '@containers/Simulator/CardStart'
 import PanelInfo from '@containers/Simulator/PanelInfo'
 import { SimulatorStatus } from '@entities/Simulator'
-import { actionUpdateSimulator } from '@store/index'
 import { RelationProps } from '@helper/relation'
+import { useSpeech } from '@hooks/useSpeech'
 import { useTranslations } from 'next-intl'
 
 export default function SimulatorBody(
@@ -34,28 +34,15 @@ export default function SimulatorBody(
     onDeactivateAction: (simulatorId: string) => void
   }
 ) {
-  const { relationSimulators, simulators } = useSimulatorSelect()
+  const simulators = useMainSelector(({ simulators }) => simulators)
+  const relationSimulators = useMainSelector(({ relationSimulators }) => relationSimulators)
 
   const simulator = useMemo(() => {
     const activeSimulators = findActiveSimulators(relationSimulators, simulators, relation)
     return activeSimulators.length > 0 ? activeSimulators[0] : null
   }, [relationSimulators, simulators, relation])
 
-  const speech = useMemo(() => {
-    return typeof(window) === 'object' ? new TextToSpeech() : null
-  }, [])
-
-  const [ soundSelection, setSoundSelection ] = useState<{ type: string, data: CardSelection | null }>({ type: '', data: null })
-
-  useEffect(() => {
-    if (speech) {
-      const onEndCallback = () => setSoundSelection({ type: '', data: null })
-      speech.addEventListener(TextToSpeechEvents.end, onEndCallback)
-      return () => {
-        speech.removeEventListener(TextToSpeechEvents.end, onEndCallback)
-      }
-    }
-  }, [speech, setSoundSelection])
+  const { speech, soundInfo, setSoundInfo } = useSpeech<{ type: string, data: CardSelection | null }>({ type: '', data: null })
 
   const [showHelp, setShowHelp] = useState(false)
 
@@ -102,7 +89,7 @@ export default function SimulatorBody(
           className="w-72"
           options={{
             sound: {
-              active: soundSelection.type === 'sound',
+              active: soundInfo.type === 'sound',
               disabled: !speech || showHelp || !cardData?.helpData?.text || !cardData?.helpData?.lang
             },
             deactivate: {
@@ -133,7 +120,7 @@ export default function SimulatorBody(
                 break
               case 'sound':
                 if (simulator && cardData && speech) {
-                  if (soundSelection.type === 'sound') {
+                  if (soundInfo.type === 'sound') {
                     speech.stop()
                     return
                   }
@@ -147,7 +134,7 @@ export default function SimulatorBody(
                       .setLang(lang)
                       .setVoice(speech.selectVoice(lang))
                       .speak(text)
-                    setSoundSelection({
+                    setSoundInfo({
                       type: 'sound',
                       data: {id: '', lang, text} as CardSelection
                     })
@@ -174,7 +161,7 @@ export default function SimulatorBody(
                 editable={editable}
                 simulator={simulator}
                 onChange={onChangeCardDataCallback}
-                soundSelection={soundSelection.type === 'selection' ? soundSelection.data : null}
+                soundSelection={soundInfo.type === 'selection' ? soundInfo.data : null}
                 onSound={(selection) => {
                   if (!speech) {
                     return
@@ -190,7 +177,7 @@ export default function SimulatorBody(
                     .setLang(selection.lang)
                     .setVoice(speech.selectVoice(selection.lang))
                     .speak(selection.text)
-                  setSoundSelection({type: 'selection', data: selection})
+                  setSoundInfo({type: 'selection', data: selection})
                 }}
               />
             }

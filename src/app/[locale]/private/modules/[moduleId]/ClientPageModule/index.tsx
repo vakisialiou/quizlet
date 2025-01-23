@@ -4,7 +4,7 @@ import {
   actionUpdateModule,
   actionUpdateFolderGroup,
   actionCreateRelationTerm,
-} from '@store/index'
+} from '@store/action-main'
 import { findTermsWithRelations, getModule } from '@helper/relation'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import SVGNewCollection from '@public/svg/collection_new.svg'
@@ -14,11 +14,10 @@ import HeaderPageTitle from '@containers/HeaderPageTitle'
 import AchievementIcon from '@containers/AchievementIcon'
 import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
 import Button, {ButtonVariant} from '@components/Button'
-import {useModuleSelect} from '@hooks/useModuleSelect'
+import {useMainSelector} from '@hooks/useMainSelector'
 import Groups from '@containers/Collection/Groups'
 import RelatedTerms from '@containers/RelatedTerms'
 import ButtonSquare from '@components/ButtonSquare'
-import {useTermSelect} from '@hooks/useTermSelect'
 import ContentPage from '@containers/ContentPage'
 import SVGFileNew from '@public/svg/file_new.svg'
 import RelationTerm from '@entities/RelationTerm'
@@ -36,9 +35,11 @@ import clsx from 'clsx'
 
 export default function ClientPageModule({ editable, moduleId }: { editable: boolean, moduleId: string }) {
   const router = useRouter()
-  const { terms, relationTerms } = useTermSelect()
 
-  const modules = useModuleSelect()
+  const terms = useMainSelector(({ terms }) => terms)
+  const modules = useMainSelector(({ modules }) => modules)
+  const relationTerms = useMainSelector(({ relationTerms }) => relationTerms)
+
   const course = useMemo(() => {
     return getModule(modules, moduleId)
   }, [modules, moduleId])
@@ -213,7 +214,6 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
 
                 <RelatedTerms
                   ref={ref}
-                  shareId={null}
                   filter={{search }}
                   editable={editable}
                   relation={{ moduleId }}

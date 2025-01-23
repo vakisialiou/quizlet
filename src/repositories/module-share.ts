@@ -51,7 +51,7 @@ export const findModuleSharesByOwnerId = async (db: PrismaEntry, ownerId: string
   })
 }
 
-export const upsertModuleShare = async (db: PrismaEntry, userId: string, item: ModuleShareData): Promise<string | null> => {
+export const createModuleShare = async (db: PrismaEntry, userId: string, item: ModuleShareData): Promise<string | null> => {
   const res = await db.moduleShare.create({
     data: {
       id: item.id,

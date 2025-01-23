@@ -5,13 +5,13 @@ import {
 } from '@store/fetch/folders'
 import { unique, remove, upsertObject, removeObject } from '@lib/array'
 import { createMultiFolders, MultiFolders } from '@helper/folders'
+import { RelationFolderData } from '@entities/RelationFolder'
+import { RelationTermData } from '@entities/RelationTerm'
 import { FolderGroupData } from '@entities/FolderGroup'
+import { ConfigType } from '@store/initial-state-main'
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { ConfigType } from '@store/initial-state'
 import { FolderData } from '@entities/Folder'
 import { TermData } from '@entities/Term'
-import {RelationFolderData} from "@entities/RelationFolder";
-import {RelationTermData} from "@entities/RelationTerm";
 
 export type DeleteType = {
   folderId: string,

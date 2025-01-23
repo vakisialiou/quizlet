@@ -1,5 +1,5 @@
-import React, { useCallback, useRef } from 'react'
-import { actionUpdateModule } from '@store/index'
+import { actionUpdateModule } from '@store/action-main'
+import React, {useCallback, useRef} from 'react'
 import { ModuleData } from '@entities/Module'
 import Textarea from '@components/Textarea'
 import { useTranslations } from 'next-intl'
@@ -39,6 +39,8 @@ export default function FolderModule(
     actionUpdateModule({ module, editId: null, editable })
   }, [editable])
 
+  const SHOW_DESC = false
+
   return (
     <div className="flex flex-col gap-2 w-full">
       <Input
@@ -49,12 +51,14 @@ export default function FolderModule(
         onChange={(e) => onChangeUpdate({ ...module, name: e.target.value })}
       />
 
-      <Textarea
-        value={module.description || ''}
-        onBlur={() => onChangeSave(module)}
-        placeholder={t('textPlaceholder')}
-        onChange={(e) => onChangeUpdate({ ...module, description: e.target.value })}
-      />
+      {SHOW_DESC &&
+        <Textarea
+          value={module.description || ''}
+          onBlur={() => onChangeSave(module)}
+          placeholder={t('textPlaceholder')}
+          onChange={(e) => onChangeUpdate({ ...module, description: e.target.value })}
+        />
+      }
     </div>
   )
 }

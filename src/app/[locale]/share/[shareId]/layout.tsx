@@ -1,10 +1,12 @@
+import { findModuleRelationTerms } from '@repositories/relation-term'
 import { getModuleShareById } from '@repositories/module-share'
+import { getInitialState } from '@store/initial-state-share'
+import { findTermsByModuleId } from '@repositories/terms'
+import { getModuleById } from '@repositories/modules'
+import ProviderStore from './provider-store'
 import { notFound } from 'next/navigation'
 import { prisma } from '@lib/prisma'
 import { ReactNode } from 'react'
-import { auth } from '@auth'
-
-import { getModuleById } from '@repositories/modules'
 
 export default async function Layout(
   {
@@ -22,17 +24,16 @@ export default async function Layout(
     return notFound()
   }
 
-  const session = await auth()
-  const userId = session?.user?.id || ''
-  const course = share.ownerId !== userId ? await getModuleById(prisma, share.ownerId, share.moduleId) : null
-
-  if (!course && share.ownerId !== userId) {
-    return notFound()
-  }
+  const initialState = await getInitialState({
+    share,
+    terms: await findTermsByModuleId(prisma, share.moduleId),
+    module: await getModuleById(prisma, share.ownerId, share.moduleId),
+    relationTerms: await findModuleRelationTerms(prisma, share.moduleId)
+  })
 
   return (
-    <>
+    <ProviderStore initialState={initialState}>
       {children}
-    </>
+    </ProviderStore>
   )
 }

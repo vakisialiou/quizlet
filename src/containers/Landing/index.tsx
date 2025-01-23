@@ -3,13 +3,13 @@
 import { getPathname, LanguageEnums } from '@i18n/routing'
 import SimulatorBody from '@containers/Simulator/SimulatorBody'
 import SVGRubyOutline from '@public/svg/ruby/ruby-outline.svg'
-import { useSimulatorSelect } from '@hooks/useSimulatorSelect'
 import { actionDeactivate } from '@helper/simulators/actions'
 import { getSimulatorById } from '@helper/simulators/general'
 import DropdownLanguage from '@containers/DropdownLanguage'
 import Button, { ButtonVariant } from '@components/Button'
+import { actionUpdateSimulator } from '@store/action-main'
+import { useMainSelector } from '@hooks/useMainSelector'
 import SVGGoogle from '@public/svg/painted/google.svg'
-import { actionUpdateSimulator } from '@store/index'
 import FolderTitle from '@containers/FolderTitle'
 import ContentPage from '@containers/ContentPage'
 import ButtonPWA from '@containers/ButtonPWA'
@@ -32,7 +32,7 @@ function Landing(
   }
 ) {
   const editable = false
-  const { simulators } = useSimulatorSelect()
+  const simulators = useMainSelector(({ simulators }) => simulators)
 
   preload(mainScreenSRC, { as: 'image', fetchPriority: 'high' })
 

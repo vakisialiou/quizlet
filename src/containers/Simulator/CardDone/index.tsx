@@ -1,13 +1,11 @@
-import { actionUpdateSimulator, actionUpdateFolder, actionUpdateModule } from '@store/index'
+import { actionUpdateSimulator, actionUpdateFolder, actionUpdateModule } from '@store/action-main'
 import { RelationProps, findSimulators, getFolder, getModule } from '@helper/relation'
 import React, { useEffect, useState, useRef, useLayoutEffect, useMemo } from 'react'
-import { useSimulatorSelect } from '@hooks/useSimulatorSelect'
 import AchievementDegree from '@containers/AchievementDegree'
 import { actionDeactivate } from '@helper/simulators/actions'
 import AchievementIcon from '@containers/AchievementIcon'
 import AchievementText from '@containers/AchievementText'
-import { useFolderSelect } from '@hooks/useFolderSelect'
-import { useModuleSelect } from '@hooks/useModuleSelect'
+import { useMainSelector } from '@hooks/useMainSelector'
 import CardEmpty from '@containers/Simulator/CardEmpty'
 import { SimulatorData } from '@entities/Simulator'
 import Achievement from '@entities/Achievement'
@@ -43,9 +41,10 @@ export default function CardDone(
     onAnimationDone?: () => void
   }
 ) {
-  const { relationSimulators, simulators } = useSimulatorSelect()
-  const folders = useFolderSelect()
-  const modules = useModuleSelect()
+  const relationSimulators = useMainSelector(({ relationSimulators }) => relationSimulators)
+  const simulators = useMainSelector(({ simulators }) => simulators)
+  const folders = useMainSelector(({ folders }) => folders)
+  const modules = useMainSelector(({ modules }) => modules)
 
   const ref = useRef<HTMLDivElement | null>(null)
   const [ exploded, setExploded ] = useState(false)

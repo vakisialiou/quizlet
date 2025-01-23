@@ -1,9 +1,9 @@
 import { updateSimulatorData, saveSimulatorData } from '@store/fetch/simulators'
 import { RelationSimulatorData } from '@entities//RelationSimulator'
 import { updateSimulatorById } from '@helper/simulators/general'
+import { ConfigType } from '@store/initial-state-main'
 import { SimulatorData } from '@entities/Simulator'
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { ConfigType } from '@store/initial-state'
 
 export type PayloadSave = {
   editable: boolean

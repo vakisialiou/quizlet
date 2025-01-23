@@ -1,5 +1,5 @@
 import Button, { ButtonVariant } from '@components/Button'
-import { actionDeleteModule } from '@store/index'
+import { actionDeleteModule } from '@store/action-main'
 import { ModuleData } from '@entities/Module'
 import { useTranslations } from 'next-intl'
 import Spinner from '@components/Spinner'

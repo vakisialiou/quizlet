@@ -63,6 +63,7 @@ export default function Module(
     }
   }, [finishEdit, edit, data])
 
+  const SHOW_DESC = false
   return (
     <FolderCart
       hover={false}
@@ -114,26 +115,30 @@ export default function Module(
           />
         }
 
-        {edit &&
-          <Textarea
-            rows={4}
-            name="description"
-            maxLength={16000}
-            autoComplete="off"
-            className="z-10 w-full"
-            defaultValue={data.description || ''}
-            placeholder={t('textPlaceholder')}
-            onChange={(e) => {
-              onChange('description', e.target.value)
-            }}
-            onKeyUp={(e) => {
-              switch (e.keyCode) {
-                case 27:
-                  onExit()
-                  break
-              }
-            }}
-          />
+        {SHOW_DESC &&
+          <>
+            {edit &&
+              <Textarea
+                rows={4}
+                name="description"
+                maxLength={16000}
+                autoComplete="off"
+                className="z-10 w-full"
+                defaultValue={data.description || ''}
+                placeholder={t('textPlaceholder')}
+                onChange={(e) => {
+                  onChange('description', e.target.value)
+                }}
+                onKeyUp={(e) => {
+                  switch (e.keyCode) {
+                    case 27:
+                      onExit()
+                      break
+                  }
+                }}
+              />
+            }
+          </>
         }
 
         {!edit &&
@@ -146,16 +151,20 @@ export default function Module(
           </div>
         }
 
-        {(!edit && data.description) &&
-          <div className="flex pt-[1px] mx-[9px]">
-            <Clamp
-              rows={3}
-              key={edit ? 1 : 0}
-              className="max-w-full w-full"
-            >
-              {data.description}
-            </Clamp>
-          </div>
+        {SHOW_DESC &&
+          <>
+            {(!edit && data.description) &&
+              <div className="flex pt-[1px] mx-[9px]">
+                <Clamp
+                  rows={3}
+                  key={edit ? 1 : 0}
+                  className="max-w-full w-full"
+                >
+                  {data.description}
+                </Clamp>
+              </div>
+            }
+          </>
         }
       </div>
 

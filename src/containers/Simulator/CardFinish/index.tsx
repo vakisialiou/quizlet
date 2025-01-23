@@ -1,6 +1,6 @@
+import { actionUpdateSimulator } from '@store/action-main'
 import { actionRestart } from '@helper/simulators/actions'
 import CardEmpty from '@containers/Simulator/CardEmpty'
-import { actionUpdateSimulator } from '@store/index'
 import { SimulatorData } from '@entities/Simulator'
 import Button from '@components/Button'
 

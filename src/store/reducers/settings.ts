@@ -1,7 +1,7 @@
 import { SimulatorSettingsData } from '@entities/SimulatorSettings'
 import { upsertSettingsSimulator } from '@store/fetch/settings'
+import { ConfigType } from '@store/initial-state-main'
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { ConfigType } from '@store/initial-state'
 
 export type PayloadUpdate = {
   editable: boolean,

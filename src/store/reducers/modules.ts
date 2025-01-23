@@ -1,8 +1,22 @@
 import { upsertModuleData, deleteModuleData } from '@store/fetch/modules'
+import { ModuleShareEnum, ModuleShareData } from '@entities/ModuleShare'
 import { unique, remove, upsertObject, removeObject } from '@lib/array'
+import { upsertModuleShare } from '@store/fetch/folders-share'
+import { ConfigType } from '@store/initial-state-main'
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { ConfigType } from '@store/initial-state'
 import { ModuleData } from '@entities/Module'
+
+export type ShareType = {
+  access: ModuleShareEnum,
+  module: ModuleData,
+}
+
+export const shareModule = createAsyncThunk(
+  '/module/share',
+  async (payload: ShareType): Promise<ModuleShareData> => {
+    return await upsertModuleShare(payload.module.id, payload.access)
+  }
+)
 
 export type DeleteType = {
   module: ModuleData,
@@ -60,5 +74,10 @@ export const moduleReducers = (builder: any) => {
       const { module } = action.meta.arg
       state.modules = removeObject([...state.modules], module)
       state.edit.processModuleIds = remove(state.edit.processModuleIds, module.id)
+    })
+
+  builder
+    .addCase(shareModule.fulfilled, (state: ConfigType, action: { meta: { arg: ShareType }, payload: ModuleShareData }) => {
+      state.moduleShares = removeObject([...state.moduleShares], action.payload)
     })
 }

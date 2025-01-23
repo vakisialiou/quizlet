@@ -1,7 +1,7 @@
-import { ModuleShareEnum } from '@entities/ModuleShare'
+import { ModuleShareEnum, ModuleShareData } from '@entities/ModuleShare'
 import { clientFetch } from '@lib/fetch-client'
 
-export const upsertModuleShare = async (moduleId: string, access: ModuleShareEnum): Promise<string> => {
+export const upsertModuleShare = async (moduleId: string, access: ModuleShareEnum): Promise<ModuleShareData> => {
   const res = await clientFetch(`/api/modules/share/${moduleId}?access=${access}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
@@ -11,6 +11,6 @@ export const upsertModuleShare = async (moduleId: string, access: ModuleShareEnu
     throw new Error('Something went wrong.', { cause: res.statusText })
   }
 
-  const json = await res.json()
-  return json.shareId
+  const data = await res.json()
+  return data.share
 }

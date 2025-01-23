@@ -1,6 +1,6 @@
 import { TermData, DefaultAnswerLang, DefaultAssociationLang, DefaultQuestionLang } from '@entities/Term'
 import React, { useMemo, useState, SyntheticEvent } from 'react'
-import { useTermSelect } from '@hooks/useTermSelect'
+import { useMainSelector } from '@hooks/useMainSelector'
 import { searchTerms } from '@helper/search-terms'
 import { filterDeletedTerms } from '@helper/terms'
 import { findTerms } from '@helper/relation'
@@ -25,7 +25,8 @@ export default function TermsDropdownList(
   }
 ) {
   const t = useTranslations('Terms')
-  const { terms, relationTerms } = useTermSelect()
+  const terms = useMainSelector(({ terms }) => terms)
+  const relationTerms = useMainSelector(({ relationTerms }) => relationTerms)
   const [ search, setSearch ] = useState('')
   const [ showModuleTerms, setShowModuleTerms ] = useState(!!moduleId)
 

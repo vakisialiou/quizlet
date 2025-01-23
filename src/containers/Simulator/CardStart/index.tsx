@@ -1,20 +1,17 @@
 import { findSimulatorMethodById, simulatorMethodList } from '@containers/Simulator/constants'
-import { actionSaveSimulator, actionUpdateSettingsSimulator } from '@store/index'
+import { actionSaveSimulator, actionUpdateSettingsSimulator } from '@store/action-main'
 import { randomizeTermIds, selectRandomTermId } from '@helper/simulators/general'
 import { findSimulators, findTerms, RelationProps } from '@helper/relation'
 import { filterDeletedTerms, filterEmptyTerms } from '@helper/terms'
 import { actionExtraParamsUpdate } from '@helper/simulators/actions'
 import Simulator, { SimulatorStatus } from '@entities/Simulator'
-import { useSimulatorSelect } from '@hooks/useSimulatorSelect'
 import RelationSimulator from '@entities/RelationSimulator'
 import SimulatorSettings from '@entities/SimulatorSettings'
 import Button, {ButtonVariant} from '@components/Button'
+import { useMainSelector } from '@hooks/useMainSelector'
 import CardEmpty from '@containers/Simulator/CardEmpty'
-import { useTermSelect } from '@hooks/useTermSelect'
-import { SettingsData } from '@entities/Settings'
 import Achievement from '@entities/Achievement'
 import { useTranslations } from 'next-intl'
-import { useSelector } from 'react-redux'
 import { useMemo } from 'react'
 import clsx from 'clsx'
 
@@ -30,10 +27,11 @@ export default function SingleStart(
     relation: RelationProps
   }
 ) {
-
-  const { relationTerms, terms } = useTermSelect()
-  const { relationSimulators, simulators } = useSimulatorSelect()
-  const settings = useSelector(({ settings }: { settings: SettingsData }) => settings)
+  const terms = useMainSelector(({ terms }) => terms)
+  const settings = useMainSelector(({ settings }) => settings)
+  const simulators = useMainSelector(({ simulators }) => simulators)
+  const relationTerms = useMainSelector(({ relationTerms }) => relationTerms)
+  const relationSimulators = useMainSelector(({ relationSimulators }) => relationSimulators)
 
   const playTerms = useMemo(() => {
     const relatedTerms = findTerms(relationTerms, terms, relation)

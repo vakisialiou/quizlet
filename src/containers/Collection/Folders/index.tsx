@@ -3,15 +3,13 @@
 import MetaLabel, { MetaLabelVariant } from '@components/MetaLabel'
 import { findActiveSimulators } from '@helper/simulators/general'
 import DialogRemoveFolder from '@containers/DialogRemoveFolder'
-import { useSimulatorSelect } from '@hooks/useSimulatorSelect'
 import { findGroupFolders, findTerms } from '@helper/relation'
 import AchievementDegree from '@containers/AchievementDegree'
 import { FolderFrameVariant } from '@components/FolderFrame'
 import AchievementIcon from '@containers/AchievementIcon'
-import { useFolderSelect } from '@hooks/useFolderSelect'
+import { useMainSelector } from '@hooks/useMainSelector'
 import { FolderGroupData } from '@entities/FolderGroup'
-import { useGroupSelect } from '@hooks/useGroupSelect'
-import { useTermSelect } from '@hooks/useTermSelect'
+import {sortFoldersAsc} from '@helper/sort-folders'
 import { getLastStudyFolder } from '@helper/study'
 import { filterDeletedTerms } from '@helper/terms'
 import SVGEdit from '@public/svg/greasepencil.svg'
@@ -23,7 +21,6 @@ import SVGPlay from '@public/svg/play.svg'
 import {useTranslations} from 'next-intl'
 import {useRouter} from '@i18n/routing'
 import clsx from 'clsx'
-import {sortFoldersAsc} from "@helper/sort-folders";
 
 enum DropDownIdEnums {
   STUDY_FOLDER   = 'STUDY_FOLDER',
@@ -44,10 +41,12 @@ export default function Folders(
   const router = useRouter()
   const t = useTranslations('Folders')
 
-  const folders = useFolderSelect()
-  const { relationFolders } = useGroupSelect()
-  const { terms, relationTerms } = useTermSelect()
-  const { simulators, relationSimulators } = useSimulatorSelect()
+  const terms = useMainSelector(({ terms }) => terms)
+  const folders = useMainSelector(({ folders }) => folders)
+  const simulators = useMainSelector(({ simulators }) => simulators)
+  const relationTerms = useMainSelector(({ relationTerms }) => relationTerms)
+  const relationFolders = useMainSelector(({ relationFolders }) => relationFolders)
+  const relationSimulators = useMainSelector(({ relationSimulators }) => relationSimulators)
 
   const lastStudyFolder = useMemo(() => {
     return getLastStudyFolder(folders, relationSimulators, simulators)

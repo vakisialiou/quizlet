@@ -1,6 +1,6 @@
+import { actionRemoveFolderGroup } from '@store/action-main'
 import Button, { ButtonVariant } from '@components/Button'
 import { FolderGroupData } from '@entities/FolderGroup'
-import { actionRemoveFolderGroup } from '@store/index'
 import { useTranslations } from 'next-intl'
 import Spinner from '@components/Spinner'
 import Dialog from '@components/Dialog'

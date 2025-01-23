@@ -1,11 +1,11 @@
 import NavMenuItem, { NavMenuItemProp } from '@containers/NavMenu/NavMenuItem'
+import { useMainSelector } from '@hooks/useMainSelector'
 import SVGPanelClose from '@public/svg/panel_close.svg'
 import ButtonSquare from '@components/ButtonSquare'
 import { sortDesc } from '@helper/sort-modules'
 import { ModuleData } from '@entities/Module'
 import { usePathname } from '@i18n/routing'
 import { useTranslations } from 'next-intl'
-import { useSelector } from 'react-redux'
 import Account from '@containers/Account'
 import { Session } from 'next-auth'
 import { useMemo } from 'react'
@@ -15,8 +15,9 @@ import clsx from 'clsx'
 export default function NavMenu({ onClose }: { onClose: () => void }) {
   const pathname = usePathname()
   const t = useTranslations('NavMenu')
-  const session = useSelector(({ session }: { session: Session | null }) => session)
-  const modules = useSelector(({ modules }: { modules: ModuleData[] }) => modules)
+
+  const session = useMainSelector(({ session }: { session: Session | null }) => session)
+  const modules = useMainSelector(({ modules }: { modules: ModuleData[] }) => modules)
 
   const collectionChildren = useMemo(() => {
     return sortDesc([...modules])

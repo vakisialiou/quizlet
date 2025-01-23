@@ -3,24 +3,22 @@
 import { findFolderGroups, findGroupFolders } from '@helper/relation'
 import DialogCreateFolders from '@containers/DialogCreateFolders'
 import DialogRemoveGroup from '@containers/DialogRemoveGroup'
-import { useFolderSelect } from '@hooks/useFolderSelect'
+import { actionUpdateFolderGroup } from '@store/action-main'
 import React, {Fragment, useMemo, useState} from 'react'
+import { useMainSelector } from '@hooks/useMainSelector'
 import { FolderGroupData } from '@entities/FolderGroup'
-import { useGroupSelect } from '@hooks/useGroupSelect'
-import { actionUpdateFolderGroup } from '@store/index'
+import { ConfigType } from '@store/initial-state-main'
 import SVGNewFolder from '@public/svg/new_folder.svg'
 import SVGCreate from '@public/svg/asset_manager.svg'
 import SVGThreeDots from '@public/svg/three_dots.svg'
 import Folders from '@containers/Collection/Folders'
 import SVGEdit from '@public/svg/greasepencil.svg'
 import { sortFolderGroups } from '@helper/groups'
-import { ConfigType } from '@store/initial-state'
 import { ModuleData } from '@entities/Module'
 import SVGTrash from '@public/svg/trash.svg'
 import Dropdown from '@components/Dropdown'
 import { useTranslations } from 'next-intl'
 import { useRouter } from '@i18n/routing'
-import { useSelector } from 'react-redux'
 import Input from '@components/Input'
 import Folder from '@entities/Folder'
 
@@ -43,9 +41,10 @@ export default function Groups(
 ) {
   const t = useTranslations('Groups')
 
-  const editGroupId = useSelector((state: ConfigType) => state.edit.groupId)
-  const { relationFolders, folderGroups } = useGroupSelect()
-  const folders = useFolderSelect()
+  const relationFolders = useMainSelector(({ relationFolders }) => relationFolders)
+  const editGroupId = useMainSelector((state: ConfigType) => state.edit.groupId)
+  const folderGroups = useMainSelector(({ folderGroups }) => folderGroups)
+  const folders = useMainSelector(({ folders }) => folders)
   const router = useRouter()
 
   const moduleFolderGroups = useMemo(() => {

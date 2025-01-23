@@ -1,11 +1,10 @@
 'use client'
 
+import { useMainSelector } from '@hooks/useMainSelector'
 import Collection from '@containers/Collection'
 import { LanguageEnums } from '@i18n/constants'
 import { ViewportEnums } from '@lib/viewport'
 import Landing from '@containers/Landing'
-import { useSelector } from 'react-redux'
-import { Session } from 'next-auth'
 
 export default function Main(
   {
@@ -17,7 +16,7 @@ export default function Main(
     viewport: ViewportEnums
   }
 ) {
-  const session = useSelector(({ session }: { session: Session | null }) => session)
+  const session = useMainSelector(({ session }) => session)
   if (session) {
     return (<Collection />)
   }

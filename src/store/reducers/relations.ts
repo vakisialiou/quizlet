@@ -7,8 +7,8 @@ import {
 import { RelationFolderData } from '@entities/RelationFolder'
 import { RelationTermData } from '@entities/RelationTerm'
 import { removeObject, upsertObject } from '@lib/array'
+import { ConfigType } from '@store/initial-state-main'
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { ConfigType } from '@store/initial-state'
 
 export type CreateRelationTermType = {
   relationTerm: RelationTermData,

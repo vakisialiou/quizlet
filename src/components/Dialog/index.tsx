@@ -10,7 +10,7 @@ export default function Dialog(
   return (
     <div className="relative z-10" role="dialog" aria-modal="true">
       <div
-        className="fixed inset-0 bg-black/90 transition-opacity"
+        className="fixed inset-0 bg-black/60 transition-opacity"
         aria-hidden="true"
       />
 

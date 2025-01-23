@@ -9,7 +9,7 @@ import React, { useState, useRef } from 'react'
 import { useTranslations } from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
 import Grid from '@containers/Terms/Grid'
-import {useRouter} from '@i18n/routing'
+import { useRouter } from '@i18n/routing'
 
 export default function Terms() {
   const router = useRouter()
@@ -73,7 +73,6 @@ export default function Terms() {
     >
       <Grid
         ref={ref}
-        shareId={null}
         editable={true}
         filter={{ search }}
       />

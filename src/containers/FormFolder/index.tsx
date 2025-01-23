@@ -1,5 +1,5 @@
+import { actionUpdateFolder } from '@store/action-main'
 import React, { useCallback, useRef } from 'react'
-import { actionUpdateFolder } from '@store/index'
 import { FolderData } from '@entities/Folder'
 import { useTranslations } from 'next-intl'
 import Input from '@components/Input'

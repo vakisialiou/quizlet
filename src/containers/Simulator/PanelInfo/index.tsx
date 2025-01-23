@@ -1,5 +1,5 @@
 import { findTerms, RelationProps } from '@helper/relation'
-import { useTermSelect } from '@hooks/useTermSelect'
+import { useMainSelector } from '@hooks/useMainSelector'
 import { SimulatorData } from '@entities/Simulator'
 import RoundInfo from '@components/RoundInfo'
 import { useTranslations } from 'next-intl'
@@ -19,7 +19,8 @@ export default function PanelInfo(
     className?: string
   }
 ) {
-  const { terms, relationTerms } = useTermSelect()
+  const terms = useMainSelector(({ terms }) => terms)
+  const relationTerms = useMainSelector(({ relationTerms }) => relationTerms)
   const simulatorTerms = findTerms(relationTerms, terms, relation)
 
   const continueIds = simulator && !process ? simulator?.continueIds : []

@@ -1,5 +1,5 @@
 import ModuleShare, { ModuleShareEnum } from '@entities/ModuleShare'
-import { upsertModuleShare } from '@repositories/module-share'
+import { createModuleShare } from '@repositories/module-share'
 import { NextRequest } from 'next/server'
 import { prisma } from '@lib/prisma'
 import { auth } from '@auth'
@@ -28,8 +28,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ modu
       .setModuleId(moduleId)
       .serialize()
 
-    const shareId = await upsertModuleShare(prisma, userId, share)
-    return new Response(JSON.stringify({ shareId }), {
+    await createModuleShare(prisma, userId, share)
+    return new Response(JSON.stringify({ share }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     })

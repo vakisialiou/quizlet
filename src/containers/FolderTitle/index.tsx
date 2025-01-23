@@ -1,10 +1,8 @@
 import {getModule, RelationProps, getFolder } from '@helper/relation'
 import AchievementDegree from '@containers/AchievementDegree'
 import AchievementIcon from '@containers/AchievementIcon'
-import { FolderData } from '@entities/Folder'
-import { ModuleData } from '@entities/Module'
+import { useMainSelector } from '@hooks/useMainSelector'
 import { useTranslations } from 'next-intl'
-import { useSelector } from 'react-redux'
 import React, { useMemo } from 'react'
 import clsx from 'clsx'
 
@@ -18,8 +16,8 @@ export default function FolderTitle(
     relation: RelationProps,
   }
 ) {
-  const folders = useSelector(({ folders }: { folders: FolderData[] }) => folders)
-  const modules = useSelector(({ modules }: { modules: ModuleData[] }) => modules)
+  const folders = useMainSelector(({ folders }) => folders)
+  const modules = useMainSelector(({ modules }) => modules)
 
   const { folder, module } = useMemo(() => {
     if (relation.folderId) {

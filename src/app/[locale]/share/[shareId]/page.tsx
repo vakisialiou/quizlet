@@ -1,7 +1,7 @@
 import { generateMetaAlternates } from '@helper/meta'
 import { getTranslations } from 'next-intl/server'
 import { LanguageEnums } from '@i18n/routing'
-import Share from '@containers/Share'
+import Share from './Share'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: LanguageEnums }>}) {
   const { locale } = await params
@@ -15,7 +15,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
 }
 
 export default async function Page() {
-  return (<div>ss</div>)
+
+
   return (
     <Share />
   )

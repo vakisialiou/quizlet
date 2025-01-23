@@ -1,12 +1,12 @@
 'use client'
 
 import SimulatorBody from '@containers/Simulator/SimulatorBody'
-import { useSimulatorSelect } from '@hooks/useSimulatorSelect'
 import { actionDeactivate } from '@helper/simulators/actions'
 import { getSimulatorById } from '@helper/simulators/general'
+import { actionUpdateSimulator } from '@store/action-main'
 import Button, { ButtonVariant } from '@components/Button'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
-import { actionUpdateSimulator } from '@store/index'
+import { useMainSelector } from '@hooks/useMainSelector'
 import ButtonSquare from '@components/ButtonSquare'
 import FolderTitle from '@containers/FolderTitle'
 import ContentPage from '@containers/ContentPage'
@@ -30,7 +30,7 @@ export default function Simulator(
   const router = useRouter()
 
   const [ deactivateSimulatorId, setDeactivateSimulatorId] = useState<string | null>(null)
-  const { simulators } = useSimulatorSelect()
+  const simulators = useMainSelector(({ simulators }) => simulators)
   const t = useTranslations('Simulators')
 
   return (

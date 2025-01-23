@@ -1,6 +1,6 @@
-import { actionDeleteFolder, actionRemoveRelationFolder } from '@store/index'
+import { actionDeleteFolder, actionRemoveRelationFolder } from '@store/action-main'
 import Button, { ButtonVariant } from '@components/Button'
-import { useGroupSelect } from '@hooks/useGroupSelect'
+import { useMainSelector } from '@hooks/useMainSelector'
 import { FolderGroupData } from '@entities/FolderGroup'
 import { getRelationFolder } from '@helper/relation'
 import { FolderData } from '@entities/Folder'
@@ -27,7 +27,7 @@ export default function DialogRemoveFolder(
 ) {
   const t = useTranslations('Folders')
   const [process, setProcess] = useState(false)
-  const { relationFolders } = useGroupSelect()
+  const relationFolders = useMainSelector(({ relationFolders }) => relationFolders)
 
   return (
     <Dialog

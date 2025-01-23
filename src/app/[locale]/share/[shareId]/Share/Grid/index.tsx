@@ -1,11 +1,21 @@
 'use client'
 
 import React, { useCallback, useMemo, useState, useImperativeHandle, Ref, forwardRef } from 'react'
-import { actionUpsertTerm, actionEditTerm } from '@store/action-main'
+import {
+  actionCreateSharedTerm,
+  actionUpsertSharedTerm,
+  actionEditSharedTerm
+} from '@store/action-share'
+import {
+  actionUpsertTerm
+} from '@store/action-main'
 import Button, { ButtonVariant } from '@components/Button'
+import { useShareSelector } from '@hooks/useShapeSelector'
 import { useMainSelector } from '@hooks/useMainSelector'
-import { searchTerms } from '@helper/search-terms'
+import { ModuleShareData } from '@entities/ModuleShare'
 import { filterDeletedTerms } from '@helper/terms'
+import RelationTerm from '@entities/RelationTerm'
+import {searchTerms} from '@helper/search-terms'
 import Term, { TermData } from '@entities/Term'
 import { useSpeech } from '@hooks/useSpeech'
 import {sortTerms} from '@helper/sort-terms'
@@ -19,21 +29,34 @@ export type TypeFilterGrid = {
 
 function Grid(
   {
+    share,
     filter,
     editable,
   }:
   {
     editable: boolean
     filter: TypeFilterGrid
+    share: ModuleShareData
   },
   ref: Ref<{ onCreate?: () => void }>
 ) {
+  const userModules = useMainSelector(({ modules }) => modules)
+  const userHasModule = useMemo(() => {
+    return !!userModules.find((module) => module.id === share.moduleId)
+  }, [userModules, share.moduleId])
+
+  const tryUpdateMainTermState = useCallback((term: TermData, callback?: () => void) => {
+    if (!userHasModule) {
+      return
+    }
+    actionUpsertTerm({ term, editId: null, editable: false }, callback)
+  }, [userHasModule])
+
   const [ originItem, setOriginItem ] = useState<TermData | null>(null)
   const [ removeTerm, setRemoveTerm ] = useState<TermData | null>(null)
 
-
-  const edit = useMainSelector(({ edit }) => edit)
-  const terms = useMainSelector(({ terms }) => terms)
+  const edit = useShareSelector((state) => state.edit)
+  const terms = useShareSelector((state) => state.terms)
   const visibleTerms = useMemo(() => filterDeletedTerms(terms), [terms])
 
   const filteredTerms = useMemo(() => {
@@ -50,11 +73,16 @@ function Grid(
 
   const onCreate = useCallback(() => {
     const term = new Term().serialize()
+    const relationTerm = new RelationTerm()
+      .setModuleId(share.moduleId)
+      .setTermId(term.id)
+      .serialize()
 
-    actionUpsertTerm({ term, editId: term.id, editable }, () => {
+    actionCreateSharedTerm({ term, editId: term.id, relationTerm, editable, shareId: share.id }, () => {
       setOriginItem(term)
+      tryUpdateMainTermState(term)
     })
-  }, [editable])
+  }, [editable, share.moduleId, share.id, tryUpdateMainTermState])
 
   useImperativeHandle(ref, () => ({ onCreate }))
 
@@ -87,17 +115,20 @@ function Grid(
                 collapsed={term.collapsed && term.id !== edit.termId}
                 soundPlayingName={soundInfo.termId === term.id ? soundInfo.playingName : null}
                 onCollapse={() => {
-                  actionUpsertTerm({
-                    term: {...term, collapsed: !term.collapsed},
+                  const updatedTerm = {...term, collapsed: !term.collapsed}
+                  actionUpsertSharedTerm({
+                    term: updatedTerm,
+                    shareId: share.id,
                     editId: null,
-                    editable,
-                  })
+                    editable
+                  }, () => tryUpdateMainTermState(updatedTerm))
                 }}
                 onSave={() => {
-                  actionUpsertTerm({ term, editId: null, editable }, () => {
+                  actionUpsertSharedTerm({ term, editId: null, editable, shareId: share.id }, () => {
                     if (originItem) {
                       setOriginItem(null)
                     }
+                    tryUpdateMainTermState(term)
                   })
                 }}
                 onExit={async () => {
@@ -105,25 +136,30 @@ function Grid(
                     return
                   }
 
-                  actionUpsertTerm({
+                  actionUpsertSharedTerm({
+                    shareId: share.id,
                     term: originItem,
                     editId: null,
-                    editable,
+                    editable
                   }, () => {
                     setOriginItem(null)
+                    tryUpdateMainTermState(originItem)
                   })
                 }}
                 onEdit={() => {
-                  actionEditTerm({ editId: term.id }, () => {
+                  actionEditSharedTerm({ editId: term.id }, () => {
                     setOriginItem(term)
                   })
                 }}
                 onChange={(prop, value) => {
                   const updatedTerm = { ...term, [prop]: value } as Term
-                  actionUpsertTerm({
+                  actionUpsertSharedTerm({
                     editId: updatedTerm.id,
+                    shareId: share.id,
                     term: updatedTerm,
-                    editable: false,
+                    editable: false
+                  }, () => {
+                    tryUpdateMainTermState(updatedTerm)
                   })
                 }}
                 onRemove={() => setRemoveTerm(term)}
@@ -155,15 +191,17 @@ function Grid(
             className="min-w-28 px-4"
             variant={ButtonVariant.GRAY}
             onClick={() => {
-              actionUpsertTerm({
+              actionUpsertSharedTerm({
                 term: { ...removeTerm, deleted: true },
+                shareId: share.id,
                 editId: null,
-                editable,
+                editable
               }, () => {
-                setRemoveTerm(null)
+                tryUpdateMainTermState(removeTerm)
                 if (originItem && originItem.id === removeTerm.id) {
                   setOriginItem(null)
                 }
+                setRemoveTerm(null)
               })
             }}
           >

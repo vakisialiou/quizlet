@@ -1,16 +1,17 @@
 import Dropdown, { DropdownVariant } from '@components/Dropdown'
-import { upsertModuleShare } from '@store/fetch/folders-share'
 import Button, { ButtonVariant } from '@components/Button'
+import { useMainSelector } from '@hooks/useMainSelector'
 import { ModuleShareEnum } from '@entities/ModuleShare'
+import { actionShareModule } from '@store/action-main'
 import { useLocale, useTranslations } from 'next-intl'
 import SVGCheckmark from '@public/svg/checkmark.svg'
+import React, { useCallback, useState } from 'react'
 import { ModuleData } from '@entities/Module'
 import { getPathname } from '@i18n/routing'
 import { clipboard } from '@lib/clipboard'
 import Spinner from '@components/Spinner'
 import SVGError from '@public/svg/x.svg'
 import Dialog from '@components/Dialog'
-import React, { useState } from 'react'
 
 type TypeShare = {
   access: ModuleShareEnum,
@@ -29,6 +30,7 @@ export default function DialogShare(
     onClose: () => void
   }
 ) {
+  const moduleShares = useMainSelector(({ moduleShares }) => moduleShares)
   const t = useTranslations('Modules')
   const locale = useLocale()
 
@@ -38,6 +40,17 @@ export default function DialogShare(
     process: false,
     access: ModuleShareEnum.readonly
   })
+
+  const copyShareLink = useCallback((shareId: string) => {
+    const link = `${origin}${getPathname({ href: `/share/${shareId}`, locale })}`
+    clipboard(link, (error) => {
+      setState({ ...state, link, error, process: false })
+
+      setTimeout(() => {
+        setState({ ...state, link: null })
+      }, 2000)
+    })
+  }, [state, locale])
 
   return (
     <Dialog
@@ -121,16 +134,18 @@ export default function DialogShare(
         className="min-w-40 px-4"
         variant={ButtonVariant.GREEN}
         onClick={async () => {
+          const moduleShare = moduleShares.find(({ moduleId, access }) => {
+            return moduleId === module.id && access === state.access
+          })
+
+          if (moduleShare) {
+            copyShareLink(moduleShare.id)
+            return
+          }
 
           setState({ ...state, process: true })
-          const shareId = await upsertModuleShare(module.id, state.access)
-          const link = `${origin}${getPathname({ href: `/share/${shareId}`, locale })}`
-          clipboard(link, (error) => {
-            setState({ ...state, link, error, process: false })
-
-            setTimeout(() => {
-              setState({ ...state, link: null })
-            }, 2000)
+          actionShareModule({ module, access: state.access }, (moduleShare) => {
+            copyShareLink(moduleShare.id)
           })
         }}
       >
