@@ -91,10 +91,7 @@ export default function FolderModule(
               }
 
               return (
-                <MetaLabel
-                  key={marker}
-                  className="px-2"
-                >
+                <MetaLabel key={marker}>
                   {item.name}
                 </MetaLabel>
               )

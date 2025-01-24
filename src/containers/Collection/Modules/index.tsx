@@ -195,7 +195,6 @@ export default function Modules(
                     return (
                       <MetaLabel
                         key={marker}
-                        className="px-2"
                       >
                         {item.name}
                       </MetaLabel>

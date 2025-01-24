@@ -43,7 +43,7 @@ export default function MetaLabel(
   return (
     <div
       onClick={onClick}
-      className={clsx('flex items-center justify-center rounded-full select-none text-nowrap transition-all', {
+      className={clsx('flex items-center justify-center rounded-full select-none text-nowrap transition-all px-2', {
         [className]: className,
         ['bg-gray-700 text-gray-300']: !disabled && variant === MetaLabelVariant.gray,
         ['bg-gray-700/50 text-gray-300/50']: disabled && variant === MetaLabelVariant.gray,
