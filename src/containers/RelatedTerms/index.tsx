@@ -99,6 +99,9 @@ function RelatedTerms(
                     editable,
                   })
                 }}
+                onChangeColor={(color) => {
+                  actionUpsertTerm({ term: { ...term, color }, editId: edit.termId, editable })
+                }}
                 onSave={() => {
                   actionUpsertTerm({ term, editId: null, editable }, () => {
                     if (originItem) {

@@ -1,3 +1,4 @@
+import ColorLabel, { ColorEnum, COLOR_DEFAULT } from '@components/ColorLabel'
 import { BaseSyntheticEvent } from 'react'
 import clsx from 'clsx'
 import './style.css'
@@ -16,8 +17,10 @@ export default function Flashcard(
     className = '',
     faceSide,
     backSide,
+    color
   }:
   {
+    color?: ColorEnum,
     className?: string,
     isBackSide: boolean
     faceSide: CardSideInfo,
@@ -49,6 +52,13 @@ export default function Flashcard(
               {faceSide.signature}
             </div>
           }
+
+          <ColorLabel
+            size={4}
+            rounded
+            color={color || COLOR_DEFAULT}
+            className="absolute right-3 top-3 z-10"
+          />
         </div>
         <div
           className="card__back absolute w-full h-full flex flex-col gap-4 items-center justify-center p-6 rounded"
@@ -64,6 +74,13 @@ export default function Flashcard(
               {backSide.signature}
             </div>
           }
+
+          <ColorLabel
+            size={4}
+            rounded
+            color={color || COLOR_DEFAULT}
+            className="absolute left-3 top-3 z-10"
+          />
         </div>
       </div>
     </div>

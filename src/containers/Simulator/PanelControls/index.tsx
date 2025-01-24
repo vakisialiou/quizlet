@@ -63,7 +63,7 @@ export default function PanelControls(
     >
       <div className="flex gap-2">
         <Button
-          size={ButtonSize.H10}
+          size={ButtonSize.H11}
           active={controls.deactivate.active}
           disabled={process || controls.deactivate.disabled}
           onClick={() => onClick('deactivate')}
@@ -78,7 +78,7 @@ export default function PanelControls(
         </Button>
 
         <Button
-          size={ButtonSize.H10}
+          size={ButtonSize.H11}
           active={controls.back.active}
           disabled={process || controls.back.disabled}
           onClick={() => onClick('back')}
@@ -95,7 +95,7 @@ export default function PanelControls(
 
       <div className="flex gap-2">
         <Button
-          size={ButtonSize.H10}
+          size={ButtonSize.H11}
           active={controls.help.active}
           disabled={process || controls.help.disabled}
           onClick={() => onClick('help')}
@@ -110,7 +110,7 @@ export default function PanelControls(
         </Button>
 
         <Button
-          size={ButtonSize.H10}
+          size={ButtonSize.H11}
           active={controls.sound.active}
           disabled={process || controls.sound.disabled}
           onClick={() => onClick('sound')}

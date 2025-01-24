@@ -123,6 +123,9 @@ function Grid(
                     editable
                   }, () => tryUpdateMainTermState(updatedTerm))
                 }}
+                onChangeColor={(color) => {
+                  actionUpsertTerm({ term: { ...term, color }, editId: edit.termId, editable })
+                }}
                 onSave={() => {
                   actionUpsertSharedTerm({ term, editId: null, editable, shareId: share.id }, () => {
                     if (originItem) {

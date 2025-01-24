@@ -1,3 +1,4 @@
+import ColorLabel, { ColorEnum, COLOR_DEFAULT } from '@components/ColorLabel'
 import {CardStatus} from '@containers/Simulator/CardAggregator/types'
 import SVGMuteOff from '@public/svg/mute_ipo_off.svg'
 import SVGMuteOn from '@public/svg/mute_ipo_on.svg'
@@ -29,9 +30,11 @@ export default function PickCard(
     onSound,
     cardSide,
     soundSelection,
+    color,
     value,
   }:
   {
+    color?: ColorEnum,
     className?: string
     cardSide: CardSideInfo
     value: CardSelectedValue,
@@ -112,6 +115,13 @@ export default function PickCard(
               {cardSide.signature}
             </div>
           }
+
+          <ColorLabel
+            size={4}
+            rounded
+            color={color || COLOR_DEFAULT}
+            className="absolute right-3 top-3 z-10"
+          />
         </div>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import ColorLabel, { ColorEnum, COLOR_DEFAULT } from '@components/ColorLabel'
 import Input, { InputSize, InputVariantFocus } from '@components/Input'
 import {CardStatus} from '@containers/Simulator/CardAggregator/types'
 import Button, { ButtonVariant } from '@components/Button'
@@ -29,8 +30,10 @@ export default function InputCard(
     onChange,
     cardSide,
     value,
+    color,
   }:
   {
+    color?: ColorEnum,
     className?: string
     cardSide: CardSideInfo
     value: CardSelectedValue,
@@ -116,6 +119,13 @@ export default function InputCard(
               {cardSide.signature}
             </div>
           }
+
+          <ColorLabel
+            size={4}
+            rounded
+            color={color || COLOR_DEFAULT}
+            className="absolute right-3 top-3 z-10"
+          />
         </div>
       </div>
     </div>

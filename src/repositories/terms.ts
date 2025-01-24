@@ -3,6 +3,7 @@ import { Prisma, PrismaEntry } from '@lib/prisma'
 
 export type TermSelectType = {
   id: boolean,
+  color: boolean,
   folderId: boolean,
   answer: boolean,
   answerLang: boolean,
@@ -18,6 +19,7 @@ export type TermSelectType = {
 
 export const TermSelect = {
   id: true,
+  color: true,
   answer: true,
   answerLang: true,
   question: true,
@@ -37,6 +39,7 @@ type TermResult = Prisma.TermGetPayload<{
 export const createTermSelect = (term: TermResult): Term => {
   return new Term()
     .setId(term.id)
+    .setColor(term.color)
     .setAnswer(term.answer)
     .setAnswerLang(term.answerLang)
     .setQuestion(term.question)
@@ -74,6 +77,7 @@ export const upsertTerm = async (db: PrismaEntry, userId: string, term: TermData
   const res = await db.term.upsert({
     where: { id: term.id },
     update: {
+      color: term.color,
       answer: term.answer,
       deleted: term.deleted,
       question: term.question,
@@ -87,6 +91,7 @@ export const upsertTerm = async (db: PrismaEntry, userId: string, term: TermData
     create: {
       userId,
       id: term.id,
+      color: term.color,
       answer: term.answer,
       answerLang: term.answerLang,
       question: term.question,

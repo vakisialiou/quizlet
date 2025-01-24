@@ -1,8 +1,16 @@
-import { TermData, DefaultAnswerLang, DefaultQuestionLang, DefaultAssociationLang, languages } from '@entities/Term'
+import {
+  DefaultAnswerLang,
+  DefaultAssociationLang,
+  DefaultQuestionLang,
+  languages,
+  TermData
+} from '@entities/Term'
+import { COLOR_DEFAULT, ColorEnum } from '@components/ColorLabel'
 import Dropdown, { DropdownVariant } from '@components/Dropdown'
 import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
-import Button, { ButtonSize } from '@components/Button'
 import { useCallback, useEffect, useRef } from 'react'
+import Button, {ButtonSize} from '@components/Button'
+import ColorDropdown from '@components/ColorDropdown'
 import SVGPencil from '@public/svg/greasepencil.svg'
 import ButtonSquare from '@components/ButtonSquare'
 import RowRead from '@containers/TermCard/RowRead'
@@ -40,6 +48,7 @@ export default function TermCard(
     collapsed = true,
     onCollapse,
     onClickSound,
+    onChangeColor,
     soundPlayingName
   }:
   {
@@ -53,7 +62,8 @@ export default function TermCard(
     onExit: () => void
     onSave: () => void
     onCollapse?: () => void,
-    onChange: (prop: string, value: string) => void
+    onChangeColor?: (color: ColorEnum) => void,
+    onChange: (prop: string, value: string | number) => void
     soundPlayingName: SoundPlayingNameEnum | string | null,
     onClickSound: (params: ClickSoundCallbackParams) => void
   }
@@ -107,15 +117,28 @@ export default function TermCard(
         </div>
       )}
       controls={(
-        <ButtonSquare
-          size={24}
-          disabled={edit}
-          icon={SVGArrowDown}
-          onClick={onCollapse}
-          classNameIcon={clsx('', {
-            ['rotate-180']: !collapsed
-          })}
-        />
+        <>
+          <ColorDropdown
+            className="p-2"
+            selected={data.color || COLOR_DEFAULT}
+            onClick={(e) => e.preventDefault()}
+            onChange={(color) => {
+              if (onChangeColor) {
+                onChangeColor(color)
+              }
+            }}
+          />
+
+          <ButtonSquare
+            size={24}
+            disabled={edit}
+            icon={SVGArrowDown}
+            onClick={onCollapse}
+            classNameIcon={clsx('', {
+              ['rotate-180']: !collapsed
+            })}
+          />
+        </>
       )}
       dropdown={{
         hidden: readonly,

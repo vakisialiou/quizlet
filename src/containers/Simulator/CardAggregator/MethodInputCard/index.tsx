@@ -114,6 +114,7 @@ export default function MethodInputCard(
       key={activeTerm?.id}
       className="w-72 h-96"
       value={selectedValue}
+      color={activeTerm?.color}
       onChange={(e) => {
         setSelectedValue({ ...selectedValue, text: e.target.value })
       }}

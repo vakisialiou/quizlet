@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `Term` ADD COLUMN `color` INTEGER NOT NULL DEFAULT 0;

@@ -105,6 +105,7 @@ export default function MethodPickCard(
       key={activeTerm?.id}
       className="w-72 h-96"
       value={selectedValue}
+      color={activeTerm?.color}
       soundSelection={soundSelection}
       onSelect={(selection) => {
         setSelectedValue({

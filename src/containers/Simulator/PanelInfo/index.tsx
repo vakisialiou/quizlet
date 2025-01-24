@@ -30,7 +30,7 @@ export default function PanelInfo(
 
   return (
     <div
-      className={clsx('flex items-center justify-center select-none gap-4 w-full', {
+      className={clsx('flex items-center justify-center select-none gap-6 w-full', {
         [className]: className
       })}
     >

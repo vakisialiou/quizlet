@@ -78,6 +78,7 @@ model VerificationToken {
 model Term {
   id              String   @id @default(uuid())
   userId          String   @db.VarChar(36)
+  color           Int      @default(0)
   question        String?  @db.VarChar(255)
   questionLang    String?  @default("ru") @db.VarChar(5)
   answer          String?  @db.VarChar(255)
