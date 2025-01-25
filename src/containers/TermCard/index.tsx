@@ -38,6 +38,7 @@ export default function TermCard(
   {
     data,
     edit = false,
+    warn = false,
     number,
     onEdit,
     onRemove,
@@ -55,6 +56,7 @@ export default function TermCard(
     data: TermData
     number: number
     edit: boolean
+    warn?: boolean
     readonly: boolean
     collapsed: boolean
     onEdit: () => void
@@ -107,7 +109,7 @@ export default function TermCard(
         <div className="flex gap-2 items-center font-bold">
           <span>#{number}</span>
 
-          {((!data.question || !data.answer) && collapsed && !edit) &&
+          {((!data.question || !data.answer) && collapsed && !edit || warn) &&
             <SVGError
               width={16}
               height={16}

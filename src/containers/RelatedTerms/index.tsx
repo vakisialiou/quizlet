@@ -7,6 +7,7 @@ import { sortTermsWithRelations } from '@helper/sort-terms'
 import Button, { ButtonVariant } from '@components/Button'
 import { searchRelatedTerms } from '@helper/search-terms'
 import { useMainSelector } from '@hooks/useMainSelector'
+import { findTermIntersections } from '@helper/terms'
 import { findRelationTerm } from '@helper/relation'
 import Term, { TermData } from '@entities/Term'
 import { RelationProps} from '@helper/relation'
@@ -50,6 +51,10 @@ function RelatedTerms(
     return sortTermsWithRelations(rawItems)
   }, [relatedTerms, filter, edit.termId])
 
+  const termIntersections = useMemo(() => {
+    return findTermIntersections(filteredTerms.map(({ term }) => term))
+  }, [filteredTerms])
+
   const { speech, soundInfo, setSoundInfo } = useSpeech<{ playingName: string | null, termId: string | null }>({ playingName: null, termId: null })
 
   const onCreate = useCallback(() => {
@@ -80,6 +85,8 @@ function RelatedTerms(
         className="w-full grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2"
       >
         {filteredTerms.map(({ term }, index) => {
+          const intersections = termIntersections[term.id] || []
+
           return (
             <div
               key={term.id}
@@ -90,6 +97,7 @@ function RelatedTerms(
                 number={index + 1}
                 readonly={!editable}
                 edit={term.id === edit.termId}
+                warn={intersections.length > 0}
                 collapsed={term.collapsed && term.id !== edit.termId}
                 soundPlayingName={soundInfo.termId === term.id ? soundInfo.playingName : null}
                 onCollapse={() => {

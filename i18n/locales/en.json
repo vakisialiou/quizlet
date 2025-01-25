@@ -204,6 +204,7 @@
     "emptySearchList": "Nothing found.",
     "emptyList": "The card list is empty.",
     "tabAllCards": "All",
+    "tabCreate": "Create",
     "tabRelatedCards": "Learning Course",
     "termSearch": "Find Card..."
   },

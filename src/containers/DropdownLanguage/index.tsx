@@ -1,13 +1,16 @@
 import Dropdown, { DropdownVariant } from '@components/Dropdown'
 import { LanguageEnums } from '@i18n/constants'
 import { getPathname } from '@i18n/routing'
+import clsx from "clsx";
 
 export default function DropdownLanguage(
   {
-    locale
+    locale,
+    className = ''
   }:
   {
     locale: LanguageEnums
+    className?: string
   }
 ) {
   const localeDropdownList = [
@@ -20,7 +23,11 @@ export default function DropdownLanguage(
   return (
     <Dropdown
       caret
-      className="py-1 px-2"
+      selected={[locale]}
+      className={clsx('py-1 px-2', {
+        [className]: className,
+      })}
+      classNameMenu="w-28"
       items={localeDropdownList}
       variant={DropdownVariant.gray}
     >

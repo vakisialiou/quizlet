@@ -1,11 +1,12 @@
 import NavMenuItem, { NavMenuItemProp } from '@containers/NavMenu/NavMenuItem'
 import { sortModules, ORDER_DEFAULT } from '@helper/sort-modules'
+import DropdownLanguage from '@containers/DropdownLanguage'
+import { usePathname, LanguageEnums } from '@i18n/routing'
 import { useMainSelector } from '@hooks/useMainSelector'
 import SVGPanelClose from '@public/svg/panel_close.svg'
+import { useLocale, useTranslations } from 'next-intl'
 import ButtonSquare from '@components/ButtonSquare'
 import { ModuleData } from '@entities/Module'
-import { usePathname } from '@i18n/routing'
-import { useTranslations } from 'next-intl'
 import Account from '@containers/Account'
 import { Session } from 'next-auth'
 import { useMemo } from 'react'
@@ -13,9 +14,9 @@ import Image from 'next/image'
 import clsx from 'clsx'
 
 export default function NavMenu({ onClose }: { onClose: () => void }) {
+  const locale = useLocale() as LanguageEnums
   const pathname = usePathname()
   const t = useTranslations('NavMenu')
-
   const session = useMainSelector(({ session }: { session: Session | null }) => session)
   const modules = useMainSelector(({ modules }: { modules: ModuleData[] }) => modules)
 
@@ -57,7 +58,7 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
       <div
         className="absolute w-full md:w-1/2 lg:w-1/3 xl:w-1/4 2xl:1/5 h-full bg-black border-r border-white/25 flex flex-col">
 
-        <div className="flex h-16 px-4 flex-col border-b border-white/15 p-4 bg-white/10">
+        <div className="flex h-16 px-4 flex-col border-b border-white/5 p-4 bg-white/10">
           <div className="flex h-8 justify-between">
             <div className="flex gap-4 items-center">
               <Image
@@ -84,6 +85,16 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
         <div
           className="flex flex-col w-full h-[calc(100%-64px)] justify-between"
         >
+
+          <div className="flex flex-col bg-white/5 border-b border-white/5">
+            <div className="flex items-center justify-between gap-2 p-3">
+              <span className="text-sm font-bold">Language</span>
+              <DropdownLanguage
+                locale={locale}
+                className="w-28 justify-between"
+              />
+            </div>
+          </div>
 
           <div
             className={clsx('h-full flex flex-col bg-white/5', {
@@ -128,7 +139,7 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
             })}
           </div>
 
-          <div className="flex flex-col px-4 py-4 bg-white/10 border-t border-white/15">
+          <div className="flex flex-col px-4 py-3 bg-white/10 border-t border-white/5">
             <Account session={session}/>
           </div>
         </div>

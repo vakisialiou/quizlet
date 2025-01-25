@@ -5,7 +5,7 @@ import { searchTerms } from '@helper/search-terms'
 import { filterDeletedTerms } from '@helper/terms'
 import { findTerms } from '@helper/relation'
 import { useTranslations } from 'next-intl'
-import SVGAdd from '@public/svg/add.svg'
+import SVGPlus from '@public/svg/plus.svg'
 import Search from '@components/Search'
 import clsx from 'clsx'
 
@@ -97,14 +97,16 @@ export default function TermsDropdownList(
 
         <div
           onClick={onCreate}
-          className={clsx('border-t border-l border-r border-white/25 rounded-t flex items-center px-2 py-1', {
+          className={clsx('border-t border-l border-r border-white/25 rounded-t flex items-center gap-1 px-2 py-1', {
             ['cursor-pointer hover:bg-white/10 active:bg-white/15']: true,
           })}
         >
-          <SVGAdd
+          <SVGPlus
             width={18}
             height={18}
           />
+
+          {t('tabCreate')}
         </div>
       </div>
 
