@@ -61,9 +61,13 @@ export default function FolderCart(
             {title}
           </div>
 
-          <div className="flex gap-1 items-center z-10">
+          <div className="flex gap-2 items-center z-10">
 
-            {labels}
+            {labels &&
+              <div className="flex gap-1 items-center">
+                {labels}
+              </div>
+            }
 
             <div className="flex items-center">
               {dropdown?.hidden !== true &&

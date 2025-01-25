@@ -1,7 +1,7 @@
 import Dropdown, { DropdownVariant } from '@components/Dropdown'
+import { getPathname, usePathname } from '@i18n/routing'
 import { LanguageEnums } from '@i18n/constants'
-import { getPathname } from '@i18n/routing'
-import clsx from "clsx";
+import clsx from 'clsx'
 
 export default function DropdownLanguage(
   {
@@ -13,9 +13,10 @@ export default function DropdownLanguage(
     className?: string
   }
 ) {
+  const path = usePathname()
   const localeDropdownList = [
-    { id: LanguageEnums.EN, name: 'English', href: getPathname({ href: '/', locale: LanguageEnums.EN }) },
-    { id: LanguageEnums.RU, name: 'Русский', href: getPathname({ href: '/', locale: LanguageEnums.RU }) },
+    { id: LanguageEnums.EN, name: 'English', href: getPathname({ href: path, locale: LanguageEnums.EN }) },
+    { id: LanguageEnums.RU, name: 'Русский', href: getPathname({ href: path, locale: LanguageEnums.RU }) },
   ]
 
   const localeDropdownValue = localeDropdownList.find(({ id }) => id === locale)

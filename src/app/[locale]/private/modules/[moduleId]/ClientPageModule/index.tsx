@@ -8,24 +8,23 @@ import {
 import { findTermsWithRelations, getModule } from '@helper/relation'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import SVGNewCollection from '@public/svg/collection_new.svg'
-import TermsDropdownMenu from '@containers/TermsDropdownMenu'
 import { sortTermsWithRelations } from '@helper/sort-terms'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
 import AchievementIcon from '@containers/AchievementIcon'
 import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
 import Button, {ButtonVariant} from '@components/Button'
+import { DropdownPlacement } from '@components/Dropdown'
 import {useMainSelector} from '@hooks/useMainSelector'
+import TermsDropdown from '@containers/TermsDropdown'
 import Groups from '@containers/Collection/Groups'
 import RelatedTerms from '@containers/RelatedTerms'
 import ButtonSquare from '@components/ButtonSquare'
 import ContentPage from '@containers/ContentPage'
-import SVGFileNew from '@public/svg/file_new.svg'
 import RelationTerm from '@entities/RelationTerm'
 import FormModule from '@containers/FormModule'
 import FolderGroup from '@entities/FolderGroup'
 import FolderCart from '@components/FolderCart'
 import MetaLabel from '@components/MetaLabel'
-import Dropdown from '@components/Dropdown'
 import { useTranslations } from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
 import SVGPlay from '@public/svg/play.svg'
@@ -79,7 +78,6 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
   const t = useTranslations('Module')
 
   const ref = useRef<{ onCreate?: () => void }>({})
-  const refDropdownTerms = useRef<{ close?: () => void }>({})
 
   return (
     <ContentPage
@@ -152,43 +150,26 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
             labels={<MetaLabel>{relatedTerms.length}</MetaLabel>}
             controls={(
               <>
-                <Dropdown
-                  caret
-                  ref={refDropdownTerms}
-                  className="px-1 min-w-8 h-8 items-center"
-                  menu={(
-                    <TermsDropdownMenu
-                      excludeTermIds={excludeTermIds}
-                      className="w-56"
-                      onCreate={() => {
-                        if (refDropdownTerms.current.close) {
-                          refDropdownTerms.current.close()
-                        }
+                <TermsDropdown
+                  excludeTermIds={excludeTermIds}
+                  onCreate={() => {
+                    actionUpdateModule({ editable, editId: null, module: { ...course, termsCollapsed: false }}, () => {
+                      if (ref.current?.onCreate) {
+                        ref.current?.onCreate()
+                      }
+                    })
+                  }}
+                  onSelect={(term) => {
+                    actionUpdateModule({ editable, editId: null, module: { ...course, termsCollapsed: false }}, () => {
+                      const relationTerm = new RelationTerm()
+                        .setModuleId(moduleId)
+                        .setTermId(term.id)
+                        .serialize()
 
-                        actionUpdateModule({ editable, editId: null, module: { ...course, termsCollapsed: false }}, () => {
-                          if (ref.current?.onCreate) {
-                            ref.current?.onCreate()
-                          }
-                        })
-                      }}
-                      onClick={(term) => {
-                        actionUpdateModule({ editable, editId: null, module: { ...course, termsCollapsed: false }}, () => {
-                          const relationTerm = new RelationTerm()
-                            .setModuleId(moduleId)
-                            .setTermId(term.id)
-                            .serialize()
-
-                          actionCreateRelationTerm({ relationTerm, editable })
-                        })
-                      }}
-                    />
-                  )}
-                >
-                  <SVGFileNew
-                    width={18}
-                    height={18}
-                  />
-                </Dropdown>
+                      actionCreateRelationTerm({ relationTerm, editable })
+                    })
+                  }}
+                />
 
                 <ButtonSquare
                   size={24}
@@ -222,8 +203,36 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
                   relation={{ moduleId }}
                   relatedTerms={relatedTerms}
                 />
+
+                <div className="flex w-full mt-2">
+                  <TermsDropdown
+                    excludeTermIds={excludeTermIds}
+                    placement={DropdownPlacement.topStart}
+                    onCreate={() => {
+                      actionUpdateModule({ editable, editId: null, module: { ...course, termsCollapsed: false }}, () => {
+                        if (ref.current?.onCreate) {
+                          ref.current?.onCreate()
+                        }
+                      })
+                    }}
+                    onSelect={(term) => {
+                      actionUpdateModule({ editable, editId: null, module: { ...course, termsCollapsed: false }}, () => {
+                        const relationTerm = new RelationTerm()
+                          .setModuleId(moduleId)
+                          .setTermId(term.id)
+                          .serialize()
+
+                        actionCreateRelationTerm({ relationTerm, editable })
+                      })
+                    }}
+                  >
+                    {t('btnAddCard')}
+                  </TermsDropdown>
+                </div>
               </>
             }
+
+
           </FolderCart>
 
           <FolderCart

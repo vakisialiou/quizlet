@@ -7,23 +7,22 @@ import {
 } from '@store/action-main'
 import { findTermsWithRelations, getFolder } from '@helper/relation'
 import React, { useMemo, useState, useRef, useEffect } from 'react'
-import TermsDropdownMenu from '@containers/TermsDropdownMenu'
 import { sortTermsWithRelations } from '@helper/sort-terms'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
 import Button, {ButtonVariant} from '@components/Button'
 import { useMainSelector } from '@hooks/useMainSelector'
 import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
+import {DropdownPlacement} from '@components/Dropdown'
+import TermsDropdown from '@containers/TermsDropdown'
 import RelationFolder from '@entities/RelationFolder'
 import RelatedTerms from '@containers/RelatedTerms'
 import ButtonSquare from '@components/ButtonSquare'
-import SVGFileNew from '@public/svg/file_new.svg'
 import RelationTerm from '@entities/RelationTerm'
 import ContentPage from '@containers/ContentPage'
 import FolderCart from '@components/FolderCart'
 import { getGroupById } from '@helper/relation'
 import FormFolder from '@containers/FormFolder'
 import MetaLabel from '@components/MetaLabel'
-import Dropdown from '@components/Dropdown'
 import { useTranslations } from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
 import SVGPlay from '@public/svg/play.svg'
@@ -84,7 +83,6 @@ export default function ClientPageFolder({ editable, groupId, folderId }: { edit
   const t = useTranslations('Folder')
 
   const ref = useRef<{ onCreate?: () => void }>({})
-  const refDropdownTerms = useRef<{ close?: () => void }>({})
 
   return (
     <ContentPage
@@ -148,44 +146,27 @@ export default function ClientPageFolder({ editable, groupId, folderId }: { edit
             labels={<MetaLabel>{relatedTerms.length}</MetaLabel>}
             controls={(
               <>
-                <Dropdown
-                  caret
-                  ref={refDropdownTerms}
-                  className="px-1 min-w-8 h-8 items-center"
-                  menu={(
-                    <TermsDropdownMenu
-                      moduleId={group?.moduleId}
-                      excludeTermIds={excludeTermIds}
-                      className="w-56"
-                      onCreate={() => {
-                        if (refDropdownTerms.current.close) {
-                          refDropdownTerms.current.close()
-                        }
+                <TermsDropdown
+                  excludeTermIds={excludeTermIds}
+                  moduleId={group?.moduleId}
+                  onCreate={() => {
+                    actionUpdateFolder({ editable, editId: null, folder: { ...folder, termsCollapsed: false } }, () => {
+                      if (ref.current?.onCreate) {
+                        ref.current?.onCreate()
+                      }
+                    })
+                  }}
+                  onSelect={(term) => {
+                    actionUpdateFolder({ editable, editId: null, folder: { ...folder, termsCollapsed: false } }, () => {
+                      const relationTerm = new RelationTerm()
+                        .setFolderId(folderId)
+                        .setTermId(term.id)
+                        .serialize()
 
-                        actionUpdateFolder({ editable, editId: null, folder: { ...folder, termsCollapsed: false } }, () => {
-                          if (ref.current?.onCreate) {
-                            ref.current?.onCreate()
-                          }
-                        })
-                      }}
-                      onClick={(term) => {
-                        actionUpdateFolder({ editable, editId: null, folder: { ...folder, termsCollapsed: false } }, () => {
-                          const relationTerm = new RelationTerm()
-                            .setFolderId(folderId)
-                            .setTermId(term.id)
-                            .serialize()
-
-                          actionCreateRelationTerm({ relationTerm, editable })
-                        })
-                      }}
-                    />
-                  )}
-                >
-                  <SVGFileNew
-                    width={18}
-                    height={18}
-                  />
-                </Dropdown>
+                      actionCreateRelationTerm({ relationTerm, editable })
+                    })
+                  }}
+                />
 
                 <ButtonSquare
                   size={24}
@@ -219,6 +200,33 @@ export default function ClientPageFolder({ editable, groupId, folderId }: { edit
                   relation={{ folderId }}
                   relatedTerms={relatedTerms}
                 />
+
+                <div className="flex w-full mt-2">
+                  <TermsDropdown
+                    moduleId={group?.moduleId}
+                    excludeTermIds={excludeTermIds}
+                    placement={DropdownPlacement.topStart}
+                    onCreate={() => {
+                      actionUpdateFolder({ editable, editId: null, folder: { ...folder, termsCollapsed: false } }, () => {
+                        if (ref.current?.onCreate) {
+                          ref.current?.onCreate()
+                        }
+                      })
+                    }}
+                    onSelect={(term) => {
+                      actionUpdateFolder({ editable, editId: null, folder: { ...folder, termsCollapsed: false } }, () => {
+                        const relationTerm = new RelationTerm()
+                          .setFolderId(folderId)
+                          .setTermId(term.id)
+                          .serialize()
+
+                        actionCreateRelationTerm({ relationTerm, editable })
+                      })
+                    }}
+                  >
+                    {t('btnAddCard')}
+                  </TermsDropdown>
+                </div>
               </>
             }
           </FolderCart>

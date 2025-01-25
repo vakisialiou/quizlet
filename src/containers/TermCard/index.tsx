@@ -113,7 +113,10 @@ export default function TermCard(
             <SVGError
               width={16}
               height={16}
-              className="text-red-600"
+              className={clsx('', {
+                ['text-red-600']: !warn,
+                ['text-amber-600']: warn,
+              })}
             />
           }
         </div>

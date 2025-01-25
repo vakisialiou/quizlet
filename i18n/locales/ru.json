@@ -140,7 +140,8 @@
     "namePlaceholder": "Название курса",
     "textPlaceholder": "Текст",
     "groupsTitle": "Разделы",
-    "termsTitle": "Карточки"
+    "termsTitle": "Карточки",
+    "btnAddCard": "Добавить карточку"
   },
   "Groups": {
     "removeDialogText": "Вы уверены, что хотите удалить раздел?",
@@ -180,7 +181,8 @@
     "namePlaceholder": "Название категории",
     "noCardsHelper": "Вы еще не добавили ни одной карточки.",
     "searchPlaceholder": "Поиск...",
-    "folderNoName": "(Без имени)"
+    "folderNoName": "(Без имени)",
+    "btnAddCard": "Добавить карточку"
   },
   "Terms": {
     "headTitle": "Карточки",
@@ -203,7 +205,7 @@
     "emptyList": "Список карточек пуст.",
     "tabAllCards": "Все",
     "tabCreate": "Создать",
-    "tabRelatedCards": "Учебный курс",
+    "tabRelatedCards": "Курс",
     "termSearch": "Найти карточку..."
   },
   "Simulators": {

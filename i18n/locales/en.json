@@ -142,7 +142,8 @@
     "namePlaceholder": "Course Name",
     "textPlaceholder": "Text",
     "groupsTitle": "Sections",
-    "termsTitle": "Cards"
+    "termsTitle": "Cards",
+    "btnAddCard": "Add Card"
   },
   "Groups": {
     "removeDialogText": "Are you sure you want to delete the section?",
@@ -182,7 +183,8 @@
     "namePlaceholder": "Category Name",
     "noCardsHelper": "You haven't added any cards yet.",
     "searchPlaceholder": "Search...",
-    "folderNoName": "(No Name)"
+    "folderNoName": "(No Name)",
+    "btnAddCard": "Add Card"
   },
   "Terms": {
     "headTitle": "Cards",
@@ -205,7 +207,7 @@
     "emptyList": "The card list is empty.",
     "tabAllCards": "All",
     "tabCreate": "Create",
-    "tabRelatedCards": "Learning Course",
+    "tabRelatedCards": "Course",
     "termSearch": "Find Card..."
   },
   "Simulators": {
