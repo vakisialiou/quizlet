@@ -60,16 +60,16 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
 
         <div className="flex h-16 px-4 flex-col border-b border-white/5 p-4 bg-white/10">
           <div className="flex h-8 justify-between">
-            <div className="flex gap-4 items-center">
+            <div className="flex gap-2 items-center">
               <Image
                 priority
                 alt="Logo"
-                height={20}
-                width={23.5}
-                src="/svg/logo.svg"
+                height={24}
+                width={24}
+                src="/favicon.png"
               />
 
-              <span className="text-xl font-bold">
+              <span className="text-xl font-bold leading-4">
                 QuizerPlay
               </span>
             </div>
