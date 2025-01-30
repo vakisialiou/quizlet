@@ -1,6 +1,23 @@
 'use client'
 
 import React, { useCallback, useMemo, useState, useImperativeHandle, Ref, forwardRef } from 'react'
+import { filterRelatedTerms, searchRelatedTerms } from '@helper/search-terms'
+import { findTermsWithRelations, getModule } from '@helper/relation'
+import Button, { ButtonVariant } from '@components/Button'
+import { useShareSelector } from '@hooks/useShapeSelector'
+import { useMainSelector } from '@hooks/useMainSelector'
+import { ModuleShareData } from '@entities/ModuleShare'
+import { TermFiltersData } from '@entities/TermFilters'
+import ColorDropdown from '@components/ColorDropdown'
+import { sortRelatedTerms } from '@helper/sort-terms'
+import { filterDeletedTerms } from '@helper/terms'
+import RelationTerm from '@entities/RelationTerm'
+import Term, { TermData } from '@entities/Term'
+import { useSpeech } from '@hooks/useSpeech'
+import TermCard from '@containers/TermCard'
+import {useTranslations} from 'next-intl'
+import { OrderEnum } from '@helper/sort'
+import Dialog from '@components/Dialog'
 import {
   actionCreateSharedTerm,
   actionUpsertSharedTerm,
@@ -9,71 +26,68 @@ import {
 import {
   actionUpsertTerm
 } from '@store/action-main'
-import Button, { ButtonVariant } from '@components/Button'
-import { useShareSelector } from '@hooks/useShapeSelector'
-import { useMainSelector } from '@hooks/useMainSelector'
-import { ModuleShareData } from '@entities/ModuleShare'
-import { filterDeletedTerms } from '@helper/terms'
-import RelationTerm from '@entities/RelationTerm'
-import {searchTerms} from '@helper/search-terms'
-import Term, { TermData } from '@entities/Term'
-import { useSpeech } from '@hooks/useSpeech'
-import {sortTerms} from '@helper/sort-terms'
-import TermCard from '@containers/TermCard'
-import {useTranslations} from 'next-intl'
-import Dialog from '@components/Dialog'
-
-export type TypeFilterGrid = {
-  search: string | null,
-}
+import {COLOR_DEFAULT} from "@components/ColorLabel";
 
 function Grid(
   {
     share,
+    order,
     filter,
+    search,
     editable,
   }:
   {
+    search: string
+    order: OrderEnum
     editable: boolean
-    filter: TypeFilterGrid
     share: ModuleShareData
+    filter: TermFiltersData
   },
   ref: Ref<{ onCreate?: () => void }>
 ) {
   const userModules = useMainSelector(({ modules }) => modules)
-  const userHasModule = useMemo(() => {
-    return !!userModules.find((module) => module.id === share.moduleId)
+  const userModule = useMemo(() => {
+    return getModule(userModules, share.moduleId)
   }, [userModules, share.moduleId])
 
   const tryUpdateMainTermState = useCallback((term: TermData, callback?: () => void) => {
-    if (!userHasModule) {
+    if (!userModule) {
       return
     }
     actionUpsertTerm({ term, editId: null, editable: false }, callback)
-  }, [userHasModule])
+  }, [userModule])
 
   const [ originItem, setOriginItem ] = useState<TermData | null>(null)
   const [ removeTerm, setRemoveTerm ] = useState<TermData | null>(null)
 
   const edit = useShareSelector((state) => state.edit)
   const terms = useShareSelector((state) => state.terms)
-  const visibleTerms = useMemo(() => filterDeletedTerms(terms), [terms])
+  const relationTerms = useShareSelector((state) => state.relationTerms)
 
-  const filteredTerms = useMemo(() => {
-    let rawItems = [...visibleTerms]
+  const relatedTerms = useMemo(() => {
+    const visibleTerms = filterDeletedTerms(terms)
+    return findTermsWithRelations(relationTerms, visibleTerms, { moduleId: share.moduleId })
+  }, [relationTerms, terms, share.moduleId])
 
-    if (filter.search) {
-      rawItems = searchTerms(rawItems, filter.search, edit.termId)
+  const filteredItems = useMemo(() => {
+    let rawItems = [...relatedTerms]
+    if (search) {
+      rawItems = searchRelatedTerms(rawItems, search, edit.termId)
     }
 
-    return sortTerms(rawItems)
-  }, [visibleTerms, filter, edit.termId])
+    return filterRelatedTerms(rawItems, filter, edit.termId)
+  }, [relatedTerms, search, filter, edit.termId])
+
+  const sortedItems = useMemo(() => {
+    return sortRelatedTerms([...filteredItems], order)
+  }, [filteredItems, order])
 
   const { speech, soundInfo, setSoundInfo } = useSpeech<{ playingName: string | null, termId: string | null }>({ playingName: null, termId: null })
 
   const onCreate = useCallback(() => {
     const term = new Term().serialize()
     const relationTerm = new RelationTerm()
+      .setOrder(sortedItems.length + 1)
       .setModuleId(share.moduleId)
       .setTermId(term.id)
       .serialize()
@@ -82,7 +96,7 @@ function Grid(
       setOriginItem(term)
       tryUpdateMainTermState(term)
     })
-  }, [editable, share.moduleId, share.id, tryUpdateMainTermState])
+  }, [editable, share.moduleId, share.id, sortedItems, tryUpdateMainTermState])
 
   useImperativeHandle(ref, () => ({ onCreate }))
 
@@ -101,7 +115,7 @@ function Grid(
       <div
         className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2"
       >
-        {filteredTerms.map((term, index) => {
+        {sortedItems.map(({ term, relation }, index) => {
           return (
             <div
               key={term.id}
@@ -123,9 +137,22 @@ function Grid(
                     editable
                   }, () => tryUpdateMainTermState(updatedTerm))
                 }}
-                onChangeColor={(color) => {
-                  actionUpsertTerm({ term: { ...term, color }, editId: edit.termId, editable })
-                }}
+                controls={(
+                  <ColorDropdown
+                    className="p-2"
+                    selected={relation.color || COLOR_DEFAULT}
+                    onClick={(e) => e.preventDefault()}
+                    onChange={(color) => {
+                      const updatedTerm = { ...term, color }
+                      actionUpsertSharedTerm({
+                        term: updatedTerm,
+                        shareId: share.id,
+                        editId: edit.termId,
+                        editable
+                      }, () => tryUpdateMainTermState(updatedTerm))
+                    }}
+                  />
+                )}
                 onSave={() => {
                   actionUpsertSharedTerm({ term, editId: null, editable, shareId: share.id }, () => {
                     if (originItem) {

@@ -1,5 +1,7 @@
-import Folder, { FolderData, FolderMarkersEnum } from '@entities/Folder'
+import Folder, { FolderData } from '@entities/Folder'
 import { Prisma, PrismaEntry } from '@lib/prisma'
+import { MarkersEnum } from '@entities/Marker'
+import {TermSettingsData} from "@entities/TermSettings";
 
 export type FolderSelectType = {
   id: boolean,
@@ -11,6 +13,7 @@ export type FolderSelectType = {
   updatedAt: boolean,
   createdAt: boolean,
   degreeRate: boolean,
+  termSettings: boolean,
 }
 
 export const FolderSelect = {
@@ -23,24 +26,26 @@ export const FolderSelect = {
   updatedAt: true,
   createdAt: true,
   degreeRate: true,
+  termSettings: true,
 } as FolderSelectType
 
 type FolderResult = Prisma.FolderGetPayload<{
   select: typeof FolderSelect
 }>
 
-export const createFolderSelect = (folder: FolderResult) => {
-  const markers = Array.isArray(folder.markers) ? folder.markers as FolderMarkersEnum[] : []
+export const createFolderSelect = (data: FolderResult) => {
+  const markers = Array.isArray(data.markers) ? data.markers as MarkersEnum[] : []
   return new Folder()
-    .setId(folder.id)
+    .setId(data.id)
     .setMarkers(markers)
-    .setName(folder.name)
-    .setOrder(folder.order)
-    .setCollapsed(folder.collapsed)
-    .setUpdatedAt(folder.updatedAt)
-    .setCreatedAt(folder.createdAt)
-    .setDegreeRate(folder.degreeRate)
-    .setTermsCollapsed(folder.termsCollapsed)
+    .setName(data.name)
+    .setOrder(data.order)
+    .setCollapsed(data.collapsed)
+    .setUpdatedAt(data.updatedAt)
+    .setCreatedAt(data.createdAt)
+    .setDegreeRate(data.degreeRate)
+    .setTermsCollapsed(data.termsCollapsed)
+    .setTermSettings(data.termSettings as TermSettingsData | null)
 }
 
 export const findFoldersByUserId = async (db: PrismaEntry, userId: string): Promise<FolderData[]> => {
@@ -77,6 +82,7 @@ export const upsertFolder = async (db: PrismaEntry, userId: string, item: Folder
       order: item.order,
       collapsed: item.collapsed,
       degreeRate: item.degreeRate,
+      termSettings: item.termSettings,
       termsCollapsed: item.termsCollapsed,
       updatedAt: new Date(),
     },
@@ -88,6 +94,7 @@ export const upsertFolder = async (db: PrismaEntry, userId: string, item: Folder
       order: item.order,
       collapsed: item.collapsed,
       degreeRate: item.degreeRate,
+      termSettings: item.termSettings,
       termsCollapsed: item.termsCollapsed,
       createdAt: new Date(),
       updatedAt: new Date()
@@ -103,7 +110,7 @@ export const createManyFolder = async (db: PrismaEntry, userId: string, items: F
 
   const res = await db.folder.createMany({
     data: items.map((item) => {
-      const markers = Array.isArray(item.markers) ? item.markers as FolderMarkersEnum[] : []
+      const markers = Array.isArray(item.markers) ? item.markers as MarkersEnum[] : []
       return {
         userId,
         markers,
@@ -112,6 +119,7 @@ export const createManyFolder = async (db: PrismaEntry, userId: string, items: F
         order: item.order,
         collapsed: item.collapsed,
         degreeRate: item.degreeRate,
+        termSettings: item.termSettings,
         termsCollapsed: item.termsCollapsed,
         createdAt,
         updatedAt

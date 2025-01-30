@@ -1,19 +1,23 @@
 import Dropdown, { DropdownPlacement } from '@components/Dropdown'
-import { ModuleData, ModuleMarkersEnum } from '@entities/Module'
 import { actionUpdateModule } from '@store/action-main'
 import React, { useCallback, useRef } from 'react'
+import { MarkersEnum } from '@entities/Marker'
 import MetaLabel from '@components/MetaLabel'
+import { ModuleData } from '@entities/Module'
 import Textarea from '@components/Textarea'
 import { useTranslations } from 'next-intl'
 import Input from '@components/Input'
+import clsx from "clsx";
 
 export default function FolderModule(
   {
     module,
-    editable
+    editable,
+    className = ''
   }:
   {
-    module: ModuleData,
+    className?: string
+    module: ModuleData
     editable: boolean
   }
 ) {
@@ -44,21 +48,18 @@ export default function FolderModule(
   }, [editable])
 
   const labels = [
-    {id: ModuleMarkersEnum.focus, name: tl('focus')},
-    {id: ModuleMarkersEnum.important, name: tl('important')}
+    {id: MarkersEnum.focus, name: tl('focus')},
+    {id: MarkersEnum.important, name: tl('important')}
   ]
 
   const SHOW_DESC = false
 
   return (
-    <div className="flex flex-col gap-2 w-full">
-      <Input
-        autoFocus
-        value={module.name || ''}
-        placeholder={t('namePlaceholder')}
-        onBlur={() => onChangeSave(module)}
-        onChange={(e) => onChangeUpdate({ ...module, name: e.target.value })}
-      />
+    <div
+      className={clsx('flex flex-col gap-2 w-full', {
+        [className]: className,
+      })}
+    >
 
       <div className="flex items-center justify-between gap-1">
         <Dropdown
@@ -68,7 +69,7 @@ export default function FolderModule(
           className="h-8 px-2 gap-1 text-sm"
           placement={DropdownPlacement.bottomStart}
           onSelect={(id) => {
-            const marker = id as ModuleMarkersEnum
+            const marker = id as MarkersEnum
             const markers = [...module.markers]
             const index = markers.indexOf(marker)
             if (index === -1) {
@@ -99,6 +100,14 @@ export default function FolderModule(
           </div>
         }
       </div>
+
+      <Input
+        autoFocus
+        value={module.name || ''}
+        placeholder={t('namePlaceholder')}
+        onBlur={() => onChangeSave(module)}
+        onChange={(e) => onChangeUpdate({ ...module, name: e.target.value })}
+      />
 
       {SHOW_DESC &&
         <Textarea

@@ -1,7 +1,6 @@
 'use client'
 
 import {actionUpdateFolderGroup, actionUpdateModule} from '@store/action-main'
-import {sortModules, OrderEnum, ORDER_DEFAULT} from '@helper/sort-modules'
 import MetaLabel, {MetaLabelVariant} from '@components/MetaLabel'
 import { findActiveSimulators } from '@helper/simulators/general'
 import DialogRemoveModule from '@containers/DialogRemoveModule'
@@ -12,15 +11,17 @@ import AchievementIcon from '@containers/AchievementIcon'
 import { findTermsWithRelations } from '@helper/relation'
 import { useMainSelector } from '@hooks/useMainSelector'
 import { searchModules } from '@helper/search-modules'
-import { ModuleMarkersEnum } from '@entities/Module'
+import { OrderEnum, ORDER_DEFAULT} from '@helper/sort'
 import Module from '@containers/Collection/Module'
 import Groups from '@containers/Collection/Groups'
 import SVGEdit from '@public/svg/greasepencil.svg'
 import { getLastStudyModule } from '@helper/study'
 import DialogShare from '@containers/DialogShare'
-import { ModuleFilter } from '@entities/Settings'
+import { ModuleFilters } from '@entities/Settings'
+import { sortModules} from '@helper/sort-modules'
 import React, { useMemo, useState } from 'react'
 import FolderGroup from '@entities/FolderGroup'
+import { MarkersEnum } from '@entities/Marker'
 import SVGLinked from '@public/svg/linked.svg'
 import { ModuleData } from '@entities/Module'
 import SVGTrash from '@public/svg/trash.svg'
@@ -40,7 +41,7 @@ export type TypeOptions = {
   limit: number | null,
   search: string | null
   order: OrderEnum,
-  filter: ModuleFilter
+  filter: ModuleFilters
 }
 
 export default function Modules(
@@ -66,8 +67,8 @@ export default function Modules(
   const tl = useTranslations('Labels')
 
   const labels = [
-    {id: ModuleMarkersEnum.focus, name: tl('focus')},
-    {id: ModuleMarkersEnum.important, name: tl('important')}
+    {id: MarkersEnum.focus, name: tl('focus')},
+    {id: MarkersEnum.important, name: tl('important')}
   ]
 
   const dropdownParentItems = [
@@ -112,11 +113,11 @@ export default function Modules(
 
           const isLastStudy = lastStudyModule?.id === module.id
 
-          if (options.filter.marker === ModuleMarkersEnum.active && activeSimulators.length === 0) {
+          if (options.filter.marker === MarkersEnum.active && activeSimulators.length === 0) {
             return
           }
 
-          if (options.filter.marker && [ModuleMarkersEnum.focus, ModuleMarkersEnum.important].includes(options.filter.marker)) {
+          if (options.filter.marker && [MarkersEnum.focus, MarkersEnum.important].includes(options.filter.marker)) {
             if (!module.markers.includes(options.filter.marker)) {
               return
             }

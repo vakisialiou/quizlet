@@ -6,9 +6,9 @@ import {
   TermData
 } from '@entities/Term'
 import { COLOR_DEFAULT, ColorEnum } from '@components/ColorLabel'
+import { useCallback, useEffect, useRef, ReactNode } from 'react'
 import Dropdown, { DropdownVariant } from '@components/Dropdown'
 import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
-import { useCallback, useEffect, useRef } from 'react'
 import Button, {ButtonSize} from '@components/Button'
 import ColorDropdown from '@components/ColorDropdown'
 import SVGPencil from '@public/svg/greasepencil.svg'
@@ -44,12 +44,12 @@ export default function TermCard(
     onRemove,
     onExit,
     onSave,
+    controls,
     onChange,
     readonly,
     collapsed = true,
     onCollapse,
     onClickSound,
-    onChangeColor,
     soundPlayingName
   }:
   {
@@ -57,14 +57,15 @@ export default function TermCard(
     number: number
     edit: boolean
     warn?: boolean
+
     readonly: boolean
     collapsed: boolean
     onEdit: () => void
     onRemove: () => void
     onExit: () => void
     onSave: () => void
+    controls?: ReactNode,
     onCollapse?: () => void,
-    onChangeColor?: (color: ColorEnum) => void,
     onChange: (prop: string, value: string | number) => void
     soundPlayingName: SoundPlayingNameEnum | string | null,
     onClickSound: (params: ClickSoundCallbackParams) => void
@@ -123,16 +124,7 @@ export default function TermCard(
       )}
       controls={(
         <>
-          <ColorDropdown
-            className="p-2"
-            selected={data.color || COLOR_DEFAULT}
-            onClick={(e) => e.preventDefault()}
-            onChange={(color) => {
-              if (onChangeColor) {
-                onChangeColor(color)
-              }
-            }}
-          />
+          {controls}
 
           <ButtonSquare
             size={24}

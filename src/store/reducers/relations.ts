@@ -1,8 +1,9 @@
 import {
+  updateRelationTermData,
   createRelationTermData,
   removeRelationTermData,
   createRelationFolderData,
-  removeRelationFolderData
+  removeRelationFolderData,
 } from '@store/fetch/relations'
 import { RelationFolderData } from '@entities/RelationFolder'
 import { RelationTermData } from '@entities/RelationTerm'
@@ -20,6 +21,21 @@ export const createRelationTerm = createAsyncThunk(
   async (payload: CreateRelationTermType): Promise<boolean> => {
     if (payload.editable) {
       return await createRelationTermData(payload.relationTerm)
+    }
+    return true
+  }
+)
+
+export type UpdateRelationTermType = {
+  relationTerm: RelationTermData,
+  editable: boolean,
+}
+
+export const updateRelationTerm = createAsyncThunk(
+  '/relation/term/update',
+  async (payload: UpdateRelationTermType): Promise<boolean> => {
+    if (payload.editable) {
+      return await updateRelationTermData(payload.relationTerm)
     }
     return true
   }
@@ -74,6 +90,12 @@ export const removeRelationFolder = createAsyncThunk(
 export const relationReducers = (builder: any) => {
   builder
     .addCase(createRelationTerm.pending, (state: ConfigType, action: { meta: { arg: CreateRelationTermType } }) => {
+      const { relationTerm } = action.meta.arg
+      state.relationTerms = upsertObject([...state.relationTerms], relationTerm)
+    })
+
+  builder
+    .addCase(updateRelationTerm.pending, (state: ConfigType, action: { meta: { arg: UpdateRelationTermType } }) => {
       const { relationTerm } = action.meta.arg
       state.relationTerms = upsertObject([...state.relationTerms], relationTerm)
     })

@@ -4,6 +4,15 @@ import { clientFetch } from '@lib/fetch-client'
 
 export const createRelationTermData = async (relation: RelationTermData): Promise<boolean> => {
   const res = await clientFetch(`/api/relation/terms`, {
+    method: 'POST',
+    body: JSON.stringify({ relation })
+  })
+
+  return res.ok
+}
+
+export const updateRelationTermData = async (relation: RelationTermData): Promise<boolean> => {
+  const res = await clientFetch(`/api/relation/terms`, {
     method: 'PUT',
     body: JSON.stringify({ relation })
   })

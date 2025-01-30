@@ -1,10 +1,6 @@
+import TermSettings, { TermSettingsData } from './TermSettings'
+import { MarkersEnum } from '@entities/Marker'
 import { v4 } from 'uuid'
-
-export enum ModuleMarkersEnum {
-  active = 'active',
-  focus = 'focus',
-  important = 'important',
-}
 
 export type ModuleData = {
   id: string
@@ -15,7 +11,8 @@ export type ModuleData = {
   groupsCollapsed: boolean
   order: number,
   degreeRate: number,
-  markers: ModuleMarkersEnum[]
+  markers: MarkersEnum[]
+  termSettings: TermSettingsData
   updatedAt: Date
   createdAt: Date
 }
@@ -29,7 +26,8 @@ export default class Module {
   name: string | null
   description: string | null
   degreeRate: number
-  markers: ModuleMarkersEnum[]
+  markers: MarkersEnum[]
+  termSettings: TermSettingsData
   updatedAt: Date
   createdAt: Date
 
@@ -43,8 +41,14 @@ export default class Module {
     this.termsCollapsed = false
     this.groupsCollapsed = false
     this.markers = []
+    this.termSettings = new TermSettings().serialize()
     this.updatedAt = new Date()
     this.createdAt = new Date()
+  }
+
+  setTermSettings(value: TermSettingsData | null): Module {
+    this.termSettings = {...this.termSettings, ...value}
+    return this
   }
 
   setCollapsed(value: boolean): Module {
@@ -82,12 +86,12 @@ export default class Module {
     return this
   }
 
-  setMarkers(value: ModuleMarkersEnum[]): Module {
+  setMarkers(value: MarkersEnum[]): Module {
     this.markers = value
     return this
   }
 
-  addMarker(value: ModuleMarkersEnum): Module {
+  addMarker(value: MarkersEnum): Module {
     this.markers.push(value)
     return this
   }

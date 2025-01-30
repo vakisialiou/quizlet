@@ -11,20 +11,19 @@ import { useSpeech } from '@hooks/useSpeech'
 import {sortTerms} from '@helper/sort-terms'
 import TermCard from '@containers/TermCard'
 import {useTranslations} from 'next-intl'
+import { OrderEnum } from '@helper/sort'
 import Dialog from '@components/Dialog'
-
-export type TypeFilterGrid = {
-  search: string | null,
-}
 
 function Grid(
   {
-    filter,
+    order,
+    search,
     editable,
   }:
   {
+    search: string
+    order: OrderEnum
     editable: boolean
-    filter: TypeFilterGrid
   },
   ref: Ref<{ onCreate?: () => void }>
 ) {
@@ -39,12 +38,16 @@ function Grid(
   const filteredTerms = useMemo(() => {
     let rawItems = [...visibleTerms]
 
-    if (filter.search) {
-      rawItems = searchTerms(rawItems, filter.search, edit.termId)
+    if (search) {
+      rawItems = searchTerms(rawItems, search, edit.termId)
     }
 
-    return sortTerms(rawItems)
-  }, [visibleTerms, filter, edit.termId])
+    return sortTerms(rawItems, order)
+  }, [visibleTerms, search, order, edit.termId])
+
+  const orderedTerms = useMemo(() => {
+    return sortTerms(filteredTerms, order)
+  }, [filteredTerms, order])
 
   const { speech, soundInfo, setSoundInfo } = useSpeech<{ playingName: string | null, termId: string | null }>({ playingName: null, termId: null })
 
@@ -73,7 +76,7 @@ function Grid(
       <div
         className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2"
       >
-        {filteredTerms.map((term, index) => {
+        {orderedTerms.map((term, index) => {
           return (
             <div
               key={term.id}
@@ -92,9 +95,6 @@ function Grid(
                     editId: null,
                     editable,
                   })
-                }}
-                onChangeColor={(color) => {
-                  actionUpsertTerm({ term: { ...term, color }, editId: edit.termId, editable })
                 }}
                 onSave={() => {
                   actionUpsertTerm({ term, editId: null, editable }, () => {

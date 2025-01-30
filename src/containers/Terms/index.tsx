@@ -1,11 +1,13 @@
 'use client'
 
+import { OrderEnum, TERM_ORDER_DEFAULT } from '@helper/sort'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
 import Button, {ButtonVariant} from '@components/Button'
 import SVGFileBlank from '@public/svg/file_blank.svg'
 import ButtonSquare from '@components/ButtonSquare'
 import ContentPage from '@containers/ContentPage'
 import React, { useState, useRef } from 'react'
+import FilterTerm from '@containers/FilterTerm'
 import { useTranslations } from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
 import Grid from '@containers/Terms/Grid'
@@ -16,6 +18,9 @@ export default function Terms() {
   const t = useTranslations('Terms')
   const [ search, setSearch ] = useState<string>('')
   const ref = useRef<{ onCreate?: () => void }>({})
+
+  const [ order, setOrder ] = useState<OrderEnum>(TERM_ORDER_DEFAULT)
+  console.log(order)
 
   return (
     <ContentPage
@@ -71,10 +76,18 @@ export default function Terms() {
         </>
       )}
     >
+      <FilterTerm
+        selectedOrderId={order}
+        onOrderSelect={(id) => {
+          setOrder(id as OrderEnum)
+        }}
+      />
+
       <Grid
         ref={ref}
+        order={order}
         editable={true}
-        filter={{ search }}
+        search={search}
       />
     </ContentPage>
   )

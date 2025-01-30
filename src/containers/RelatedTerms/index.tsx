@@ -1,59 +1,72 @@
 'use client'
 
-import { actionUpsertTerm, actionCreateRelationTerm, actionEditTerm, actionRemoveRelationTerm } from '@store/action-main'
 import React, { useCallback, useMemo, useState, useImperativeHandle, Ref, forwardRef } from 'react'
+import {filterRelatedTerms, searchRelatedTerms} from '@helper/search-terms'
 import RelationTerm, {RelatedTermData} from '@entities/RelationTerm'
-import { sortTermsWithRelations } from '@helper/sort-terms'
 import Button, { ButtonVariant } from '@components/Button'
-import { searchRelatedTerms } from '@helper/search-terms'
 import { useMainSelector } from '@hooks/useMainSelector'
+import { TermFiltersData } from '@entities/TermFilters'
+import { COLOR_DEFAULT } from '@components/ColorLabel'
+import { sortRelatedTerms } from '@helper/sort-terms'
 import { findTermIntersections } from '@helper/terms'
+import ColorDropdown from '@components/ColorDropdown'
 import { findRelationTerm } from '@helper/relation'
 import Term, { TermData } from '@entities/Term'
 import { RelationProps} from '@helper/relation'
 import { useSpeech } from '@hooks/useSpeech'
 import TermCard from '@containers/TermCard'
 import {useTranslations} from 'next-intl'
+import { OrderEnum } from '@helper/sort'
 import Dialog from '@components/Dialog'
-
-export type TypeFilterGrid = {
-  search: string | null,
-}
+import {
+  actionEditTerm,
+  actionUpsertTerm,
+  actionCreateRelationTerm,
+  actionRemoveRelationTerm,
+  actionUpdateRelationTerm
+} from '@store/action-main'
 
 function RelatedTerms(
   {
     relatedTerms,
     relation,
     editable,
-    filter
+    search,
+    filter,
+    order,
   }:
   {
+    search: string
+    order: OrderEnum
     editable: boolean
     relation: RelationProps
-    filter: TypeFilterGrid
+    filter: TermFiltersData
     relatedTerms: RelatedTermData[]
   },
   ref: Ref<{ onCreate?: () => void }>
 ) {
   const [ originItem, setOriginItem ] = useState<TermData | null>(null)
-  const [removeTerm, setRemoveTerm] = useState<TermData | null>(null)
+  const [ removeTerm, setRemoveTerm ] = useState<TermData | null>(null)
 
   const relationTerms = useMainSelector(({ relationTerms }) => relationTerms)
   const edit = useMainSelector(({ edit }) => edit)
 
   const filteredTerms = useMemo(() => {
     let rawItems = [...relatedTerms]
-
-    if (filter.search) {
-      rawItems = searchRelatedTerms(rawItems, filter.search, edit.termId)
+    if (search) {
+      rawItems = searchRelatedTerms(rawItems, search, edit.termId)
     }
 
-    return sortTermsWithRelations(rawItems)
-  }, [relatedTerms, filter, edit.termId])
+    return filterRelatedTerms(rawItems, filter, edit.termId)
+  }, [relatedTerms, search, filter, edit.termId])
+
+  const sortedTerms = useMemo(() => {
+    return sortRelatedTerms([...filteredTerms], order)
+  }, [filteredTerms, order])
 
   const termIntersections = useMemo(() => {
-    return findTermIntersections(filteredTerms.map(({ term }) => term))
-  }, [filteredTerms])
+    return findTermIntersections(sortedTerms.map(({ term }) => term))
+  }, [sortedTerms])
 
   const { speech, soundInfo, setSoundInfo } = useSpeech<{ playingName: string | null, termId: string | null }>({ playingName: null, termId: null })
 
@@ -84,7 +97,7 @@ function RelatedTerms(
       <div
         className="w-full grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2"
       >
-        {filteredTerms.map(({ term }, index) => {
+        {sortedTerms.map(({ term, relation }, index) => {
           const intersections = termIntersections[term.id] || []
 
           return (
@@ -100,15 +113,25 @@ function RelatedTerms(
                 warn={intersections.length > 0}
                 collapsed={term.collapsed && term.id !== edit.termId}
                 soundPlayingName={soundInfo.termId === term.id ? soundInfo.playingName : null}
+                controls={(
+                  <ColorDropdown
+                    className="p-2"
+                    selected={relation.color || COLOR_DEFAULT}
+                    onClick={(e) => e.preventDefault()}
+                    onChange={(color) => {
+                      actionUpdateRelationTerm({
+                        editable,
+                        relationTerm: { ...relation, color }
+                      })
+                    }}
+                  />
+                )}
                 onCollapse={() => {
                   actionUpsertTerm({
                     term: {...term, collapsed: !term.collapsed},
                     editId: null,
                     editable,
                   })
-                }}
-                onChangeColor={(color) => {
-                  actionUpsertTerm({ term: { ...term, color }, editId: edit.termId, editable })
                 }}
                 onSave={() => {
                   actionUpsertTerm({ term, editId: null, editable }, () => {
@@ -145,16 +168,18 @@ function RelatedTerms(
                 }}
                 onRemove={() => setRemoveTerm(term)}
                 onClickSound={({ play, text, name, lang }) => {
-                  if (speech) {
-                    if (!play) {
-                      speech.stop()
-                      return
-                    }
+                  if (!speech) {
+                    return
+                  }
 
-                    if (text && play) {
-                      setSoundInfo({ playingName: name, termId: term.id })
-                      speech.stop().setLang(lang).setVoice(speech.selectVoice(lang)).speak(text)
-                    }
+                  if (!play) {
+                    speech.stop()
+                    return
+                  }
+
+                  if (text && play) {
+                    setSoundInfo({ playingName: name, termId: term.id })
+                    speech.stop().setLang(lang).setVoice(speech.selectVoice(lang)).speak(text)
                   }
                 }}
               />

@@ -1,31 +1,5 @@
+import { OrderEnum, sortByStr, sortByNum, sortByDate } from '@helper/sort'
 import { ModuleData } from '@entities/Module'
-
-function sortByNum(a: number, b: number, asc: boolean): number {
-  return asc ? a - b : b - a
-}
-
-function sortByStr(a: string | null, b: string | null, asc: boolean): number {
-  const aa = a || ''
-  const bb = b || ''
-  return asc ? aa.localeCompare(bb) : bb.localeCompare(aa)
-}
-
-function sortByDate(a: Date, b: Date, asc: boolean): number {
-  const aa = new Date(a).getTime()
-  const bb = new Date(b).getTime()
-  return asc ? aa - bb : bb - aa
-}
-
-export enum OrderEnum {
-  nameAsc = 'name-asc',
-  nameDesc = 'name-desc',
-  customAsc = 'custom-asc',
-  customDesc = 'custom-desc',
-  dateAsc = 'date-asc',
-  dateDesc = 'date-desc',
-}
-
-export const ORDER_DEFAULT = OrderEnum.dateDesc
 
 export function sortModules(items: ModuleData[], order: OrderEnum): ModuleData[] {
   return [...items].sort((a, b) => {

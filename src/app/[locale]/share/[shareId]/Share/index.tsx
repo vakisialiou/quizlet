@@ -1,5 +1,7 @@
 'use client'
 
+import FilterRelatedTerm from '@containers/FilterRelatedTerm'
+import { OrderEnum, TERM_ORDER_DEFAULT } from '@helper/sort'
 import Button, { ButtonVariant } from '@components/Button'
 import { useShareSelector } from '@hooks/useShapeSelector'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
@@ -8,16 +10,20 @@ import TitleModule from '@containers/TitleModule'
 import SVGFileNew from '@public/svg/file_new.svg'
 import ContentPage from '@containers/ContentPage'
 import React, { useRef, useState } from 'react'
+import TermFilters from '@entities/TermFilters'
 import { useTranslations } from 'next-intl'
 import Grid from './Grid'
 
 export default function Share() {
+  const t = useTranslations('Share')
+
   const [ search, setSearch ] = useState<string>('')
 
   const share = useShareSelector((state) => state.share)
   const course = useShareSelector((state) => state.module)
 
-  const t = useTranslations('Share')
+  const [ order, setOrder ] = useState<OrderEnum>(course?.termSettings.order || TERM_ORDER_DEFAULT)
+  const [ filter, setFilter ] = useState(course?.termSettings.filter || new TermFilters().serialize())
 
   const ref = useRef<{ onCreate?: () => void }>({})
   const editable = share.access === ModuleShareEnum.editable
@@ -71,10 +77,24 @@ export default function Share() {
         className="mb-4"
       />
 
+      <FilterRelatedTerm
+        className="border-b pb-2 border-white/15"
+        selectedOrderId={order}
+        selectedFilterId={filter.color}
+        onFilterSelect={(color) => {
+          setFilter({ ...filter, color: color as number })
+        }}
+        onOrderSelect={(order) => {
+          setOrder(order as OrderEnum)
+        }}
+      />
+
       <Grid
         ref={ref}
         share={share}
-        filter={{ search }}
+        order={order}
+        filter={filter}
+        search={search}
         editable={editable}
       />
     </ContentPage>

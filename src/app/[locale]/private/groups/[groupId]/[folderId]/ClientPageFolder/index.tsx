@@ -3,11 +3,11 @@
 import {
   actionUpdateFolder,
   actionCreateRelationFolder,
-  actionCreateRelationTerm
+  actionCreateRelationTerm,
 } from '@store/action-main'
 import { findTermsWithRelations, getFolder } from '@helper/relation'
-import React, { useMemo, useState, useRef, useEffect } from 'react'
-import { sortTermsWithRelations } from '@helper/sort-terms'
+import React, {useMemo, useState, useRef, useEffect, useCallback} from 'react'
+import FilterRelatedTerm from '@containers/FilterRelatedTerm'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
 import Button, {ButtonVariant} from '@components/Button'
 import { useMainSelector } from '@hooks/useMainSelector'
@@ -26,11 +26,23 @@ import MetaLabel from '@components/MetaLabel'
 import { useTranslations } from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
 import SVGPlay from '@public/svg/play.svg'
+import { OrderEnum } from '@helper/sort'
 import {useRouter} from '@i18n/routing'
 import Folder from '@entities/Folder'
 import clsx from 'clsx'
 
-export default function ClientPageFolder({ editable, groupId, folderId }: { editable: boolean, groupId: string, folderId: string }) {
+export default function ClientPageFolder(
+  {
+    groupId,
+    folderId,
+    editable
+  }:
+  {
+    groupId: string,
+    folderId: string,
+    editable: boolean,
+  }
+) {
   const router = useRouter()
 
   const folderGroups = useMainSelector(({ folderGroups }) => folderGroups)
@@ -71,7 +83,7 @@ export default function ClientPageFolder({ editable, groupId, folderId }: { edit
   const relationTerms = useMainSelector(({ relationTerms }) => relationTerms)
 
   const relatedTerms = useMemo(() => {
-    return sortTermsWithRelations(findTermsWithRelations(relationTerms, terms, { folderId }))
+    return findTermsWithRelations(relationTerms, terms, { folderId })
   }, [relationTerms, terms, folderId])
 
   const excludeTermIds = useMemo(() => {
@@ -83,6 +95,16 @@ export default function ClientPageFolder({ editable, groupId, folderId }: { edit
   const t = useTranslations('Folder')
 
   const ref = useRef<{ onCreate?: () => void }>({})
+
+  const addRelation = useCallback((termId: string) => {
+    const relationTerm = new RelationTerm()
+      .setOrder(relatedTerms.length + 1)
+      .setFolderId(folderId)
+      .setTermId(termId)
+      .serialize()
+
+    actionCreateRelationTerm({ relationTerm, editable })
+  }, [folderId, editable, relatedTerms.length])
 
   return (
     <ContentPage
@@ -158,12 +180,7 @@ export default function ClientPageFolder({ editable, groupId, folderId }: { edit
                   }}
                   onSelect={(term) => {
                     actionUpdateFolder({ editable, editId: null, folder: { ...folder, termsCollapsed: false } }, () => {
-                      const relationTerm = new RelationTerm()
-                        .setFolderId(folderId)
-                        .setTermId(term.id)
-                        .serialize()
-
-                      actionCreateRelationTerm({ relationTerm, editable })
+                      addRelation(term.id)
                     })
                   }}
                 />
@@ -187,6 +204,35 @@ export default function ClientPageFolder({ editable, groupId, folderId }: { edit
           >
             {!folder.termsCollapsed &&
               <>
+                <FilterRelatedTerm
+                  className="border-b pb-2 border-white/15"
+                  selectedOrderId={folder.termSettings.order}
+                  selectedFilterId={folder.termSettings.filter.color}
+                  onFilterSelect={(color) => {
+                    actionUpdateFolder({
+                      editable,
+                      editId: null,
+                      folder: {
+                        ...folder,
+                        termSettings: {
+                          ...folder.termSettings,
+                          filter: { ...folder.termSettings.filter, color: color as number }
+                        }
+                      }
+                    })
+                  }}
+                  onOrderSelect={(order) => {
+                    actionUpdateFolder({
+                      editable,
+                      editId: null,
+                      folder: {
+                        ...folder,
+                        termSettings: { ...folder.termSettings, order: order as OrderEnum }
+                      }
+                    })
+                  }}
+                />
+
                 {editable && relatedTerms.length === 0 &&
                   <div className="italic text-xs text-center text-white/50">
                     {t('noCardsHelper')}
@@ -195,10 +241,12 @@ export default function ClientPageFolder({ editable, groupId, folderId }: { edit
 
                 <RelatedTerms
                   ref={ref}
-                  filter={{search}}
+                  search={search}
                   editable={editable}
                   relation={{ folderId }}
                   relatedTerms={relatedTerms}
+                  order={folder.termSettings.order}
+                  filter={folder.termSettings.filter}
                 />
 
                 <div className="flex w-full mt-2">
@@ -215,12 +263,7 @@ export default function ClientPageFolder({ editable, groupId, folderId }: { edit
                     }}
                     onSelect={(term) => {
                       actionUpdateFolder({ editable, editId: null, folder: { ...folder, termsCollapsed: false } }, () => {
-                        const relationTerm = new RelationTerm()
-                          .setFolderId(folderId)
-                          .setTermId(term.id)
-                          .serialize()
-
-                        actionCreateRelationTerm({ relationTerm, editable })
+                        addRelation(term.id)
                       })
                     }}
                   >

@@ -3,6 +3,7 @@ import { v4 } from 'uuid'
 
 export type RelationTermData = {
   id: string,
+  color: number
   order: number
   termId: string,
   folderId: string,
@@ -17,6 +18,7 @@ export type RelatedTermData = {
 
 export default class RelationTerm {
   id: string
+  color: number
   order: number
   termId: string | null
   folderId: string | null
@@ -26,6 +28,7 @@ export default class RelationTerm {
   constructor() {
     this.id = v4()
     this.order = 0
+    this.color = 0
     this.termId = null
     this.folderId = null
     this.moduleId = null
@@ -34,6 +37,11 @@ export default class RelationTerm {
 
   setOrder(value: number): RelationTerm {
     this.order = value
+    return this
+  }
+
+  setColor(value: number): RelationTerm {
+    this.color = value
     return this
   }
 

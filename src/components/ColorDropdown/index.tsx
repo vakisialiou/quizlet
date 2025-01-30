@@ -2,6 +2,11 @@ import Dropdown, { DropdownVariant } from '@components/Dropdown'
 import ColorLabel, { ColorEnum } from '@components/ColorLabel'
 import { BaseSyntheticEvent, forwardRef, Ref } from 'react'
 
+export const colors = [
+  ColorEnum.white5, ColorEnum.white15, ColorEnum.white45, ColorEnum.white75, ColorEnum.white95,
+  ColorEnum.amber600, ColorEnum.red600, ColorEnum.fuchsia600, ColorEnum.green600, ColorEnum.blue600
+]
+
 function ColorDropdown(
   {
     caret,
@@ -30,10 +35,7 @@ function ColorDropdown(
       className={className}
       menu={(
         <div className="grid grid-cols-5 gap-2 p-2">
-          {[
-            ColorEnum.white5, ColorEnum.white15, ColorEnum.white45, ColorEnum.white75, ColorEnum.white95,
-            ColorEnum.amber600, ColorEnum.red600, ColorEnum.fuchsia600, ColorEnum.green600, ColorEnum.blue600
-          ].map((color) => {
+          {colors.map((color) => {
             return (
               <ColorLabel
                 hover

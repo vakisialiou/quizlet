@@ -110,7 +110,10 @@
   "Orders": {
     "name": "By Name",
     "custom": "By Custom",
-    "date": "By Date"
+    "date": "By Date",
+    "color": "By Color",
+    "question": "Front side",
+    "answer": "Back side"
   },
   "Modules": {
     "headTitle": "Courses",

@@ -78,7 +78,6 @@ model VerificationToken {
 model Term {
   id              String   @id @default(uuid())
   userId          String   @db.VarChar(36)
-  color           Int      @default(0)
   question        String?  @db.VarChar(255)
   questionLang    String?  @default("ru") @db.VarChar(5)
   answer          String?  @db.VarChar(255)
@@ -87,6 +86,7 @@ model Term {
   associationLang String?  @default("en") @db.VarChar(5)
   collapsed       Boolean  @default(false)
   deleted         Boolean  @default(false)
+  order           Int      @default(0)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   user            User     @relation(fields: [userId], references: [id])
@@ -136,6 +136,7 @@ model Module {
   user            User     @relation(fields: [userId], references: [id])
   degreeRate      Float    @default(0)
   markers         Json?
+  termSettings    Json?
 
   folderGroups       FolderGroup[]
   moduleShares       ModuleShare[]
@@ -157,6 +158,7 @@ model Folder {
   updatedAt      DateTime @updatedAt
   degreeRate     Float    @default(0)
   markers        Json?
+  termSettings   Json?
 
   user User @relation(fields: [userId], references: [id])
 
@@ -231,6 +233,7 @@ model RelationTerm {
   folderId  String?  @db.VarChar(36)
   moduleId  String?  @db.VarChar(36)
   createdAt DateTime @default(now())
+  color     Int      @default(-1)
   order     Int      @default(0)
 
   user   User    @relation(fields: [userId], references: [id])

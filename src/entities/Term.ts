@@ -24,6 +24,7 @@ export const languages = [
 export type TermData = {
   id: string
   color: number,
+  order: number
   answer: string | null
   answerLang: string | null
   question: string | null
@@ -39,6 +40,7 @@ export type TermData = {
 export default class Term {
   id: string
   color: number
+  order: number
   answer: string | null
   answerLang: string | null
   question: string | null
@@ -53,6 +55,7 @@ export default class Term {
   constructor() {
     this.id = v4()
     this.color = 0
+    this.order = 0
     this.answer = null
     this.answerLang = null
     this.question = null
@@ -67,6 +70,11 @@ export default class Term {
 
   setColor(value: number): Term {
     this.color = value
+    return this
+  }
+
+  setOrder(value: number): Term {
+    this.order = value
     return this
   }
 

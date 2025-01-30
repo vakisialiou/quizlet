@@ -4,6 +4,7 @@ import { Prisma, PrismaEntry } from '@lib/prisma'
 export type RelationTermSelectType = {
   id: boolean
   order: boolean
+  color: boolean
   termId: boolean
   folderId: boolean
   moduleId: boolean
@@ -13,6 +14,7 @@ export type RelationTermSelectType = {
 export const RelationTermSelect = {
   id: true,
   order: true,
+  color: true,
   termId: true,
   folderId: true,
   moduleId: true,
@@ -26,6 +28,7 @@ type RelationTermResult = Prisma.RelationTermGetPayload<{
 export function createRelationTermSelect(data: RelationTermResult) {
   return new RelationTerm()
     .setId(data.id)
+    .setColor(data.color)
     .setOrder(data.order)
     .setTermId(data.termId)
     .setFolderId(data.folderId)
@@ -58,6 +61,7 @@ export async function createManyRelationTerms(db: PrismaEntry, userId: string, i
         userId,
         id: item.id,
         order: item.order,
+        color: item.color,
         termId: item.termId,
         folderId: item.folderId,
         moduleId: item.moduleId,
@@ -69,12 +73,25 @@ export async function createManyRelationTerms(db: PrismaEntry, userId: string, i
   return res.count
 }
 
+export async function updateRelationTerms(db: PrismaEntry, userId: string, item: RelationTermData): Promise<string> {
+  const res = await db.relationTerm.update({
+    where: { userId, id: item.id },
+    data: {
+      order: item.order,
+      color: item.color,
+    }
+  })
+
+  return res.id
+}
+
 export async function createRelationTerms(db: PrismaEntry, userId: string, item: RelationTermData): Promise<string> {
   const res = await db.relationTerm.create({
     data: {
       userId,
       id: item.id,
       order: item.order,
+      color: item.color,
       termId: item.termId,
       folderId: item.folderId,
       moduleId: item.moduleId,

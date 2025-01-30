@@ -1,5 +1,7 @@
-import Module, { ModuleData, ModuleMarkersEnum } from '@entities/Module'
+import { TermSettingsData } from '@entities/TermSettings'
+import Module, { ModuleData } from '@entities/Module'
 import { Prisma, PrismaEntry } from '@lib/prisma'
+import { MarkersEnum } from '@entities/Marker'
 
 export type ModuleSelectType = {
   id: boolean,
@@ -13,6 +15,7 @@ export type ModuleSelectType = {
   updatedAt: boolean,
   createdAt: boolean,
   degreeRate: boolean,
+  termSettings: boolean,
 }
 
 export const ModuleSelect = {
@@ -27,6 +30,7 @@ export const ModuleSelect = {
   updatedAt: true,
   createdAt: true,
   degreeRate: true,
+  termSettings: true,
 } as ModuleSelectType
 
 type ModuleResult = Prisma.ModuleGetPayload<{
@@ -34,7 +38,7 @@ type ModuleResult = Prisma.ModuleGetPayload<{
 }>
 
 export const createModuleSelect = (data: ModuleResult) => {
-  const markers = Array.isArray(data.markers) ? data.markers as ModuleMarkersEnum[] : []
+  const markers = Array.isArray(data.markers) ? data.markers as MarkersEnum[] : []
   return new Module()
     .setId(data.id)
     .setMarkers(markers)
@@ -47,6 +51,7 @@ export const createModuleSelect = (data: ModuleResult) => {
     .setDescription(data.description)
     .setTermsCollapsed(data.termsCollapsed)
     .setGroupsCollapsed(data.groupsCollapsed)
+    .setTermSettings(data.termSettings as TermSettingsData | null)
 }
 
 export const findModulesByUserId = async (db: PrismaEntry, userId: string): Promise<ModuleData[]> => {
@@ -84,6 +89,7 @@ export const upsertModule = async (db: PrismaEntry, userId: string, item: Module
       collapsed: item.collapsed,
       degreeRate: item.degreeRate,
       description: item.description,
+      termSettings: item.termSettings,
       termsCollapsed: item.termsCollapsed,
       groupsCollapsed: item.groupsCollapsed,
       updatedAt: new Date(),
@@ -97,6 +103,7 @@ export const upsertModule = async (db: PrismaEntry, userId: string, item: Module
       collapsed: item.collapsed,
       degreeRate: item.degreeRate,
       description: item.description,
+      termSettings: item.termSettings,
       termsCollapsed: item.termsCollapsed,
       groupsCollapsed: item.groupsCollapsed,
       createdAt: new Date(),
@@ -113,7 +120,7 @@ export const createManyModules = async (db: PrismaEntry, userId: string, items: 
 
   const res = await db.module.createMany({
     data: items.map((item) => {
-      const markers = Array.isArray(item.markers) ? item.markers as ModuleMarkersEnum[] : []
+      const markers = Array.isArray(item.markers) ? item.markers as MarkersEnum[] : []
       return {
         userId,
         markers,
@@ -123,6 +130,7 @@ export const createManyModules = async (db: PrismaEntry, userId: string, items: 
         collapsed: item.collapsed,
         degreeRate: item.degreeRate,
         description: item.description,
+        termSettings: item.termSettings,
         termsCollapsed: item.termsCollapsed,
         groupsCollapsed: item.groupsCollapsed,
         createdAt,

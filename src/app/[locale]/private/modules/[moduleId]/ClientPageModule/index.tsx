@@ -8,7 +8,7 @@ import {
 import { findTermsWithRelations, getModule } from '@helper/relation'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import SVGNewCollection from '@public/svg/collection_new.svg'
-import { sortTermsWithRelations } from '@helper/sort-terms'
+import FilterRelatedTerm from '@containers/FilterRelatedTerm'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
 import AchievementIcon from '@containers/AchievementIcon'
 import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
@@ -28,6 +28,7 @@ import MetaLabel from '@components/MetaLabel'
 import { useTranslations } from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
 import SVGPlay from '@public/svg/play.svg'
+import { OrderEnum } from '@helper/sort'
 import {useRouter} from '@i18n/routing'
 import Module from '@entities/Module'
 import clsx from 'clsx'
@@ -67,7 +68,7 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
   }, [course, editable, moduleId, modules.length])
 
   const relatedTerms = useMemo(() => {
-    return sortTermsWithRelations(findTermsWithRelations(relationTerms, terms, { moduleId }))
+    return findTermsWithRelations(relationTerms, terms, { moduleId })
   }, [relationTerms, terms, moduleId])
 
   const excludeTermIds = useMemo(() => {
@@ -100,10 +101,14 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
             </div>
           )}
           search={{
-            value: search || '',
+            value: search,
             placeholder: t('searchPlaceholder'),
-            onClear: () => setSearch(''),
-            onChange: ({ formattedValue }) => setSearch(formattedValue)
+            onClear: () => {
+              setSearch('')
+            },
+            onChange: ({ formattedValue }) => {
+              setSearch(formattedValue)
+            }
           }}
         />
       )}
@@ -138,15 +143,14 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
         <div className="flex flex-col gap-2">
           <FormModule
             module={course}
+            className="mb-2"
             editable={editable}
           />
 
           <FolderCart
             hover={false}
             title={t('termsTitle')}
-            dropdown={{
-              hidden: true
-            }}
+            dropdown={{ hidden: true }}
             labels={<MetaLabel>{relatedTerms.length}</MetaLabel>}
             controls={(
               <>
@@ -190,6 +194,35 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
           >
             {!course.termsCollapsed &&
               <>
+                <FilterRelatedTerm
+                  className="border-b pb-2 border-white/15"
+                  selectedOrderId={course.termSettings.order}
+                  selectedFilterId={course.termSettings.filter.color}
+                  onFilterSelect={(color) => {
+                    actionUpdateModule({
+                      editable,
+                      editId: null,
+                      module: {
+                        ...course,
+                        termSettings: {
+                          ...course.termSettings,
+                          filter: { ...course.termSettings.filter, color: color as number }
+                        }
+                      }
+                    })
+                  }}
+                  onOrderSelect={(order) => {
+                    actionUpdateModule({
+                      editable,
+                      editId: null,
+                      module: {
+                        ...course,
+                        termSettings: { ...course.termSettings, order: order as OrderEnum }
+                      }
+                    })
+                  }}
+                />
+
                 {editable && relatedTerms.length === 0 &&
                   <div className="italic text-xs text-center text-white/50">
                     {t('noCardsHelper')}
@@ -198,10 +231,12 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
 
                 <RelatedTerms
                   ref={ref}
-                  filter={{search }}
+                  search={search}
                   editable={editable}
                   relation={{ moduleId }}
                   relatedTerms={relatedTerms}
+                  order={course.termSettings.order}
+                  filter={course.termSettings.filter}
                 />
 
                 <div className="flex w-full mt-2">

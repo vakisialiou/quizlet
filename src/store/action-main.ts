@@ -54,6 +54,11 @@ export const actionCreateRelationTerm = (payload: relations.CreateRelationTermTy
   executeMainAction(action, callback)
 }
 
+export const actionUpdateRelationTerm = (payload: relations.UpdateRelationTermType, callback?: (res: boolean) => void): void => {
+  const action = relations.updateRelationTerm(payload)
+  executeMainAction(action, callback)
+}
+
 export const actionRemoveRelationTerm = (payload: relations.CreateRelationTermType, callback?: (res: boolean) => void): void => {
   const action = relations.removeRelationTerm(payload)
   executeMainAction(action, callback)

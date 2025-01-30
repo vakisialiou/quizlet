@@ -1,15 +1,15 @@
 import SimulatorSettings, { SimulatorSettingsData } from '@entities/SimulatorSettings'
-import { ORDER_DEFAULT, OrderEnum } from '@helper/sort-modules'
-import { ModuleMarkersEnum } from '@entities/Module'
+import { ORDER_DEFAULT, OrderEnum } from '@helper/sort'
+import { MarkersEnum } from '@entities/Marker'
 import { v4 } from 'uuid'
 
-export type ModuleFilter = {
-  marker: ModuleMarkersEnum | null
+export type ModuleFilters = {
+  marker: MarkersEnum | null
 }
 
 export type ModuleSettings = {
   order: OrderEnum
-  filter: ModuleFilter,
+  filter: ModuleFilters,
 }
 
 export type SettingsData = {
@@ -37,13 +37,13 @@ export default class Settings {
     return this
   }
 
-  setSimulator(simulator: SimulatorSettingsData | null): Settings {
-    this.simulator = { ...this.simulator, ...simulator }
+  setSimulator(value: SimulatorSettingsData | null): Settings {
+    this.simulator = { ...this.simulator, ...value }
     return this
   }
 
-  setModules(modules: ModuleSettings | null): Settings {
-    this.modules = { ...this.modules, ...modules }
+  setModules(value: ModuleSettings | null): Settings {
+    this.modules = { ...this.modules, ...value }
     return this
   }
 
@@ -52,7 +52,7 @@ export default class Settings {
     return this
   }
 
-  setModulesFilter(filter: ModuleFilter): Settings {
+  setModulesFilter(filter: ModuleFilters): Settings {
     this.modules.filter = filter
     return this
   }
