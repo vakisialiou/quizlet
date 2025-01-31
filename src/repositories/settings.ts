@@ -1,15 +1,17 @@
-import Settings, { SettingsData, ModuleSettings } from '@entities/Settings'
+import Settings, { SettingsData, ModuleSettingsData, TermSettingsData } from '@entities/Settings'
 import { SimulatorSettingsData } from '@entities/SimulatorSettings'
 import { Prisma, PrismaEntry } from '@lib/prisma'
 
 export type SettingsSelectType = {
   id: boolean,
+  terms: boolean,
   modules: boolean,
   simulator: boolean,
 }
 
 export const SettingsSelect = {
   id: true,
+  terms: true,
   modules: true,
   simulator: true
 } as SettingsSelectType
@@ -21,7 +23,8 @@ type SettingsResult = Prisma.SettingsGetPayload<{
 export const createSettingsSelect = (data: SettingsResult): Settings => {
   return new Settings()
     .setId(data.id)
-    .setModules(data?.modules as ModuleSettings)
+    .setTerms(data?.terms as TermSettingsData)
+    .setModules(data?.modules as ModuleSettingsData)
     .setSimulator(data?.simulator as SimulatorSettingsData)
 }
 
@@ -31,12 +34,14 @@ export const upsertSettingsSimulator = async (db: PrismaEntry, userId: string, d
     update: {
       simulator: data.simulator,
       modules: data.modules,
+      terms: data.terms,
       updatedAt: new Date(),
     },
     create: {
       userId,
       simulator: data.simulator,
       modules: data.modules,
+      terms: data.terms,
       createdAt: new Date(),
       updatedAt: new Date()
     },

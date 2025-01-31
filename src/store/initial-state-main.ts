@@ -85,9 +85,6 @@ export const getInitialState = async (
     relationTerms: relationTerms || [],
     relationFolders: relationFolders || [],
     relationSimulators: relationSimulators || [],
-    settings: new Settings()
-      .setModules(settings?.modules || null)
-      .setSimulator(settings?.simulator || null)
-      .serialize(),
+    settings: settings || new Settings().serialize(),
   }
 }

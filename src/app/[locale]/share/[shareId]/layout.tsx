@@ -24,12 +24,13 @@ export default async function Layout(
     return notFound()
   }
 
-  const initialState = await getInitialState({
-    share,
-    terms: await findTermsByModuleId(prisma, share.moduleId),
-    module: await getModuleById(prisma, share.ownerId, share.moduleId),
-    relationTerms: await findModuleRelationTerms(prisma, share.moduleId)
-  })
+  const [ terms, module, relationTerms ] = await Promise.all([
+    findTermsByModuleId(prisma, share.moduleId),
+    getModuleById(prisma, share.ownerId, share.moduleId),
+    findModuleRelationTerms(prisma, share.moduleId)
+  ])
+
+  const initialState = await getInitialState({ share, terms, module, relationTerms })
 
   return (
     <ProviderStore initialState={initialState}>

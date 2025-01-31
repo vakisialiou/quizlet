@@ -22,8 +22,8 @@ export default function Share() {
   const share = useShareSelector((state) => state.share)
   const course = useShareSelector((state) => state.module)
 
-  const [ order, setOrder ] = useState<OrderEnum>(course?.termSettings.order || TERM_ORDER_DEFAULT)
-  const [ filter, setFilter ] = useState(course?.termSettings.filter || new TermFilters().serialize())
+  const [ order, setOrder ] = useState<OrderEnum>(TERM_ORDER_DEFAULT)
+  const [ filter, setFilter ] = useState(new TermFilters().serialize())
 
   const ref = useRef<{ onCreate?: () => void }>({})
   const editable = share.access === ModuleShareEnum.editable

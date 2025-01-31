@@ -6,6 +6,7 @@ import { findActiveSimulators } from '@helper/simulators/general'
 import DialogRemoveModule from '@containers/DialogRemoveModule'
 import AchievementDegree from '@containers/AchievementDegree'
 import SVGNewCollection from '@public/svg/collection_new.svg'
+import { ModuleFiltersData } from '@entities/ModuleFilters'
 import {FolderFrameVariant} from '@components/FolderFrame'
 import AchievementIcon from '@containers/AchievementIcon'
 import { findTermsWithRelations } from '@helper/relation'
@@ -17,7 +18,6 @@ import Groups from '@containers/Collection/Groups'
 import SVGEdit from '@public/svg/greasepencil.svg'
 import { getLastStudyModule } from '@helper/study'
 import DialogShare from '@containers/DialogShare'
-import { ModuleFilters } from '@entities/Settings'
 import { sortModules} from '@helper/sort-modules'
 import React, { useMemo, useState } from 'react'
 import FolderGroup from '@entities/FolderGroup'
@@ -41,7 +41,7 @@ export type TypeOptions = {
   limit: number | null,
   search: string | null
   order: OrderEnum,
-  filter: ModuleFilters
+  filter: ModuleFiltersData
 }
 
 export default function Modules(

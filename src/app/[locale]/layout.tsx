@@ -1,5 +1,18 @@
+import { findRelationSimulatorsByUserId } from '@repositories/relation-simulator'
+import { findRelationFoldersByUserId } from '@repositories/relation-folder'
+import { findRelationTermsByUserId } from '@repositories/relation-term'
+import { findModuleSharesByOwnerId } from '@repositories/module-share'
+import { findFolderGroupsByUserId } from '@repositories/folder-group'
+import { findSimulatorsByUserId } from '@repositories/simulators'
+import { getInitialState } from '@store/initial-state-main'
+import { findFoldersByUserId } from '@repositories/folders'
+import { findModulesByUserId } from '@repositories/modules'
+import ProviderStore from '@app/[locale]/provider-store'
+import { findTermsByUserId } from '@repositories/terms'
 import { routing, LanguageEnums } from '@i18n/routing'
+import { getSettings } from '@repositories/settings'
 import { NextIntlClientProvider } from 'next-intl'
+import { getDemoInitialData } from '@helper/demo'
 import { SessionProvider } from 'next-auth/react'
 import ProviderResize from './provider-resize'
 import ProviderWorker from './provider-worker'
@@ -7,20 +20,6 @@ import ProviderOnline from './provider-online'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import localFont from 'next/font/local'
-
-import { findRelationSimulatorsByUserId } from '@repositories/relation-simulator'
-import { findRelationFoldersByUserId } from '@repositories/relation-folder'
-import { findRelationTermsByUserId } from '@repositories/relation-term'
-import { findModuleSharesByOwnerId } from '@repositories/module-share'
-import { findFolderGroupsByUserId } from '@repositories/folder-group'
-import { findSimulatorsByUserId } from '@repositories/simulators'
-import { findFoldersByUserId } from '@repositories/folders'
-import { findModulesByUserId } from '@repositories/modules'
-import { getInitialState } from '@store/initial-state-main'
-import { findTermsByUserId } from '@repositories/terms'
-import ProviderStore from '@app/[locale]/provider-store'
-import { getSettings } from '@repositories/settings'
-import { getDemoInitialData } from '@helper/demo'
 import { prisma } from '@lib/prisma'
 import { auth } from '@auth'
 import React from 'react'
@@ -77,18 +76,42 @@ export default async function RootLayout({
     const session = await auth()
     const userId = session?.user?.id || ''
     if (userId) {
+      const [
+        settings,
+        terms,
+        modules,
+        folders,
+        simulators,
+        folderGroups,
+        moduleShares,
+        relationTerms,
+        relationFolders,
+        relationSimulators
+      ] = await Promise.all([
+        getSettings(prisma, userId),
+        findTermsByUserId(prisma, userId),
+        findModulesByUserId(prisma, userId),
+        findFoldersByUserId(prisma, userId),
+        findSimulatorsByUserId(prisma, userId),
+        findFolderGroupsByUserId(prisma, userId),
+        findModuleSharesByOwnerId(prisma, userId),
+        findRelationTermsByUserId(prisma, userId),
+        findRelationFoldersByUserId(prisma, userId),
+        findRelationSimulatorsByUserId(prisma, userId),
+      ])
+
       return await getInitialState({
         session,
-        settings: await getSettings(prisma, userId),
-        terms: await findTermsByUserId(prisma, userId),
-        modules: await findModulesByUserId(prisma, userId),
-        folders: await findFoldersByUserId(prisma, userId),
-        simulators: await findSimulatorsByUserId(prisma, userId),
-        folderGroups: await findFolderGroupsByUserId(prisma, userId),
-        moduleShares: await findModuleSharesByOwnerId(prisma, userId),
-        relationTerms: await findRelationTermsByUserId(prisma, userId),
-        relationFolders: await findRelationFoldersByUserId(prisma, userId),
-        relationSimulators: await findRelationSimulatorsByUserId(prisma, userId)
+        settings,
+        terms,
+        modules,
+        folders,
+        simulators,
+        folderGroups,
+        moduleShares,
+        relationTerms,
+        relationFolders,
+        relationSimulators
       })
     }
     return getDemoInitialData(locale)

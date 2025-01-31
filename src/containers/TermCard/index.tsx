@@ -5,12 +5,10 @@ import {
   languages,
   TermData
 } from '@entities/Term'
-import { COLOR_DEFAULT, ColorEnum } from '@components/ColorLabel'
 import { useCallback, useEffect, useRef, ReactNode } from 'react'
 import Dropdown, { DropdownVariant } from '@components/Dropdown'
 import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
 import Button, {ButtonSize} from '@components/Button'
-import ColorDropdown from '@components/ColorDropdown'
 import SVGPencil from '@public/svg/greasepencil.svg'
 import ButtonSquare from '@components/ButtonSquare'
 import RowRead from '@containers/TermCard/RowRead'

@@ -1,33 +1,38 @@
 import SimulatorSettings, { SimulatorSettingsData } from '@entities/SimulatorSettings'
-import { ORDER_DEFAULT, OrderEnum } from '@helper/sort'
-import { MarkersEnum } from '@entities/Marker'
+import { ORDER_DEFAULT, TERM_ORDER_DEFAULT, OrderEnum } from '@helper/sort'
+import ModuleFilters, { ModuleFiltersData } from '@entities/ModuleFilters'
 import { v4 } from 'uuid'
 
-export type ModuleFilters = {
-  marker: MarkersEnum | null
+export type ModuleSettingsData = {
+  order: OrderEnum
+  filter: ModuleFiltersData,
 }
 
-export type ModuleSettings = {
+export type TermSettingsData = {
   order: OrderEnum
-  filter: ModuleFilters,
 }
 
 export type SettingsData = {
   id: string
-  modules: ModuleSettings
+  terms: TermSettingsData,
+  modules: ModuleSettingsData
   simulator: SimulatorSettingsData
 }
 
 export default class Settings {
   id: string
-  modules: ModuleSettings
+  terms: TermSettingsData
+  modules: ModuleSettingsData
   simulator: SimulatorSettingsData
 
   constructor() {
     this.id = v4()
+    this.terms = {
+      order: TERM_ORDER_DEFAULT
+    }
     this.modules = {
       order: ORDER_DEFAULT,
-      filter: { marker: null }
+      filter: new ModuleFilters().serialize()
     }
     this.simulator = new SimulatorSettings().serialize()
   }
@@ -42,7 +47,7 @@ export default class Settings {
     return this
   }
 
-  setModules(value: ModuleSettings | null): Settings {
+  setModules(value: ModuleSettingsData | null): Settings {
     this.modules = { ...this.modules, ...value }
     return this
   }
@@ -52,8 +57,18 @@ export default class Settings {
     return this
   }
 
-  setModulesFilter(filter: ModuleFilters): Settings {
+  setModulesFilter(filter: ModuleFiltersData): Settings {
     this.modules.filter = filter
+    return this
+  }
+
+  setTerms(value: TermSettingsData | null): Settings {
+    this.terms = { ...this.terms, ...value }
+    return this
+  }
+
+  setTermsOrder(order: OrderEnum): Settings {
+    this.terms.order = order
     return this
   }
 

@@ -12,7 +12,7 @@ export default class TermFilters {
     this.color = DEFAULT_FILTER
   }
 
-  serialize(): TermFilters {
+  serialize(): TermFiltersData {
     return JSON.parse(JSON.stringify(this))
   }
 }

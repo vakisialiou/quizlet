@@ -166,6 +166,7 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
                   onSelect={(term) => {
                     actionUpdateModule({ editable, editId: null, module: { ...course, termsCollapsed: false }}, () => {
                       const relationTerm = new RelationTerm()
+                        .setOrder(relatedTerms.length + 1)
                         .setModuleId(moduleId)
                         .setTermId(term.id)
                         .serialize()
@@ -253,6 +254,7 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
                     onSelect={(term) => {
                       actionUpdateModule({ editable, editId: null, module: { ...course, termsCollapsed: false }}, () => {
                         const relationTerm = new RelationTerm()
+                          .setOrder(relatedTerms.length + 1)
                           .setModuleId(moduleId)
                           .setTermId(term.id)
                           .serialize()

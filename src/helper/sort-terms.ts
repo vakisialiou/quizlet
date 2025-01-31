@@ -13,16 +13,12 @@ export const sortTerms = (items: TermData[], order: OrderEnum): TermData[] => {
         return sortByStr(a.question, b.question, true)
       case OrderEnum.answerAsc:
         return sortByStr(a.answer, b.answer, true)
-      case OrderEnum.colorAsc:
-        return sortByNum(a.color, b.color, true)
       case OrderEnum.customDesc:
         return sortByNum(a.order, b.order, false)
       case OrderEnum.questionDesc:
         return sortByStr(a.question, b.question, false)
       case OrderEnum.answerDesc:
         return sortByStr(a.answer, b.answer, false)
-      case OrderEnum.colorDesc:
-        return sortByNum(a.color, b.color, false)
     }
   })
 }

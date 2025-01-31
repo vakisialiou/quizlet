@@ -66,7 +66,6 @@ export default function MethodFlashcard(
       faceSide={faceSide}
       backSide={backSide}
       isBackSide={isBackSide}
-      color={activeTerm?.color}
       onClick={() => {
         setIsBackSide((prevState) => !prevState)
       }}

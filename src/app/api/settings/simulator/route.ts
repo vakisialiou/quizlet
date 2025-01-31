@@ -12,7 +12,6 @@ export async function PUT(req: Request) {
   }
 
   const body = await req.json() as SettingsData
-
   await upsertSettingsSimulator(prisma, userId, body)
 
   return new Response(null, { status: 200 })

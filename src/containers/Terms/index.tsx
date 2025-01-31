@@ -1,8 +1,9 @@
 'use client'
 
-import { OrderEnum, TERM_ORDER_DEFAULT } from '@helper/sort'
+import { actionUpdateSettings } from '@store/action-main'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
 import Button, {ButtonVariant} from '@components/Button'
+import { useMainSelector } from '@hooks/useMainSelector'
 import SVGFileBlank from '@public/svg/file_blank.svg'
 import ButtonSquare from '@components/ButtonSquare'
 import ContentPage from '@containers/ContentPage'
@@ -12,15 +13,22 @@ import { useTranslations } from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
 import Grid from '@containers/Terms/Grid'
 import { useRouter } from '@i18n/routing'
+import { OrderEnum } from '@helper/sort'
 
-export default function Terms() {
+export default function Terms(
+  {
+    editable
+  }:
+  {
+    editable: boolean
+  }
+) {
   const router = useRouter()
   const t = useTranslations('Terms')
   const [ search, setSearch ] = useState<string>('')
   const ref = useRef<{ onCreate?: () => void }>({})
 
-  const [ order, setOrder ] = useState<OrderEnum>(TERM_ORDER_DEFAULT)
-  console.log(order)
+  const settings = useMainSelector((state) => state.settings)
 
   return (
     <ContentPage
@@ -77,17 +85,26 @@ export default function Terms() {
       )}
     >
       <FilterTerm
-        selectedOrderId={order}
+        selectedOrderId={settings.terms.order}
         onOrderSelect={(id) => {
-          setOrder(id as OrderEnum)
+          actionUpdateSettings({
+            editable,
+            settings: {
+              ...settings,
+              terms: {
+                ...settings.terms,
+                order: id as OrderEnum
+              }
+            }
+          })
         }}
       />
 
       <Grid
         ref={ref}
-        order={order}
         editable={true}
         search={search}
+        order={settings.terms.order}
       />
     </ContentPage>
   )

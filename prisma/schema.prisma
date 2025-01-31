@@ -251,6 +251,7 @@ model Settings {
   id        String   @id @default(uuid())
   userId    String   @db.VarChar(36)
   modules   Json?
+  terms     Json?
   simulator Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
