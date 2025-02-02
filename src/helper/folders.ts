@@ -1,5 +1,6 @@
 import RelationFolder, { RelationFolderData } from '@entities/RelationFolder'
 import RelationTerm, { RelationTermData } from '@entities/RelationTerm'
+import { COLOR_DEFAULT } from '@components/ColorLabel'
 import { FolderGroupData } from '@entities/FolderGroup'
 import Folder, { FolderData } from '@entities/Folder'
 import { splitTermsToChunks } from '@helper/terms'
@@ -36,6 +37,7 @@ export function createMultiFolders(group: FolderGroupData, terms: TermData[], si
 
     for (const term of terms) {
       const relationTerm = new RelationTerm()
+        .setColor(COLOR_DEFAULT)
         .setFolderId(folder.id)
         .setTermId(term.id)
         .setOrder(i++)

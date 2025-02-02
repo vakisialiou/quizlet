@@ -69,6 +69,9 @@ export default function SingleStart(
               const achievement = new Achievement()
               const methodRate = achievement.getMethodRate(relatedSimulators, { method, inverted })
               const simulators = achievement.findSimulators(relatedSimulators, { method, inverted })
+
+              const roundedRate = Number(methodRate).toFixed(1)
+
               return (
                 <label
                   key={id}
@@ -87,9 +90,13 @@ export default function SingleStart(
                     <span className="leading-4">
                       {name}
                     </span>
-                    <span className="text-[10px] leading-3 text-white/25">
+                    <div
+                      className="flex gap-2 text-[10px] leading-3 text-white/25"
+                    >
                       {t('simulatorRepeat', { count: simulators.length })}
-                    </span>
+
+                      <span>Завершено {roundedRate}%</span>
+                    </div>
                   </div>
 
                   <input

@@ -3,8 +3,7 @@ import SVGPanelClose from '@public/svg/panel_close.svg'
 import SVGMuteOff from '@public/svg/mute_ipo_off.svg'
 import SVGLoopBack from '@public/svg/loop_back.svg'
 import SVGMuteOn from '@public/svg/mute_ipo_on.svg'
-import SVGQuestion from '@public/svg/question.svg'
-import Button, {ButtonSize} from '@components/Button'
+import ButtonSquare from '@components/ButtonSquare'
 import React from 'react'
 import clsx from 'clsx'
 
@@ -17,7 +16,6 @@ export type PanelControlOptions = {
   deactivate?: PanelControlOption,
   sound?: PanelControlOption
   back?: PanelControlOption,
-  help?: PanelControlOption,
 }
 
 export default function PanelControls(
@@ -49,10 +47,6 @@ export default function PanelControls(
       disabled: !simulator || options.sound?.disabled || simulator.status !== SimulatorStatus.PROCESSING,
       active: !!options.sound?.active
     },
-    help: {
-      disabled: !simulator || options.help?.disabled || simulator.status !== SimulatorStatus.PROCESSING,
-      active: !!options.help?.active
-    }
   }
 
   return (
@@ -62,79 +56,28 @@ export default function PanelControls(
       })}
     >
       <div className="flex gap-2">
-        <Button
-          size={ButtonSize.H11}
-          active={controls.deactivate.active}
-          disabled={process || controls.deactivate.disabled}
+        <ButtonSquare
+          icon={SVGPanelClose}
           onClick={() => onClick('deactivate')}
-        >
-          <SVGPanelClose
-            width={24}
-            height={24}
-            className={clsx('text-gray-400', {
-              ['text-gray-600']: controls.deactivate.disabled
-            })}
-          />
-        </Button>
+          disabled={process || controls.deactivate.disabled}
+        />
 
-        <Button
-          size={ButtonSize.H11}
-          active={controls.back.active}
-          disabled={process || controls.back.disabled}
+        <ButtonSquare
+          size={24}
+          icon={SVGLoopBack}
           onClick={() => onClick('back')}
-        >
-          <SVGLoopBack
-            width={24}
-            height={24}
-            className={clsx('text-gray-400', {
-              ['text-gray-600']: controls.back.disabled
-            })}
-          />
-        </Button>
+          disabled={process || controls.back.disabled}
+        />
       </div>
 
       <div className="flex gap-2">
-        <Button
-          size={ButtonSize.H11}
-          active={controls.help.active}
-          disabled={process || controls.help.disabled}
-          onClick={() => onClick('help')}
-        >
-          <SVGQuestion
-            width={24}
-            height={24}
-            className={clsx('text-gray-400', {
-              ['text-gray-600']: controls.help.disabled
-            })}
-          />
-        </Button>
 
-        <Button
-          size={ButtonSize.H11}
-          active={controls.sound.active}
+        <ButtonSquare
+          size={24}
           disabled={process || controls.sound.disabled}
+          icon={controls.sound.active ? SVGMuteOn : SVGMuteOff}
           onClick={() => onClick('sound')}
-        >
-          {controls.sound.active &&
-            <SVGMuteOn
-              width={24}
-              height={24}
-              className={clsx('text-gray-400', {
-                ['text-gray-600']: controls.sound.disabled
-              })}
-            />
-          }
-
-          {!controls.sound.active &&
-            <SVGMuteOff
-              width={24}
-              height={24}
-              className={clsx('text-gray-400', {
-                ['text-gray-600']: controls.sound.disabled
-              })}
-            />
-          }
-        </Button>
+        />
       </div>
     </div>
   )

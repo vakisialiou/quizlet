@@ -1,9 +1,15 @@
 import { SimulatorMethod } from '@entities/SimulatorSettings'
+import { TermData } from '@entities/Term'
 
 export enum CardStatus {
   none = 'none',
   error = 'error',
   success = 'success',
+}
+
+export type SelectionType = {
+  term: TermData | null,
+  status: CardStatus
 }
 
 export type ExtraFlashcardType = {

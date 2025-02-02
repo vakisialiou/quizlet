@@ -46,6 +46,8 @@ export const getAvailableTermIds = (simulator: SimulatorData, filter: SimulatorT
     if (filter.continue) {
       return !simulator.continueIds.includes(id)
     }
+
+    return true
   })
 }
 

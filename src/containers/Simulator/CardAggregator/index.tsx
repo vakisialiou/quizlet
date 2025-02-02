@@ -1,47 +1,42 @@
-import { CardSelection } from '@containers/Simulator/CardAggregator/MethodPickCard/PickCard'
 import MethodFlashcard from '@containers/Simulator/CardAggregator/MethodFlashcard'
 import MethodInputCard from '@containers/Simulator/CardAggregator/MethodInputCard'
 import MethodPickCard from '@containers/Simulator/CardAggregator/MethodPickCard'
-import { HelpDataType } from '@containers/Simulator/CardAggregator/types'
+import { SelectionType } from '@containers/Simulator/CardAggregator/types'
 import { SimulatorData, SimulatorStatus } from '@entities/Simulator'
 import { SimulatorMethod } from '@entities/SimulatorSettings'
 import CardFinish from '@containers/Simulator/CardFinish'
-import { useMainSelector } from '@hooks/useMainSelector'
 import CardStart from '@containers/Simulator/CardStart'
 import CardDone from '@containers/Simulator/CardDone'
 import { RelationProps } from '@helper/relation'
-import { useMemo } from 'react'
-
-export type OnChangeParamsType = {
-  method: SimulatorMethod,
-  helpData?: HelpDataType,
-}
+import { TermData } from '@entities/Term'
 
 export default function CardAggregator(
   {
-    relation,
+    sound,
+    terms,
+    active,
+    onSkip,
     onSound,
-    onChange,
-    simulator,
+    selected,
     editable,
-    soundSelection
+    relation,
+    simulator,
+    onSelect
   }:
   {
     isBack?: boolean
     editable: boolean
+    terms: TermData[]
+    onSkip: () => void
+    sound: TermData | null
+    active: TermData | null
+    selected: SelectionType
     relation: RelationProps
     simulator: SimulatorData
-    soundSelection: CardSelection | null
-    onChange: (params: OnChangeParamsType) => void
-    onSound: (selection: CardSelection | null) => void
+    onSound: (term: TermData) => void
+    onSelect: (selected: SelectionType) => void
   }
 ) {
-  const terms = useMainSelector(({ terms }) => terms)
-
-  const activeTerm = useMemo(() => {
-    return terms.find(({ id }) => id === simulator.termId)
-  }, [terms, simulator.termId])
-
   return (
     <div className="flex flex-col gap-2">
       {simulator.status === SimulatorStatus.WAITING &&
@@ -67,37 +62,43 @@ export default function CardAggregator(
         />
       }
 
-      {simulator.status === SimulatorStatus.PROCESSING &&
+      {!active && simulator.status === SimulatorStatus.PROCESSING &&
+        <div>TODO sss</div>
+      }
+
+      {active && simulator.status === SimulatorStatus.PROCESSING &&
         <>
           {SimulatorMethod.FLASHCARD === simulator.settings.method &&
-            <MethodFlashcard
-              key={activeTerm?.id}
-              simulator={simulator}
-              activeTerm={activeTerm}
-              onChange={(helpData) => onChange({ method: simulator.settings.method, helpData })}
-            />
+            <>
+              <MethodFlashcard
+                active={active}
+                simulator={simulator}
+              />
+            </>
           }
 
           {SimulatorMethod.PICK === simulator.settings.method &&
             <MethodPickCard
               terms={terms}
+              sound={sound}
+              active={active}
               onSound={onSound}
-              key={activeTerm?.id}
+              selected={selected}
+              onSelect={onSelect}
               simulator={simulator}
-              activeTerm={activeTerm}
-              soundSelection={soundSelection}
-              onChange={(helpData) => onChange({ method: simulator.settings.method, helpData })}
             />
           }
 
           {SimulatorMethod.INPUT === simulator.settings.method &&
-            <MethodInputCard
-              terms={terms}
-              key={activeTerm?.id}
-              simulator={simulator}
-              activeTerm={activeTerm}
-              onSubmit={(helpData) => onChange({ method: simulator.settings.method, helpData })}
-            />
+            <>
+              <MethodInputCard
+                active={active}
+                onSkip={onSkip}
+                selected={selected}
+                onSelect={onSelect}
+                simulator={simulator}
+              />
+            </>
           }
         </>
       }

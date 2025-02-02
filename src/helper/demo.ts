@@ -2,6 +2,7 @@ import { ConfigType, getInitialState } from '@store/initial-state-main'
 import Simulator, { SimulatorStatus } from '@entities/Simulator'
 import SimulatorSettings from '@entities/SimulatorSettings'
 import RelationSimulator from '@entities/RelationSimulator'
+import { COLOR_DEFAULT } from '@components/ColorLabel'
 import RelationTerm from '@entities/RelationTerm'
 import {getTranslations} from 'next-intl/server'
 import { LanguageEnums } from '@i18n/constants'
@@ -104,6 +105,7 @@ export const getDemoInitialData = async (locale: LanguageEnums): Promise<ConfigT
 
   const relationTerms = terms.map(({ id }, index) => {
     return new RelationTerm()
+      .setColor(COLOR_DEFAULT)
       .setModuleId(course.id)
       .setOrder(index)
       .setTermId(id)

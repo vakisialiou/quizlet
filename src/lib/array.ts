@@ -43,7 +43,16 @@ export const groupByPath = <T extends Record<string, unknown>>(arr: T[], groupPa
 }
 
 export const shuffle = <T>(arr: T[]): T[] => {
-  return arr.sort(() => Math.random() - 0.5)
+  let index = arr.length
+
+  while (index != 0) {
+    const randomIndex = Math.floor(Math.random() * index)
+    index--
+
+    [arr[index], arr[randomIndex]] = [arr[randomIndex], arr[index]]
+  }
+
+  return arr
 }
 
 export const chunks = <T>(array: T[], chunkSize: number): T[][] => {

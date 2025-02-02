@@ -1,37 +1,30 @@
-import PickCard, {
-  CardSelection,
-  CardSelectedValue,
-} from '@containers/Simulator/CardAggregator/MethodPickCard/PickCard'
-import {
-  CardStatus,
-  HelpDataType,
-  ExtraPickCardType,
-} from '@containers/Simulator/CardAggregator/types'
-import { DefaultAnswerLang, DefaultQuestionLang } from '@entities/Term'
+import PickCard from '@containers/Simulator/CardAggregator/MethodPickCard/PickCard'
+import { CardStatus, SelectionType } from '@containers/Simulator/CardAggregator/types'
 import { getSimulatorNameById } from '@containers/Simulator/constants'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { SimulatorMethod } from '@entities/SimulatorSettings'
 import { SimulatorData } from '@entities/Simulator'
 import { findTermsByIds } from '@helper/terms'
 import { TermData } from '@entities/Term'
+import { useMemo } from 'react'
 
 export default function MethodPickCard(
   {
     terms,
-    onChange,
+    sound,
+    active,
     onSound,
-    simulator,
-    activeTerm,
-    soundSelection,
+    selected,
+    onSelect,
+    simulator
   }:
-    {
-      terms: TermData[]
-      activeTerm?: TermData
-      simulator: SimulatorData
-      soundSelection: CardSelection | null
-      onChange: (data: HelpDataType) => void
-      onSound: (selection: CardSelection | null) => void
-    }
+  {
+    terms: TermData[]
+    active: TermData
+    sound: TermData | null
+    selected: SelectionType,
+    simulator: SimulatorData
+    onSound: (term: TermData) => void
+    onSelect: (selected: SelectionType) => void
+  }
 ) {
   const { inverted } = simulator.settings
 
@@ -39,81 +32,25 @@ export default function MethodPickCard(
     return findTermsByIds(terms, simulator.settings.extra.termIds || [])
   }, [terms, simulator.settings.extra.termIds])
 
-  const cardSide = useMemo(() => {
-    return {
-      signature: getSimulatorNameById(simulator.settings.id),
-      association: activeTerm?.association || null,
-      question: {
-        id: activeTerm?.id,
-        text: inverted
-          ? activeTerm?.answer
-          : activeTerm?.question,
-        lang: inverted
-          ? activeTerm?.answerLang || DefaultAnswerLang
-          : activeTerm?.questionLang || DefaultQuestionLang,
-      } as CardSelection,
-      answer: {
-        id: activeTerm?.id,
-        text: inverted
-          ? activeTerm?.question
-          : activeTerm?.answer,
-        lang: inverted
-          ? activeTerm?.questionLang || DefaultQuestionLang
-          : activeTerm?.answerLang || DefaultAnswerLang,
-      } as CardSelection,
-      selections: selections.map((selection) => {
-        return {
-          id: selection.id,
-          text: inverted
-            ? selection?.question
-            : selection?.answer,
-          lang: inverted
-            ? selection?.questionLang ||DefaultQuestionLang
-            : selection?.answerLang || DefaultAnswerLang,
-        } as CardSelection
-      }),
-    }
-  }, [simulator.settings.id, inverted, activeTerm, selections])
-
-  const generateHelpData = useCallback((status: CardStatus) => {
-    return {
-      association: cardSide.association,
-      lang: status === CardStatus.none
-        ? (inverted ? cardSide.question.lang : null)
-        : (inverted ? cardSide.question.lang : cardSide.answer.lang),
-      text: status === CardStatus.none
-        ? (inverted ? cardSide.question.text : null)
-        : (inverted ? cardSide.question.text : cardSide.answer.text),
-      extra: { method: SimulatorMethod.PICK, status } as ExtraPickCardType
-    }
-  }, [cardSide, inverted])
-
-  const [selectedValue, setSelectedValue] = useState<CardSelectedValue>({ id: null, status: CardStatus.none })
-
-  useEffect(() => {
-    setSelectedValue({ id: null, status: CardStatus.none })
-  }, [activeTerm?.id])
-
-  useEffect(() => {
-    onChange(generateHelpData(selectedValue.status))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedValue])
+  const signature = useMemo(() => {
+    return getSimulatorNameById(simulator.settings.id)
+  }, [simulator.settings.id])
 
   return (
     <PickCard
-      cardSide={cardSide}
-      key={activeTerm?.id}
+      term={active}
+      sound={sound}
+      onSound={onSound}
+      inverted={inverted}
       className="w-72 h-96"
-      value={selectedValue}
-      soundSelection={soundSelection}
-      onSelect={(selection) => {
-        setSelectedValue({
-          id: selection.id,
-          status: selection.id === activeTerm?.id ? CardStatus.success : CardStatus.error
+      signature={signature}
+      selected={selected}
+      selections={selections}
+      onSelect={(term) => {
+        onSelect({
+          term,
+          status: term.id === active?.id ? CardStatus.success : CardStatus.error
         })
-      }}
-      onSound={(selection) => {
-        onSound(selection.id !== soundSelection?.id ? selection : null)
       }}
     />
   )

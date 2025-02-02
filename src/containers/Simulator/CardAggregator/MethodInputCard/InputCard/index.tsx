@@ -1,46 +1,52 @@
-import ColorLabel, { ColorEnum, COLOR_DEFAULT } from '@components/ColorLabel'
 import Input, { InputSize, InputVariantFocus } from '@components/Input'
+import Signature from '@containers/Simulator/CardAggregator/Signature'
+import Button, { ButtonSize, ButtonVariant } from '@components/Button'
+import CardError from '@containers/Simulator/CardAggregator/CardError'
 import {CardStatus} from '@containers/Simulator/CardAggregator/types'
-import Button, { ButtonVariant } from '@components/Button'
-import { BaseSyntheticEvent } from 'react'
+import CardText from '@containers/Simulator/CardAggregator/CardText'
+import {BaseSyntheticEvent, useEffect, useMemo, useRef} from 'react'
+import { SimulatorData } from '@entities/Simulator'
+import { TermData } from '@entities/Term'
 import clsx from 'clsx'
-
-export type CardSelection = {
-  id: string,
-  lang: string,
-  text: string
-}
-
-export type CardSideInfo = {
-  answer: CardSelection,
-  question: CardSelection
-  signature: string | null,
-  selections: CardSelection[]
-}
-
-export type CardSelectedValue = {
-  text: string
-  status: CardStatus
-}
 
 export default function InputCard(
   {
-    className = '',
-    onSubmit,
-    onChange,
-    cardSide,
+    term,
     value,
-    color,
+    status,
+    onSkip,
+    onChange,
+    inverted,
+    onApprove,
+    signature,
+    simulator,
+    className = '',
   }:
   {
-    color?: ColorEnum,
+    value: string,
+    term: TermData
+    inverted: boolean
+    status: CardStatus
     className?: string
-    cardSide: CardSideInfo
-    value: CardSelectedValue,
+    signature: string | null,
+    simulator: SimulatorData,
+    onSkip: (e: BaseSyntheticEvent) => void
     onChange: (e: BaseSyntheticEvent) => void
-    onSubmit: (e: BaseSyntheticEvent) => void
+    onApprove: (e: BaseSyntheticEvent) => void
   }
 ) {
+  const ref  = useRef<HTMLInputElement | null>(null)
+  useEffect(() => {
+    const input = ref.current?.querySelector('input')
+    if (input) {
+      input.focus()
+    }
+  }, [term.id])
+
+  const amountAvailableTerms = useMemo(() => {
+    return simulator.termIds.length - simulator.historyIds.length - simulator.rememberIds.length
+  }, [simulator])
+
   return (
     <div
       className={clsx('group select-none', {
@@ -50,82 +56,82 @@ export default function InputCard(
       <div
         className={clsx('relative w-full h-full transition-colors rounded border border-gray-500/50 bg-gray-500/10 shadow-inner shadow-gray-500/20')}
       >
-        <div className="absolute w-full h-full flex flex-col gap-2 items-center justify-center p-6 rounded">
-          <div className="flex items-center h-12 min-h-12 mt-4">
+        <div className="absolute w-full h-full flex flex-col gap-2 items-center justify-center p-4 rounded">
+          <CardText
+            term={term}
+            className="mt-8"
+            inverted={inverted}
+          />
+
+          <CardError
+            className="pt-4"
+            status={status}
+          >
             <div
-              className="text-gray-500 text-lg text-center font-bold line-clamp-2"
-            >
-              {cardSide.question.text}
+              className="flex w-full items-center justify-center text-white/70 font-bold text-xs mt-2">
+              {status === CardStatus.error &&
+                <div className="line-clamp-3 text-center">
+                  {inverted ? term.question : term.answer}
+                </div>
+              }
             </div>
-          </div>
-
-          <div className="flex items-center justify-center h-8 min-h-8 w-full text-base font-bold">
-            {value.status === CardStatus.success &&
-              <div className="text-green-800">
-                Success
-              </div>
-            }
-
-            {value.status === CardStatus.error &&
-              <div className="text-amber-600">
-                Error
-              </div>
-            }
-          </div>
-
-          <div className="flex w-full h-14 min-h-14 items-center justify-center text-gray-500 text-sm">
-            {value.status === CardStatus.error &&
-              <div className="line-clamp-2 text-center">
-                {cardSide.answer.text}
-              </div>
-            }
-          </div>
+          </CardError>
 
           <div
-            className="w-full h-full flex flex-col justify-center divide-y divide-gray-800 divide-dashed"
+            className="w-full h-full flex flex-col justify-end divide-y divide-gray-800 divide-dashed"
           >
-            <div className="flex flex-col gap-4">
+            <div
+              ref={ref}
+              className="flex flex-col gap-2"
+            >
               <Input
                 rounded
-                value={value.text}
+                value={value}
                 onChange={onChange}
                 size={InputSize.h10}
-                autoFocus={value.status === CardStatus.none}
-                readOnly={value.status !== CardStatus.none}
-                variantFocus={value.status === CardStatus.none ? InputVariantFocus.blue : InputVariantFocus.none}
+                autoFocus={status === CardStatus.none}
+                readOnly={status !== CardStatus.none}
+                variantFocus={status === CardStatus.none ? InputVariantFocus.blue : InputVariantFocus.none}
                 onKeyUp={(e) => {
                   switch (e.keyCode) {
                     case 13:
-                      onSubmit(e)
+                      onApprove(e)
                       break
                   }
                 }}
               />
 
-              <Button
-                onClick={onSubmit}
-                variant={ButtonVariant.WHITE}
-                disabled={!value.text || [CardStatus.success, CardStatus.error].includes(value.status)}
-              >
-                Approve
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  className="w-1/2"
+                  onClick={onApprove}
+                  size={ButtonSize.H10}
+                  variant={ButtonVariant.GREEN}
+                  disabled={!value || [CardStatus.success, CardStatus.error].includes(status)}
+                >
+                  Approve
+                </Button>
+
+                <Button
+                  className="w-1/2"
+                  onClick={onSkip}
+                  size={ButtonSize.H10}
+                  variant={ButtonVariant.WHITE}
+                  disabled={CardStatus.none !== status || amountAvailableTerms <= 1}
+                >
+                  Skip
+                </Button>
+              </div>
             </div>
 
           </div>
 
-          {cardSide.signature &&
-            <div
-              className="absolute left-3 top-3 text-gray-700/50 uppercase font-bold text-[10px]">
-              {cardSide.signature}
-            </div>
-          }
-
-          <ColorLabel
-            size={4}
-            rounded
-            color={color || COLOR_DEFAULT}
-            className="absolute right-3 top-3 z-10"
+          <Signature
+            inverted={inverted}
+            signature={signature}
+            className="absolute left-0 top-0"
           />
+
         </div>
       </div>
     </div>

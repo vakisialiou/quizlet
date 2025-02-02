@@ -8,6 +8,7 @@ import { useShareSelector } from '@hooks/useShapeSelector'
 import { useMainSelector } from '@hooks/useMainSelector'
 import { ModuleShareData } from '@entities/ModuleShare'
 import { TermFiltersData } from '@entities/TermFilters'
+import { COLOR_DEFAULT } from '@components/ColorLabel'
 import ColorDropdown from '@components/ColorDropdown'
 import { sortRelatedTerms } from '@helper/sort-terms'
 import { filterDeletedTerms } from '@helper/terms'
@@ -26,7 +27,6 @@ import {
 import {
   actionUpsertTerm
 } from '@store/action-main'
-import {COLOR_DEFAULT} from "@components/ColorLabel";
 
 function Grid(
   {
@@ -89,6 +89,7 @@ function Grid(
     const relationTerm = new RelationTerm()
       .setOrder(sortedItems.length + 1)
       .setModuleId(share.moduleId)
+      .setColor(COLOR_DEFAULT)
       .setTermId(term.id)
       .serialize()
 

@@ -1,46 +1,35 @@
-import ColorLabel, { ColorEnum, COLOR_DEFAULT } from '@components/ColorLabel'
-import {CardStatus} from '@containers/Simulator/CardAggregator/types'
+import { CardStatus, SelectionType } from '@containers/Simulator/CardAggregator/types'
+import Signature from '@containers/Simulator/CardAggregator/Signature'
+import CardError from '@containers/Simulator/CardAggregator/CardError'
+import CardText from '@containers/Simulator/CardAggregator/CardText'
 import SVGMuteOff from '@public/svg/mute_ipo_off.svg'
 import SVGMuteOn from '@public/svg/mute_ipo_on.svg'
 import ButtonSquare from '@components/ButtonSquare'
+import { TermData } from '@entities/Term'
 import clsx from 'clsx'
-
-export type CardSelection = {
-  id: string,
-  lang: string,
-  text: string
-}
-
-export type CardSideInfo = {
-  answer: CardSelection,
-  question: CardSelection
-  signature: string | null,
-  selections: CardSelection[]
-}
-
-export type CardSelectedValue = {
-  id: string | null
-  status: CardStatus
-}
 
 export default function PickCard(
   {
-    className = '',
-    onSelect,
+    term,
+    sound,
     onSound,
-    cardSide,
-    soundSelection,
-    color,
-    value,
+    onSelect,
+    inverted,
+    selected,
+    signature,
+    selections,
+    className = '',
   }:
   {
-    color?: ColorEnum,
+    term: TermData
+    inverted: boolean
     className?: string
-    cardSide: CardSideInfo
-    value: CardSelectedValue,
-    soundSelection: CardSelection | null
-    onSound: (selection: CardSelection) => void
-    onSelect: (selection: CardSelection) => void
+    sound: TermData | null
+    selections: TermData[],
+    signature: string | null,
+    selected: SelectionType,
+    onSound: (selection: TermData) => void
+    onSelect: (selection: TermData) => void
   }
 ) {
   return (
@@ -52,57 +41,46 @@ export default function PickCard(
       <div
         className={clsx('relative w-full h-full transition-colors rounded border border-gray-500/50 bg-gray-500/10 shadow-inner shadow-gray-500/20')}
       >
-        <div className="absolute w-full h-full flex flex-col gap-2 items-center justify-center p-4 rounded">
-          <div className="flex items-center h-12 min-h-12 mt-4">
-            <div
-              className="text-gray-500 text-lg text-center font-bold line-clamp-2"
-            >
-              {cardSide.question.text}
-            </div>
-          </div>
+        <div className="absolute w-full h-full gap-4 flex flex-col items-center justify-center p-4 rounded">
+          <CardText
+            term={term}
+            className="mt-2"
+            inverted={inverted}
+          />
 
-          <div className="flex h-full items-center text-base font-bold">
-            {value.status === CardStatus.success &&
-              <div className="text-green-800">
-                Success
-              </div>
-            }
-
-            {value.status === CardStatus.error &&
-              <div className="text-amber-600">
-                Error
-              </div>
-            }
-          </div>
+          <CardError
+            className="py-2"
+            status={selected.status}
+          />
 
           <div
             className="w-full h-full flex flex-col justify-end divide-y divide-gray-800 divide-dashed">
-            {cardSide.selections.map((selection) => {
+            {selections.map((selection) => {
               return (
                 <div
                   key={selection.id}
-                  className="flex gap-1 items-center"
+                  className="flex gap-1 items-center h-12"
                 >
                   <ButtonSquare
                     onClick={() => onSound(selection)}
-                    icon={soundSelection?.id === selection.id ? SVGMuteOn : SVGMuteOff}
+                    icon={sound?.id === selection.id ? SVGMuteOn : SVGMuteOff}
                   />
 
                   <label
-                    className={clsx('h-14 flex gap-2 w-full items-center justify-between py-2 px-3 hover:bg-gray-500/30 cursor-pointer text-base', {
-                      ['bg-green-500/60 hover:bg-green-500/60']: value.status === CardStatus.error && selection.id === cardSide.answer.id,
-                      ['bg-amber-500/50 hover:bg-amber-500/50']: value.status === CardStatus.error && selection.id === value.id,
-                      ['bg-green-800 hover:bg-green-800']: value.status === CardStatus.success && selection.id === value.id,
-                      ['pointer-events-none']: [CardStatus.success, CardStatus.error].includes(value.status)
+                    className={clsx('h-full flex gap-2 w-full items-center justify-between px-2 hover:bg-gray-500/30 cursor-pointer text-base', {
+                      ['bg-green-500/60 hover:bg-green-500/60']: selected.status === CardStatus.error && selection.id === term.id,
+                      ['bg-amber-500/50 hover:bg-amber-500/50']: selected.status === CardStatus.error && selection.id === selected.term?.id,
+                      ['bg-green-800 hover:bg-green-800']: selected.status === CardStatus.success && selection.id === selected.term?.id,
+                      ['pointer-events-none']: selected.status && [CardStatus.success, CardStatus.error].includes(selected.status)
                     })}
                     onClick={() => {
-                      if (value.status === CardStatus.none) {
+                      if (selected.status === CardStatus.none) {
                         onSelect(selection)
                       }
                     }}
                   >
-                    <div className="line-clamp-2">
-                      {selection.text}
+                    <div className="line-clamp-2 text-sm">
+                      {inverted ? selection.question : selection.answer}
                     </div>
                   </label>
                 </div>
@@ -110,17 +88,10 @@ export default function PickCard(
             })}
           </div>
 
-          {cardSide.signature &&
-            <div className="absolute left-3 top-3 text-gray-700/50 uppercase font-bold text-[10px]">
-              {cardSide.signature}
-            </div>
-          }
-
-          <ColorLabel
-            size={4}
-            rounded
-            color={color || COLOR_DEFAULT}
-            className="absolute right-3 top-3 z-10"
+          <Signature
+            inverted={inverted}
+            signature={signature}
+            className="absolute left-0 top-0"
           />
         </div>
       </div>

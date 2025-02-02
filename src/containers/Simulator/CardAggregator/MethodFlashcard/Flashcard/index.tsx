@@ -1,30 +1,25 @@
-import ColorLabel, { ColorEnum, COLOR_DEFAULT } from '@components/ColorLabel'
+import Signature from '@containers/Simulator/CardAggregator/Signature'
+import CardText from '@containers/Simulator/CardAggregator/CardText'
 import { BaseSyntheticEvent } from 'react'
+import { TermData } from '@entities/Term'
 import clsx from 'clsx'
 import './style.css'
 
-export type CardSideInfo = {
-  text?: string | null,
-  lang?: string | null,
-  signature: string | null
-  association?: string | null,
-}
-
 export default function Flashcard(
   {
+    term,
     onClick,
+    inverted,
+    signature,
     isBackSide,
     className = '',
-    faceSide,
-    backSide,
-    color
   }:
   {
-    color?: ColorEnum,
-    className?: string,
+    term: TermData
+    inverted: boolean
     isBackSide: boolean
-    faceSide: CardSideInfo,
-    backSide: CardSideInfo,
+    className?: string,
+    signature: string | null,
     onClick?: (e: BaseSyntheticEvent) => void,
   }
 ) {
@@ -40,25 +35,21 @@ export default function Flashcard(
           ['card__inner_back']: isBackSide
         })}
       >
-        <div className="card__front absolute w-full h-full flex flex-col gap-4 items-center justify-center p-6 rounded">
-          <p
-            className="text-gray-500 group-hover:text-gray-400 transition-colors font-semibold text-xl text-center"
-          >
-            {faceSide.text}
-          </p>
-
-          {faceSide.signature &&
-            <div className="absolute left-3 top-3 text-gray-700/50 uppercase font-bold text-[10px]">
-              {faceSide.signature}
-            </div>
-          }
-
-          <ColorLabel
-            size={4}
-            rounded
-            color={color || COLOR_DEFAULT}
-            className="absolute right-3 top-3 z-10"
+        <div
+          className="card__front absolute w-full h-full flex flex-col gap-4 items-center justify-center p-6 rounded"
+        >
+          <CardText
+            term={term}
+            className="mt-2"
+            inverted={inverted}
           />
+
+          <Signature
+            inverted={inverted}
+            signature={signature}
+            className="absolute right-0 top-0"
+          />
+
         </div>
         <div
           className="card__back absolute w-full h-full flex flex-col gap-4 items-center justify-center p-6 rounded"
@@ -66,21 +57,23 @@ export default function Flashcard(
           <p
             className="text-gray-600 group-hover:text-gray-500 transition-colors font-semibold text-xl text-center"
           >
-            {backSide.text}
+            {inverted ? term.question : term.answer}
           </p>
 
-          {backSide.signature &&
-            <div className="absolute right-3 top-3 text-gray-700/50 uppercase font-bold text-[10px]">
-              {backSide.signature}
+          {term.association &&
+            <div
+              className="text-gray-500 text-xs text-center text-white/25 font-bold line-clamp-3 h-[48px]"
+            >
+              {term.association}
             </div>
           }
 
-          <ColorLabel
-            size={4}
-            rounded
-            color={color || COLOR_DEFAULT}
-            className="absolute left-3 top-3 z-10"
+          <Signature
+            inverted={inverted}
+            signature={signature}
+            className="absolute right-0 top-0"
           />
+
         </div>
       </div>
     </div>

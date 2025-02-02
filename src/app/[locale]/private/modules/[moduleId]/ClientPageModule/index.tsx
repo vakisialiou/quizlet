@@ -14,6 +14,7 @@ import AchievementIcon from '@containers/AchievementIcon'
 import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
 import Button, {ButtonVariant} from '@components/Button'
 import { DropdownPlacement } from '@components/Dropdown'
+import { COLOR_DEFAULT } from '@components/ColorLabel'
 import {useMainSelector} from '@hooks/useMainSelector'
 import TermsDropdown from '@containers/TermsDropdown'
 import Groups from '@containers/Collection/Groups'
@@ -167,6 +168,7 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
                     actionUpdateModule({ editable, editId: null, module: { ...course, termsCollapsed: false }}, () => {
                       const relationTerm = new RelationTerm()
                         .setOrder(relatedTerms.length + 1)
+                        .setColor(COLOR_DEFAULT)
                         .setModuleId(moduleId)
                         .setTermId(term.id)
                         .serialize()
@@ -255,6 +257,7 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
                       actionUpdateModule({ editable, editId: null, module: { ...course, termsCollapsed: false }}, () => {
                         const relationTerm = new RelationTerm()
                           .setOrder(relatedTerms.length + 1)
+                          .setColor(COLOR_DEFAULT)
                           .setModuleId(moduleId)
                           .setTermId(term.id)
                           .serialize()

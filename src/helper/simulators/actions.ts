@@ -56,6 +56,15 @@ export function actionRemember(simulator: SimulatorData) {
   })
 }
 
+export function actionSkip(simulator: SimulatorData) {
+  const termIds = getAvailableTermIds(simulator, { active: true, continue: true, remember: true })
+
+  return actionExtraParamsUpdate({
+    ...simulator,
+    termId: termIds.length > 0 ? selectRandomTermId(termIds) : null,
+  })
+}
+
 export function actionRestart(simulator: SimulatorData) {
   const termIds = getAvailableTermIds(simulator, { active: false, continue: false, remember: true  })
 

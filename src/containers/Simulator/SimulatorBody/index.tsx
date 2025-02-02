@@ -1,10 +1,16 @@
 'use client'
 
-import { actionTracker, actionRemember, actionContinue, actionBack } from '@helper/simulators/actions'
-import { CardSelection } from '@containers/Simulator/CardAggregator/MethodPickCard/PickCard'
-import CardAggregator, { OnChangeParamsType } from '@containers/Simulator/CardAggregator'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { CardStatus } from '@containers/Simulator/CardAggregator/types'
+import {
+  actionTracker,
+  actionRemember,
+  actionContinue,
+  actionBack,
+  actionSkip
+} from '@helper/simulators/actions'
+import { CardStatus, SelectionType } from '@containers/Simulator/CardAggregator/types'
+import { DefaultAnswerLang, DefaultQuestionLang, TermData } from '@entities/Term'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import CardAggregator from '@containers/Simulator/CardAggregator'
 import { ProgressTrackerAction } from '@entities/ProgressTracker'
 import { findActiveSimulators } from '@helper/simulators/general'
 import PanelControls from '@containers/Simulator/PanelControls'
@@ -12,7 +18,6 @@ import {SimulatorMethod} from '@entities/SimulatorSettings'
 import { actionUpdateSimulator } from '@store/action-main'
 import Button, {ButtonVariant} from '@components/Button'
 import { useMainSelector } from '@hooks/useMainSelector'
-import CardEmpty from '@containers/Simulator/CardEmpty'
 import CardStart from '@containers/Simulator/CardStart'
 import PanelInfo from '@containers/Simulator/PanelInfo'
 import { SimulatorStatus } from '@entities/Simulator'
@@ -34,6 +39,7 @@ export default function SimulatorBody(
     onDeactivateAction: (simulatorId: string) => void
   }
 ) {
+  const terms = useMainSelector(({ terms }) => terms)
   const simulators = useMainSelector(({ simulators }) => simulators)
   const relationSimulators = useMainSelector(({ relationSimulators }) => relationSimulators)
 
@@ -42,224 +48,207 @@ export default function SimulatorBody(
     return activeSimulators.length > 0 ? activeSimulators[0] : null
   }, [relationSimulators, simulators, relation])
 
-  const { speech, soundInfo, setSoundInfo } = useSpeech<{ type: string, data: CardSelection | null }>({ type: '', data: null })
+  const active = useMemo(() => {
+    return terms.find(({ id }) => id === simulator?.termId) || null
+  }, [terms, simulator?.termId])
 
-  const [showHelp, setShowHelp] = useState(false)
+  const { speech, soundInfo, setSoundInfo } = useSpeech<{ term: TermData | null, source: string | null,  }>({ term: null, source: null })
 
-  const showHelpRef = useRef(showHelp)
+  const [selected, setSelected] = useState<SelectionType>({ term: null, status: CardStatus.none })
+
   useEffect(() => {
-    showHelpRef.current = showHelp
-  }, [showHelp])
-
-  // Сбросить активную подсказку если изменился термин.
-  useEffect(() => {
-    if (showHelpRef.current) {
-      setShowHelp(false)
+    if (selected.term && simulator?.status !== SimulatorStatus.PROCESSING) {
+      setSelected({ term: null, status: CardStatus.none })
     }
-  }, [simulator?.termId])
+  }, [simulator?.status, selected.term])
 
-  const [cardData, setCardData] = useState<OnChangeParamsType | null>(null)
-
-  useEffect(() => {
-    if (cardData && (!simulator || simulator.status !== SimulatorStatus.PROCESSING)) {
-      setCardData(null)
+  const getViewData = useCallback((term: TermData, inverted: boolean) => {
+    return {
+      text: inverted ? term.answer : term.question,
+      lang: inverted ? term.answerLang || DefaultAnswerLang : term.questionLang || DefaultQuestionLang
     }
-  }, [simulator, cardData])
-
-  const onChangeCardDataCallback = useCallback((params: OnChangeParamsType) => {
-    setCardData(params)
   }, [])
 
-  const extra = cardData?.helpData?.extra
-  const cardStatus = extra?.status as CardStatus
+  const inverted = useMemo(() => {
+    return !!simulator?.settings.inverted
+  }, [simulator?.settings.inverted])
+
+  const activeViewData = useMemo(() => {
+    return {
+      text: (inverted ? active?.answer : active?.question) || null,
+      lang: inverted ? active?.answerLang || DefaultAnswerLang : active?.questionLang || DefaultQuestionLang
+    }
+  }, [active, inverted])
+
+  const onSoundCallback = useCallback((term: TermData, source: string, inverted: boolean) => {
+    if (!speech) {
+      return
+    }
+
+    if (term.id === soundInfo.term?.id) {
+      speech.stop()
+      setSoundInfo({ source: null, term: null })
+      return
+    }
+
+    const { text, lang } = getViewData(term, inverted)
+    if (!text) {
+      return
+    }
+
+    const voice = speech.selectVoice(lang)
+    speech
+      .stop()
+      .setLang(lang)
+      .setVoice(voice)
+      .speak(text)
+
+    setSoundInfo({ source, term })
+  }, [speech, getViewData, setSoundInfo, soundInfo.term?.id])
 
   const t = useTranslations('Simulators')
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col gap-2 h-full justify-center">
+      <PanelControls
+        simulator={simulator}
+        className="w-72 mb-2 border-b border-white/15 py-2"
+        options={{
+          sound: {
+            active: soundInfo.source === 'sound',
+            disabled: !activeViewData?.text
+          },
+          deactivate: {
+            disabled: disableDeactivate
+          },
+        }}
+        onClick={(controlName) => {
+          if (!simulator) {
+            return
+          }
+
+          switch (controlName) {
+            case 'deactivate':
+              onDeactivateAction(simulator.id)
+              break
+            case 'back':
+              actionUpdateSimulator({simulator: actionBack(simulator), editable}, () => {
+                setSelected({term: null, status: CardStatus.none})
+              })
+              break
+            case 'sound':
+              if (active) {
+                onSoundCallback(active, 'sound', simulator.settings.inverted)
+              }
+              break
+          }
+        }}
+      />
+
       <PanelInfo
-        className="mb-4"
+        className="mb-2"
         relation={relation}
         simulator={simulator}
       />
 
-      <div className="flex flex-col gap-2">
-        <PanelControls
-          simulator={simulator}
-          className="w-72"
-          options={{
-            sound: {
-              active: soundInfo.type === 'sound',
-              disabled: !speech || showHelp || !cardData?.helpData?.text || !cardData?.helpData?.lang
-            },
-            deactivate: {
-              disabled: disableDeactivate
-            },
-            help: {
-              disabled: !cardData?.helpData?.association,
-              active: showHelp
-            }
-          }}
-          onClick={(controlName) => {
-            if (!simulator) {
-              return
-            }
+      <div className="flex flex-col gap-2 w-72 h-[440px]">
 
-            switch (controlName) {
-              case 'deactivate':
-                onDeactivateAction(simulator.id)
-                break
-              case 'back':
-                actionUpdateSimulator({
-                  simulator: actionBack(simulator),
-                  editable
-                })
-                break
-              case 'help':
-                setShowHelp((prevState) => !prevState)
-                break
-              case 'sound':
-                if (simulator && cardData && speech) {
-                  if (soundInfo.type === 'sound') {
-                    speech.stop()
-                    return
-                  }
+        {!simulator &&
+          <CardStart
+            relation={relation}
+            editable={editable}
+          />
+        }
 
-                  const text = cardData?.helpData?.text
-                  const lang = cardData?.helpData?.lang
-
-                  if (lang && text) {
-                    speech
-                      .stop()
-                      .setLang(lang)
-                      .setVoice(speech.selectVoice(lang))
-                      .speak(text)
-                    setSoundInfo({
-                      type: 'sound',
-                      data: {id: '', lang, text} as CardSelection
-                    })
-                  }
-                }
-                break
-            }
-          }}
-        />
-
-        <div className="flex flex-col gap-2 w-72">
-
-          {!simulator &&
-            <CardStart
+        <div className="relative">
+          {simulator &&
+            <CardAggregator
+              terms={terms}
+              active={active}
+              selected={selected}
               relation={relation}
               editable={editable}
+              simulator={simulator}
+              onSelect={(selected) => setSelected(selected)}
+              sound={soundInfo.source === 'selection' ? soundInfo.term : null}
+              onSound={(term) => onSoundCallback(term, 'selection', !inverted)}
+              onSkip={() => {
+                actionUpdateSimulator({simulator: actionSkip(simulator), editable}, () => {
+                  setSelected({term: null, status: CardStatus.none})
+                })
+              }}
             />
           }
+        </div>
 
-          <div className="relative">
-            {simulator &&
-              <CardAggregator
-                relation={relation}
-                editable={editable}
-                simulator={simulator}
-                onChange={onChangeCardDataCallback}
-                soundSelection={soundInfo.type === 'selection' ? soundInfo.data : null}
-                onSound={(selection) => {
-                  if (!speech) {
-                    return
-                  }
+        {(SimulatorStatus.PROCESSING !== simulator?.status) &&
+          <div className="w-full h-12"/>
+        }
 
-                  if (!selection) {
-                    speech.stop()
-                    return
-                  }
-
-                  speech
-                    .stop()
-                    .setLang(selection.lang)
-                    .setVoice(speech.selectVoice(selection.lang))
-                    .speak(selection.text)
-                  setSoundInfo({type: 'selection', data: selection})
-                }}
-              />
-            }
-
-            {showHelp &&
-              <CardEmpty
-                active
-                className="absolute left-0 top-0"
-                classNameContent="cursor-pointer p-4"
-                onClick={() => {
-                  setShowHelp(false)
-                }}
-              >
-                <div className="text-gray-600 font-semibold text-lg">
-                  {cardData?.helpData?.association}
-                </div>
-              </CardEmpty>
-            }
-          </div>
-
-          {(SimulatorStatus.PROCESSING !== simulator?.status) &&
-            <div className="w-full h-12" />
-          }
-
-          {simulator?.status === SimulatorStatus.PROCESSING &&
-            <div className="flex gap-2 w-full">
-              {SimulatorMethod.FLASHCARD === simulator.settings.method &&
-                <>
-                  <Button
-                    className="w-1/2"
-                    variant={ButtonVariant.GREEN}
-                    onClick={() => {
-                      actionUpdateSimulator({
-                        simulator: actionRemember(actionTracker(simulator, ProgressTrackerAction.success)),
-                        editable
-                      })
-                    }}
-                  >
-                    {t('buttonRemember')}
-                  </Button>
-
-                  <Button
-                    className="w-1/2"
-                    variant={ButtonVariant.WHITE}
-                    onClick={() => {
-                      actionUpdateSimulator({
-                        simulator: actionContinue(actionTracker(simulator, ProgressTrackerAction.error)),
-                        editable
-                      })
-                    }}
-                  >
-                    {t('buttonRepeat')}
-                  </Button>
-                </>
-              }
-
-              {[SimulatorMethod.PICK, SimulatorMethod.INPUT].includes(simulator.settings.method) &&
+        {simulator?.status === SimulatorStatus.PROCESSING &&
+          <div className="flex gap-2 w-full">
+            {SimulatorMethod.FLASHCARD === simulator.settings.method &&
+              <>
                 <Button
-                  className="w-full"
-                  variant={ButtonVariant.WHITE}
-                  disabled={!cardStatus || cardStatus === CardStatus.none}
+                  className="w-1/2"
+                  variant={ButtonVariant.GREEN}
                   onClick={() => {
-                    if (cardStatus === CardStatus.success) {
-                      actionUpdateSimulator({
-                        simulator: actionRemember(actionTracker(simulator, ProgressTrackerAction.success)),
-                        editable
-                      })
-                    } else {
-                      actionUpdateSimulator({
-                        simulator: actionContinue(actionTracker(simulator, ProgressTrackerAction.error)),
-                        editable
-                      })
-                    }
+                    actionUpdateSimulator({
+                      simulator: actionRemember(actionTracker(simulator, ProgressTrackerAction.success)),
+                      editable
+                    }, () => {
+                      setSelected({term: null, status: CardStatus.none})
+                    })
                   }}
                 >
-                  {t('buttonContinue')}
+                  {t('buttonRemember')}
                 </Button>
-              }
-            </div>
-          }
 
-        </div>
+                <Button
+                  className="w-1/2"
+                  variant={ButtonVariant.WHITE}
+                  onClick={() => {
+                    actionUpdateSimulator({
+                      simulator: actionContinue(actionTracker(simulator, ProgressTrackerAction.error)),
+                      editable
+                    }, () => {
+                      setSelected({term: null, status: CardStatus.none})
+                    })
+                  }}
+                >
+                  {t('buttonRepeat')}
+                </Button>
+              </>
+            }
+
+            {[SimulatorMethod.PICK, SimulatorMethod.INPUT].includes(simulator.settings.method) &&
+              <Button
+                className="w-full"
+                variant={ButtonVariant.WHITE}
+                disabled={selected.status === CardStatus.none}
+                onClick={() => {
+                  const {status} = selected
+                  setSelected({term: null, status: CardStatus.none})
+
+                  if (status === CardStatus.success) {
+                    actionUpdateSimulator({
+                      simulator: actionRemember(actionTracker(simulator, ProgressTrackerAction.success)),
+                      editable
+                    })
+                  } else {
+                    actionUpdateSimulator({
+                      simulator: actionContinue(actionTracker(simulator, ProgressTrackerAction.error)),
+                      editable
+                    })
+                  }
+                }}
+              >
+                {t('buttonContinue')}
+              </Button>
+            }
+          </div>
+        }
+
       </div>
     </div>
   )

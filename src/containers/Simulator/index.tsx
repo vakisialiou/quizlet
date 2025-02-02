@@ -55,7 +55,7 @@ export default function Simulator(
       />
 
       <div
-        className="w-full flex flex-col items-center justify-center overflow-hidden mt-4"
+        className="w-full h-[calc(100%-48px)] flex flex-col items-center justify-center overflow-hidden"
       >
         <SimulatorBody
           editable={editable}

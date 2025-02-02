@@ -15,6 +15,7 @@ import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
 import {DropdownPlacement} from '@components/Dropdown'
 import TermsDropdown from '@containers/TermsDropdown'
 import RelationFolder from '@entities/RelationFolder'
+import { COLOR_DEFAULT } from '@components/ColorLabel'
 import RelatedTerms from '@containers/RelatedTerms'
 import ButtonSquare from '@components/ButtonSquare'
 import RelationTerm from '@entities/RelationTerm'
@@ -99,6 +100,7 @@ export default function ClientPageFolder(
   const addRelation = useCallback((termId: string) => {
     const relationTerm = new RelationTerm()
       .setOrder(relatedTerms.length + 1)
+      .setColor(COLOR_DEFAULT)
       .setFolderId(folderId)
       .setTermId(termId)
       .serialize()

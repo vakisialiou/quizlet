@@ -1,127 +1,66 @@
-import InputCard, {
-  CardSelection,
-  CardSelectedValue
-} from '@containers/Simulator/CardAggregator/MethodInputCard/InputCard'
-import { DefaultAnswerLang, DefaultQuestionLang } from '@entities/Term'
+import InputCard from '@containers/Simulator/CardAggregator/MethodInputCard/InputCard'
 import { getSimulatorNameById } from '@containers/Simulator/constants'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { SimulatorMethod } from '@entities/SimulatorSettings'
 import { SimulatorData } from '@entities/Simulator'
 import { TermData } from '@entities/Term'
-import { shuffle } from '@lib/array'
 import {
   CardStatus,
-  HelpDataType,
-  ExtraInputCardType
+  SelectionType,
 } from '@containers/Simulator/CardAggregator/types'
-
-type onSubmitCallback = (data: HelpDataType) => void
 
 export default function MethodInputCard(
   {
-    terms,
-    onSubmit,
+    active,
+    onSkip,
+    selected,
+    onSelect,
     simulator,
-    activeTerm,
   }:
-    {
-      terms: TermData[],
-      activeTerm?: TermData,
-      onSubmit: onSubmitCallback,
-      simulator: SimulatorData,
-    }
+  {
+    active: TermData,
+    onSkip: () => void
+    selected: SelectionType,
+    simulator: SimulatorData,
+    onSelect: (selected: SelectionType) => void
+  }
 )
 {
   const { inverted } = simulator.settings
 
-  const cardSide = useMemo(() => {
-    const items = shuffle([...terms])
-      .filter(({ id, answer, question }) => {
-        const str = inverted ? question : answer
-        return !(id === activeTerm?.id || !str)
-      })
+  const signature = useMemo(() => {
+    return getSimulatorNameById(simulator.settings.id)
+  }, [simulator.settings.id])
 
-    const selections = shuffle([...items.slice(0, 3), { ...activeTerm }])
-
-    return {
-      signature: getSimulatorNameById(simulator.settings.id),
-      association: activeTerm?.association || null,
-      question: {
-        id: activeTerm?.id,
-        text: inverted
-          ? activeTerm?.answer
-          : activeTerm?.question,
-        lang: inverted
-          ? activeTerm?.answerLang || DefaultAnswerLang
-          : activeTerm?.questionLang || DefaultQuestionLang,
-      } as CardSelection,
-      answer: {
-        id: activeTerm?.id,
-        text: inverted
-          ? activeTerm?.question
-          : activeTerm?.answer,
-        lang: inverted
-          ? activeTerm?.questionLang || DefaultQuestionLang
-          : activeTerm?.answerLang || DefaultAnswerLang,
-      } as CardSelection,
-      selections: selections.map((selection) => {
-        return {
-          id: selection.id,
-          text: inverted
-            ? selection?.question
-            : selection?.answer,
-          lang: inverted
-            ? selection?.questionLang ||DefaultQuestionLang
-            : selection?.answerLang || DefaultAnswerLang,
-        } as CardSelection
-      }),
-    }
-  }, [simulator.settings.id, inverted, activeTerm, terms])
-
-  const generateHelpData = useCallback((status: CardStatus) => {
-    return {
-      association: cardSide.association,
-      lang: inverted ? cardSide.question.lang : cardSide.answer.lang,
-      text: inverted ? cardSide.question.text : cardSide.answer.text,
-      extra: { method: SimulatorMethod.INPUT, status } as ExtraInputCardType
-    }
-  }, [cardSide, inverted])
-
-  const [selectedValue, setSelectedValue] = useState<CardSelectedValue>({ text: '', status: CardStatus.none })
+  const [value, setValue] = useState('')
 
   useEffect(() => {
-    setSelectedValue({ text: '', status: CardStatus.none })
-  }, [activeTerm?.id])
+    setValue('')
+  }, [active.id])
 
-  useEffect(() => {
-    onSubmit(generateHelpData(selectedValue.status))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedValue.status])
+  const check = useCallback((inputValue: string, originValue: string) => {
+    let normalizedInput = inputValue.toLowerCase()
+    let normalizedOrigin = originValue.toLowerCase()
 
-  const checkAnswer = useCallback((userInput: string, correctAnswer: string) => {
-    let normalizedUserInput = userInput.toLowerCase()
-    let normalizedCorrectAnswer = correctAnswer.toLowerCase()
+    normalizedInput = normalizedInput.trim()
+    normalizedOrigin = normalizedOrigin.trim()
 
-    normalizedUserInput = normalizedUserInput.trim()
-    normalizedCorrectAnswer = normalizedCorrectAnswer.trim()
-
-    return normalizedUserInput === normalizedCorrectAnswer ? CardStatus.success : CardStatus.error
+    return normalizedInput === normalizedOrigin ? CardStatus.success : CardStatus.error
   }, [])
 
   return (
     <InputCard
-      cardSide={cardSide}
-      key={activeTerm?.id}
+      term={active}
+      value={value}
+      onSkip={onSkip}
+      inverted={inverted}
       className="w-72 h-96"
-      value={selectedValue}
-      onChange={(e) => {
-        setSelectedValue({ ...selectedValue, text: e.target.value })
-      }}
-      onSubmit={() => {
-        setSelectedValue({
-          ...selectedValue,
-          status: checkAnswer(selectedValue.text || '', cardSide.answer.text || '')
-        })
+      signature={signature}
+      simulator={simulator}
+      status={selected.status}
+      onChange={(e) => setValue(e.target.value)}
+      onApprove={() => {
+        const originValue = (inverted ? active.answer : active.question) || ''
+        onSelect({ term: active, status: check(value, originValue) })
       }}
     />
   )

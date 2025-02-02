@@ -78,6 +78,7 @@ function RelatedTerms(
       .setModuleId(relation.moduleId || null)
       .setFolderId(relation.folderId || null)
       .setOrder(relatedTerms.length + 1)
+      .setColor(COLOR_DEFAULT)
       .setTermId(term.id)
       .serialize()
 
