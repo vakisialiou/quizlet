@@ -45,7 +45,6 @@ export default function Flashcard(
           />
 
           <Signature
-            inverted={inverted}
             signature={signature}
             className="absolute right-0 top-0"
           />
@@ -69,7 +68,6 @@ export default function Flashcard(
           }
 
           <Signature
-            inverted={inverted}
             signature={signature}
             className="absolute right-0 top-0"
           />

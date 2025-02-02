@@ -59,7 +59,7 @@ export default function MethodInputCard(
       status={selected.status}
       onChange={(e) => setValue(e.target.value)}
       onApprove={() => {
-        const originValue = (inverted ? active.answer : active.question) || ''
+        const originValue = (inverted ? active.question : active.answer) || ''
         onSelect({ term: active, status: check(value, originValue) })
       }}
     />

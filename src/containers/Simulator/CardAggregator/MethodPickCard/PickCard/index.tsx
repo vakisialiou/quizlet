@@ -41,10 +41,10 @@ export default function PickCard(
       <div
         className={clsx('relative w-full h-full transition-colors rounded border border-gray-500/50 bg-gray-500/10 shadow-inner shadow-gray-500/20')}
       >
-        <div className="absolute w-full h-full gap-4 flex flex-col items-center justify-center p-4 rounded">
+        <div className="absolute w-full h-full gap-2 flex flex-col items-center justify-center p-4 rounded">
           <CardText
             term={term}
-            className="mt-2"
+            className="mt-8"
             inverted={inverted}
           />
 
@@ -89,7 +89,6 @@ export default function PickCard(
           </div>
 
           <Signature
-            inverted={inverted}
             signature={signature}
             className="absolute left-0 top-0"
           />

@@ -20,14 +20,14 @@ export default function CardText(
       })}
     >
       <div
-        className="text-gray-500 text-lg text-center font-bold line-clamp-1"
+        className="text-white/75 text-xl text-center font-bold line-clamp-1"
       >
         {inverted ? term.answer : term.question}
       </div>
 
       {term.association &&
         <div
-          className="text-gray-500 text-xs text-center text-white/25 font-bold line-clamp-3 h-[48px]"
+          className="text-xs text-center text-white/50 font-bold line-clamp-3 h-[48px]"
         >
           {term.association}
         </div>

@@ -127,7 +127,6 @@ export default function InputCard(
           </div>
 
           <Signature
-            inverted={inverted}
             signature={signature}
             className="absolute left-0 top-0"
           />
