@@ -1,10 +1,11 @@
-import { actionUpdateSimulator } from '@store/action-main'
-import { actionRestart } from '@helper/simulators/actions'
+import {actionUpdateSimulator} from '@store/action-main'
+import {actionRestart} from '@helper/simulators/actions'
 import CardEmpty from '@containers/Simulator/CardEmpty'
-import { SimulatorData } from '@entities/Simulator'
-import Button from '@components/Button'
+import {SimulatorData} from '@entities/Simulator'
+import {useTranslations} from 'next-intl'
+import Button, {ButtonVariant} from '@components/Button'
 
-export default function SingleQueueFinish(
+export default function CardFinish(
   {
     editable,
     simulator
@@ -14,30 +15,38 @@ export default function SingleQueueFinish(
     simulator: SimulatorData,
   }
 ) {
+  const t = useTranslations('Simulators')
   return (
-    <CardEmpty>
-      <div className="flex flex-col justify-center text-center gap-2">
-        <h3 className="text-gray-300 text-lg">
-          Good job!
-        </h3>
+    <CardEmpty
+      classNameContent="p-6"
+    >
 
-        <h3 className="text-gray-500 text-sm">
-          {simulator.continueIds.length} terms left to learn
-        </h3>
+      <div className="text-xl font-bold text-white/75 mb-4">
+        {t('cardFinishTitle')}
+      </div>
 
-        <div className="text-gray-500 text-lg">
-          <Button
-            onClick={() => {
-              actionUpdateSimulator({
-                editable,
-                simulator: actionRestart(simulator)
-              })
-            }}
-          >
-            Continue
-          </Button>
+      <div className="flex flex-col gap-1">
+        <div className="text-sm text-white/50 px-4">
+          {t('cardFinishText1')}
+        </div>
+
+        <div className="text-sm text-white/50 px-4">
+          {t('cardFinishText2')}
         </div>
       </div>
+
+      <Button
+        className="w-full px-4"
+        variant={ButtonVariant.GREEN}
+        onClick={() => {
+          actionUpdateSimulator({
+            editable,
+            simulator: actionRestart(simulator)
+          })
+        }}
+      >
+        {t('cardFinishBtn')}
+      </Button>
     </CardEmpty>
   )
 }

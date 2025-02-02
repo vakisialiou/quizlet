@@ -1,11 +1,14 @@
+import { ReactNode } from 'react'
 import clsx from 'clsx'
 
 export default function Signature(
   {
+    children,
     signature,
     className = '',
   }:
   {
+    children?: ReactNode
     className?: string
     signature: string | null
   }
@@ -19,6 +22,8 @@ export default function Signature(
       {signature &&
         <span>{signature}</span>
       }
+
+      {children}
     </div>
   )
 }

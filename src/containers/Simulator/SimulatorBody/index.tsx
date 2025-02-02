@@ -185,7 +185,7 @@ export default function SimulatorBody(
           <div className="w-full h-12"/>
         }
 
-        {simulator?.status === SimulatorStatus.PROCESSING &&
+        {active && simulator?.status === SimulatorStatus.PROCESSING &&
           <div className="flex gap-2 w-full">
             {SimulatorMethod.FLASHCARD === simulator.settings.method &&
               <>

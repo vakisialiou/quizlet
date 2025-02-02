@@ -1,8 +1,8 @@
 import Flashcard from '@containers/Simulator/CardAggregator/MethodFlashcard/Flashcard'
 import { getSimulatorNameById } from '@containers/Simulator/constants'
 import { SimulatorData } from '@entities/Simulator'
-import { TermData } from '@entities/Term'
 import { useMemo, useState } from 'react'
+import { TermData } from '@entities/Term'
 
 export default function MethodFlashcard(
   {

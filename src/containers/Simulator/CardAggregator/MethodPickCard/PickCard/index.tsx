@@ -44,7 +44,7 @@ export default function PickCard(
         <div className="absolute w-full h-full gap-2 flex flex-col items-center justify-center p-4 rounded">
           <CardText
             term={term}
-            className="mt-8"
+            className="mt-6"
             inverted={inverted}
           />
 

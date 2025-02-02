@@ -7,6 +7,7 @@ import { SimulatorMethod } from '@entities/SimulatorSettings'
 import CardFinish from '@containers/Simulator/CardFinish'
 import CardStart from '@containers/Simulator/CardStart'
 import CardDone from '@containers/Simulator/CardDone'
+import CardFix from '@containers/Simulator/CardFix'
 import { RelationProps } from '@helper/relation'
 import { TermData } from '@entities/Term'
 
@@ -63,7 +64,10 @@ export default function CardAggregator(
       }
 
       {!active && simulator.status === SimulatorStatus.PROCESSING &&
-        <div>TODO sss</div>
+        <CardFix
+          editable={editable}
+          simulator={simulator}
+        />
       }
 
       {active && simulator.status === SimulatorStatus.PROCESSING &&
@@ -71,6 +75,7 @@ export default function CardAggregator(
           {SimulatorMethod.FLASHCARD === simulator.settings.method &&
             <>
               <MethodFlashcard
+                key={active.id}
                 active={active}
                 simulator={simulator}
               />
@@ -81,6 +86,7 @@ export default function CardAggregator(
             <MethodPickCard
               terms={terms}
               sound={sound}
+              key={active.id}
               active={active}
               onSound={onSound}
               selected={selected}
@@ -92,6 +98,7 @@ export default function CardAggregator(
           {SimulatorMethod.INPUT === simulator.settings.method &&
             <>
               <MethodInputCard
+                key={active.id}
                 active={active}
                 onSkip={onSkip}
                 selected={selected}

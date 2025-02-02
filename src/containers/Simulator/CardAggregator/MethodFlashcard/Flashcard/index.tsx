@@ -47,30 +47,26 @@ export default function Flashcard(
           <Signature
             signature={signature}
             className="absolute right-0 top-0"
-          />
+          >
+            front
+          </Signature>
 
         </div>
         <div
-          className="card__back absolute w-full h-full flex flex-col gap-4 items-center justify-center p-6 rounded"
+          className="card__back absolute w-full h-full flex flex-col gap-4 items-center justify-center p-6 bg-white/5 rounded"
         >
-          <p
-            className="text-gray-600 group-hover:text-gray-500 transition-colors font-semibold text-xl text-center"
-          >
-            {inverted ? term.question : term.answer}
-          </p>
-
-          {term.association &&
-            <div
-              className="text-gray-500 text-xs text-center text-white/25 font-bold line-clamp-3 h-[48px]"
-            >
-              {term.association}
-            </div>
-          }
+          <CardText
+            term={term}
+            className="mt-2"
+            inverted={!inverted}
+          />
 
           <Signature
             signature={signature}
             className="absolute right-0 top-0"
-          />
+          >
+            back
+          </Signature>
 
         </div>
       </div>

@@ -93,9 +93,12 @@ export default function SingleStart(
                     <div
                       className="flex gap-2 text-[10px] leading-3 text-white/25"
                     >
-                      {t('simulatorRepeat', { count: simulators.length })}
-
-                      <span>Завершено {roundedRate}%</span>
+                      <span>
+                        {t('simulatorRepeat', { count: simulators.length })}
+                      </span>
+                      <span>
+                        {t('simulatorRate', { rate: roundedRate })}
+                      </span>
                     </div>
                   </div>
 
