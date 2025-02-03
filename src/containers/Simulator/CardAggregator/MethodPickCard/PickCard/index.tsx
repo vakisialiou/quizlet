@@ -1,11 +1,16 @@
-import { CardStatus, SelectionType } from '@containers/Simulator/CardAggregator/types'
+import {
+  CardSide,
+  CardStatus,
+  SoundType,
+  SelectionType
+} from '@containers/Simulator/CardAggregator/types'
 import Signature from '@containers/Simulator/CardAggregator/Signature'
 import CardError from '@containers/Simulator/CardAggregator/CardError'
 import CardText from '@containers/Simulator/CardAggregator/CardText'
 import SVGMuteOff from '@public/svg/mute_ipo_off.svg'
 import SVGMuteOn from '@public/svg/mute_ipo_on.svg'
 import ButtonSquare from '@components/ButtonSquare'
-import { TermData } from '@entities/Term'
+import {TermData} from '@entities/Term'
 import clsx from 'clsx'
 
 export default function PickCard(
@@ -24,14 +29,16 @@ export default function PickCard(
     term: TermData
     inverted: boolean
     className?: string
-    sound: TermData | null
     selections: TermData[],
+    sound: SoundType | null
     signature: string | null,
     selected: SelectionType,
-    onSound: (selection: TermData) => void
-    onSelect: (selection: TermData) => void
+    onSound: (value: SoundType) => void
+    onSelect: (value: TermData) => void
   }
 ) {
+  const titleSide = inverted ? CardSide.front : CardSide.back
+  const variantSide = inverted ? CardSide.back : CardSide.front
   return (
     <div
       className={clsx('select-none', {
@@ -62,8 +69,8 @@ export default function PickCard(
                   className="flex gap-1 items-center h-12"
                 >
                   <ButtonSquare
-                    onClick={() => onSound(selection)}
-                    icon={sound?.id === selection.id ? SVGMuteOn : SVGMuteOff}
+                    onClick={() => onSound({ term: selection, side: titleSide })}
+                    icon={(sound?.term?.id === selection.id && sound.side === titleSide) ? SVGMuteOn : SVGMuteOff}
                   />
 
                   <label
@@ -91,7 +98,12 @@ export default function PickCard(
           <Signature
             signature={signature}
             className="absolute left-0 top-0"
-          />
+          >
+            <ButtonSquare
+              onClick={() => onSound({ term, side: variantSide })}
+              icon={(sound?.term?.id === term.id && sound.side === variantSide) ? SVGMuteOn : SVGMuteOff}
+            />
+          </Signature>
         </div>
       </div>
     </div>

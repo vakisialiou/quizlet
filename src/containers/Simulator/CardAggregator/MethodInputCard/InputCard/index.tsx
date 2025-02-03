@@ -1,11 +1,14 @@
+import { CardSide, CardStatus, SoundType } from '@containers/Simulator/CardAggregator/types'
 import Input, { InputSize, InputVariantFocus } from '@components/Input'
 import Signature from '@containers/Simulator/CardAggregator/Signature'
 import Button, { ButtonSize, ButtonVariant } from '@components/Button'
 import CardError from '@containers/Simulator/CardAggregator/CardError'
-import {CardStatus} from '@containers/Simulator/CardAggregator/types'
+import { BaseSyntheticEvent, useEffect, useMemo, useRef } from 'react'
 import CardText from '@containers/Simulator/CardAggregator/CardText'
-import {BaseSyntheticEvent, useEffect, useMemo, useRef} from 'react'
+import SVGMuteOff from '@public/svg/mute_ipo_off.svg'
 import { SimulatorData } from '@entities/Simulator'
+import ButtonSquare from '@components/ButtonSquare'
+import SVGMuteOn from '@public/svg/mute_ipo_on.svg'
 import { TermData } from '@entities/Term'
 import clsx from 'clsx'
 
@@ -13,8 +16,10 @@ export default function InputCard(
   {
     term,
     value,
+    sound,
     status,
     onSkip,
+    onSound,
     onChange,
     inverted,
     onApprove,
@@ -25,16 +30,20 @@ export default function InputCard(
   {
     value: string,
     term: TermData
+    sound: SoundType
     inverted: boolean
     status: CardStatus
     className?: string
     signature: string | null,
     simulator: SimulatorData,
+    onSound?: (value: SoundType) => void,
     onSkip: (e: BaseSyntheticEvent) => void
     onChange: (e: BaseSyntheticEvent) => void
     onApprove: (e: BaseSyntheticEvent) => void
   }
 ) {
+  const side = inverted ? CardSide.back : CardSide.front
+
   const ref  = useRef<HTMLInputElement | null>(null)
   useEffect(() => {
     const input = ref.current?.querySelector('input')
@@ -129,7 +138,17 @@ export default function InputCard(
           <Signature
             signature={signature}
             className="absolute left-0 top-0"
-          />
+          >
+            <ButtonSquare
+              onClick={(e) => {
+                e.stopPropagation()
+                if (onSound) {
+                  onSound({ term, side })
+                }
+              }}
+              icon={(sound.term?.id && sound.side === side) ? SVGMuteOn : SVGMuteOff}
+            />
+          </Signature>
 
         </div>
       </div>

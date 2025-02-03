@@ -1,4 +1,3 @@
-import { SimulatorMethod } from '@entities/SimulatorSettings'
 import { TermData } from '@entities/Term'
 
 export enum CardStatus {
@@ -7,29 +6,18 @@ export enum CardStatus {
   success = 'success',
 }
 
+export enum CardSide {
+  front = 'front',
+  back = 'back',
+}
+
 export type SelectionType = {
   term: TermData | null,
   status: CardStatus
 }
 
-export type ExtraFlashcardType = {
-  method: SimulatorMethod.FLASHCARD
-  status: CardStatus
+export type SoundType = {
+  term: TermData | null,
+  side: CardSide | null
 }
 
-export type ExtraPickCardType = {
-  method: SimulatorMethod.PICK,
-  status: CardStatus
-}
-
-export type ExtraInputCardType = {
-  method: SimulatorMethod.INPUT,
-  status: CardStatus
-}
-
-export type HelpDataType = {
-  lang: string | null
-  text?: string | null
-  association?: string | null,
-  extra: ExtraFlashcardType | ExtraPickCardType | ExtraInputCardType
-}

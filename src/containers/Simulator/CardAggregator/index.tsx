@@ -1,7 +1,7 @@
+import { SelectionType, SoundType } from '@containers/Simulator/CardAggregator/types'
 import MethodFlashcard from '@containers/Simulator/CardAggregator/MethodFlashcard'
 import MethodInputCard from '@containers/Simulator/CardAggregator/MethodInputCard'
 import MethodPickCard from '@containers/Simulator/CardAggregator/MethodPickCard'
-import { SelectionType } from '@containers/Simulator/CardAggregator/types'
 import { SimulatorData, SimulatorStatus } from '@entities/Simulator'
 import { SimulatorMethod } from '@entities/SimulatorSettings'
 import CardFinish from '@containers/Simulator/CardFinish'
@@ -27,14 +27,14 @@ export default function CardAggregator(
   {
     isBack?: boolean
     editable: boolean
+    sound: SoundType
     terms: TermData[]
     onSkip: () => void
-    sound: TermData | null
     active: TermData | null
     selected: SelectionType
     relation: RelationProps
     simulator: SimulatorData
-    onSound: (term: TermData) => void
+    onSound: (value: SoundType) => void
     onSelect: (selected: SelectionType) => void
   }
 ) {
@@ -75,8 +75,10 @@ export default function CardAggregator(
           {SimulatorMethod.FLASHCARD === simulator.settings.method &&
             <>
               <MethodFlashcard
+                sound={sound}
                 key={active.id}
                 active={active}
+                onSound={onSound}
                 simulator={simulator}
               />
             </>
@@ -98,9 +100,11 @@ export default function CardAggregator(
           {SimulatorMethod.INPUT === simulator.settings.method &&
             <>
               <MethodInputCard
+                sound={sound}
                 key={active.id}
                 active={active}
                 onSkip={onSkip}
+                onSound={onSound}
                 selected={selected}
                 onSelect={onSelect}
                 simulator={simulator}

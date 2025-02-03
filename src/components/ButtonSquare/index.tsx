@@ -9,12 +9,12 @@ export enum ButtonSquareVariant {
 
 export default function ButtonSquare(
   {
-    onClick,
     icon,
-    bordered = false,
+    onClick,
     size = 32,
     className = '',
     classNameIcon = '',
+    bordered = false,
     disabled = false,
     variant = ButtonSquareVariant.transparent,
   }:

@@ -1,5 +1,5 @@
+import { CardStatus, SelectionType, SoundType } from '@containers/Simulator/CardAggregator/types'
 import PickCard from '@containers/Simulator/CardAggregator/MethodPickCard/PickCard'
-import { CardStatus, SelectionType } from '@containers/Simulator/CardAggregator/types'
 import { getSimulatorNameById } from '@containers/Simulator/constants'
 import { SimulatorData } from '@entities/Simulator'
 import { findTermsByIds } from '@helper/terms'
@@ -19,10 +19,10 @@ export default function MethodPickCard(
   {
     terms: TermData[]
     active: TermData
-    sound: TermData | null
+    sound: SoundType
     selected: SelectionType,
     simulator: SimulatorData
-    onSound: (term: TermData) => void
+    onSound: (value: SoundType) => void
     onSelect: (selected: SelectionType) => void
   }
 ) {

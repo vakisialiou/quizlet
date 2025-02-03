@@ -1,13 +1,19 @@
+import {CardSide, SoundType} from '@containers/Simulator/CardAggregator/types'
 import Signature from '@containers/Simulator/CardAggregator/Signature'
 import CardText from '@containers/Simulator/CardAggregator/CardText'
-import { BaseSyntheticEvent } from 'react'
-import { TermData } from '@entities/Term'
+import SVGMuteOff from '@public/svg/mute_ipo_off.svg'
+import SVGMuteOn from '@public/svg/mute_ipo_on.svg'
+import ButtonSquare from '@components/ButtonSquare'
+import {BaseSyntheticEvent} from 'react'
+import {TermData} from '@entities/Term'
 import clsx from 'clsx'
 import './style.css'
 
 export default function Flashcard(
   {
     term,
+    sound,
+    onSound,
     onClick,
     inverted,
     signature,
@@ -19,10 +25,14 @@ export default function Flashcard(
     inverted: boolean
     isBackSide: boolean
     className?: string,
+    sound: SoundType
     signature: string | null,
+    onSound?: (value: SoundType) => void,
     onClick?: (e: BaseSyntheticEvent) => void,
   }
 ) {
+  const frontSide = inverted ? CardSide.back : CardSide.front
+  const backSide = inverted ? CardSide.front : CardSide.back
   return (
     <div
       onClick={onClick}
@@ -48,7 +58,19 @@ export default function Flashcard(
             signature={signature}
             className="absolute right-0 top-0"
           >
-            front
+            <div className="flex gap-2 items-center">
+              <span>front</span>
+
+              <ButtonSquare
+                onClick={(e) => {
+                  e.stopPropagation()
+                  if (onSound) {
+                    onSound({ term, side: frontSide })
+                  }
+                }}
+                icon={(sound.term?.id && sound.side === frontSide) ? SVGMuteOn : SVGMuteOff}
+              />
+            </div>
           </Signature>
 
         </div>
@@ -65,9 +87,20 @@ export default function Flashcard(
             signature={signature}
             className="absolute right-0 top-0"
           >
-            back
-          </Signature>
+            <div className="flex gap-2 items-center">
+              <span>back</span>
 
+              <ButtonSquare
+                onClick={(e) => {
+                  e.stopPropagation()
+                  if (onSound) {
+                    onSound({ term, side: backSide })
+                  }
+                }}
+                icon={(sound.term?.id && sound.side === backSide) ? SVGMuteOn : SVGMuteOff}
+              />
+            </div>
+          </Signature>
         </div>
       </div>
     </div>

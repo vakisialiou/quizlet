@@ -1,29 +1,34 @@
 'use client'
 
 import {
-  actionTracker,
-  actionRemember,
-  actionContinue,
   actionBack,
-  actionSkip
+  actionContinue,
+  actionRemember,
+  actionSkip,
+  actionTracker
 } from '@helper/simulators/actions'
-import { CardStatus, SelectionType } from '@containers/Simulator/CardAggregator/types'
-import { DefaultAnswerLang, DefaultQuestionLang, TermData } from '@entities/Term'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  CardSide,
+  CardStatus,
+  SelectionType,
+  SoundType
+} from '@containers/Simulator/CardAggregator/types'
+import { DefaultAnswerLang, DefaultQuestionLang } from '@entities/Term'
+import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import CardAggregator from '@containers/Simulator/CardAggregator'
-import { ProgressTrackerAction } from '@entities/ProgressTracker'
-import { findActiveSimulators } from '@helper/simulators/general'
+import {ProgressTrackerAction} from '@entities/ProgressTracker'
+import {findActiveSimulators} from '@helper/simulators/general'
 import PanelControls from '@containers/Simulator/PanelControls'
 import {SimulatorMethod} from '@entities/SimulatorSettings'
-import { actionUpdateSimulator } from '@store/action-main'
+import {actionUpdateSimulator} from '@store/action-main'
 import Button, {ButtonVariant} from '@components/Button'
-import { useMainSelector } from '@hooks/useMainSelector'
+import {useMainSelector} from '@hooks/useMainSelector'
 import CardStart from '@containers/Simulator/CardStart'
 import PanelInfo from '@containers/Simulator/PanelInfo'
-import { SimulatorStatus } from '@entities/Simulator'
-import { RelationProps } from '@helper/relation'
-import { useSpeech } from '@hooks/useSpeech'
-import { useTranslations } from 'next-intl'
+import {SimulatorStatus} from '@entities/Simulator'
+import {RelationProps} from '@helper/relation'
+import {useSpeech} from '@hooks/useSpeech'
+import {useTranslations} from 'next-intl'
 
 export default function SimulatorBody(
   {
@@ -52,7 +57,7 @@ export default function SimulatorBody(
     return terms.find(({ id }) => id === simulator?.termId) || null
   }, [terms, simulator?.termId])
 
-  const { speech, soundInfo, setSoundInfo } = useSpeech<{ term: TermData | null, source: string | null,  }>({ term: null, source: null })
+  const { speech, soundInfo, setSoundInfo } = useSpeech<SoundType>({ term: null, side: null })
 
   const [selected, setSelected] = useState<SelectionType>({ term: null, status: CardStatus.none })
 
@@ -62,36 +67,19 @@ export default function SimulatorBody(
     }
   }, [simulator?.status, selected.term])
 
-  const getViewData = useCallback((term: TermData, inverted: boolean) => {
-    return {
-      text: inverted ? term.answer : term.question,
-      lang: inverted ? term.answerLang || DefaultAnswerLang : term.questionLang || DefaultQuestionLang
-    }
-  }, [])
-
-  const inverted = useMemo(() => {
-    return !!simulator?.settings.inverted
-  }, [simulator?.settings.inverted])
-
-  const activeViewData = useMemo(() => {
-    return {
-      text: (inverted ? active?.answer : active?.question) || null,
-      lang: inverted ? active?.answerLang || DefaultAnswerLang : active?.questionLang || DefaultQuestionLang
-    }
-  }, [active, inverted])
-
-  const onSoundCallback = useCallback((term: TermData, source: string, inverted: boolean) => {
+  const onSoundCallback = useCallback((value: SoundType) => {
     if (!speech) {
       return
     }
 
-    if (term.id === soundInfo.term?.id) {
+    if (value.term?.id === soundInfo.term?.id) {
       speech.stop()
-      setSoundInfo({ source: null, term: null })
+      setSoundInfo({ term: null, side: null })
       return
     }
 
-    const { text, lang } = getViewData(term, inverted)
+    const text = (value.side === CardSide.back ? value.term?.answer : value.term?.question) || null
+    const lang = value.side === CardSide.back ? value.term?.answerLang || DefaultAnswerLang : value.term?.questionLang || DefaultQuestionLang
     if (!text) {
       return
     }
@@ -103,8 +91,8 @@ export default function SimulatorBody(
       .setVoice(voice)
       .speak(text)
 
-    setSoundInfo({ source, term })
-  }, [speech, getViewData, setSoundInfo, soundInfo.term?.id])
+    setSoundInfo(value)
+  }, [speech, setSoundInfo, soundInfo.term?.id])
 
   const t = useTranslations('Simulators')
 
@@ -114,10 +102,6 @@ export default function SimulatorBody(
         simulator={simulator}
         className="w-72 mb-2 border-b border-white/15 py-2"
         options={{
-          sound: {
-            active: soundInfo.source === 'sound',
-            disabled: !activeViewData?.text
-          },
           deactivate: {
             disabled: disableDeactivate
           },
@@ -135,11 +119,6 @@ export default function SimulatorBody(
               actionUpdateSimulator({simulator: actionBack(simulator), editable}, () => {
                 setSelected({term: null, status: CardStatus.none})
               })
-              break
-            case 'sound':
-              if (active) {
-                onSoundCallback(active, 'sound', simulator.settings.inverted)
-              }
               break
           }
         }}
@@ -165,13 +144,13 @@ export default function SimulatorBody(
             <CardAggregator
               terms={terms}
               active={active}
+              sound={soundInfo}
               selected={selected}
               relation={relation}
               editable={editable}
               simulator={simulator}
+              onSound={onSoundCallback}
               onSelect={(selected) => setSelected(selected)}
-              sound={soundInfo.source === 'selection' ? soundInfo.term : null}
-              onSound={(term) => onSoundCallback(term, 'selection', !inverted)}
               onSkip={() => {
                 actionUpdateSimulator({simulator: actionSkip(simulator), editable}, () => {
                   setSelected({term: null, status: CardStatus.none})

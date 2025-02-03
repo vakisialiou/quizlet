@@ -4,23 +4,26 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { SimulatorData } from '@entities/Simulator'
 import { TermData } from '@entities/Term'
 import {
-  CardStatus,
-  SelectionType,
+  CardStatus, SelectionType, SoundType,
 } from '@containers/Simulator/CardAggregator/types'
 
 export default function MethodInputCard(
   {
+    sound,
     active,
     onSkip,
+    onSound,
     selected,
     onSelect,
     simulator,
   }:
   {
-    active: TermData,
+    active: TermData
+    sound: SoundType
     onSkip: () => void
-    selected: SelectionType,
-    simulator: SimulatorData,
+    selected: SelectionType
+    simulator: SimulatorData
+    onSound?: (value: SoundType) => void
     onSelect: (selected: SelectionType) => void
   }
 )
@@ -49,9 +52,11 @@ export default function MethodInputCard(
 
   return (
     <InputCard
+      sound={sound}
       term={active}
       value={value}
       onSkip={onSkip}
+      onSound={onSound}
       inverted={inverted}
       className="w-72 h-96"
       signature={signature}
