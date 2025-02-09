@@ -87,15 +87,7 @@ function Grid(
                 number={index + 1}
                 readonly={!editable}
                 edit={term.id === edit.termId}
-                collapsed={term.collapsed && term.id !== edit.termId}
                 soundPlayingName={soundInfo.termId === term.id ? soundInfo.playingName : null}
-                onCollapse={() => {
-                  actionUpsertTerm({
-                    term: {...term, collapsed: !term.collapsed},
-                    editId: null,
-                    editable,
-                  })
-                }}
                 onSave={() => {
                   actionUpsertTerm({ term, editId: null, editable }, () => {
                     if (originItem) {
