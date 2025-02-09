@@ -12,7 +12,7 @@ function ProviderOnline(
   },
   ref: Ref<{ isOnline: boolean }>
 ) {
-  const refOnLine = useRef(typeof navigator === 'object' ? navigator.onLine : true)
+  const refOnLine = useRef((typeof navigator === 'object' && 'onLine' in navigator) ? navigator.onLine : true)
   const [isOnline, setIsOnline] = useState(refOnLine.current)
 
   useEffect(() => {

@@ -4,6 +4,7 @@ import { v4 } from 'uuid'
 
 export type ModuleData = {
   id: string
+  userId: string | null
   name: string | null
   description: string | null
   collapsed: boolean
@@ -19,6 +20,7 @@ export type ModuleData = {
 
 export default class Module {
   id: string
+  userId: string | null
   order: number
   collapsed: boolean
   termsCollapsed: boolean
@@ -33,6 +35,7 @@ export default class Module {
 
   constructor() {
     this.id = v4()
+    this.userId = null
     this.order = 0
     this.degreeRate = 0
     this.name = null
@@ -44,6 +47,11 @@ export default class Module {
     this.termSettings = new TermSettings().serialize()
     this.updatedAt = new Date()
     this.createdAt = new Date()
+  }
+
+  setUserId(value: string | null): Module {
+    this.userId = value
+    return this
   }
 
   setTermSettings(value: TermSettingsData | null): Module {
@@ -113,5 +121,19 @@ export default class Module {
 
   serialize(): ModuleData {
     return JSON.parse(JSON.stringify(this))
+  }
+
+  copy(data: Partial<ModuleData>): Module {
+    for (const prop in data) {
+      if (prop in this) {
+        if (prop === 'id') {
+          this.setId(v4())
+          continue
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (this as any)[prop] = data[prop as keyof ModuleData]
+      }
+    }
+    return this
   }
 }

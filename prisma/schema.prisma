@@ -89,7 +89,7 @@ model Term {
   order           Int      @default(0)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  user            User     @relation(fields: [userId], references: [id])
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   relationTerms RelationTerm[]
 
@@ -114,7 +114,7 @@ model Simulator {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   relationSimulators RelationSimulator[]
 
@@ -133,7 +133,7 @@ model Module {
   groupsCollapsed Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  user            User     @relation(fields: [userId], references: [id])
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   degreeRate      Float    @default(0)
   markers         Json?
   termSettings    Json?
@@ -160,7 +160,7 @@ model Folder {
   markers        Json?
   termSettings   Json?
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   relationTerms      RelationTerm[]
   relationFolders    RelationFolder[]
@@ -179,8 +179,8 @@ model FolderGroup {
   updatedAt DateTime @updatedAt
   order     Int      @default(0)
 
-  user            User             @relation(fields: [userId], references: [id])
-  module          Module           @relation(fields: [moduleId], references: [id])
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  module          Module           @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   relationFolders RelationFolder[]
 
   @@unique([id])
@@ -196,9 +196,9 @@ model RelationFolder {
   createdAt DateTime @default(now())
   order     Int      @default(0)
 
-  user        User        @relation(fields: [userId], references: [id])
-  folder      Folder      @relation(fields: [folderId], references: [id])
-  folderGroup FolderGroup @relation(fields: [groupId], references: [id])
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folder      Folder      @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  folderGroup FolderGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
   @@unique([id])
   @@unique([groupId, folderId])
@@ -215,10 +215,10 @@ model RelationSimulator {
   createdAt   DateTime @default(now())
   order       Int      @default(0)
 
-  user      User      @relation(fields: [userId], references: [id])
-  folder    Folder?   @relation(fields: [folderId], references: [id])
-  module    Module?   @relation(fields: [moduleId], references: [id])
-  simulator Simulator @relation(fields: [simulatorId], references: [id])
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folder    Folder?   @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  module    Module?   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  simulator Simulator @relation(fields: [simulatorId], references: [id], onDelete: Cascade)
 
   @@unique([id])
   @@unique([folderId, simulatorId])
@@ -236,15 +236,17 @@ model RelationTerm {
   color     Int      @default(-1)
   order     Int      @default(0)
 
-  user   User    @relation(fields: [userId], references: [id])
-  term   Term    @relation(fields: [termId], references: [id])
-  folder Folder? @relation(fields: [folderId], references: [id])
-  module Module? @relation(fields: [moduleId], references: [id])
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  term   Term    @relation(fields: [termId], references: [id], onDelete: Cascade)
+  folder Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  module Module? @relation(fields: [moduleId], references: [id], onDelete: Cascade)
 
   @@unique([id])
   @@unique([folderId, termId])
   @@unique([moduleId, termId])
   @@index([userId, id])
+  @@index([userId, folderId])
+  @@index([userId, moduleId])
 }
 
 model Settings {
@@ -255,7 +257,7 @@ model Settings {
   simulator Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([id])
   @@unique([userId])
@@ -274,8 +276,8 @@ model ModuleShare {
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
 
-  owner  User   @relation(fields: [ownerId], references: [id])
-  module Module @relation(fields: [moduleId], references: [id])
+  owner  User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  module Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
 
   @@unique([id])
   @@unique([moduleId, access])

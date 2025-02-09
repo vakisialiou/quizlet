@@ -140,7 +140,7 @@ describe('Achievement', () => {
 })
 
 function createSimulator(method: SimulatorMethod, inverted: boolean, callback: (tracker: SimulatorTracker) => SimulatorTracker): SimulatorData {
-  const simulator = new Simulator('1', SimulatorStatus.DONE, { method, inverted })
+  const simulator = new Simulator(SimulatorStatus.DONE, { method, inverted })
     .setTermIds(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'])
 
   const tracker = new SimulatorTracker(simulator)

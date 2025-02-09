@@ -5,31 +5,32 @@ import {
   actionCreateRelationFolder,
   actionCreateRelationTerm,
 } from '@store/action-main'
-import { findTermsWithRelations, getFolder } from '@helper/relation'
 import React, {useMemo, useState, useRef, useEffect, useCallback} from 'react'
+import { findTermsWithRelations, getFolder } from '@helper/relation'
+import Button, {ButtonSize, ButtonVariant} from '@components/Button'
 import FilterRelatedTerm from '@containers/FilterRelatedTerm'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
-import Button, {ButtonVariant} from '@components/Button'
 import { useMainSelector } from '@hooks/useMainSelector'
 import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
-import {DropdownPlacement} from '@components/Dropdown'
-import TermsDropdown from '@containers/TermsDropdown'
 import RelationFolder from '@entities/RelationFolder'
 import { COLOR_DEFAULT } from '@components/ColorLabel'
+import Folder, { FolderData } from '@entities/Folder'
+import SVGFileSearch from '@public/svg/zoom_all.svg'
 import RelatedTerms from '@containers/RelatedTerms'
 import ButtonSquare from '@components/ButtonSquare'
 import RelationTerm from '@entities/RelationTerm'
 import ContentPage from '@containers/ContentPage'
+import SVGFileNew from '@public/svg/file_new.svg'
 import FolderCart from '@components/FolderCart'
 import { getGroupById } from '@helper/relation'
 import FormFolder from '@containers/FormFolder'
 import MetaLabel from '@components/MetaLabel'
+import TermsMenu from '@containers/TermsMenu'
 import { useTranslations } from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
 import SVGPlay from '@public/svg/play.svg'
 import { OrderEnum } from '@helper/sort'
 import {useRouter} from '@i18n/routing'
-import Folder from '@entities/Folder'
 import clsx from 'clsx'
 
 export default function ClientPageFolder(
@@ -55,6 +56,8 @@ export default function ClientPageFolder(
   const folder = useMemo(() => {
     return getFolder(folders, folderId)
   }, [folders, folderId])
+
+  const [searchTerm, setSearchTerm] = useState(false)
 
   const initRef = useRef(true)
 
@@ -95,18 +98,33 @@ export default function ClientPageFolder(
 
   const t = useTranslations('Folder')
 
-  const ref = useRef<{ onCreate?: () => void }>({})
+  const ref = useRef<{ onCreate?: (color?: number) => void }>({})
 
-  const addRelation = useCallback((termId: string) => {
-    const relationTerm = new RelationTerm()
-      .setOrder(relatedTerms.length + 1)
-      .setColor(COLOR_DEFAULT)
-      .setFolderId(folderId)
-      .setTermId(termId)
-      .serialize()
+  const onCreateTerm = useCallback((folderData: FolderData, callback?: () => void) => {
+    const { color } = folderData.termSettings.filter
 
-    actionCreateRelationTerm({ relationTerm, editable })
-  }, [folderId, editable, relatedTerms.length])
+    if (folderData.termsCollapsed) {
+      actionUpdateFolder({
+        editable,
+        editId: null,
+        folder: {...folderData, termsCollapsed: false}
+      }, () => {
+        if (ref.current?.onCreate) {
+          ref.current?.onCreate(color)
+        }
+        if (callback) {
+          callback()
+        }
+      })
+    } else {
+      if (ref.current?.onCreate) {
+        ref.current?.onCreate(color)
+      }
+      if (callback) {
+        callback()
+      }
+    }
+  }, [editable])
 
   return (
     <ContentPage
@@ -155,127 +173,163 @@ export default function ClientPageFolder(
       )}
     >
       {folder &&
-        <div className="flex flex-col gap-2">
-          <FormFolder
-            folder={folder}
-            editable={editable}
-          />
+        <>
+          <div className="flex flex-col gap-2">
+            <FormFolder
+              folder={folder}
+              editable={editable}
+            />
 
-          <FolderCart
-            hover={false}
-            title={t('termsTitle')}
-            dropdown={{
-              hidden: true
-            }}
-            labels={<MetaLabel>{relatedTerms.length}</MetaLabel>}
-            controls={(
-              <>
-                <TermsDropdown
-                  excludeTermIds={excludeTermIds}
-                  moduleId={group?.moduleId}
-                  onCreate={() => {
-                    actionUpdateFolder({ editable, editId: null, folder: { ...folder, termsCollapsed: false } }, () => {
-                      if (ref.current?.onCreate) {
-                        ref.current?.onCreate()
-                      }
-                    })
-                  }}
-                  onSelect={(term) => {
-                    actionUpdateFolder({ editable, editId: null, folder: { ...folder, termsCollapsed: false } }, () => {
-                      addRelation(term.id)
-                    })
-                  }}
-                />
-
-                <ButtonSquare
-                  size={24}
-                  icon={SVGArrowDown}
-                  onClick={() => {
-                    actionUpdateFolder({
-                      editable,
-                      editId: null,
-                      folder: { ...folder, termsCollapsed: !folder.termsCollapsed }
-                    })
-                  }}
-                  classNameIcon={clsx('', {
-                    ['rotate-180']: !folder.termsCollapsed
-                  })}
-                />
-              </>
-            )}
-          >
-            {!folder.termsCollapsed &&
-              <>
-                <FilterRelatedTerm
-                  className="border-b pb-2 border-white/15"
-                  selectedOrderId={folder.termSettings.order}
-                  selectedFilterId={folder.termSettings.filter.color}
-                  onFilterSelect={(color) => {
-                    actionUpdateFolder({
-                      editable,
-                      editId: null,
-                      folder: {
-                        ...folder,
-                        termSettings: {
-                          ...folder.termSettings,
-                          filter: { ...folder.termSettings.filter, color: color as number }
-                        }
-                      }
-                    })
-                  }}
-                  onOrderSelect={(order) => {
-                    actionUpdateFolder({
-                      editable,
-                      editId: null,
-                      folder: {
-                        ...folder,
-                        termSettings: { ...folder.termSettings, order: order as OrderEnum }
-                      }
-                    })
-                  }}
-                />
-
-                {editable && relatedTerms.length === 0 &&
-                  <div className="italic text-xs text-center text-white/50">
-                    {t('noCardsHelper')}
-                  </div>
+            <FolderCart
+              hover={false}
+              title={t('termsTitle')}
+              dropdown={{
+                hidden: !folder,
+                items: [
+                  {id: 1, name: t('btnAddCard'), icon: SVGFileSearch},
+                  {id: 2, name: t('btnCreateCard'), icon: SVGFileNew},
+                ],
+                onSelect: (id) => {
+                  if (!folder) {
+                    return
+                  }
+                  switch (id) {
+                    case 1:
+                      setSearchTerm(true)
+                      break
+                    case 2:
+                      onCreateTerm(folder)
+                      break
+                  }
                 }
-
-                <RelatedTerms
-                  ref={ref}
-                  search={search}
-                  editable={editable}
-                  relation={{ folderId }}
-                  relatedTerms={relatedTerms}
-                  order={folder.termSettings.order}
-                  filter={folder.termSettings.filter}
-                />
-
-                <div className="flex w-full mt-2">
-                  <TermsDropdown
-                    moduleId={group?.moduleId}
-                    excludeTermIds={excludeTermIds}
-                    placement={DropdownPlacement.topStart}
-                    onCreate={() => {
-                      actionUpdateFolder({ editable, editId: null, folder: { ...folder, termsCollapsed: false } }, () => {
-                        if (ref.current?.onCreate) {
-                          ref.current?.onCreate()
+              }}
+              labels={<MetaLabel>{relatedTerms.length}</MetaLabel>}
+              controls={(
+                <>
+                  <ButtonSquare
+                    size={24}
+                    icon={SVGArrowDown}
+                    onClick={() => {
+                      actionUpdateFolder({
+                        editable,
+                        editId: null,
+                        folder: {...folder, termsCollapsed: !folder.termsCollapsed}
+                      })
+                    }}
+                    classNameIcon={clsx('', {
+                      ['rotate-180']: !folder.termsCollapsed
+                    })}
+                  />
+                </>
+              )}
+            >
+              {!folder.termsCollapsed &&
+                <>
+                  <FilterRelatedTerm
+                    className="border-b pb-2 border-white/15"
+                    selectedOrderId={folder.termSettings.order}
+                    selectedFilterId={folder.termSettings.filter.color}
+                    onFilterSelect={(color) => {
+                      actionUpdateFolder({
+                        editable,
+                        editId: null,
+                        folder: {
+                          ...folder,
+                          termSettings: {
+                            ...folder.termSettings,
+                            filter: {...folder.termSettings.filter, color: color as number}
+                          }
                         }
                       })
                     }}
-                    onSelect={(term) => {
-                      actionUpdateFolder({ editable, editId: null, folder: { ...folder, termsCollapsed: false } }, () => {
-                        addRelation(term.id)
+                    onOrderSelect={(order) => {
+                      actionUpdateFolder({
+                        editable,
+                        editId: null,
+                        folder: {
+                          ...folder,
+                          termSettings: {...folder.termSettings, order: order as OrderEnum}
+                        }
                       })
                     }}
-                  >
-                    {t('btnAddCard')}
-                  </TermsDropdown>
-                </div>
-              </>
-            }
-          </FolderCart>
-        </div>
+                  />
+
+                  {editable && relatedTerms.length === 0 &&
+                    <div className="italic text-xs text-center text-white/50">
+                      {t('noCardsHelper')}
+                    </div>
+                  }
+
+                  <RelatedTerms
+                    ref={ref}
+                    search={search}
+                    editable={editable}
+                    relation={{folderId}}
+                    relatedTerms={relatedTerms}
+                    order={folder.termSettings.order}
+                    filter={folder.termSettings.filter}
+                  />
+                </>
+              }
+
+              <div
+                className="flex w-full mt-2 gap-2 justify-between sm:justify-end items-center">
+                <Button
+                  size={ButtonSize.H08}
+                  className="px-1 w-1/2 sm:w-auto sm:px-4 gap-1"
+                  variant={ButtonVariant.WHITE}
+                  onClick={() => setSearchTerm(true)}
+                >
+                  <SVGFileSearch
+                    width={18}
+                    height={18}
+                  />
+
+                  {t('btnAddCard')}
+                </Button>
+
+                <Button
+                  size={ButtonSize.H08}
+                  variant={ButtonVariant.WHITE}
+                  onClick={() => onCreateTerm(folder)}
+                  className="px-1 w-1/2 sm:w-auto sm:px-4 gap-1"
+                >
+                  <SVGFileNew
+                    width={18}
+                    height={18}
+                  />
+
+                  {t('btnCreateCard')}
+                </Button>
+              </div>
+            </FolderCart>
+          </div>
+
+          {searchTerm &&
+            <TermsMenu
+              moduleId={group?.moduleId}
+              excludeTermIds={excludeTermIds}
+              onClose={() => setSearchTerm(false)}
+              onCreate={() => {
+                onCreateTerm(folder, () => {
+                  setSearchTerm(false)
+                })
+              }}
+              onClick={(term) => {
+                const { color } = folder.termSettings.filter
+
+                const relationTerm = new RelationTerm()
+                  .setOrder(relatedTerms.length + 1)
+                  .setColor(color === -1 ? COLOR_DEFAULT : color)
+                  .setFolderId(folderId)
+                  .setTermId(term.id)
+                  .serialize()
+
+                actionCreateRelationTerm({relationTerm, editable})
+              }}
+            />
+          }
+        </>
       }
     </ContentPage>
   )

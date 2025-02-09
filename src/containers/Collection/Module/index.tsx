@@ -1,11 +1,12 @@
-import FolderCart, {DropDownProps} from '@components/FolderCart'
-import {ReactNode, useCallback, useEffect, useRef} from 'react'
-import {FolderFrameVariant} from '@components/FolderFrame'
+import Button, { ButtonSize, ButtonVariant } from '@components/Button'
+import FolderCart, { DropDownProps } from '@components/FolderCart'
+import { ReactNode, useCallback, useEffect, useRef } from 'react'
+import { FolderFrameVariant } from '@components/FolderFrame'
 import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
 import ButtonSquare from '@components/ButtonSquare'
-import {ModuleData} from '@entities/Module'
+import { ModuleData } from '@entities/Module'
 import Textarea from '@components/Textarea'
-import {useTranslations} from 'next-intl'
+import { useTranslations } from 'next-intl'
 import Input from '@components/Input'
 import Clamp from '@components/Clamp'
 import clsx from 'clsx'
@@ -19,9 +20,11 @@ export default function Module(
     className,
     edit = false,
     collapsed = true,
+    disabledPlay = false,
     onCollapse,
     onSave,
     onExit,
+    onPlay,
     onChange,
     children,
     variant
@@ -30,12 +33,14 @@ export default function Module(
     edit?: boolean,
     title: ReactNode,
     collapsed?: boolean,
+    disabledPlay?: boolean,
     className?: string
     labels?: ReactNode,
     dropdown?: DropDownProps,
     data: ModuleData,
     onSave: () => void,
     onExit: () => void,
+    onPlay: () => void,
     onChange: (prop: string, value: string) => void,
     onCollapse?: () => void,
     children?: ReactNode,
@@ -43,7 +48,6 @@ export default function Module(
   }
 ) {
   const t = useTranslations('Module')
-
   const ref = useRef<HTMLDivElement | null>(null)
 
   const finishEdit = useCallback((event: MouseEvent) => {
@@ -142,12 +146,22 @@ export default function Module(
         }
 
         {!edit &&
-          <div className="flex items-center h-8 pt-[1px] mx-[9px] text-white/75">
+          <div className="flex items-center justify-between h-8 pt-[1px] mx-[2px] text-white/75">
             <div className="max-w-full truncate ...">
               <span className="max-w-full select-text">
                 {data.name || <span className="italic">{t('moduleNoName')}</span>}
               </span>
             </div>
+
+            <Button
+              className="px-4"
+              onClick={onPlay}
+              size={ButtonSize.H06}
+              disabled={disabledPlay}
+              variant={ButtonVariant.GREEN}
+            >
+              {t('btnPlay')}
+            </Button>
           </div>
         }
 

@@ -5,7 +5,7 @@ export default function HeaderPage(
   { left?: ReactNode, right?: ReactNode, title?: ReactNode }
 ) {
   return (
-    <div className="w-full h-16 px-4 flex gap-2 items-center justify-between bg-white/5 relative">
+    <div className="w-full h-16 px-4 flex items-center justify-between bg-white/5 relative">
 
       <div className="flex gap-2 items-center">
         {left}

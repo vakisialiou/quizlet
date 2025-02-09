@@ -6,6 +6,7 @@ import clsx from "clsx";
 
 export type SearchProps = {
   value: string,
+  hidden?: boolean,
   className?: string
   placeholder?: string,
   onClear: () => void,
@@ -34,52 +35,56 @@ export default function HeaderPageTitle(
         </div>
       }
 
-      {(search && searchFocus) &&
-        <Search
-          rounded
-          bordered
-          autoFocus
-          onClear={search.onClear}
-          onChange={(event) => {
-            search.onChange({
-              event,
-              value: event.target.value,
-              formattedValue: event.target.value ? `${event.target.value}`.toLocaleLowerCase() : '',
-            })
-          }}
-          onKeyUp={(e) => {
-            switch (e.keyCode) {
-              case 27:
-                if (search.value) {
-                  search.onClear()
-                  return
+      {(search && !search.hidden) &&
+        <>
+          {searchFocus &&
+            <Search
+              rounded
+              bordered
+              autoFocus
+              onClear={search.onClear}
+              onChange={(event) => {
+                search.onChange({
+                  event,
+                  value: event.target.value,
+                  formattedValue: event.target.value ? `${event.target.value}`.toLocaleLowerCase() : '',
+                })
+              }}
+              onKeyUp={(e) => {
+                switch (e.keyCode) {
+                  case 27:
+                    if (search.value) {
+                      search.onClear()
+                      return
+                    }
+                    if (searchFocus) {
+                      setSearchFocus(false)
+                    }
+                    break
                 }
-                if (searchFocus) {
+              }}
+              value={search.value || ''}
+              className={clsx('w-full max-w-full', {
+                [search.className || '']: search.className
+              })}
+              placeholder={search.placeholder || ''}
+              onBlur={() => {
+                if (!search.value) {
                   setSearchFocus(false)
                 }
-                break
-            }
-          }}
-          value={search.value || ''}
-          className={clsx('w-full max-w-full', {
-            [search.className || '']: search.className
-          })}
-          placeholder={search.placeholder || ''}
-          onBlur={() => {
-            if (!search.value) {
-              setSearchFocus(false)
-            }
-          }}
-        />
-      }
+              }}
+            />
+          }
 
-      {(search && !searchFocus) &&
-        <ButtonSquare
-          icon={SVGZoomAll}
-          onClick={() => {
-            setSearchFocus(true)
-          }}
-        />
+          {!searchFocus &&
+            <ButtonSquare
+              icon={SVGZoomAll}
+              onClick={() => {
+                setSearchFocus(true)
+              }}
+            />
+          }
+        </>
       }
     </div>
   )

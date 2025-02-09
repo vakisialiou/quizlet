@@ -97,7 +97,7 @@ export default function SimulatorBody(
   const t = useTranslations('Simulators')
 
   return (
-    <div className="flex flex-col gap-2 h-full justify-center">
+    <div className="flex flex-col gap-2 h-full justify-center items-center">
       <PanelControls
         simulator={simulator}
         className="w-72 mb-2 border-b border-white/15 py-2"

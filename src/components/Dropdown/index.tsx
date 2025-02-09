@@ -35,6 +35,7 @@ export enum DropdownPlacement {
 
 export type DropdownItemType = {
   id: string | number,
+  hidden?: boolean,
   divider?: boolean,
   disabled?: boolean
   className?: string,
@@ -100,8 +101,10 @@ function Dropdown(
   }))
 
   const toggleDropdown = useCallback(() => {
-    setIsOpen((prevState) => !prevState)
-  }, [])
+    if (!disabled) {
+      setIsOpen((prevState) => !prevState)
+    }
+  }, [disabled])
 
   const closeDropdown = useCallback((event: MouseEvent) => {
     if (refMenu.current && refMenu.current.contains(event.target as HTMLDivElement)) {
@@ -158,20 +161,21 @@ function Dropdown(
         ['border-gray-400']: [DropdownVariant.white, DropdownVariant.transparent, DropdownVariant.gray].includes(variant) && bordered,
 
         ['disabled']: disabled,
-        ['hover:bg-white/15']: variant === DropdownVariant.transparent,
+        ['hover:bg-white/15']: !disabled && variant === DropdownVariant.transparent,
         ['bg-white/15']: variant === DropdownVariant.transparent && isOpen,
 
-        ['bg-gray-800 hover:bg-gray-800/50']: variant === DropdownVariant.gray,
+        ['bg-gray-800 hover:bg-gray-800/50']: !disabled && variant === DropdownVariant.gray,
         ['bg-gray-800/50']: variant === DropdownVariant.gray && isOpen,
 
-        ['bg-white hover:bg-gray-200/50']: variant === DropdownVariant.white,
+        ['bg-white hover:bg-gray-200/50']: !disabled && variant === DropdownVariant.white,
         ['bg-gray-300/50']: variant === DropdownVariant.white && isOpen
       })}
     >
       <div
         onClick={toggleDropdown}
-        className={clsx('flex items-center justify-center select-none group cursor-pointer w-full', {
+        className={clsx('flex items-center justify-center select-none group w-full', {
           [className]: className,
+          ['cursor-pointer']: !disabled,
           ['text-gray-300 hover:text-gray-100 active:text-gray-50']: variant === DropdownVariant.transparent && isOpen,
           ['text-gray-500 hover:text-gray-400 active:text-gray-300']: variant === DropdownVariant.transparent && !isOpen,
 
@@ -209,6 +213,10 @@ function Dropdown(
             {items.length > 0 &&
               <div className="flex flex-col gap-0.5">
                 {items.map((item: DropdownItemType) => {
+                  if (item.hidden) {
+                    return
+                  }
+
                   if (item.divider) {
                     return (
                       <Divide

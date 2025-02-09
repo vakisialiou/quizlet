@@ -1,13 +1,19 @@
+import { executeMainAction, getMainStore } from '@store/store'
 import * as simulators from '@store/reducers/simulators'
 import { ModuleShareData } from '@entities/ModuleShare'
 import * as relations from '@store/reducers/relations'
 import * as settings from '@store/reducers/settings'
 import * as folders from '@store/reducers/folders'
 import * as modules from '@store/reducers/modules'
-import { executeMainAction } from '@store/store'
 import * as groups from '@store/reducers/groups'
 import * as terms from '@store/reducers/terms'
+import * as share from '@store/reducers/share'
 import { MultiFolders } from '@helper/folders'
+
+export const actionShareCreate = (payload: share.CreateShareType): void => {
+  const action = share.createShare(payload)
+  getMainStore().dispatch(action)
+}
 
 export const actionDeleteFolder = (payload: folders.DeleteType, callback?: (res: boolean) => void): void => {
   const action = folders.deleteFolder(payload)

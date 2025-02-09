@@ -1,16 +1,15 @@
 'use client'
 
-import {actionUpdateFolderGroup, actionUpdateModule} from '@store/action-main'
 import MetaLabel, {MetaLabelVariant} from '@components/MetaLabel'
 import { findActiveSimulators } from '@helper/simulators/general'
 import DialogRemoveModule from '@containers/DialogRemoveModule'
 import AchievementDegree from '@containers/AchievementDegree'
-import SVGNewCollection from '@public/svg/collection_new.svg'
 import { ModuleFiltersData } from '@entities/ModuleFilters'
 import {FolderFrameVariant} from '@components/FolderFrame'
 import AchievementIcon from '@containers/AchievementIcon'
 import { findTermsWithRelations } from '@helper/relation'
 import { useMainSelector } from '@hooks/useMainSelector'
+import { actionUpdateModule } from '@store/action-main'
 import { searchModules } from '@helper/search-modules'
 import { OrderEnum, ORDER_DEFAULT} from '@helper/sort'
 import Module from '@containers/Collection/Module'
@@ -20,7 +19,6 @@ import { getLastStudyModule } from '@helper/study'
 import DialogShare from '@containers/DialogShare'
 import { sortModules} from '@helper/sort-modules'
 import React, { useMemo, useState } from 'react'
-import FolderGroup from '@entities/FolderGroup'
 import { MarkersEnum } from '@entities/Marker'
 import SVGLinked from '@public/svg/linked.svg'
 import { ModuleData } from '@entities/Module'
@@ -30,7 +28,6 @@ import SVGPlay from '@public/svg/play.svg'
 import { useRouter } from '@i18n/routing'
 
 enum DropDownIdEnums {
-  GROUP_CREATE = 'GROUP_CREATE',
   OPEN_FOLDER = 'OPEN_FOLDER',
   REMOVE_FOLDER = 'REMOVE_FOLDER',
   SHARE = 'SHARE',
@@ -72,9 +69,8 @@ export default function Modules(
   ]
 
   const dropdownParentItems = [
-    {id: DropDownIdEnums.GROUP_CREATE, name: t('dropDownCreateGroup'), icon: SVGNewCollection },
-    {id: DropDownIdEnums.OPEN_FOLDER, name: t('dropDownEditModule'), icon: SVGEdit },
     {id: DropDownIdEnums.STUDY, name: t('dropDownStudyModule'), icon: SVGPlay },
+    {id: DropDownIdEnums.OPEN_FOLDER, name: t('dropDownEditModule'), icon: SVGEdit },
     {id: DropDownIdEnums.SHARE, name: t('dropDownGenerateShare'), icon: SVGLinked },
     {id: 1, divider: true },
     {id: DropDownIdEnums.REMOVE_FOLDER, name: t('dropDownRemoveModule'), icon: SVGTrash },
@@ -97,7 +93,7 @@ export default function Modules(
   return (
     <>
       <div
-        className="flex flex-col gap-2 text-start"
+        className="flex flex-col gap-4 text-start"
       >
         {visibleModules.length === 0 &&
           <div className="flex flex-col items-center justify-center gap-2 p-4">
@@ -108,7 +104,7 @@ export default function Modules(
         }
 
         {visibleModules.map((module) => {
-          const notRemovedTerms =findTermsWithRelations(relationTerms, terms, { moduleId: module.id })
+          const notRemovedTerms = findTermsWithRelations(relationTerms, terms, { moduleId: module.id })
           const activeSimulators = findActiveSimulators(relationSimulators, simulators, { moduleId: module.id })
 
           const isLastStudy = lastStudyModule?.id === module.id
@@ -128,6 +124,7 @@ export default function Modules(
               data={module}
               key={module.id}
               collapsed={module.collapsed}
+              disabledPlay={notRemovedTerms.length === 0}
               variant={isLastStudy ? FolderFrameVariant.blue : FolderFrameVariant.default}
               title={(
                 <div className="flex gap-2 items-center">
@@ -158,17 +155,6 @@ export default function Modules(
                       break
                     case DropDownIdEnums.REMOVE_FOLDER:
                       setRemoveModule(module)
-                      break
-                    case DropDownIdEnums.GROUP_CREATE:
-                      const folderGroup = new FolderGroup()
-                      .setModuleId(module.id)
-                      .serialize()
-
-                      actionUpdateFolderGroup({
-                        editId: folderGroup.id,
-                        folderGroup,
-                        editable
-                      })
                       break
                     case DropDownIdEnums.SHARE:
                       setShare(module)
@@ -207,6 +193,9 @@ export default function Modules(
                   </MetaLabel>
                 </>
               )}
+              onPlay={() => {
+                router.push(`/private/simulator/module/${module.id}`)
+              }}
               onCollapse={() => {
                 actionUpdateModule({
                   module: {...module, collapsed: !module.collapsed},

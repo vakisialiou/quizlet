@@ -27,9 +27,10 @@ export const createSharedTerm = createAsyncThunk(
 
 export type UpsertType = {
   term: TermData,
+  editable: boolean,
   editId: string | null
   shareId: string | null
-  editable: boolean,
+  relationTerm: RelationTermData,
 }
 
 export const upsertSharedTerm = createAsyncThunk(
@@ -71,10 +72,11 @@ export const shareReducers = (builder: any) => {
 
   builder
     .addCase(upsertSharedTerm.pending, (state: ShareConfigType, action: { meta: { arg: UpsertType } }) => {
-      const { term, editId } = action.meta.arg
+      const { term, editId, relationTerm } = action.meta.arg
       state.edit.termId = editId
-      state.edit.processTermIds = unique([...state.edit.processTermIds, term.id])
       state.terms = upsertObject([...state.terms], term)
+      state.edit.processTermIds = unique([...state.edit.processTermIds, term.id])
+      state.relationTerms = upsertObject([...state.relationTerms], relationTerm)
     })
     .addCase(upsertSharedTerm.fulfilled, (state: ShareConfigType, action: { meta: { arg: UpsertType } }) => {
       const { term } = action.meta.arg

@@ -9,7 +9,6 @@ function termsFilter(search: string, term: TermData, termEditId?: string | null)
 
   return `${term.question}`.toLocaleLowerCase().includes(search)
     || `${term.answer}`.toLocaleLowerCase().includes(search)
-    || `${term.association}`.toLocaleLowerCase().includes(search)
 }
 
 export const searchTerms = (items: TermData[], search: string | null, termEditId?: string | null): TermData[] => {

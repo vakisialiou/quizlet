@@ -51,7 +51,7 @@ export default function NavMenu({ onClose }: { onClose: () => void }) {
   ] as NavMenuItemProp[]
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full z-10">
+    <div className="fixed top-0 left-0 w-full h-full z-50">
       <div
         className="absolute w-full h-full bg-black/60"
         onClick={onClose}

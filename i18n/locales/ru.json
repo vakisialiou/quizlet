@@ -119,7 +119,6 @@
     "btnCreateModule": "Создать учебный курс",
     "dropDownEditModule": "Редактировать",
     "dropDownStudyModule": "Изучить",
-    "dropDownCreateGroup": "Добавить раздел",
     "dropDownGenerateShare": "Поделиться ссылкой",
     "dropDownRemoveModule": "Удалить",
     "shareDialogTitle": "Поделиться ссылкой",
@@ -132,7 +131,7 @@
     "noModulesHelper": "Для добавления нового модуля нажмите кнопку \"{btnName}\"."
   },
   "Module": {
-    "headTitle": "Учебный курс",
+    "headTitle": "Редактировать курс",
     "searchPlaceholder": "Поиск...",
     "btnPlay": "Изучить",
     "moduleNoName": "(Без имени)",
@@ -144,7 +143,9 @@
     "textPlaceholder": "Текст",
     "groupsTitle": "Разделы",
     "termsTitle": "Карточки",
-    "btnAddCard": "Добавить карточку"
+    "btnAddCard": "Добавить карточку",
+    "btnCreateCard": "Создать карточку",
+    "btnCreateGroup": "Создать раздел"
   },
   "Groups": {
     "removeDialogText": "Вы уверены, что хотите удалить раздел?",
@@ -178,14 +179,15 @@
     "btnPlay": "Изучить"
   },
   "Folder": {
-    "headTitle": "Категория",
+    "headTitle": "Редактировать категорию",
     "termsTitle": "Карточки",
     "btnPlay": "Изучить",
     "namePlaceholder": "Название категории",
     "noCardsHelper": "Вы еще не добавили ни одной карточки.",
     "searchPlaceholder": "Поиск...",
     "folderNoName": "(Без имени)",
-    "btnAddCard": "Добавить карточку"
+    "btnAddCard": "Добавить карточку",
+    "btnCreateCard": "Создать карточку"
   },
   "Terms": {
     "headTitle": "Карточки",
@@ -206,9 +208,10 @@
     "cardAssociationHintW": "Ваша ассоциация...",
     "emptySearchList": "Ничего не найдено.",
     "emptyList": "Список карточек пуст.",
-    "tabAllCards": "Все",
+    "tabAllCards": "Все карточки",
     "tabCreate": "Создать",
-    "tabRelatedCards": "Курс",
+    "tabClose": "Закрыть",
+    "tabRelatedCards": "Карточки модуля",
     "termSearch": "Найти карточку..."
   },
   "Simulators": {
@@ -272,9 +275,10 @@
     "metaTitle": "Все ваши учебные карточки в одном месте | QuizerPlay",
     "metaKeywords": "учебные карточки, управление, создание, редактирование, удаление, организация обучения, QuizerPlay",
     "metaDescription": "Соберите и управляйте всеми вашими учебными карточками на платформе QuizerPlay. Простое и удобное решение для эффективного обучения.",
-    "headTitle": "Карточки",
+    "headTitle": "Курс",
     "searchPlaceholder": "Поиск...",
-    "btnAddTerm": "Добавить карточку"
+    "btnAddTerm": "Добавить",
+    "btnStudyTerm": "Изучить"
   },
   "NavMenu": {
     "terms": "Карточки",

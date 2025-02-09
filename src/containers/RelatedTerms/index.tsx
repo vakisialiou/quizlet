@@ -43,7 +43,7 @@ function RelatedTerms(
     filter: TermFiltersData
     relatedTerms: RelatedTermData[]
   },
-  ref: Ref<{ onCreate?: () => void }>
+  ref: Ref<{ onCreate?: (color?: number) => void }>
 ) {
   const [ originItem, setOriginItem ] = useState<TermData | null>(null)
   const [ removeTerm, setRemoveTerm ] = useState<TermData | null>(null)
@@ -70,7 +70,9 @@ function RelatedTerms(
 
   const { speech, soundInfo, setSoundInfo } = useSpeech<{ playingName: string | null, termId: string | null }>({ playingName: null, termId: null })
 
-  const onCreate = useCallback(() => {
+  const onCreate = useCallback((color?: number) => {
+    color = !color || [null, -1].includes(color) ? COLOR_DEFAULT : color
+
     const term = new Term()
       .serialize()
 
@@ -78,8 +80,8 @@ function RelatedTerms(
       .setModuleId(relation.moduleId || null)
       .setFolderId(relation.folderId || null)
       .setOrder(relatedTerms.length + 1)
-      .setColor(COLOR_DEFAULT)
       .setTermId(term.id)
+      .setColor(color)
       .serialize()
 
     actionUpsertTerm({ term, editId: term.id, editable }, () => {
@@ -112,7 +114,6 @@ function RelatedTerms(
                 readonly={!editable}
                 edit={term.id === edit.termId}
                 warn={intersections.length > 0}
-                collapsed={term.collapsed && term.id !== edit.termId}
                 soundPlayingName={soundInfo.termId === term.id ? soundInfo.playingName : null}
                 controls={(
                   <ColorDropdown
@@ -127,13 +128,6 @@ function RelatedTerms(
                     }}
                   />
                 )}
-                onCollapse={() => {
-                  actionUpsertTerm({
-                    term: {...term, collapsed: !term.collapsed},
-                    editId: null,
-                    editable,
-                  })
-                }}
                 onSave={() => {
                   actionUpsertTerm({ term, editId: null, editable }, () => {
                     if (originItem) {

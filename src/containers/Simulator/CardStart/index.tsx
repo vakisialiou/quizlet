@@ -2,7 +2,6 @@ import { findSimulatorMethodById, simulatorMethodList } from '@containers/Simula
 import { randomizeTermIds, selectRandomTermId } from '@helper/simulators/general'
 import { actionSaveSimulator, actionUpdateSettings } from '@store/action-main'
 import { findSimulators, findTerms, RelationProps } from '@helper/relation'
-import { filterDeletedTerms, filterEmptyTerms } from '@helper/terms'
 import { actionExtraParamsUpdate } from '@helper/simulators/actions'
 import Simulator, { SimulatorStatus } from '@entities/Simulator'
 import RelationSimulator from '@entities/RelationSimulator'
@@ -10,6 +9,7 @@ import SimulatorSettings from '@entities/SimulatorSettings'
 import Button, {ButtonVariant} from '@components/Button'
 import { useMainSelector } from '@hooks/useMainSelector'
 import CardEmpty from '@containers/Simulator/CardEmpty'
+import { filterEmptyTerms } from '@helper/terms'
 import Achievement from '@entities/Achievement'
 import { useTranslations } from 'next-intl'
 import { useMemo } from 'react'
@@ -35,7 +35,7 @@ export default function SingleStart(
 
   const playTerms = useMemo(() => {
     const relatedTerms = findTerms(relationTerms, terms, relation)
-    return filterDeletedTerms(filterEmptyTerms(relatedTerms))
+    return filterEmptyTerms(relatedTerms)
   }, [relationTerms, terms, relation])
 
   const relatedSimulators = useMemo(() => {

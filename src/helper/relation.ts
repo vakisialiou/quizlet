@@ -56,16 +56,6 @@ export function getFolder(folders: FolderData[], folderId: string): FolderData |
   return folders.find(({ id }) => id === folderId) || null
 }
 
-export function getContainer(modules: ModuleData[], folders: FolderData[], relation: RelationProps): FolderData|ModuleData|null {
-  if (relation.moduleId) {
-    return getModule(modules, relation.moduleId)
-  }
-  if (relation.folderId) {
-    return getFolder(folders, relation.folderId)
-  }
-  return null
-}
-
 export function findSimulators(relationSimulators: RelationSimulatorData[], simulators: SimulatorData[], relation: RelationProps): SimulatorData[] {
   const simulatorIds = relationSimulators
     .filter(({ folderId, moduleId }) => {

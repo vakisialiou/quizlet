@@ -57,7 +57,7 @@ function Landing(
           backgroundPosition: 'center'
         }}
       >
-        <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+        <div className="absolute inset-0 flex items-center justify-center">
           <div className="absolute top-4 right-4">
             <DropdownLanguage
               locale={locale}

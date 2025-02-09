@@ -5,6 +5,7 @@ import { MarkersEnum } from '@entities/Marker'
 
 export type ModuleSelectType = {
   id: boolean,
+  userId: boolean,
   name: boolean,
   description: boolean,
   order: boolean,
@@ -20,6 +21,7 @@ export type ModuleSelectType = {
 
 export const ModuleSelect = {
   id: true,
+  userId: true,
   name: true,
   description: true,
   order: true,
@@ -44,6 +46,7 @@ export const createModuleSelect = (data: ModuleResult) => {
     .setMarkers(markers)
     .setName(data.name)
     .setOrder(data.order)
+    .setUserId(data.userId)
     .setCollapsed(data.collapsed)
     .setUpdatedAt(data.updatedAt)
     .setCreatedAt(data.createdAt)

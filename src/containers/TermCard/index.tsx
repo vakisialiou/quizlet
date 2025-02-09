@@ -7,10 +7,8 @@ import {
 } from '@entities/Term'
 import { useCallback, useEffect, useRef, ReactNode } from 'react'
 import Dropdown, { DropdownVariant } from '@components/Dropdown'
-import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
 import Button, {ButtonSize} from '@components/Button'
 import SVGPencil from '@public/svg/greasepencil.svg'
-import ButtonSquare from '@components/ButtonSquare'
 import RowRead from '@containers/TermCard/RowRead'
 import FolderCart from '@components/FolderCart'
 import SVGTrash from '@public/svg/trash.svg'
@@ -45,8 +43,6 @@ export default function TermCard(
     controls,
     onChange,
     readonly,
-    collapsed = true,
-    onCollapse,
     onClickSound,
     soundPlayingName
   }:
@@ -55,15 +51,12 @@ export default function TermCard(
     number: number
     edit: boolean
     warn?: boolean
-
     readonly: boolean
-    collapsed: boolean
-    onEdit: () => void
-    onRemove: () => void
+    onEdit?: () => void
+    onRemove?: () => void
     onExit: () => void
     onSave: () => void
     controls?: ReactNode,
-    onCollapse?: () => void,
     onChange: (prop: string, value: string | number) => void
     soundPlayingName: SoundPlayingNameEnum | string | null,
     onClickSound: (params: ClickSoundCallbackParams) => void
@@ -108,7 +101,7 @@ export default function TermCard(
         <div className="flex gap-2 items-center font-bold">
           <span>#{number}</span>
 
-          {((!data.question || !data.answer) && collapsed && !edit || warn) &&
+          {((!data.question || !data.answer) && !edit || warn) &&
             <SVGError
               width={16}
               height={16}
@@ -120,34 +113,24 @@ export default function TermCard(
           }
         </div>
       )}
-      controls={(
-        <>
-          {controls}
-
-          <ButtonSquare
-            size={24}
-            disabled={edit}
-            icon={SVGArrowDown}
-            onClick={onCollapse}
-            classNameIcon={clsx('', {
-              ['rotate-180']: !collapsed
-            })}
-          />
-        </>
-      )}
+      controls={controls}
       dropdown={{
         hidden: readonly,
         items: [
-          { id: 1, name: t('cardDropDownEdit'), icon: SVGPencil },
-          { id: 2, name: t('cardDropDownRemove'), icon: SVGTrash },
+          { id: 1, name: t('cardDropDownEdit'), icon: SVGPencil, hidden: !onEdit },
+          { id: 2, name: t('cardDropDownRemove'), icon: SVGTrash, hidden: !onRemove },
         ],
         onSelect: (id) => {
           switch (id) {
             case 1:
-              onEdit()
+              if (onEdit) {
+                onEdit()
+              }
               break
             case 2:
-              onRemove()
+              if (onRemove) {
+                onRemove()
+              }
               break
           }
         }
@@ -224,155 +207,152 @@ export default function TermCard(
           }
         </div>
 
-        {!collapsed &&
-          <div className="flex w-full max-w-full overflow-hidden">
-            {!edit &&
-              <RowRead
-                value={data.answer || ''}
-                placeholder={(
-                  <span className="text-red-800 italic">
-                    {t('cardAnswerHintR')}
-                  </span>
-                )}
-                lang={getLocaleShortName(data.answerLang, DefaultAnswerLang)}
-                soundPlaying={soundPlayingName === SoundPlayingNameEnum.answer}
-                onClickSound={(play) => {
-                  onClickSound({
-                    play,
-                    text: data.answer || '',
-                    name: SoundPlayingNameEnum.answer,
-                    lang: data.answerLang || DefaultAnswerLang
-                  })
+        <div className="flex w-full max-w-full overflow-hidden">
+          {!edit &&
+            <RowRead
+              value={data.answer || ''}
+              placeholder={(
+                <span className="text-red-800 italic">
+                  {t('cardAnswerHintR')}
+                </span>
+              )}
+              lang={getLocaleShortName(data.answerLang, DefaultAnswerLang)}
+              soundPlaying={soundPlayingName === SoundPlayingNameEnum.answer}
+              onClickSound={(play) => {
+                onClickSound({
+                  play,
+                  text: data.answer || '',
+                  name: SoundPlayingNameEnum.answer,
+                  lang: data.answerLang || DefaultAnswerLang
+                })
+              }}
+            />
+          }
+
+          {edit &&
+            <div
+              className="flex gap-1 w-full"
+            >
+              <Input
+                type="text"
+                name="answer"
+                maxLength={100}
+                autoComplete="off"
+                placeholder={t('cardAnswerHintW')}
+                defaultValue={data.answer || ''}
+                onChange={(e) => {
+                  onChange('answer', e.target.value)
+                }}
+                onKeyUp={(e) => {
+                  switch (e.keyCode) {
+                    case 13:
+                      onSave()
+                      break
+                    case 27:
+                      onExit()
+                      break
+                  }
                 }}
               />
-            }
 
-            {edit &&
-              <div
-                className="flex gap-1 w-full"
+              <Dropdown
+                caret
+                className="px-1"
+                items={languages}
+                ref={refAnswerLang}
+                variant={DropdownVariant.gray}
+                onClick={(e) => e.preventDefault()}
+                selected={[data.answerLang || DefaultAnswerLang]}
+                onSelect={(id) => {
+                  onChange('answerLang', id as string)
+                }}
               >
-                <Input
-                  type="text"
-                  name="answer"
-                  maxLength={100}
-                  autoComplete="off"
-                  placeholder={t('cardAnswerHintW')}
-                  defaultValue={data.answer || ''}
-                  onChange={(e) => {
-                    onChange('answer', e.target.value)
-                  }}
-                  onKeyUp={(e) => {
-                    switch (e.keyCode) {
-                      case 13:
-                        onSave()
-                        break
-                      case 27:
-                        onExit()
-                        break
-                    }
-                  }}
-                />
+                <div className="w-6 min-w-6 text-center text-sm uppercase">
+                  {getLocaleShortName(data.answerLang, DefaultAnswerLang)}
+                </div>
+              </Dropdown>
+            </div>
+          }
+        </div>
 
-                <Dropdown
-                  caret
-                  className="px-1"
-                  items={languages}
-                  ref={refAnswerLang}
-                  variant={DropdownVariant.gray}
-                  onClick={(e) => e.preventDefault()}
-                  selected={[data.answerLang || DefaultAnswerLang]}
-                  onSelect={(id) => {
-                    onChange('answerLang', id as string)
-                  }}
-                >
-                  <div className="w-6 min-w-6 text-center text-sm uppercase">
-                    {getLocaleShortName(data.answerLang, DefaultAnswerLang)}
-                  </div>
-                </Dropdown>
-              </div>
-            }
-          </div>
-        }
+        <div className="flex w-full max-w-full overflow-hidden">
+          {!edit &&
+            <RowRead
+              value={data.association || ''}
+              placeholder={(
+                <span className="text-gray-700 italic">
+                  {t('cardAssociationHintR')}
+                </span>
+              )}
+              soundPlaying={soundPlayingName === SoundPlayingNameEnum.association}
+              lang={getLocaleShortName(data.associationLang, DefaultAssociationLang)}
+              onClickSound={(play) => {
+                onClickSound({
+                  play,
+                  text: data.association || '',
+                  name: SoundPlayingNameEnum.association,
+                  lang: data.associationLang || DefaultAssociationLang
+                })
+              }}
+            />
+          }
 
-        {!collapsed &&
-          <div className="flex w-full max-w-full overflow-hidden">
-            {!edit &&
-              <RowRead
-                value={data.association || ''}
-                placeholder={(
-                  <span className="text-gray-700 italic">
-                    {t('cardAssociationHintR')}
-                  </span>
-                )}
-                soundPlaying={soundPlayingName === SoundPlayingNameEnum.association}
-                lang={getLocaleShortName(data.associationLang, DefaultAssociationLang)}
-                onClickSound={(play) => {
-                  onClickSound({
-                    play,
-                    text: data.association || '',
-                    name: SoundPlayingNameEnum.association,
-                    lang: data.associationLang || DefaultAssociationLang
-                  })
+          {edit &&
+            <div
+              className="flex gap-1 w-full"
+            >
+              <Input
+                type="text"
+                maxLength={255}
+                name="association"
+                autoComplete="off"
+                placeholder={t('cardAssociationHintW')}
+                defaultValue={data.association || ''}
+                onChange={(e) => {
+                  onChange('association', e.target.value)
+                }}
+                onKeyUp={(e) => {
+                  switch (e.keyCode) {
+                    case 13:
+                      onSave()
+                      break
+                    case 27:
+                      onExit()
+                      break
+                  }
                 }}
               />
-            }
 
-            {edit &&
-              <div
-                className="flex gap-1 w-full"
+              <Button
+                disabled
+                rounded={false}
+                onClick={() => {
+                }}
+                size={ButtonSize.H08}
               >
-                <Input
-                  type="text"
-                  maxLength={255}
-                  name="association"
-                  autoComplete="off"
-                  placeholder={t('cardAssociationHintW')}
-                  defaultValue={data.association || ''}
-                  onChange={(e) => {
-                    onChange('association', e.target.value)
-                  }}
-                  onKeyUp={(e) => {
-                    switch (e.keyCode) {
-                      case 13:
-                        onSave()
-                        break
-                      case 27:
-                        onExit()
-                        break
-                    }
-                  }}
-                />
+                AI
+              </Button>
 
-                <Button
-                  disabled
-                  rounded={false}
-                  onClick={() => {
-                  }}
-                  size={ButtonSize.H08}
-                >
-                  AI
-                </Button>
+              <Dropdown
+                caret
+                className="px-1"
+                items={languages}
+                ref={refAssociationLang}
+                variant={DropdownVariant.gray}
+                onClick={(e) => e.preventDefault()}
+                selected={[data.associationLang || DefaultAssociationLang]}
+                onSelect={(id) => {
+                  onChange('associationLang', id as string)
+                }}
+              >
+                <div className="w-6 min-w-6 text-center text-sm uppercase">
+                  {getLocaleShortName(data.associationLang, DefaultAssociationLang)}
+                </div>
+              </Dropdown>
+            </div>
+          }
+        </div>
 
-                <Dropdown
-                  caret
-                  className="px-1"
-                  items={languages}
-                  ref={refAssociationLang}
-                  variant={DropdownVariant.gray}
-                  onClick={(e) => e.preventDefault()}
-                  selected={[data.associationLang || DefaultAssociationLang]}
-                  onSelect={(id) => {
-                    onChange('associationLang', id as string)
-                  }}
-                >
-                  <div className="w-6 min-w-6 text-center text-sm uppercase">
-                    {getLocaleShortName(data.associationLang, DefaultAssociationLang)}
-                  </div>
-                </Dropdown>
-              </div>
-            }
-          </div>
-        }
 
       </div>
     </FolderCart>

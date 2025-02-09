@@ -121,7 +121,6 @@
     "btnCreateModule": "Create a Learning Course",
     "dropDownEditModule": "Edit Course",
     "dropDownStudyModule": "Study Course",
-    "dropDownCreateGroup": "Add Section",
     "dropDownGenerateShare": "Share Link",
     "dropDownRemoveModule": "Delete Course",
     "shareDialogTitle": "Share Link",
@@ -134,7 +133,7 @@
     "noModulesHelper": "To add a new module, click the \"{btnName}\" button."
   },
   "Module": {
-    "headTitle": "Learning Course",
+    "headTitle": "Edit Course",
     "searchPlaceholder": "Search...",
     "btnPlay": "Study",
     "moduleNoName": "(No Name)",
@@ -146,7 +145,10 @@
     "textPlaceholder": "Text",
     "groupsTitle": "Sections",
     "termsTitle": "Cards",
-    "btnAddCard": "Add Card"
+    "btnAddCard": "Add Card",
+    "btnSearchCard": "Search Card",
+    "btnCreateCard": "Create Card",
+    "btnCreateGroup": "Create Section"
   },
   "Groups": {
     "removeDialogText": "Are you sure you want to delete the section?",
@@ -180,7 +182,7 @@
     "btnPlay": "Study"
   },
   "Folder": {
-    "headTitle": "Category",
+    "headTitle": "Edit Category",
     "termsTitle": "Cards",
     "btnPlay": "Study",
     "namePlaceholder": "Category Name",
@@ -208,9 +210,10 @@
     "cardAssociationHintW": "Your association...",
     "emptySearchList": "Nothing found.",
     "emptyList": "The card list is empty.",
-    "tabAllCards": "All",
+    "tabAllCards": "All Cards",
     "tabCreate": "Create",
-    "tabRelatedCards": "Course",
+    "tabClose": "Close",
+    "tabRelatedCards": "Module cards",
     "termSearch": "Find Card..."
   },
   "Simulators": {
@@ -276,9 +279,10 @@
     "metaTitle": "All your learning cards in one place | QuizerPlay",
     "metaKeywords": "learning cards, management, creation, editing, deletion, learning organization, QuizerPlay",
     "metaDescription": "Collect and manage all your learning cards on the QuizerPlay platform. A simple and convenient solution for effective learning.",
-    "headTitle": "Cards",
+    "headTitle": "Course",
     "searchPlaceholder": "Search...",
-    "btnAddTerm": "Add Card"
+    "btnAddTerm": "Add Card",
+    "btnStudyTerm": "Study"
   },
   "NavMenu": {
     "terms": "Cards",
