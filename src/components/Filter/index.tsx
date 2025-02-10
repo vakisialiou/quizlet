@@ -50,7 +50,7 @@ export default function Filter(
 
   return (
     <div
-      className={clsx('flex items-center justify-between gap-2 mb-4 mt-2', {
+      className={clsx('flex items-center justify-between gap-2', {
         [className]: className,
       })}
     >

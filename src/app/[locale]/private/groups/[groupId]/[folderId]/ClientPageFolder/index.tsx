@@ -11,27 +11,26 @@ import Button, {ButtonSize, ButtonVariant} from '@components/Button'
 import FilterRelatedTerm from '@containers/FilterRelatedTerm'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
 import { useMainSelector } from '@hooks/useMainSelector'
-import SVGArrowDown from '@public/svg/downarrow_hlt.svg'
 import RelationFolder from '@entities/RelationFolder'
 import { COLOR_DEFAULT } from '@components/ColorLabel'
 import Folder, { FolderData } from '@entities/Folder'
+import SVGThreeDots from '@public/svg/three_dots.svg'
 import SVGFileSearch from '@public/svg/zoom_all.svg'
 import RelatedTerms from '@containers/RelatedTerms'
 import ButtonSquare from '@components/ButtonSquare'
 import RelationTerm from '@entities/RelationTerm'
 import ContentPage from '@containers/ContentPage'
 import SVGFileNew from '@public/svg/file_new.svg'
-import FolderCart from '@components/FolderCart'
 import { getGroupById } from '@helper/relation'
 import FormFolder from '@containers/FormFolder'
 import MetaLabel from '@components/MetaLabel'
 import TermsMenu from '@containers/TermsMenu'
+import Dropdown from '@components/Dropdown'
 import { useTranslations } from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
 import SVGPlay from '@public/svg/play.svg'
 import { OrderEnum } from '@helper/sort'
 import {useRouter} from '@i18n/routing'
-import clsx from 'clsx'
 
 export default function ClientPageFolder(
   {
@@ -103,28 +102,13 @@ export default function ClientPageFolder(
   const onCreateTerm = useCallback((folderData: FolderData, callback?: () => void) => {
     const { color } = folderData.termSettings.filter
 
-    if (folderData.termsCollapsed) {
-      actionUpdateFolder({
-        editable,
-        editId: null,
-        folder: {...folderData, termsCollapsed: false}
-      }, () => {
-        if (ref.current?.onCreate) {
-          ref.current?.onCreate(color)
-        }
-        if (callback) {
-          callback()
-        }
-      })
-    } else {
-      if (ref.current?.onCreate) {
-        ref.current?.onCreate(color)
-      }
-      if (callback) {
-        callback()
-      }
+    if (ref.current?.onCreate) {
+      ref.current?.onCreate(color)
     }
-  }, [editable])
+    if (callback) {
+      callback()
+    }
+  }, [])
 
   return (
     <ContentPage
@@ -180,19 +164,45 @@ export default function ClientPageFolder(
               editable={editable}
             />
 
-            <FolderCart
-              hover={false}
-              title={t('termsTitle')}
-              dropdown={{
-                hidden: !folder,
-                items: [
+            <FilterRelatedTerm
+              className="mx-1"
+              selectedOrderId={folder.termSettings.order}
+              selectedFilterId={folder.termSettings.filter.color}
+              onFilterSelect={(color) => {
+                actionUpdateFolder({
+                  editable,
+                  editId: null,
+                  folder: {
+                    ...folder,
+                    termSettings: {
+                      ...folder.termSettings,
+                      filter: {...folder.termSettings.filter, color: color as number}
+                    }
+                  }
+                })
+              }}
+              onOrderSelect={(order) => {
+                actionUpdateFolder({
+                  editable,
+                  editId: null,
+                  folder: {
+                    ...folder,
+                    termSettings: {...folder.termSettings, order: order as OrderEnum}
+                  }
+                })
+              }}
+            />
+
+            <div className="flex gap-2 items-center justify-between mx-1">
+              <MetaLabel>{relatedTerms.length}</MetaLabel>
+
+              <Dropdown
+                className="w-8 min-w-8 h-8 items-center"
+                items={[
                   {id: 1, name: t('btnAddCard'), icon: SVGFileSearch},
                   {id: 2, name: t('btnCreateCard'), icon: SVGFileNew},
-                ],
-                onSelect: (id) => {
-                  if (!folder) {
-                    return
-                  }
+                ]}
+                onSelect={(id) => {
                   switch (id) {
                     case 1:
                       setSearchTerm(true)
@@ -201,108 +211,61 @@ export default function ClientPageFolder(
                       onCreateTerm(folder)
                       break
                   }
-                }
-              }}
-              labels={<MetaLabel>{relatedTerms.length}</MetaLabel>}
-              controls={(
-                <>
-                  <ButtonSquare
-                    size={24}
-                    icon={SVGArrowDown}
-                    onClick={() => {
-                      actionUpdateFolder({
-                        editable,
-                        editId: null,
-                        folder: {...folder, termsCollapsed: !folder.termsCollapsed}
-                      })
-                    }}
-                    classNameIcon={clsx('', {
-                      ['rotate-180']: !folder.termsCollapsed
-                    })}
-                  />
-                </>
-              )}
-            >
-              {!folder.termsCollapsed &&
-                <>
-                  <FilterRelatedTerm
-                    className="border-b pb-2 border-white/15"
-                    selectedOrderId={folder.termSettings.order}
-                    selectedFilterId={folder.termSettings.filter.color}
-                    onFilterSelect={(color) => {
-                      actionUpdateFolder({
-                        editable,
-                        editId: null,
-                        folder: {
-                          ...folder,
-                          termSettings: {
-                            ...folder.termSettings,
-                            filter: {...folder.termSettings.filter, color: color as number}
-                          }
-                        }
-                      })
-                    }}
-                    onOrderSelect={(order) => {
-                      actionUpdateFolder({
-                        editable,
-                        editId: null,
-                        folder: {
-                          ...folder,
-                          termSettings: {...folder.termSettings, order: order as OrderEnum}
-                        }
-                      })
-                    }}
-                  />
+                }}
+              >
+                <SVGThreeDots
+                  width={24}
+                  height={24}
+                />
+              </Dropdown>
+            </div>
 
-                  {editable && relatedTerms.length === 0 &&
-                    <div className="italic text-xs text-center text-white/50">
-                      {t('noCardsHelper')}
-                    </div>
-                  }
-
-                  <RelatedTerms
-                    ref={ref}
-                    search={search}
-                    editable={editable}
-                    relation={{folderId}}
-                    relatedTerms={relatedTerms}
-                    order={folder.termSettings.order}
-                    filter={folder.termSettings.filter}
-                  />
-                </>
-              }
-
-              <div
-                className="flex w-full mt-2 gap-2 justify-between sm:justify-end items-center">
-                <Button
-                  size={ButtonSize.H08}
-                  className="px-1 w-1/2 sm:w-auto sm:px-4 gap-1"
-                  variant={ButtonVariant.WHITE}
-                  onClick={() => setSearchTerm(true)}
-                >
-                  <SVGFileSearch
-                    width={18}
-                    height={18}
-                  />
-
-                  {t('btnAddCard')}
-                </Button>
-
-                <Button
-                  size={ButtonSize.H08}
-                  variant={ButtonVariant.WHITE}
-                  onClick={() => onCreateTerm(folder)}
-                  className="px-1 w-1/2 sm:w-auto sm:px-4 gap-1"
-                >
-                  <SVGFileNew
-                    width={18}
-                    height={18}
-                  />
-
-                  {t('btnCreateCard')}
-                </Button>
+            {editable && relatedTerms.length === 0 &&
+              <div className="italic text-xs text-center text-white/50 my-4">
+                {t('noCardsHelper')}
               </div>
-            </FolderCart>
+            }
+
+            <RelatedTerms
+              ref={ref}
+              search={search}
+              editable={editable}
+              relation={{folderId}}
+              relatedTerms={relatedTerms}
+              order={folder.termSettings.order}
+              filter={folder.termSettings.filter}
+            />
+
+            <div
+              className="flex w-full mt-2 gap-2 justify-between sm:justify-end items-center">
+              <Button
+                size={ButtonSize.H08}
+                className="px-1 w-1/2 sm:w-auto sm:px-4 gap-1"
+                variant={ButtonVariant.WHITE}
+                onClick={() => setSearchTerm(true)}
+              >
+                <SVGFileSearch
+                  width={18}
+                  height={18}
+                />
+
+                {t('btnAddCard')}
+              </Button>
+
+              <Button
+                size={ButtonSize.H08}
+                variant={ButtonVariant.WHITE}
+                onClick={() => onCreateTerm(folder)}
+                className="px-1 w-1/2 sm:w-auto sm:px-4 gap-1"
+              >
+                <SVGFileNew
+                  width={18}
+                  height={18}
+                />
+
+                {t('btnCreateCard')}
+              </Button>
+            </div>
           </div>
 
           {searchTerm &&

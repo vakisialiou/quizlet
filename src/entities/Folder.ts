@@ -6,7 +6,6 @@ export type FolderData = {
   id: string
   name: string | null
   collapsed: boolean
-  termsCollapsed: boolean
   order: number,
   degreeRate: number,
   markers: MarkersEnum[]
@@ -19,7 +18,6 @@ export default class Folder {
   id: string
   order: number
   collapsed: boolean
-  termsCollapsed: boolean
   name: string | null
   degreeRate: number
   markers: MarkersEnum[]
@@ -33,7 +31,6 @@ export default class Folder {
     this.degreeRate = 0
     this.name = null
     this.collapsed = false
-    this.termsCollapsed = false
     this.markers = []
     this.termSettings = new TermSettings().serialize()
     this.updatedAt = new Date()
@@ -47,11 +44,6 @@ export default class Folder {
 
   setCollapsed(value: boolean): Folder {
     this.collapsed = value
-    return this
-  }
-
-  setTermsCollapsed(value: boolean): Folder {
-    this.termsCollapsed = value
     return this
   }
 

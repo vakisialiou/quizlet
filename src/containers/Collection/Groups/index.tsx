@@ -4,7 +4,6 @@ import { findFolderGroups, findGroupFolders } from '@helper/relation'
 import DialogCreateFolders from '@containers/DialogCreateFolders'
 import DialogRemoveGroup from '@containers/DialogRemoveGroup'
 import { actionUpdateFolderGroup } from '@store/action-main'
-import React, {Fragment, useMemo, useState} from 'react'
 import { useMainSelector } from '@hooks/useMainSelector'
 import { FolderGroupData } from '@entities/FolderGroup'
 import { ConfigType } from '@store/initial-state-main'
@@ -14,6 +13,7 @@ import SVGThreeDots from '@public/svg/three_dots.svg'
 import Folders from '@containers/Collection/Folders'
 import SVGEdit from '@public/svg/greasepencil.svg'
 import { sortFolderGroups } from '@helper/groups'
+import React, { useMemo, useState } from 'react'
 import { ModuleData } from '@entities/Module'
 import SVGTrash from '@public/svg/trash.svg'
 import Dropdown from '@components/Dropdown'
@@ -21,6 +21,7 @@ import { useTranslations } from 'next-intl'
 import { useRouter } from '@i18n/routing'
 import Input from '@components/Input'
 import Folder from '@entities/Folder'
+import clsx from "clsx";
 
 enum DropDownIdEnums {
   CREATE_FOLDER = 'CREATE_FOLDER',
@@ -33,10 +34,12 @@ export default function Groups(
   {
     module,
     editable,
+    className = ''
   }:
   {
     module: ModuleData
     editable: boolean,
+    className?: string
   }
 ) {
   const t = useTranslations('Groups')
@@ -56,20 +59,27 @@ export default function Groups(
   const [ removeGroup, setRemoveGroup ] = useState<FolderGroupData | null>(null)
 
   return (
-    <div className="flex flex-col gap-2">
+    <div
+      className={clsx('flex flex-col gap-4', {
+        [className]: className
+      })}
+    >
       {moduleFolderGroups.length === 0 &&
-        <div className="italic text-xs text-center text-white/50">
+        <div className="flex items-center justify-center italic text-xs text-center text-white/50 h-[50px]">
           {t('emptyList')}
         </div>
       }
-      {moduleFolderGroups.map((group, index) => {
+      {moduleFolderGroups.map((group) => {
         const edit = (editGroupId === group.id)
         const groupFolders = findGroupFolders(relationFolders, folders, group.id)
         return (
-          <Fragment
+          <div
             key={group.id}
+            className={clsx('flex flex-col gap-2 box-content', {
+              ['border-s border-white/15 border-dotted pl-2']: true
+            })}
           >
-            <div className="flex items-center justify-between w-full overflow-hidden">
+            <div className="flex items-center justify-between max-w-full overflow-hidden">
               {edit &&
                 <Input
                   autoFocus
@@ -86,7 +96,7 @@ export default function Groups(
                     actionUpdateFolderGroup({
                       editable: false,
                       editId: group.id,
-                      folderGroup: { ...group, name: e.target.value }
+                      folderGroup: {...group, name: e.target.value}
                     })
                   }}
                   onKeyUp={(e) => {
@@ -122,17 +132,25 @@ export default function Groups(
                   e.preventDefault()
                 }}
                 items={[
-                  { id: DropDownIdEnums.CREATE_FOLDER, name: t('dropdownAdd'), icon: SVGNewFolder },
-                  { id: DropDownIdEnums.CREATE_FOLDERS, name: t('dropdownGenerate'), icon: SVGCreate },
-                  { id: DropDownIdEnums.EDIT_GROUP, name: t('dropdownEdit'), icon: SVGEdit },
-                  { id: 1, divider: true },
-                  { id: DropDownIdEnums.REMOVE_GROUP, name: t('dropdownRemove'), icon: SVGTrash }
+                  {id: DropDownIdEnums.EDIT_GROUP, name: t('dropdownEdit'), icon: SVGEdit},
+                  {id: DropDownIdEnums.CREATE_FOLDER, name: t('dropdownAdd'), icon: SVGNewFolder},
+                  {
+                    id: DropDownIdEnums.CREATE_FOLDERS,
+                    name: t('dropdownGenerate'),
+                    icon: SVGCreate
+                  },
+                  {id: 1, divider: true},
+                  {id: DropDownIdEnums.REMOVE_GROUP, name: t('dropdownRemove'), icon: SVGTrash}
                 ]}
                 className="w-8 min-w-8 h-8 items-center"
                 onSelect={(id) => {
                   switch (id) {
                     case DropDownIdEnums.EDIT_GROUP:
-                      actionUpdateFolderGroup({ editable: false, folderGroup: group, editId: group.id }, () => {
+                      actionUpdateFolderGroup({
+                        editable: false,
+                        folderGroup: group,
+                        editId: group.id
+                      }, () => {
                         setOriginGroup(group)
                       })
                       break
@@ -163,11 +181,7 @@ export default function Groups(
               />
             }
 
-            {index < (moduleFolderGroups.length - 1) &&
-              <div className="border-b border-white/15 my-2" />
-            }
-
-          </Fragment>
+          </div>
         )
       })}
 

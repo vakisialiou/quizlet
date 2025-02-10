@@ -8,10 +8,9 @@ export default function Dialog(
   { title: ReactNode, children: ReactNode, text: ReactNode, onClose?: (e: BaseSyntheticEvent) => void },
 ) {
   return (
-    <div className="relative z-10" role="dialog" aria-modal="true">
+    <div className="fixed z-10">
       <div
         className="fixed inset-0 bg-black/60 backdrop-blur-sm"
-        aria-hidden="true"
       />
 
       <div

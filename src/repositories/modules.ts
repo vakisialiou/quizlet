@@ -7,12 +7,11 @@ export type ModuleSelectType = {
   id: boolean,
   userId: boolean,
   name: boolean,
+  activeTab: boolean,
   description: boolean,
   order: boolean,
   markers: boolean,
   collapsed: boolean,
-  termsCollapsed: boolean,
-  groupsCollapsed: boolean,
   updatedAt: boolean,
   createdAt: boolean,
   degreeRate: boolean,
@@ -23,12 +22,11 @@ export const ModuleSelect = {
   id: true,
   userId: true,
   name: true,
+  activeTab: true,
   description: true,
   order: true,
   markers: true,
   collapsed: true,
-  termsCollapsed: true,
-  groupsCollapsed: true,
   updatedAt: true,
   createdAt: true,
   degreeRate: true,
@@ -47,13 +45,12 @@ export const createModuleSelect = (data: ModuleResult) => {
     .setName(data.name)
     .setOrder(data.order)
     .setUserId(data.userId)
+    .setActiveTab(data.activeTab)
     .setCollapsed(data.collapsed)
     .setUpdatedAt(data.updatedAt)
     .setCreatedAt(data.createdAt)
     .setDegreeRate(data.degreeRate)
     .setDescription(data.description)
-    .setTermsCollapsed(data.termsCollapsed)
-    .setGroupsCollapsed(data.groupsCollapsed)
     .setTermSettings(data.termSettings as TermSettingsData | null)
 }
 
@@ -90,11 +87,10 @@ export const upsertModule = async (db: PrismaEntry, userId: string, item: Module
       name: item.name,
       order: item.order,
       collapsed: item.collapsed,
+      activeTab: item.activeTab,
       degreeRate: item.degreeRate,
       description: item.description,
       termSettings: item.termSettings,
-      termsCollapsed: item.termsCollapsed,
-      groupsCollapsed: item.groupsCollapsed,
       updatedAt: new Date(),
     },
     create: {
@@ -104,11 +100,10 @@ export const upsertModule = async (db: PrismaEntry, userId: string, item: Module
       name: item.name,
       order: item.order,
       collapsed: item.collapsed,
+      activeTab: item.activeTab,
       degreeRate: item.degreeRate,
       description: item.description,
       termSettings: item.termSettings,
-      termsCollapsed: item.termsCollapsed,
-      groupsCollapsed: item.groupsCollapsed,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -131,11 +126,10 @@ export const createManyModules = async (db: PrismaEntry, userId: string, items: 
         name: item.name,
         order: item.order,
         collapsed: item.collapsed,
+        activeTab: item.activeTab,
         degreeRate: item.degreeRate,
         description: item.description,
         termSettings: item.termSettings,
-        termsCollapsed: item.termsCollapsed,
-        groupsCollapsed: item.groupsCollapsed,
         createdAt,
         updatedAt
       }

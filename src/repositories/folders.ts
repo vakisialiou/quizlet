@@ -9,7 +9,6 @@ export type FolderSelectType = {
   order: boolean,
   markers: boolean,
   collapsed: boolean,
-  termsCollapsed: boolean,
   updatedAt: boolean,
   createdAt: boolean,
   degreeRate: boolean,
@@ -22,7 +21,6 @@ export const FolderSelect = {
   order: true,
   markers: true,
   collapsed: true,
-  termsCollapsed: true,
   updatedAt: true,
   createdAt: true,
   degreeRate: true,
@@ -44,7 +42,6 @@ export const createFolderSelect = (data: FolderResult) => {
     .setUpdatedAt(data.updatedAt)
     .setCreatedAt(data.createdAt)
     .setDegreeRate(data.degreeRate)
-    .setTermsCollapsed(data.termsCollapsed)
     .setTermSettings(data.termSettings as TermSettingsData | null)
 }
 
@@ -83,7 +80,6 @@ export const upsertFolder = async (db: PrismaEntry, userId: string, item: Folder
       collapsed: item.collapsed,
       degreeRate: item.degreeRate,
       termSettings: item.termSettings,
-      termsCollapsed: item.termsCollapsed,
       updatedAt: new Date(),
     },
     create: {
@@ -95,7 +91,6 @@ export const upsertFolder = async (db: PrismaEntry, userId: string, item: Folder
       collapsed: item.collapsed,
       degreeRate: item.degreeRate,
       termSettings: item.termSettings,
-      termsCollapsed: item.termsCollapsed,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -120,7 +115,6 @@ export const createManyFolder = async (db: PrismaEntry, userId: string, items: F
         collapsed: item.collapsed,
         degreeRate: item.degreeRate,
         termSettings: item.termSettings,
-        termsCollapsed: item.termsCollapsed,
         createdAt,
         updatedAt
       }

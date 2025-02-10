@@ -148,11 +148,10 @@ export default function Share() {
     >
       <TitleModule
         module={viewModule || originModule}
-        className="mb-4"
       />
 
       <FilterRelatedTerm
-        className="border-b pb-2 border-white/15"
+        className="py-2"
         selectedOrderId={order}
         selectedFilterId={filter.color}
         onFilterSelect={(color) => {

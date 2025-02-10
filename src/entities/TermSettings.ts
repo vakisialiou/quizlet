@@ -17,7 +17,7 @@ export default class TermSettings {
   associationLang: string | null
 
   constructor() {
-    this.order = OrderEnum.customDesc
+    this.order = OrderEnum.customAsc
     this.answerLang = null
     this.questionLang = null
     this.associationLang = null

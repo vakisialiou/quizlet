@@ -2,14 +2,18 @@ import TermSettings, { TermSettingsData } from './TermSettings'
 import { MarkersEnum } from '@entities/Marker'
 import { v4 } from 'uuid'
 
+export enum ModuleTabId {
+  cards = 1,
+  sections = 2
+}
+
 export type ModuleData = {
   id: string
+  activeTab: ModuleTabId
   userId: string | null
   name: string | null
   description: string | null
   collapsed: boolean
-  termsCollapsed: boolean
-  groupsCollapsed: boolean
   order: number,
   degreeRate: number,
   markers: MarkersEnum[]
@@ -20,11 +24,10 @@ export type ModuleData = {
 
 export default class Module {
   id: string
+  activeTab: ModuleTabId
   userId: string | null
   order: number
   collapsed: boolean
-  termsCollapsed: boolean
-  groupsCollapsed: boolean
   name: string | null
   description: string | null
   degreeRate: number
@@ -37,12 +40,11 @@ export default class Module {
     this.id = v4()
     this.userId = null
     this.order = 0
+    this.activeTab = ModuleTabId.cards
     this.degreeRate = 0
     this.name = null
     this.description = null
     this.collapsed = false
-    this.termsCollapsed = false
-    this.groupsCollapsed = false
     this.markers = []
     this.termSettings = new TermSettings().serialize()
     this.updatedAt = new Date()
@@ -54,6 +56,11 @@ export default class Module {
     return this
   }
 
+  setActiveTab(value: ModuleTabId): Module {
+    this.activeTab = value
+    return this
+  }
+
   setTermSettings(value: TermSettingsData | null): Module {
     this.termSettings = {...this.termSettings, ...value}
     return this
@@ -61,16 +68,6 @@ export default class Module {
 
   setCollapsed(value: boolean): Module {
     this.collapsed = value
-    return this
-  }
-
-  setTermsCollapsed(value: boolean): Module {
-    this.termsCollapsed = value
-    return this
-  }
-
-  setGroupsCollapsed(value: boolean): Module {
-    this.groupsCollapsed = value
     return this
   }
 

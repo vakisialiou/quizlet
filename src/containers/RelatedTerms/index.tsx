@@ -97,91 +97,93 @@ function RelatedTerms(
 
   return (
     <>
-      <div
-        className="w-full grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2"
-      >
-        {sortedTerms.map(({ term, relation }, index) => {
-          const intersections = termIntersections[term.id] || []
+      {sortedTerms.length > 0 &&
+        <div
+          className="w-full grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2"
+        >
+          {sortedTerms.map(({ term, relation }, index) => {
+            const intersections = termIntersections[term.id] || []
 
-          return (
-            <div
-              key={term.id}
-              className="overflow-hidden"
-            >
-              <TermCard
-                data={term}
-                number={index + 1}
-                readonly={!editable}
-                edit={term.id === edit.termId}
-                warn={intersections.length > 0}
-                soundPlayingName={soundInfo.termId === term.id ? soundInfo.playingName : null}
-                controls={(
-                  <ColorDropdown
-                    className="p-2"
-                    selected={relation.color || COLOR_DEFAULT}
-                    onClick={(e) => e.preventDefault()}
-                    onChange={(color) => {
-                      actionUpdateRelationTerm({
-                        editable,
-                        relationTerm: { ...relation, color }
-                      })
-                    }}
-                  />
-                )}
-                onSave={() => {
-                  actionUpsertTerm({ term, editId: null, editable }, () => {
-                    if (originItem) {
-                      setOriginItem(null)
+            return (
+              <div
+                key={term.id}
+                className="overflow-hidden"
+              >
+                <TermCard
+                  data={term}
+                  number={index + 1}
+                  readonly={!editable}
+                  edit={term.id === edit.termId}
+                  warn={intersections.length > 0}
+                  soundPlayingName={soundInfo.termId === term.id ? soundInfo.playingName : null}
+                  controls={(
+                    <ColorDropdown
+                      className="p-2"
+                      selected={relation.color || COLOR_DEFAULT}
+                      onClick={(e) => e.preventDefault()}
+                      onChange={(color) => {
+                        actionUpdateRelationTerm({
+                          editable,
+                          relationTerm: { ...relation, color }
+                        })
+                      }}
+                    />
+                  )}
+                  onSave={() => {
+                    actionUpsertTerm({ term, editId: null, editable }, () => {
+                      if (originItem) {
+                        setOriginItem(null)
+                      }
+                    })
+                  }}
+                  onExit={async () => {
+                    if (!originItem) {
+                      return
                     }
-                  })
-                }}
-                onExit={async () => {
-                  if (!originItem) {
-                    return
-                  }
 
-                  actionUpsertTerm({
-                    term: originItem,
-                    editId: null,
-                    editable,
-                  }, () => {
-                    setOriginItem(null)
-                  })
-                }}
-                onEdit={() => {
-                  actionEditTerm({ editId: term.id }, () => {
-                    setOriginItem(term)
-                  })
-                }}
-                onChange={(prop, value) => {
-                  const updatedTerm = { ...term, [prop]: value } as Term
-                  actionUpsertTerm({
-                    editId: updatedTerm.id,
-                    term: updatedTerm,
-                    editable: false,
-                  })
-                }}
-                onRemove={() => setRemoveTerm(term)}
-                onClickSound={({ play, text, name, lang }) => {
-                  if (!speech) {
-                    return
-                  }
+                    actionUpsertTerm({
+                      term: originItem,
+                      editId: null,
+                      editable,
+                    }, () => {
+                      setOriginItem(null)
+                    })
+                  }}
+                  onEdit={() => {
+                    actionEditTerm({ editId: term.id }, () => {
+                      setOriginItem(term)
+                    })
+                  }}
+                  onChange={(prop, value) => {
+                    const updatedTerm = { ...term, [prop]: value } as Term
+                    actionUpsertTerm({
+                      editId: updatedTerm.id,
+                      term: updatedTerm,
+                      editable: false,
+                    })
+                  }}
+                  onRemove={() => setRemoveTerm(term)}
+                  onClickSound={({ play, text, name, lang }) => {
+                    if (!speech) {
+                      return
+                    }
 
-                  if (!play) {
-                    speech.stop()
-                    return
-                  }
+                    if (!play) {
+                      speech.stop()
+                      return
+                    }
 
-                  if (text && play) {
-                    setSoundInfo({ playingName: name, termId: term.id })
-                    speech.stop().setLang(lang).setVoice(speech.selectVoice(lang)).speak(text)
-                  }
-                }}
-              />
-            </div>
-          )
-        })}
-      </div>
+                    if (text && play) {
+                      setSoundInfo({ playingName: name, termId: term.id })
+                      speech.stop().setLang(lang).setVoice(speech.selectVoice(lang)).speak(text)
+                    }
+                  }}
+                />
+              </div>
+            )
+          })}
+        </div>
+      }
 
       {removeTerm &&
         <Dialog
