@@ -117,9 +117,8 @@
     "headTitle": "Учебные курсы",
     "searchPlaceholder": "Поиск...",
     "btnCreateModule": "Создать учебный курс",
-    "dropDownEditModule": "Редактировать",
-    "dropDownStudyModule": "Изучить",
-    "dropDownGenerateShare": "Поделиться ссылкой",
+    "dropDownEditModule": "Добавить карточки",
+    "dropDownGenerateShare": "Поделиться курсом",
     "dropDownRemoveModule": "Удалить",
     "shareDialogTitle": "Поделиться ссылкой",
     "shareDialogLabel": "Уровень доступа",
@@ -128,12 +127,14 @@
     "shareDialogReadonly": "Только просмотр",
     "shareDialogEditable": "Просмотр и редактирование",
     "shareDialogButtonCopy": "Копировать",
-    "noModulesHelper": "Для добавления нового модуля нажмите кнопку \"{btnName}\"."
+    "noModulesHelper": "Для добавления нового модуля нажмите кнопку \"{btnName}\".",
+    "btnPlay": "Изучить курс",
+    "btnOpenSections": "Открыть разделы"
   },
   "Module": {
     "headTitle": "Редактировать курс",
     "searchPlaceholder": "Поиск...",
-    "btnPlay": "Изучить",
+    "btnPlay": "Изучить курс",
     "moduleNoName": "(Без имени)",
     "removeDialogText": "Вы уверены, что хотите удалить учебный курс?",
     "removeDialogButtonApprove": "Удалить",
@@ -181,7 +182,7 @@
   "Folder": {
     "headTitle": "Редактировать категорию",
     "termsTitle": "Карточки",
-    "btnPlay": "Изучить",
+    "btnPlay": "Изучить категорию",
     "namePlaceholder": "Название категории",
     "noCardsHelper": "Вы еще не добавили ни одной карточки.",
     "searchPlaceholder": "Поиск...",

@@ -69,16 +69,36 @@ export default function Groups(
           {t('emptyList')}
         </div>
       }
-      {moduleFolderGroups.map((group) => {
+      {moduleFolderGroups.map((group, index) => {
         const edit = (editGroupId === group.id)
         const groupFolders = findGroupFolders(relationFolders, folders, group.id)
         return (
           <div
             key={group.id}
-            className={clsx('flex flex-col gap-2 box-content', {
-              ['border-s border-white/15 border-dotted pl-2']: true
+            className={clsx('relative flex flex-col gap-2 box-content', {
+              ['pl-4']: true
             })}
           >
+            <div
+              className="w-[12px] h-[12px] absolute left-[-2px] top-2.5 bg-black rounded-full overflow-hidden">
+              <div className="bg-white/25 w-full h-full"/>
+            </div>
+            <div className="absolute left-[3px] top-[20px] w-[2px] h-[calc(100%-20px)] bg-black">
+              <div className="bg-white/25 w-full h-full"/>
+            </div>
+
+            {moduleFolderGroups.length - 1 > index &&
+              <div className="absolute left-[3px] bottom-[-30px] w-[2px] h-[30px] bg-black">
+                <div className="border-r-2 border-white/25 border-dashed w-full h-full"/>
+              </div>
+            }
+
+            {moduleFolderGroups.length - 1 === index &&
+              <div className="absolute left-[3px] bottom-0 w-[6px] h-[2px] bg-black">
+                <div className="bg-white/25 w-full h-full"/>
+              </div>
+            }
+
             <div className="flex items-center justify-between max-w-full overflow-hidden">
               {edit &&
                 <Input

@@ -53,8 +53,8 @@ export default function Collection() {
             }}
           >
             <SVGNewPreset
-              width={28}
-              height={28}
+              width={24}
+              height={24}
             />
 
             {t('btnCreateModule')}

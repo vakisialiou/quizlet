@@ -57,7 +57,7 @@ export default function Tabs(
                   ['w-full h-full']: true,
                   ['rounded-t']: true,
                   ['border-l border-t border-r']: true,
-                  ['cursor-pointer border-white/15 bg-black hover:bg-white/10']: tab.id !== activeTab?.id,
+                  ['cursor-pointer border-white/15 bg-white/10 hover:bg-white/10']: tab.id !== activeTab?.id,
                   ['cursor-default border-white/25 bg-white/15']: tab.id === activeTab?.id
                 })}
               />

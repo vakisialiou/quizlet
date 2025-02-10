@@ -41,7 +41,7 @@ export default function FormFolder(
   return (
     <div className="flex flex-col gap-2 w-full">
       <Input
-        autoFocus
+        autoFocus={!folder.name}
         value={folder.name || ''}
         placeholder={t('namePlaceholder')}
         onBlur={() => onChangeSave(folder)}

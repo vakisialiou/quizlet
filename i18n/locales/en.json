@@ -119,9 +119,8 @@
     "headTitle": "Courses",
     "searchPlaceholder": "Search...",
     "btnCreateModule": "Create a Learning Course",
-    "dropDownEditModule": "Edit Course",
-    "dropDownStudyModule": "Study Course",
-    "dropDownGenerateShare": "Share Link",
+    "dropDownEditModule": "Add Curds",
+    "dropDownGenerateShare": "Share Course",
     "dropDownRemoveModule": "Delete Course",
     "shareDialogTitle": "Share Link",
     "shareDialogLabel": "Access Level",
@@ -130,12 +129,14 @@
     "shareDialogReadonly": "Read-Only",
     "shareDialogEditable": "View and Edit",
     "shareDialogButtonCopy": "Copy",
-    "noModulesHelper": "To add a new module, click the \"{btnName}\" button."
+    "noModulesHelper": "To add a new module, click the \"{btnName}\" button.",
+    "btnPlay": "Study Course",
+    "btnOpenSections": "Open Sections"
   },
   "Module": {
     "headTitle": "Edit Course",
     "searchPlaceholder": "Search...",
-    "btnPlay": "Study",
+    "btnPlay": "Study Course",
     "moduleNoName": "(No Name)",
     "removeDialogText": "Are you sure you want to delete the learning course?",
     "removeDialogButtonApprove": "Delete",
@@ -184,12 +185,13 @@
   "Folder": {
     "headTitle": "Edit Category",
     "termsTitle": "Cards",
-    "btnPlay": "Study",
+    "btnPlay": "Study Category",
     "namePlaceholder": "Category Name",
     "noCardsHelper": "You haven't added any cards yet.",
     "searchPlaceholder": "Search...",
     "folderNoName": "(No Name)",
-    "btnAddCard": "Add Card"
+    "btnAddCard": "Add Card",
+    "btnCreateCard": "Create Card"
   },
   "Terms": {
     "headTitle": "Cards",

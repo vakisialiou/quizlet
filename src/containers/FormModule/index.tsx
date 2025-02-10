@@ -102,7 +102,7 @@ export default function FolderModule(
       </div>
 
       <Input
-        autoFocus
+        autoFocus={!module.name}
         value={module.name || ''}
         placeholder={t('namePlaceholder')}
         onBlur={() => onChangeSave(module)}

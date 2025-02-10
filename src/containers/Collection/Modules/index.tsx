@@ -1,37 +1,37 @@
 'use client'
 
+import Button, {ButtonSize, ButtonVariant} from '@components/Button'
 import MetaLabel, {MetaLabelVariant} from '@components/MetaLabel'
-import { findActiveSimulators } from '@helper/simulators/general'
+import {findActiveSimulators} from '@helper/simulators/general'
 import DialogRemoveModule from '@containers/DialogRemoveModule'
 import AchievementDegree from '@containers/AchievementDegree'
-import { ModuleFiltersData } from '@entities/ModuleFilters'
 import {FolderFrameVariant} from '@components/FolderFrame'
+import SVGCollection from '@public/svg/collection_new.svg'
 import AchievementIcon from '@containers/AchievementIcon'
-import { findTermsWithRelations } from '@helper/relation'
-import { useMainSelector } from '@hooks/useMainSelector'
-import { actionUpdateModule } from '@store/action-main'
-import { searchModules } from '@helper/search-modules'
-import { OrderEnum, ORDER_DEFAULT} from '@helper/sort'
+import {ModuleFiltersData} from '@entities/ModuleFilters'
+import {ModuleData, ModuleTabId} from '@entities/Module'
+import {findTermsWithRelations} from '@helper/relation'
+import {useMainSelector} from '@hooks/useMainSelector'
+import {actionUpdateModule} from '@store/action-main'
+import {searchModules} from '@helper/search-modules'
+import {ORDER_DEFAULT, OrderEnum} from '@helper/sort'
 import Module from '@containers/Collection/Module'
-import Groups from '@containers/Collection/Groups'
 import SVGEdit from '@public/svg/greasepencil.svg'
-import { getLastStudyModule } from '@helper/study'
+import {getLastStudyModule} from '@helper/study'
 import DialogShare from '@containers/DialogShare'
-import { sortModules} from '@helper/sort-modules'
-import React, { useMemo, useState } from 'react'
-import { MarkersEnum } from '@entities/Marker'
+import {sortModules} from '@helper/sort-modules'
+import React, {useMemo, useState} from 'react'
+import {MarkersEnum} from '@entities/Marker'
 import SVGLinked from '@public/svg/linked.svg'
-import { ModuleData } from '@entities/Module'
 import SVGTrash from '@public/svg/trash.svg'
-import { useTranslations } from 'next-intl'
+import {useTranslations} from 'next-intl'
 import SVGPlay from '@public/svg/play.svg'
-import { useRouter } from '@i18n/routing'
+import {useRouter} from '@i18n/routing'
 
 enum DropDownIdEnums {
   OPEN_FOLDER = 'OPEN_FOLDER',
   REMOVE_FOLDER = 'REMOVE_FOLDER',
   SHARE = 'SHARE',
-  STUDY = 'STUDY',
 }
 
 export type TypeOptions = {
@@ -69,7 +69,6 @@ export default function Modules(
   ]
 
   const dropdownParentItems = [
-    {id: DropDownIdEnums.STUDY, name: t('dropDownStudyModule'), icon: SVGPlay },
     {id: DropDownIdEnums.OPEN_FOLDER, name: t('dropDownEditModule'), icon: SVGEdit },
     {id: DropDownIdEnums.SHARE, name: t('dropDownGenerateShare'), icon: SVGLinked },
     {id: 1, divider: true },
@@ -93,7 +92,7 @@ export default function Modules(
   return (
     <>
       <div
-        className="flex flex-col gap-4 text-start"
+        className="gap-2 grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
       >
         {visibleModules.length === 0 &&
           <div className="flex flex-col items-center justify-center gap-2 p-4">
@@ -123,8 +122,6 @@ export default function Modules(
             <Module
               data={module}
               key={module.id}
-              collapsed={module.collapsed}
-              disabledPlay={notRemovedTerms.length === 0}
               variant={isLastStudy ? FolderFrameVariant.blue : FolderFrameVariant.default}
               title={(
                 <div className="flex gap-2 items-center">
@@ -148,10 +145,13 @@ export default function Modules(
                 onSelect: (id) => {
                   switch (id) {
                     case DropDownIdEnums.OPEN_FOLDER:
-                      router.push(`/private/modules/${module.id}`)
-                      break
-                    case DropDownIdEnums.STUDY:
-                      router.push(`/private/simulator/module/${module.id}`)
+                      actionUpdateModule({
+                        module: { ...module, activeTab: ModuleTabId.cards },
+                        editId: null,
+                        editable: true
+                      }, () => {
+                        router.push(`/private/modules/${module.id}`)
+                      })
                       break
                     case DropDownIdEnums.REMOVE_FOLDER:
                       setRemoveModule(module)
@@ -193,16 +193,6 @@ export default function Modules(
                   </MetaLabel>
                 </>
               )}
-              onPlay={() => {
-                router.push(`/private/simulator/module/${module.id}`)
-              }}
-              onCollapse={() => {
-                actionUpdateModule({
-                  module: {...module, collapsed: !module.collapsed},
-                  editId: null,
-                  editable
-                })
-              }}
               onChange={(prop, value) => {
                 actionUpdateModule({
                   module: { ...module, [prop]: value },
@@ -225,12 +215,44 @@ export default function Modules(
                 }
               }}
             >
-              {!module.collapsed &&
-                <Groups
-                  module={module}
-                  editable={editable}
-                />
-              }
+              <div className="flex justify-between gap-2 my-2">
+                <Button
+                  className="w-1/2 gap-1"
+                  size={ButtonSize.H06}
+                  disabled={notRemovedTerms.length === 0}
+                  variant={ButtonVariant.GREEN}
+                  onClick={() => {
+                    router.push(`/private/simulator/module/${module.id}`)
+                  }}
+                >
+                  <SVGPlay
+                    width={12}
+                    height={12}
+                  />
+                  {t('btnPlay')}
+                </Button>
+
+                <Button
+                  className="w-1/2 gap-1"
+                  size={ButtonSize.H06}
+                  variant={ButtonVariant.WHITE}
+                  onClick={() => {
+                    actionUpdateModule({
+                      module: { ...module, activeTab: ModuleTabId.sections },
+                      editId: null,
+                      editable: true
+                    }, () => {
+                      router.push(`/private/modules/${module.id}`)
+                    })
+                  }}
+                >
+                  <SVGCollection
+                    width={12}
+                    height={12}
+                  />
+                  {t('btnOpenSections')}
+                </Button>
+              </div>
             </Module>
           )
         })}

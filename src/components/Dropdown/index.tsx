@@ -203,7 +203,7 @@ function Dropdown(
         createPortal(
           <div
             ref={refMenu}
-            className={clsx('fixed z-10 border ring-1 ring-black ring-opacity-5 focus:outline-none select-none p-0.5', {
+            className={clsx('fixed z-50 border ring-1 ring-black ring-opacity-5 focus:outline-none select-none p-0.5', {
               [classNameMenu]: classNameMenu,
               ['border-gray-600/50 bg-black shadow-lg']: variant === DropdownVariant.gray,
               ['border-gray-100/50 bg-white shadow-md']: variant === DropdownVariant.white,
