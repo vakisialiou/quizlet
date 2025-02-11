@@ -5,11 +5,15 @@ export default function CardText(
   {
     term,
     inverted,
-    className = '',
+    rowsText = 2,
+    rowsTitle = 2,
+    className = ''
   }:
   {
     term: TermData
     inverted: boolean
+    rowsText?: number
+    rowsTitle?: number
     className?: string;
   }
 ) {
@@ -20,14 +24,22 @@ export default function CardText(
       })}
     >
       <div
-        className="text-white/75 text-xl text-center font-bold line-clamp-1"
+        className={clsx('text-white/75 text-xl text-center font-bold', {
+          ['line-clamp-1']: rowsTitle === 1,
+          ['line-clamp-2']: rowsTitle === 2,
+          ['line-clamp-3']: rowsTitle === 3
+        })}
       >
         {inverted ? term.answer : term.question}
       </div>
 
       {term.association &&
         <div
-          className="text-xs text-center text-white/50 font-bold line-clamp-3 h-[48px]"
+          className={clsx('text-xs text-center text-white/50 font-bold', {
+            ['line-clamp-1']: rowsText === 1,
+            ['line-clamp-2']: rowsText === 2,
+            ['line-clamp-3']: rowsText === 3
+          })}
         >
           {term.association}
         </div>

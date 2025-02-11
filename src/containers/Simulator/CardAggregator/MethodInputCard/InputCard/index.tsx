@@ -73,18 +73,11 @@ export default function InputCard(
           />
 
           <CardError
+            term={term}
             className="pt-4"
             status={status}
-          >
-            <div
-              className="flex w-full items-center justify-center text-white/70 font-bold text-xs mt-2">
-              {status === CardStatus.error &&
-                <div className="line-clamp-3 text-center">
-                  {inverted ? term.question : term.answer}
-                </div>
-              }
-            </div>
-          </CardError>
+            inverted={inverted}
+          />
 
           <div
             className="w-full h-full flex flex-col justify-end divide-y divide-gray-800 divide-dashed"
@@ -114,7 +107,7 @@ export default function InputCard(
                 <Button
                   className="w-1/2"
                   onClick={onApprove}
-                  size={ButtonSize.H10}
+                  size={ButtonSize.H08}
                   variant={ButtonVariant.GREEN}
                   disabled={!value || [CardStatus.success, CardStatus.error].includes(status)}
                 >
@@ -124,7 +117,7 @@ export default function InputCard(
                 <Button
                   className="w-1/2"
                   onClick={onSkip}
-                  size={ButtonSize.H10}
+                  size={ButtonSize.H08}
                   variant={ButtonVariant.WHITE}
                   disabled={CardStatus.none !== status || amountAvailableTerms <= 1}
                 >
@@ -140,6 +133,9 @@ export default function InputCard(
             className="absolute left-0 top-0"
           >
             <ButtonSquare
+              shadow
+              rounded
+              size={20}
               onClick={(e) => {
                 e.stopPropagation()
                 if (onSound) {

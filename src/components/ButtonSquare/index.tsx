@@ -16,6 +16,8 @@ export default function ButtonSquare(
     classNameIcon = '',
     bordered = false,
     disabled = false,
+    rounded = false,
+    shadow = false,
     variant = ButtonSquareVariant.transparent,
   }:
   {
@@ -23,20 +25,27 @@ export default function ButtonSquare(
     icon: ComponentType<SVGProps<SVGSVGElement>>
     variant?: ButtonSquareVariant
     bordered?: boolean
+    rounded?: boolean
     size?: number
     className?: string
     classNameIcon?: string
     disabled?: boolean
+    shadow?: boolean
   }
 ) {
   const IconComponent = icon
   return (
     <div
       onClick={onClick}
-      className={clsx('transition-colors w-8 min-w-8 h-8 flex items-center justify-center select-none group', {
+      className={clsx('transition-all w-8 min-w-8 h-8 flex items-center justify-center select-none group', {
         ['border']: bordered,
+
+        ['rounded-full']: rounded,
         ['hover:cursor-pointer']: !disabled,
         ['pointer-events-none opacity-15']: disabled,
+
+        ['shadow-inner']: shadow,
+        ['shadow-gray-500 hover:shadow-gray-500/60']: shadow,
 
         ['hover:bg-white/15']: variant === ButtonSquareVariant.transparent,
         ['border-gray-400 hover:border-gray-300 active:border-gray-400']: variant === ButtonSquareVariant.transparent && bordered,

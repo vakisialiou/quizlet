@@ -50,6 +50,9 @@ export default function PanelControls(
     >
       <div className="flex gap-2">
         <ButtonSquare
+          shadow
+          rounded
+          size={20}
           icon={SVGPanelClose}
           onClick={() => onClick('deactivate')}
           disabled={process || controls.deactivate.disabled}
@@ -58,7 +61,9 @@ export default function PanelControls(
 
       <div className="flex gap-2">
         <ButtonSquare
-          size={24}
+          shadow
+          rounded
+          size={18}
           icon={SVGLoopBack}
           onClick={() => onClick('back')}
           disabled={process || controls.back.disabled}

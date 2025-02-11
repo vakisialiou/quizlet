@@ -36,7 +36,7 @@ export default function Flashcard(
   return (
     <div
       onClick={onClick}
-      className={clsx('card group cursor-pointer select-none', {
+      className={clsx('card cursor-pointer select-none', {
         [className]: className
       })}
     >
@@ -62,6 +62,9 @@ export default function Flashcard(
               <span>front</span>
 
               <ButtonSquare
+                shadow
+                rounded
+                size={20}
                 onClick={(e) => {
                   e.stopPropagation()
                   if (onSound) {
@@ -91,6 +94,9 @@ export default function Flashcard(
               <span>back</span>
 
               <ButtonSquare
+                shadow
+                rounded
+                size={20}
                 onClick={(e) => {
                   e.stopPropagation()
                   if (onSound) {
