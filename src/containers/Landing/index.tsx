@@ -255,43 +255,68 @@ function Landing(
               <div className="p-6 bg-gray-50 shadow-md rounded-lg">
                 <h3 className="text-xl font-semibold mb-4">{t('section1Block2Title')}</h3>
                 <p>{t('section1Block2Text')}</p>
-                </div>
-                <div className="p-6 bg-gray-50 shadow-md rounded-lg">
-                  <h3 className="text-xl font-semibold mb-4">{t('section1Block3Title')}</h3>
-                  <p>{t('section1Block3Text')}</p>
-                </div>
-                <div className="p-6 bg-gray-50 shadow-md rounded-lg">
-                  <h3 className="text-xl font-semibold mb-4">{t('section1Block4Title')}</h3>
-                  <p>{t('section1Block4Text')}</p>
-                </div>
-                <div className="p-6 bg-gray-50 shadow-md rounded-lg">
-                  <h3 className="text-xl font-semibold mb-4">{t('section1Block5Title')}</h3>
-                  <p>{t('section1Block5Text')}</p>
-                </div>
-                <div className="p-6 bg-gray-50 shadow-md rounded-lg">
-                  <h3 className="text-xl font-semibold mb-4">{t('section1Block6Title')}</h3>
-                  <p>{t('section1Block6Text')}</p>
-                </div>
+              </div>
+              <div className="p-6 bg-gray-50 shadow-md rounded-lg">
+                <h3 className="text-xl font-semibold mb-4">{t('section1Block3Title')}</h3>
+                <p>{t('section1Block3Text')}</p>
+              </div>
+              <div className="p-6 bg-gray-50 shadow-md rounded-lg">
+                <h3 className="text-xl font-semibold mb-4">{t('section1Block4Title')}</h3>
+                <p>{t('section1Block4Text')}</p>
+              </div>
+              <div className="p-6 bg-gray-50 shadow-md rounded-lg">
+                <h3 className="text-xl font-semibold mb-4">{t('section1Block5Title')}</h3>
+                <p>{t('section1Block5Text')}</p>
+              </div>
+              <div className="p-6 bg-gray-50 shadow-md rounded-lg">
+                <h3 className="text-xl font-semibold mb-4">{t('section1Block6Title')}</h3>
+                <p>{t('section1Block6Text')}</p>
               </div>
             </div>
-          </section>
 
-          <section
-            id="how-it-works"
-            className="relative bg-fixed bg-cover"
-            style={{
-              backgroundImage: `url('/images/bg-how-it-works.avif')`,
-              backgroundPosition: 'center'
-            }}
-          >
-            <div className="bg-black bg-opacity-70 py-36 px-6">
-              <div className="max-w-5xl mx-auto">
-                <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
-                  {t('section2Title')}
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 text-gray-400">
-                  <div
-                    className="p-6 bg-gray-900/50 border border-gray-400/50 shadow-lg rounded-lg">
+            <div
+              className="flex flex-col gap-2 w-72 mt-12 text-center"
+            >
+              <p
+                className="text-xs text-black/50 font-medium w-full"
+                dangerouslySetInnerHTML={{__html: t('mainDesc3')}}
+              />
+
+              <a
+                className="w-full"
+                href="https://chromewebstore.google.com/detail/quizerplay/cnenffadcgbjjeihcjecbbpgkfhnjljj"
+              >
+                <Button
+                  variant={ButtonVariant.GREEN}
+                  className="px-4 gap-2 font-medium text-nowrap w-full"
+                >
+                  <SVGChrome
+                    width={18}
+                    height={18}
+                  />
+                  {t('mainButtonChromeExt')}
+                </Button>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="how-it-works"
+          className="relative bg-fixed bg-cover"
+          style={{
+            backgroundImage: `url('/images/bg-how-it-works.avif')`,
+            backgroundPosition: 'center'
+          }}
+        >
+          <div className="bg-black bg-opacity-70 py-36 px-6">
+            <div className="max-w-5xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
+                {t('section2Title')}
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 text-gray-400">
+                <div
+                  className="p-6 bg-gray-900/50 border border-gray-400/50 shadow-lg rounded-lg">
                     <h3 className="text-xl font-semibold mb-4">{t('section2Block1Title')}</h3>
                     <p>{t('section2Block1Text')}</p>
                   </div>
