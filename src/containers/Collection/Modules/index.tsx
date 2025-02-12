@@ -63,10 +63,13 @@ export default function Modules(
   const t = useTranslations('Modules')
   const tl = useTranslations('Labels')
 
-  const labels = [
-    {id: MarkersEnum.focus, name: tl('focus')},
-    {id: MarkersEnum.important, name: tl('important')}
-  ]
+  const labelsMap = useMemo(() => {
+    return new Map()
+      .set(MarkersEnum.new, tl('new'))
+      .set(MarkersEnum.done, tl('done'))
+      .set(MarkersEnum.focus, tl('focus'))
+      .set(MarkersEnum.important, tl('important'))
+  }, [tl])
 
   const dropdownParentItems = [
     {id: DropDownIdEnums.OPEN_FOLDER, name: t('dropDownEditModule'), icon: SVGEdit },
@@ -112,7 +115,7 @@ export default function Modules(
             return
           }
 
-          if (options.filter.marker && [MarkersEnum.focus, MarkersEnum.important].includes(options.filter.marker)) {
+          if (options.filter.marker && labelsMap.has(options.filter.marker)) {
             if (!module.markers.includes(options.filter.marker)) {
               return
             }
@@ -174,7 +177,7 @@ export default function Modules(
                   }
 
                   {module.markers.map((marker) => {
-                    const item = labels.find(({ id }) => marker === id)
+                    const item = labelsMap.get(marker)
                     if (!item) {
                       return
                     }
@@ -183,7 +186,7 @@ export default function Modules(
                       <MetaLabel
                         key={marker}
                       >
-                        {item.name}
+                        {item}
                       </MetaLabel>
                     )
                   })}

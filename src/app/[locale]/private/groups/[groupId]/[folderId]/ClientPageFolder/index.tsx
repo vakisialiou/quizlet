@@ -6,7 +6,7 @@ import {
   actionCreateRelationTerm,
 } from '@store/action-main'
 import React, {useMemo, useState, useRef, useEffect, useCallback} from 'react'
-import { findTermsWithRelations, getFolder } from '@helper/relation'
+import {findTermsWithRelations, getFolder, getModule} from '@helper/relation'
 import Button, {ButtonSize, ButtonVariant} from '@components/Button'
 import FilterRelatedTerm from '@containers/FilterRelatedTerm'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
@@ -18,6 +18,7 @@ import SVGThreeDots from '@public/svg/three_dots.svg'
 import SVGFileSearch from '@public/svg/zoom_all.svg'
 import RelatedTerms from '@containers/RelatedTerms'
 import ButtonSquare from '@components/ButtonSquare'
+import Breadcrumbs from '@components/Breadcrumbs'
 import RelationTerm from '@entities/RelationTerm'
 import ContentPage from '@containers/ContentPage'
 import SVGFileNew from '@public/svg/file_new.svg'
@@ -50,6 +51,11 @@ export default function ClientPageFolder(
   const group = useMemo(() => {
     return getGroupById(folderGroups, groupId)
   }, [folderGroups, groupId])
+
+  const modules = useMainSelector(({ modules }) => modules)
+  const course = useMemo(() => {
+    return group?.moduleId ? getModule(modules, group?.moduleId) : null
+  }, [modules, group?.moduleId])
 
   const folders = useMainSelector(({ folders }) => folders)
   const folder = useMemo(() => {
@@ -156,6 +162,25 @@ export default function ClientPageFolder(
         </div>
       )}
     >
+      <Breadcrumbs
+        items={[
+          {
+            id: 1,
+            name: t('headTitleModules'),
+            href: `/`
+          },
+          {
+            id: 2,
+            name: course?.name || t('moduleNoName'),
+            href: course?.id ? `/private/modules/${course?.id}` : null
+          },
+          {
+            id: 3,
+            name: folder?.name || t('folderNoName'),
+          }
+        ]}
+      />
+
       {folder &&
         <>
           <div className="flex flex-col gap-2">

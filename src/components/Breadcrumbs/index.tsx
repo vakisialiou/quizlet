@@ -11,7 +11,7 @@ export type BreadcrumbItem = {
 export default function Breadcrumbs({ process = false, items }: { process?: boolean, items: BreadcrumbItem[] }) {
   const lastIndex = items.findLastIndex(() => true)
   return (
-    <div className="flex items-center text-gray-400 font-semibold gap-1 w-full overflow-hidden">
+    <div className="flex items-center h-12 text-white/50 font-medium text-sm gap-1 w-full overflow-hidden px-2">
       {items.map((item, index) => {
         if (process) {
           return (
@@ -26,34 +26,17 @@ export default function Breadcrumbs({ process = false, items }: { process?: bool
             </div>
           )
         }
-        if (items[index + 1] === undefined) {
-          return (
-            <div
-              key={item.id}
-              title={item.name || 'unknown'}
-              className="w-full max-w-full overflow-hidden"
-            >
-              <div className="flex items-center text-gray-600">
-                <span
-                  className="truncate ..."
-                >
-                  {item.name}
-                </span>
-              </div>
-            </div>
-          )
-        }
 
         return (
           <Fragment key={item.id}>
             {item.href &&
               <div
-                className="max-w-20"
+                className="max-w-28"
               >
                 <Link
                   href={item.href}
                   title={item.name || ''}
-                  className="flex items-center text-gray-400 hover:text-gray-500 overflow-hidden"
+                  className="flex items-center hover:text-white/60 overflow-hidden"
                 >
                   <span className="truncate ...">{item.name}</span>
                 </Link>
@@ -62,9 +45,9 @@ export default function Breadcrumbs({ process = false, items }: { process?: bool
 
             {!item.href &&
               <div
-                className="max-w-20"
+                className="max-w-28"
               >
-                <div className="flex items-center text-gray-600 overflow-hidden">
+                <div className="flex items-center text-white/25 overflow-hidden">
                   <span
                     title={item.name || ''}
                     className="truncate ..."
@@ -75,11 +58,13 @@ export default function Breadcrumbs({ process = false, items }: { process?: bool
               </div>
             }
 
-            <SVGRightArrow
-              width={24}
-              height={24}
-              className="text-gray-500 rotate-180 min-w-[24px] min-h-[24px]"
-            />
+            {lastIndex !== index &&
+              <SVGRightArrow
+                width={24}
+                height={24}
+                className="text-white/25 rotate-180 min-w-[24px] min-h-[24px]"
+              />
+            }
           </Fragment>
         )
       })}

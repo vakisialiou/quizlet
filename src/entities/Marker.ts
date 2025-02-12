@@ -1,6 +1,8 @@
 
 export enum MarkersEnum {
-  active = 'active',
+  new = 'new',
+  done = 'done',
   focus = 'focus',
+  active = 'active',
   important = 'important',
 }

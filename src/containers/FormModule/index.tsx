@@ -1,6 +1,6 @@
 import Dropdown, { DropdownPlacement } from '@components/Dropdown'
+import React, { useCallback, useMemo, useRef } from 'react'
 import { actionUpdateModule } from '@store/action-main'
-import React, { useCallback, useRef } from 'react'
 import { MarkersEnum } from '@entities/Marker'
 import MetaLabel from '@components/MetaLabel'
 import { ModuleData } from '@entities/Module'
@@ -47,10 +47,24 @@ export default function FolderModule(
     actionUpdateModule({ module, editId: null, editable })
   }, [editable])
 
-  const labels = [
-    {id: MarkersEnum.focus, name: tl('focus')},
-    {id: MarkersEnum.important, name: tl('important')}
-  ]
+  const labelsMap = useMemo(() => {
+    return new Map()
+      .set(MarkersEnum.new, tl('new'))
+      .set(MarkersEnum.done, tl('done'))
+      .set(MarkersEnum.focus, tl('focus'))
+      .set(MarkersEnum.important, tl('important'))
+  }, [tl])
+
+  const labels = useMemo(() => {
+    return Array.from(labelsMap.entries()).map(([key, value]) => ({
+      id: key,
+      name: value
+    }))
+  }, [labelsMap])
+
+  const selectedLabelId = useMemo(() => {
+    return module.markers.find((marker) => labelsMap.has(marker)) || null
+  }, [labelsMap, module.markers])
 
   const SHOW_DESC = false
 
@@ -60,61 +74,48 @@ export default function FolderModule(
         [className]: className,
       })}
     >
+      <Input
+        autoFocus={!module.name}
+        value={module.name || ''}
+        placeholder={t('namePlaceholder')}
+        onBlur={() => onChangeSave(module)}
+        onChange={(e) => onChangeUpdate({...module, name: e.target.value})}
+      />
 
       <div className="flex items-center justify-between gap-1">
         <Dropdown
           caret
           items={labels}
           selected={module.markers}
-          className="h-8 px-2 gap-1 text-sm"
+          className="h-8 justify-between px-2 gap-1 text-sm"
           placement={DropdownPlacement.bottomStart}
           onSelect={(id) => {
             const marker = id as MarkersEnum
-            const markers = [...module.markers]
-            const index = markers.indexOf(marker)
-            if (index === -1) {
-              markers.push(marker)
-            } else {
-              markers.splice(index, 1)
-            }
-            onChangeSave({ ...module, markers })
+            const markers = [...module.markers].filter(marker => {
+              return !labelsMap.get(marker)
+            })
+
+            onChangeSave({...module, markers: [...markers, marker]})
           }}
         >
-          Labels
+          Label
         </Dropdown>
 
-        {module.markers.length > 0 &&
+        {selectedLabelId &&
           <div className="flex gap-1 items-center">
-            {module.markers.map((marker) => {
-              const item = labels.find(({ id }) => marker === id)
-              if (!item) {
-                return
-              }
-
-              return (
-                <MetaLabel key={marker}>
-                  {item.name}
-                </MetaLabel>
-              )
-            })}
+            <MetaLabel key={selectedLabelId}>
+              {labelsMap.get(selectedLabelId)}
+            </MetaLabel>
           </div>
         }
       </div>
-
-      <Input
-        autoFocus={!module.name}
-        value={module.name || ''}
-        placeholder={t('namePlaceholder')}
-        onBlur={() => onChangeSave(module)}
-        onChange={(e) => onChangeUpdate({ ...module, name: e.target.value })}
-      />
 
       {SHOW_DESC &&
         <Textarea
           value={module.description || ''}
           onBlur={() => onChangeSave(module)}
           placeholder={t('textPlaceholder')}
-          onChange={(e) => onChangeUpdate({ ...module, description: e.target.value })}
+          onChange={(e) => onChangeUpdate({...module, description: e.target.value})}
         />
       }
     </div>

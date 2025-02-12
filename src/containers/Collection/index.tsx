@@ -48,7 +48,8 @@ export default function Collection() {
             variant={ButtonVariant.WHITE}
             className="gap-2 w-full max-w-96"
             onClick={() => {
-              const course = new Module().serialize()
+              const course = new Module()
+                .serialize()
               router.push(`/private/modules/${course.id}`)
             }}
           >

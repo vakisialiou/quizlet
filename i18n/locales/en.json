@@ -103,6 +103,8 @@
   },
   "Labels": {
     "all": "All",
+    "new": "New",
+    "done": "Done",
     "focus": "Focus",
     "active": "Active",
     "important": "Important"
@@ -119,7 +121,7 @@
     "headTitle": "Courses",
     "searchPlaceholder": "Search...",
     "btnCreateModule": "Create a Learning Course",
-    "dropDownEditModule": "Add Curds",
+    "dropDownEditModule": "Edit",
     "dropDownGenerateShare": "Share Course",
     "dropDownRemoveModule": "Delete Course",
     "shareDialogTitle": "Share Link",
@@ -135,9 +137,10 @@
   },
   "Module": {
     "headTitle": "Edit Course",
+    "headTitleModules": "Courses",
     "searchPlaceholder": "Search...",
     "btnPlay": "Study Course",
-    "moduleNoName": "(No Name)",
+    "moduleNoName": "No Name",
     "removeDialogText": "Are you sure you want to delete the learning course?",
     "removeDialogButtonApprove": "Delete",
     "removeDialogButtonCancel": "Cancel",
@@ -172,7 +175,7 @@
   "Folders": {
     "headTitle": "Folder",
     "termsTitle": "Terms",
-    "folderNoName": "(No Name)",
+    "folderNoName": "No Name",
     "removeDialogText": "Are you sure you want to delete the folder?",
     "removeDialogButtonApprove": "Delete",
     "removeDialogButtonCancel": "Cancel",
@@ -184,12 +187,14 @@
   },
   "Folder": {
     "headTitle": "Edit Category",
+    "headTitleModules": "Courses",
     "termsTitle": "Cards",
     "btnPlay": "Study Category",
     "namePlaceholder": "Category Name",
     "noCardsHelper": "You haven't added any cards yet.",
     "searchPlaceholder": "Search...",
-    "folderNoName": "(No Name)",
+    "moduleNoName": "No Name",
+    "folderNoName": "No Name",
     "btnAddCard": "Add Card",
     "btnCreateCard": "Create Card"
   },

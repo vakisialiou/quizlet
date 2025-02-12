@@ -101,7 +101,9 @@
   },
   "Labels": {
     "all": "Все",
+    "new": "Новый",
     "focus": "Фокус",
+    "done": "Завершено",
     "active": "Активный",
     "important": "Важный"
   },
@@ -117,7 +119,7 @@
     "headTitle": "Учебные курсы",
     "searchPlaceholder": "Поиск...",
     "btnCreateModule": "Создать учебный курс",
-    "dropDownEditModule": "Добавить карточки",
+    "dropDownEditModule": "Редактировать",
     "dropDownGenerateShare": "Поделиться курсом",
     "dropDownRemoveModule": "Удалить",
     "shareDialogTitle": "Поделиться ссылкой",
@@ -133,9 +135,10 @@
   },
   "Module": {
     "headTitle": "Редактировать курс",
+    "headTitleModules": "Курсы",
     "searchPlaceholder": "Поиск...",
     "btnPlay": "Изучить курс",
-    "moduleNoName": "(Без имени)",
+    "moduleNoName": "Без имени",
     "removeDialogText": "Вы уверены, что хотите удалить учебный курс?",
     "removeDialogButtonApprove": "Удалить",
     "removeDialogButtonCancel": "Отменить",
@@ -169,7 +172,7 @@
   "Folders": {
     "headTitle": "Папка",
     "termsTitle": "Термины",
-    "folderNoName": "(Без имени)",
+    "folderNoName": "Без имени",
     "removeDialogText": "Вы уверены, что хотите удалить папку?",
     "removeDialogButtonApprove": "Удалить",
     "removeDialogButtonCancel": "Отменить",
@@ -181,12 +184,14 @@
   },
   "Folder": {
     "headTitle": "Редактировать категорию",
+    "headTitleModules": "Курсы",
     "termsTitle": "Карточки",
     "btnPlay": "Изучить категорию",
     "namePlaceholder": "Название категории",
     "noCardsHelper": "Вы еще не добавили ни одной карточки.",
     "searchPlaceholder": "Поиск...",
-    "folderNoName": "(Без имени)",
+    "moduleNoName": "Без имени",
+    "folderNoName": "Без имени",
     "btnAddCard": "Добавить карточку",
     "btnCreateCard": "Создать карточку"
   },

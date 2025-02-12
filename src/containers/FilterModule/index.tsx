@@ -28,9 +28,11 @@ export default function FilterModule(
       selectedFilterId={settings.modules.filter.marker || 'none'}
       filters={[
         {id: 'none', name: tl('all')},
-        {id: MarkersEnum.focus, name: tl('focus')},
+        {id: MarkersEnum.important, name: tl('important')},
         {id: MarkersEnum.active, name: tl('active')},
-        {id: MarkersEnum.important, name: tl('important')}
+        {id: MarkersEnum.focus, name: tl('focus')},
+        {id: MarkersEnum.new, name: tl('new')},
+        {id: MarkersEnum.done, name: tl('done')},
       ]}
       onFilterSelect={(id) => {
         const marker = (id !== 'none' ? id: null) as MarkersEnum

@@ -1,19 +1,19 @@
 'use client'
 
 import {
-  actionUpdateModule,
-  actionUpdateFolderGroup,
   actionCreateRelationTerm,
+  actionUpdateFolderGroup,
+  actionUpdateModule,
 } from '@store/action-main'
-import { findFolderGroups, findTermsWithRelations, getModule } from '@helper/relation'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import Button, { ButtonSize, ButtonVariant } from '@components/Button'
-import Module, { ModuleData, ModuleTabId } from '@entities/Module'
+import {findFolderGroups, findTermsWithRelations, getModule} from '@helper/relation'
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
+import Button, {ButtonSize, ButtonVariant} from '@components/Button'
+import Module, {ModuleData, ModuleTabId} from '@entities/Module'
 import SVGNewCollection from '@public/svg/collection_new.svg'
 import FilterRelatedTerm from '@containers/FilterRelatedTerm'
 import HeaderPageTitle from '@containers/HeaderPageTitle'
 import AchievementIcon from '@containers/AchievementIcon'
-import { COLOR_DEFAULT } from '@components/ColorLabel'
+import {COLOR_DEFAULT} from '@components/ColorLabel'
 import {useMainSelector} from '@hooks/useMainSelector'
 import SVGThreeDots from '@public/svg/three_dots.svg'
 import SVGFileSearch from '@public/svg/zoom_all.svg'
@@ -21,17 +21,19 @@ import RelatedTerms from '@containers/RelatedTerms'
 import ButtonSquare from '@components/ButtonSquare'
 import Groups from '@containers/Collection/Groups'
 import ContentPage from '@containers/ContentPage'
+import Breadcrumbs from '@components/Breadcrumbs'
 import RelationTerm from '@entities/RelationTerm'
 import SVGFileNew from '@public/svg/file_new.svg'
 import FormModule from '@containers/FormModule'
 import FolderGroup from '@entities/FolderGroup'
+import { MarkersEnum } from '@entities/Marker'
 import MetaLabel from '@components/MetaLabel'
 import TermsMenu from '@containers/TermsMenu'
 import Dropdown from '@components/Dropdown'
-import { useTranslations } from 'next-intl'
+import {useTranslations} from 'next-intl'
 import SVGBack from '@public/svg/back.svg'
 import SVGPlay from '@public/svg/play.svg'
-import { OrderEnum } from '@helper/sort'
+import {OrderEnum} from '@helper/sort'
 import {useRouter} from '@i18n/routing'
 import Tabs from '@components/Tabs'
 
@@ -71,6 +73,7 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
       editId: null,
       module: new Module()
         .setId(moduleId)
+        .addMarker(MarkersEnum.new)
         .setOrder(modules.length + 1)
         .serialize()
     })
@@ -176,6 +179,20 @@ export default function ClientPageModule({ editable, moduleId }: { editable: boo
         </div>
       )}
     >
+      <Breadcrumbs
+        items={[
+          {
+            id: 1,
+            name: t('headTitleModules'),
+            href: '/'
+          },
+          {
+            id: 2,
+            name: course?.name || t('moduleNoName'),
+          }
+        ]}
+      />
+
       {course &&
         <>
           <div className="flex flex-col gap-2">
