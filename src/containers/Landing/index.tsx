@@ -10,6 +10,7 @@ import Button, { ButtonVariant } from '@components/Button'
 import { actionUpdateSimulator } from '@store/action-main'
 import { useMainSelector } from '@hooks/useMainSelector'
 import SVGGoogle from '@public/svg/painted/google.svg'
+import SVGChrome from '@public/svg/painted/chrome.svg'
 import ContentPage from '@containers/ContentPage'
 import ButtonPWA from '@containers/ButtonPWA'
 import { DEMO_MODULE_ID } from '@helper/demo'
@@ -73,19 +74,19 @@ function Landing(
           <div className="flex flex-col items-center text-center text-gray-200 px-6 max-w-[600px]">
             <h1
               className="text-4xl md:text-6xl font-bold leading-tight mb-12"
-              dangerouslySetInnerHTML={{ __html: t('mainTitle') }}
+              dangerouslySetInnerHTML={{__html: t('mainTitle')}}
             />
             <h2
               className="text-base md:text-xl mb-12"
               dangerouslySetInnerHTML={{__html: t('mainDesc1')}}
             />
 
-            <p
-              className="text-xs md:text-sm mb-4 text-gray-500 md:w-1/2"
-              dangerouslySetInnerHTML={{__html: t('mainDesc2')}}
-            />
+            <div className="flex flex-col gap-2 justify-center items-center mb-12 w-72">
+              <p
+                className="text-xs text-white/40 font-medium w-full"
+                dangerouslySetInnerHTML={{__html: t('mainDesc2')}}
+              />
 
-            <div className="flex flex-col gap-4 justify-center items-center">
               <Button
                 variant={ButtonVariant.WHITE}
                 onClick={async () => {
@@ -94,7 +95,7 @@ function Landing(
                     redirectTo: getPathname({href: '/', locale})
                   })
                 }}
-                className="px-6 gap-2 font-medium text-nowrap"
+                className="px-6 gap-2 font-medium text-nowrap w-full mb-12"
               >
                 <SVGGoogle
                   width={18}
@@ -102,6 +103,27 @@ function Landing(
                 />
                 {t('mainButtonSignIn')}
               </Button>
+
+              <p
+                className="text-xs text-white/40 font-medium w-full"
+                dangerouslySetInnerHTML={{__html: t('mainDesc3')}}
+              />
+
+              <a
+                className="w-full"
+                href="https://chromewebstore.google.com/detail/quizerplay/cnenffadcgbjjeihcjecbbpgkfhnjljj"
+              >
+                <Button
+                  variant={ButtonVariant.GREEN}
+                  className="px-4 gap-2 font-medium text-nowrap w-full"
+                >
+                  <SVGChrome
+                    width={18}
+                    height={18}
+                  />
+                  {t('mainButtonChromeExt')}
+                </Button>
+              </a>
             </div>
           </div>
 
@@ -209,8 +231,8 @@ function Landing(
                 className="px-6 gap-2 font-medium text-nowrap"
               >
                 <SVGGoogle
-                  width={24}
-                  height={24}
+                  width={18}
+                  height={18}
                 />
                 {t('section0ButtonSignIn')}
               </Button>
@@ -357,8 +379,8 @@ function Landing(
                   }}
                 >
                   <SVGGoogle
-                    width={24}
-                    height={24}
+                    width={18}
+                    height={18}
                   />
                   {t('section4ButtonSignIn')}
                 </Button>
