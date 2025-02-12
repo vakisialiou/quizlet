@@ -5,6 +5,7 @@ export enum ButtonVariant {
   GRAY = 'gray',
   GREEN = 'green',
   WHITE = 'white',
+  transparent = 'transparent'
 }
 
 export enum ButtonSize {
@@ -65,6 +66,10 @@ export default function Button(
 
         'border-gray-900/50 shadow-gray-700/50 hover:shadow-gray-700/60 text-gray-900 bg-white hover:bg-white/90 active:bg-white/80': variant === ButtonVariant.WHITE && !disabled && !active,
         'border-gray-100/50 shadow-gray-700/50 hover:shadow-gray-700/60 text-gray-900 bg-white hover:bg-white/80 active:bg-white/70': variant === ButtonVariant.WHITE && !disabled && active,
+
+
+        'border-white/15 hover:border-white/10 shadow-gray-500 hover:bg-white/15 hover:shadow-gray-500/80 active:shadow-gray-500/60': variant === ButtonVariant.transparent && !disabled && !active,
+        'text-gray-400 group-hover:text-gray-300 group-active:text-gray-400': variant === ButtonVariant.transparent && !disabled && !active,
 
         'border-gray-500/50 shadow-none text-gray-500/50 bg-transparent': disabled,
 

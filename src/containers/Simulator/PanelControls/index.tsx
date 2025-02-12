@@ -52,7 +52,7 @@ export default function PanelControls(
         <ButtonSquare
           shadow
           rounded
-          size={20}
+          iconSize={20}
           icon={SVGPanelClose}
           onClick={() => onClick('deactivate')}
           disabled={process || controls.deactivate.disabled}
@@ -63,7 +63,7 @@ export default function PanelControls(
         <ButtonSquare
           shadow
           rounded
-          size={18}
+          iconSize={18}
           icon={SVGLoopBack}
           onClick={() => onClick('back')}
           disabled={process || controls.back.disabled}

@@ -10,7 +10,7 @@ import Button, { ButtonSize, ButtonVariant } from '@components/Button'
 import CardText from '@containers/Simulator/CardAggregator/CardText'
 import SVGMuteOff from '@public/svg/mute_ipo_off.svg'
 import SVGMuteOn from '@public/svg/mute_ipo_on.svg'
-import ButtonSquare from '@components/ButtonSquare'
+import ButtonSquare, {ButtonSquareSize} from '@components/ButtonSquare'
 import { TermData } from '@entities/Term'
 import clsx from 'clsx'
 
@@ -74,16 +74,19 @@ export default function PickCard(
                 >
                   <ButtonSquare
                     shadow
-                    rounded
-                    size={20}
+                    // rounded
+                    iconSize={20}
+                    size={ButtonSquareSize.h10}
                     onClick={() => onSound({ term: selection, side: titleSide })}
                     icon={(sound?.term?.id === selection.id && sound.side === titleSide) ? SVGMuteOn : SVGMuteOff}
                   />
 
                   <Button
+                    border={false}
+                    rounded={false}
                     className="w-full"
-                    size={ButtonSize.H08}
-                    variant={ButtonVariant.GRAY}
+                    size={ButtonSize.H10}
+                    variant={ButtonVariant.transparent}
                     disabled={[CardStatus.success, CardStatus.error].includes(selected.status)}
                     onClick={() => {
                       if (selected.status === CardStatus.none) {
@@ -107,7 +110,7 @@ export default function PickCard(
             <ButtonSquare
               shadow
               rounded
-              size={20}
+              iconSize={20}
               onClick={() => onSound({ term, side: variantSide })}
               icon={(sound?.term?.id === term.id && sound.side === variantSide) ? SVGMuteOn : SVGMuteOff}
             />

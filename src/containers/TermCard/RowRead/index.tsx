@@ -30,7 +30,7 @@ export default function RowReadonly({
       <div>
         {value &&
           <ButtonSquare
-            size={20}
+            iconSize={20}
             icon={soundPlaying ? SVGMuteOn : SVGMuteOff}
             onClick={() => onClickSound(!soundPlaying)}
           />

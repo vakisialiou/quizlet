@@ -36,7 +36,7 @@ export default function Collapse(
           {controls}
 
           <ButtonSquare
-            size={24}
+            iconSize={24}
             icon={SVGArrow}
             classNameIcon={clsx('', {
               ['rotate-180']: !value

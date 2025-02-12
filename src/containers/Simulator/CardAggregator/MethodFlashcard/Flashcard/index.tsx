@@ -64,7 +64,7 @@ export default function Flashcard(
               <ButtonSquare
                 shadow
                 rounded
-                size={20}
+                iconSize={20}
                 onClick={(e) => {
                   e.stopPropagation()
                   if (onSound) {
@@ -96,7 +96,7 @@ export default function Flashcard(
               <ButtonSquare
                 shadow
                 rounded
-                size={20}
+                iconSize={20}
                 onClick={(e) => {
                   e.stopPropagation()
                   if (onSound) {

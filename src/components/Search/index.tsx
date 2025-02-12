@@ -94,7 +94,7 @@ export default function Search(
 
         {value &&
           <ButtonSquare
-            size={24}
+            iconSize={24}
             icon={SVGClose}
             onClick={onClear}
             className="mr-1 min-w-6"

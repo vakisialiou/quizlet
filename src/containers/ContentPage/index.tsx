@@ -42,7 +42,7 @@ export default function ContentPage(
           left={
             <>
               <ButtonSquare
-                size={24}
+                iconSize={24}
                 icon={SVGCollapseMenu}
                 onClick={() => setOpened(true)}
               />

@@ -135,7 +135,7 @@ export default function InputCard(
             <ButtonSquare
               shadow
               rounded
-              size={20}
+              iconSize={20}
               onClick={(e) => {
                 e.stopPropagation()
                 if (onSound) {
