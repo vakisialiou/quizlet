@@ -70,17 +70,18 @@ function Landing(
             Beta
           </div>
 
-          <div className="flex flex-col text-center text-gray-200 px-6 max-w-[900px]">
-            <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-12">
-              {t('mainTitle')}
-            </h1>
-            <p
+          <div className="flex flex-col items-center text-center text-gray-200 px-6 max-w-[600px]">
+            <h1
+              className="text-4xl md:text-6xl font-bold leading-tight mb-12"
+              dangerouslySetInnerHTML={{ __html: t('mainTitle') }}
+            />
+            <h2
               className="text-base md:text-xl mb-12"
               dangerouslySetInnerHTML={{__html: t('mainDesc1')}}
             />
 
             <p
-              className="text-xs md:text-sm mb-12 text-gray-500"
+              className="text-xs md:text-sm mb-4 text-gray-500 md:w-1/2"
               dangerouslySetInnerHTML={{__html: t('mainDesc2')}}
             />
 
@@ -96,8 +97,8 @@ function Landing(
                 className="px-6 gap-2 font-medium text-nowrap"
               >
                 <SVGGoogle
-                  width={24}
-                  height={24}
+                  width={18}
+                  height={18}
                 />
                 {t('mainButtonSignIn')}
               </Button>
@@ -146,7 +147,7 @@ function Landing(
         >
           <div
             className="flex flex-col gap-8 items-center justify-center text-center">
-            <h4
+            <h2
               className="max-w-96 text-black font-bold text-xl px-4"
               dangerouslySetInnerHTML={{__html: t('section2Head1')}}
             />
@@ -158,7 +159,7 @@ function Landing(
                 width={360}
                 height={740}
                 alt={t('section2Alt1')}
-                src="/images/demo/terms.webp"
+                src="/images/demo/cards.webp"
               />
             </div>
           </div>
@@ -171,7 +172,7 @@ function Landing(
           <div
             className="flex flex-col gap-8 items-center justify-center text-center"
           >
-            <h4
+            <h2
               className="max-w-96 text-white font-bold text-xl px-4"
               dangerouslySetInnerHTML={{__html: t('section2Head2')}}
             />
@@ -183,17 +184,19 @@ function Landing(
                 width={360}
                 height={740}
                 alt={t('section2Alt2')}
-                src="/images/demo/collections.webp"
+                src="/images/demo/sections.webp"
               />
             </div>
 
             <div className="flex flex-col gap-2 max-w-[320px] text-center">
-              <h4 className="text-sm md:text-base text-white">
-                {t('section0Block2Title')}
-              </h4>
-              <p className="text-xs font-bold text-white mt-4">
-                {t('section0Block2Text')}
-              </p>
+              <h4
+                className="text-sm md:text-base text-white"
+                dangerouslySetInnerHTML={{ __html: t('section0Block2Title') }}
+              />
+              <p
+                className="text-xs font-bold text-white mt-4"
+                dangerouslySetInnerHTML={{ __html: t('section0Block2Text') }}
+              />
 
               <Button
                 variant={ButtonVariant.WHITE}
