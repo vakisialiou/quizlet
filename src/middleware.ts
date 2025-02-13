@@ -11,12 +11,13 @@ const LOCALES_PATTERN = `^/(${[...locales].join('|')})`
 const intlMiddleware = createMiddleware(routing)
 
 export async function middleware(req: NextRequest) {
-  viewportMiddleware(req)
+  const res = NextResponse.next()
+  viewportMiddleware(req, res)
 
   // /api маршруты без локализации поэтому сначала проверяем эти маршруты.
   const originPathname = req.nextUrl.pathname
   if (originPathname.startsWith('/api/')) {
-    return await privateApiMiddleware(req)
+    return await privateApiMiddleware(req, res)
   }
 
   // Убираем локаль из пути, если она есть
@@ -27,10 +28,10 @@ export async function middleware(req: NextRequest) {
 
   const pathname = originPathname.replace(new RegExp(LOCALES_PATTERN), '')
   if (pathname.startsWith('/private')) {
-    return await privateMiddleware(req)
+    return await privateMiddleware(req, res)
   }
 
-  return NextResponse.next()
+  return res
 }
 
 export const config = {

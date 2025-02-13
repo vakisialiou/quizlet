@@ -29,6 +29,7 @@ export default async function Page(
   const { locale } = await params
   const { ext } = await searchParams
   const headerList = await headers()
+
   const viewport = headerList.get('x-viewport') as ViewportEnums
 
   return (
