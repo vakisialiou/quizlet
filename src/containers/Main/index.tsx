@@ -8,11 +8,13 @@ import Landing from '@containers/Landing'
 
 export default function Main(
   {
+    isExt,
     locale,
     viewport
   }:
   {
-    locale: LanguageEnums,
+    isExt: boolean
+    locale: LanguageEnums
     viewport: ViewportEnums
   }
 ) {
@@ -23,6 +25,7 @@ export default function Main(
 
   return (
     <Landing
+      isExt={isExt}
       locale={locale}
       mainScreenSRC={
         viewport === ViewportEnums.mobile

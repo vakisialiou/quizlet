@@ -19,12 +19,15 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
 export default async function Page(
   {
     params,
+    searchParams
   }:
   {
-    params: Promise<{ locale: LanguageEnums }>
+    params: Promise<{ locale: LanguageEnums }>,
+    searchParams: Promise<{ [key: string]: string }>
   }
 ) {
   const { locale } = await params
+  const { ext } = await searchParams
   const headerList = await headers()
   const viewport = headerList.get('x-viewport') as ViewportEnums
 
@@ -32,6 +35,7 @@ export default async function Page(
     <Main
       locale={locale}
       viewport={viewport}
+      isExt={ext === '1'}
     />
   )
 }

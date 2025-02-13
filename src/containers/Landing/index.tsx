@@ -23,10 +23,12 @@ import { ym } from '@lib/ym'
 import clsx from 'clsx'
 function Landing(
   {
+    isExt,
     locale,
     mainScreenSRC
   }:
   {
+    isExt: boolean
     locale: LanguageEnums
     mainScreenSRC: string
   }
@@ -81,7 +83,7 @@ function Landing(
               dangerouslySetInnerHTML={{__html: t('mainDesc1')}}
             />
 
-            <div className="flex flex-col gap-2 justify-center items-center mb-12 w-72">
+            <div className="flex flex-col gap-2 justify-center items-center w-72">
               <p
                 className="text-xs text-white/40 font-medium w-full"
                 dangerouslySetInnerHTML={{__html: t('mainDesc2')}}
@@ -105,29 +107,33 @@ function Landing(
                 {t('mainButtonSignIn')}
               </Button>
 
-              <p
-                className="text-xs text-white/40 font-medium w-full"
-                dangerouslySetInnerHTML={{__html: t('mainDesc3')}}
-              />
-
-              <a
-                className="w-full"
-                href="https://chromewebstore.google.com/detail/quizerplay/cnenffadcgbjjeihcjecbbpgkfhnjljj"
-                onClick={() => {
-                  ym(99899620,'reachGoal','ext-store-1')
-                }}
-              >
-                <Button
-                  variant={ButtonVariant.GREEN}
-                  className="px-4 gap-2 font-medium text-nowrap w-full"
-                >
-                  <SVGChrome
-                    width={18}
-                    height={18}
+              {!isExt &&
+                <>
+                  <p
+                    className="text-xs text-white/40 font-medium w-full"
+                    dangerouslySetInnerHTML={{__html: t('mainDesc3')}}
                   />
-                  {t('mainButtonChromeExt')}
-                </Button>
-              </a>
+
+                  <a
+                    href="https://chromewebstore.google.com/detail/quizerplay/cnenffadcgbjjeihcjecbbpgkfhnjljj"
+                    className="w-full"
+                    onClick={() => {
+                      ym(99899620, 'reachGoal', 'ext-store-1')
+                    }}
+                  >
+                    <Button
+                      variant={ButtonVariant.GREEN}
+                      className="px-4 gap-2 font-medium text-nowrap w-full"
+                    >
+                      <SVGChrome
+                        width={18}
+                        height={18}
+                      />
+                      {t('mainButtonChromeExt')}
+                    </Button>
+                  </a>
+                </>
+              }
             </div>
           </div>
 
@@ -279,33 +285,35 @@ function Landing(
               </div>
             </div>
 
-            <div
-              className="flex flex-col gap-2 w-72 mt-12 text-center"
-            >
-              <p
-                className="text-xs text-black/50 font-medium w-full"
-                dangerouslySetInnerHTML={{__html: t('mainDesc3')}}
-              />
-
-              <a
-                className="w-full"
-                onClick={() => {
-                  ym(99899620,'reachGoal','ext-store-2')
-                }}
-                href="https://chromewebstore.google.com/detail/quizerplay/cnenffadcgbjjeihcjecbbpgkfhnjljj"
+            {!isExt &&
+              <div
+                className="flex flex-col gap-2 w-72 mt-12 text-center"
               >
-                <Button
-                  variant={ButtonVariant.GREEN}
-                  className="px-4 gap-2 font-medium text-nowrap w-full"
+                <p
+                  className="text-xs text-black/50 font-medium w-full"
+                  dangerouslySetInnerHTML={{__html: t('mainDesc3')}}
+                />
+
+                <a
+                  className="w-full"
+                  onClick={() => {
+                    ym(99899620,'reachGoal','ext-store-2')
+                  }}
+                  href="https://chromewebstore.google.com/detail/quizerplay/cnenffadcgbjjeihcjecbbpgkfhnjljj"
                 >
-                  <SVGChrome
-                    width={18}
-                    height={18}
-                  />
-                  {t('mainButtonChromeExt')}
-                </Button>
-              </a>
-            </div>
+                  <Button
+                    variant={ButtonVariant.GREEN}
+                    className="px-4 gap-2 font-medium text-nowrap w-full"
+                  >
+                    <SVGChrome
+                      width={18}
+                      height={18}
+                    />
+                    {t('mainButtonChromeExt')}
+                  </Button>
+                </a>
+              </div>
+            }
           </div>
         </section>
 
