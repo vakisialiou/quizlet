@@ -19,8 +19,8 @@ import { signIn } from 'next-auth/react'
 import { preload } from 'react-dom'
 import React, { memo } from 'react'
 import Image from 'next/image'
+import { ym } from '@lib/ym'
 import clsx from 'clsx'
-
 function Landing(
   {
     locale,
@@ -90,6 +90,7 @@ function Landing(
               <Button
                 variant={ButtonVariant.WHITE}
                 onClick={async () => {
+                  ym(99899620,'reachGoal','sign-in-1')
                   await signIn('google', {
                     redirect: true,
                     redirectTo: getPathname({href: '/', locale})
@@ -112,6 +113,9 @@ function Landing(
               <a
                 className="w-full"
                 href="https://chromewebstore.google.com/detail/quizerplay/cnenffadcgbjjeihcjecbbpgkfhnjljj"
+                onClick={() => {
+                  ym(99899620,'reachGoal','ext-store-1')
+                }}
               >
                 <Button
                   variant={ButtonVariant.GREEN}
@@ -223,6 +227,7 @@ function Landing(
               <Button
                 variant={ButtonVariant.WHITE}
                 onClick={async () => {
+                  ym(99899620,'reachGoal','sign-in-2')
                   await signIn('google', {
                     redirect: true,
                     redirectTo: getPathname({href: '/', locale})
@@ -284,6 +289,9 @@ function Landing(
 
               <a
                 className="w-full"
+                onClick={() => {
+                  ym(99899620,'reachGoal','ext-store-2')
+                }}
                 href="https://chromewebstore.google.com/detail/quizerplay/cnenffadcgbjjeihcjecbbpgkfhnjljj"
               >
                 <Button
@@ -397,6 +405,7 @@ function Landing(
                   variant={ButtonVariant.WHITE}
                   className="px-6 gap-2 font-medium"
                   onClick={async () => {
+                    ym(99899620,'reachGoal','sign-in-3')
                     await signIn('google', {
                       redirect: true,
                       redirectTo: getPathname({href: '/', locale})
