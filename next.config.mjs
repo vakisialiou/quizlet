@@ -21,17 +21,17 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/sw.js',
+        source: "/(.*)",
         headers: [
           {
-            source: "/(.*)",
-            headers: [
-              {
-                key: "Content-Security-Policy",
-                value: "default-src 'self'; connect-src 'self' https://mc.yandex.ru; script-src 'self' 'unsafe-inline' https://mc.yandex.ru; img-src 'self' https://mc.yandex.ru;",
-              },
-            ],
+            key: "Content-Security-Policy",
+            value: "default-src 'self'; connect-src 'self' https://mc.yandex.ru; script-src 'self' 'unsafe-inline' https://mc.yandex.ru; img-src 'self' https://mc.yandex.ru;",
           },
+        ],
+      },
+      {
+        source: '/sw.js',
+        headers: [
           {
             key: 'Content-Type',
             value: 'application/javascript; charset=utf-8',
