@@ -25,7 +25,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://mc.yandex.ru https://mc.yandex.com; img-src 'self' https://mc.yandex.ru https://mc.yandex.com;"
+            value: "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://mc.yandex.ru https://mc.yandex.com https://yastatic.net; img-src 'self' https://mc.yandex.ru https://mc.yandex.com;"
           },
         ],
       },
@@ -40,18 +40,6 @@ const nextConfig = {
             key: 'Cache-Control',
             value: 'no-cache, no-store, must-revalidate',
           },
-          // {
-          //   key: 'Content-Security-Policy',
-          //   value: "default-src 'self'; script-src 'self' ",
-          // },
-          // {
-          //   key: 'Content-Security-Policy',
-          //   value: "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://mc.yandex.ru; img-src 'self' https://mc.yandex.ru;"
-          // },
-          // {
-          //   key: 'Content-Security-Policy',
-          //   value: "default-src 'self'; script-src 'self' 'unsafe-inline'; connect-src 'self' https://mc.yandex.ru;"
-          // },
         ],
       },
     ]
