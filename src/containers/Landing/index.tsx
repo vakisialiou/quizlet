@@ -60,6 +60,7 @@ function Landing(
           backgroundPosition: 'center'
         }}
       >
+        <div className="absolute w-full h-full backdrop-blur-sm opacity-75" />
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="absolute top-4 right-4">
             <DropdownLanguage
@@ -85,7 +86,7 @@ function Landing(
 
             <div className="flex flex-col gap-2 justify-center items-center w-72">
               <p
-                className="text-xs text-white/40 font-medium w-full"
+                className="text-xs md:text-sm text-white/80 font-medium w-full"
                 dangerouslySetInnerHTML={{__html: t('mainDesc2')}}
               />
 
@@ -110,7 +111,7 @@ function Landing(
               {!isExt &&
                 <>
                   <p
-                    className="text-xs text-white/40 font-medium w-full"
+                    className="text-xs md:text-sm text-white/80 font-medium w-full"
                     dangerouslySetInnerHTML={{__html: t('mainDesc3')}}
                   />
 
@@ -321,7 +322,7 @@ function Landing(
           id="how-it-works"
           className="relative bg-fixed bg-cover"
           style={{
-            backgroundImage: `url('/images/bg-how-it-works.avif')`,
+            backgroundImage: `url('${mainScreenSRC}')`,
             backgroundPosition: 'center'
           }}
         >

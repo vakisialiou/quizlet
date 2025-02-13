@@ -7,5 +7,6 @@ export function viewportMiddleware(req: NextRequest): void {
     'x-viewport',
     device.type === 'mobile'
       ? ViewportEnums.mobile
-      : ViewportEnums.desktop)
+      : ViewportEnums.desktop
+  )
 }

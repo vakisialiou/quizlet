@@ -7,7 +7,6 @@ import ButtonSquare from '@components/ButtonSquare'
 import {BaseSyntheticEvent} from 'react'
 import {TermData} from '@entities/Term'
 import clsx from 'clsx'
-import './style.css'
 
 export default function Flashcard(
   {

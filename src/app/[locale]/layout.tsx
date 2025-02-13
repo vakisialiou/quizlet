@@ -24,6 +24,8 @@ import { prisma } from '@lib/prisma'
 import Script from 'next/script'
 import { auth } from '@auth'
 import React from 'react'
+
+import '@containers/Simulator/CardAggregator/MethodFlashcard/Flashcard/style.css'
 import './globals.css'
 
 const geistSans = localFont({

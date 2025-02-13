@@ -29,8 +29,8 @@ export default function Main(
       locale={locale}
       mainScreenSRC={
         viewport === ViewportEnums.mobile
-          ? '/images/bg-head-1280x853.webp'
-          : '/images/bg-head-3870x2580.avif'
+          ? '/images/bg-landing-720x400.webp'
+          : '/images/bg-landing-3800x1600.webp'
       }
     />
   )
