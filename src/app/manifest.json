@@ -1,7 +1,6 @@
 {
-  "name": "QuizerPlay",
+  "name": "Language Learning – Word Trainer, Flashcards",
   "short_name": "QuizerPlay",
-  "description": "Create flashcards for effective learning with simulators. Automated associations and rewards will help you learn faster and achieve results.",
   "background_color": "#0a0a0a",
   "theme_color": "#0a0a0a",
   "start_url": "/en",
