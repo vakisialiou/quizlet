@@ -1,6 +1,7 @@
 {
   "name": "Language Learning – Word Trainer, Flashcards",
   "short_name": "QuizerPlay",
+  "description": "An app for language learning: learn words, expand your vocabulary with learning flashcards and associations. Create courses and learn efficiently!",
   "background_color": "#0a0a0a",
   "theme_color": "#0a0a0a",
   "start_url": "/en",
