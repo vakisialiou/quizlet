@@ -25,7 +25,14 @@ const nextConfig = {
         headers: [
           {
             key: "Content-Security-Policy",
-            value: "default-src 'self'; connect-src 'self' https://mc.yandex.ru; script-src 'self' 'unsafe-inline' https://mc.yandex.ru; img-src 'self' https://mc.yandex.ru;",
+            value: `
+              default-src 'self';
+              script-src 'self' 'unsafe-inline' https://mc.yandex.ru;
+              connect-src 'self' https://mc.yandex.ru;
+              img-src 'self' https://mc.yandex.ru data:;
+              style-src 'self' 'unsafe-inline';
+              worker-src 'self';
+            `.replace(/\n/g, ""),
           },
         ],
       },
