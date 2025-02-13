@@ -21,6 +21,7 @@ import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import localFont from 'next/font/local'
 import { prisma } from '@lib/prisma'
+import Script from 'next/script'
 import { auth } from '@auth'
 import React from 'react'
 import './globals.css'
@@ -126,6 +127,37 @@ export default async function RootLayout({
       suppressHydrationWarning={true}
       className={`${geistSans.variable} ${geistMono.variable} antialiased min-w-80 h-screen overflow-hidden`}
     >
+    <Script
+      id="yandex-metrika"
+      strategy="afterInteractive"
+      dangerouslySetInnerHTML={{
+        __html: `
+          (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+           m[i].l=1*new Date();
+           for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+           k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+           (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+           ym(99899620, "init", {
+              clickmap:true,
+              trackLinks:true,
+              accurateTrackBounce:true
+           });
+        `
+      }}
+    />
+
+    <noscript>
+      <div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="https://mc.yandex.ru/watch/99899620"
+          style={{position: "absolute", left: "-9999px"}}
+          alt=""
+        />
+      </div>
+    </noscript>
+
     <NextIntlClientProvider locale={locale} messages={messages}>
 
       <ProviderOnline>
