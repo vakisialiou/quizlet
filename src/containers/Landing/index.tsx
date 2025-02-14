@@ -443,6 +443,7 @@ function Landing(
               height="31"
               alt=""
               border-radius="8"
+              className="rounded-md"
               src={`https://yandex.ru/cycounter?https://quizerplay.com&theme=dark&lang=${locale}`}
             />
           </a>
