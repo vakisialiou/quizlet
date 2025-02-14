@@ -9,7 +9,6 @@
     "mainDesc3": "Install the browser extension for <br/>quick access and enhanced app functionality.",
     "mainButtonSignIn": "Sign In with Google",
     "mainButtonChromeExt": "Install for free",
-    "mainButtonGoTo": "Open Collection",
     "section0Title": "Interactive <br/> Word Trainer",
     "section0Block1Title": "Words for learning",
     "section0Block2Title": "Manage sections and categories for language learning.",
@@ -50,8 +49,7 @@
     "section4Text": "Optimize the learning process, create courses, organize knowledge, and grow faster.",
     "section4ButtonSignIn": "Continue with Google",
     "pwa_install": "Install App",
-    "footer": "© 2024. All rights reserved. The {appName} Learning Platform.",
-    "helpSection1Title": "Click the button to open the 'Collection' section, where you can create modules and add terms to them for easy management and study."
+    "footer": "© 2025 Quizlet, Inc."
   },
   "Policy": {
     "metaTitle": "Privacy Policy | QuizerPlay",

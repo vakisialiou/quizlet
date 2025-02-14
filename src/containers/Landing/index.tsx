@@ -431,14 +431,25 @@ function Landing(
             </div>
           </section>
 
-          <footer className="bg-gray-900 text-gray-400 py-6">
-            <div className="max-w-6xl mx-auto text-center">
-              <p>{t('footer', {appName})}</p>
-            </div>
-          </footer>
-        </>
+        <footer className="flex items-center justify-between gap-2 bg-gray-900 text-gray-400 p-4">
+          <p className="text-center text-sm">{t('footer', {appName})}</p>
+          <a
+            href={`https://webmaster.yandex.ru/siteinfo/?site=https://quizerplay.com/${locale}`}
+            className="min-w-[88px]"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              width="88"
+              height="31"
+              alt=""
+              border-radius="8"
+              src={`https://yandex.ru/cycounter?https://quizerplay.com&theme=dark&lang=${locale}`}
+            />
+          </a>
+        </footer>
+      </>
     </ContentPage>
-)
+  )
 }
 
 export default memo(Landing)
