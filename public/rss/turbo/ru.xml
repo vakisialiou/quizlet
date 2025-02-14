@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title><![CDATA[Изучение языков – тренажер слов, flashcards | QuizerPlay]]></title>
+        <description><![CDATA[Приложение для изучения английского: учите слова, расширяйте словарный запас с карточками для изучения и ассоциациями. Создавайте курсы и обучайтесь эффективно!]]></description>
+        <link>https://quizerplay.com/ru</link>
+        <generator>RSS for Node</generator>
+        <lastBuildDate>Fri, 14 Feb 2025 08:48:08 GMT</lastBuildDate>
+        
+        <language>ru</language>
+        <item turbo="true">
+            <title><![CDATA[Приложение для  изучения слов.]]></title>
+            <description><![CDATA[Умные ассоциации для запоминания помогут вам быстрее запоминать иностранные слова и эффективно развивать языковые навыки.]]></description>
+            <link>https://quizerplay.com/ru</link>
+            <guid isPermaLink="true">https://quizerplay.com/ru</guid>
+            <pubDate>Fri, 14 Feb 2025 08:48:08 GMT</pubDate>
+            <turbo:content><![CDATA[
+    <h2 style="text-align: center;">Расширяй словарный запас изучая новые слова.</h2>
+    <figure>
+      <img src="https://quizerplay.com/_next/image?url=%2Fimages%2Fdemo%2Fsections.webp&w=750&q=75" />
+      <figcaption>Управляй разделами и категориями для изучения языков.</figcaption>
+    </figure>
+  ]]></turbo:content>
+        </item>
+    </channel>
+</rss>

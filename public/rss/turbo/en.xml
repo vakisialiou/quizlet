@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title><![CDATA[Language Learning – Word Trainer, Flashcards | QuizerPlay]]></title>
+        <description><![CDATA[An app for language learning: learn words, expand your vocabulary with learning flashcards and associations. Create courses and learn efficiently!]]></description>
+        <link>https://quizerplay.com/en</link>
+        <generator>RSS for Node</generator>
+        <lastBuildDate>Fri, 14 Feb 2025 08:48:08 GMT</lastBuildDate>
+        
+        <language>en</language>
+        <item turbo="true">
+            <title><![CDATA[The app for  learning words.]]></title>
+            <description><![CDATA[Smart associations for memorization will help you remember foreign words faster and effectively develop language skills.]]></description>
+            <link>https://quizerplay.com/en</link>
+            <guid isPermaLink="true">https://quizerplay.com/en</guid>
+            <pubDate>Fri, 14 Feb 2025 08:48:08 GMT</pubDate>
+            <turbo:content><![CDATA[
+    <h2 style="text-align: center;">Expand your vocabulary by studying new words.</h2>
+    <figure>
+      <img src="https://quizerplay.com/_next/image?url=%2Fimages%2Fdemo%2Fsections.webp&w=750&q=75" />
+      <figcaption>Manage sections and categories for language learning.</figcaption>
+    </figure>
+  ]]></turbo:content>
+        </item>
+    </channel>
+</rss>
