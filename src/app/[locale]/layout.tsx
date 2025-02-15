@@ -149,25 +149,6 @@ export default async function RootLayout({
       }}
     />
 
-    <Script
-      strategy="afterInteractive"
-      src="https://www.googletagmanager.com/gtag/js?id=G-KB120NBNK5"
-    />
-
-    <Script
-      id="google-analytics"
-      strategy="afterInteractive"
-      dangerouslySetInnerHTML={{
-        __html: `
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', 'G-KB120NBNK5');
-        `
-      }}
-    />
-
     <noscript>
       <div>
         {/* eslint-disable-next-line @next/next/no-img-element */}

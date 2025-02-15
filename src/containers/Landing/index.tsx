@@ -52,15 +52,12 @@ function Landing(
       )}
     >
       <header
-        className={clsx('relative bg-cover bg-fixed', {
+        style={{ backgroundImage: `url('${mainScreenSRC}')` }}
+        className={clsx('relative bg-contain md:bg-cover bg-fixed bg-[center_120px] md:bg-center bg-no-repeat', {
           ['h-[calc(var(--vh)*100-4rem)]']: true
         })}
-        style={{
-          backgroundImage: `url('${mainScreenSRC}')`,
-          backgroundPosition: 'center'
-        }}
       >
-        <div className="absolute w-full h-full backdrop-blur-sm opacity-75" />
+        <div className="absolute w-full h-full backdrop-blur bg-gray-900/20 opacity-60"/>
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="absolute top-4 right-4">
             <DropdownLanguage
@@ -74,7 +71,9 @@ function Landing(
             Beta
           </div>
 
-          <div className="flex flex-col items-center text-center text-gray-200 px-6 max-w-[600px]">
+          <div
+            className="relative flex flex-col items-center text-center text-gray-200 px-6 pt-[100px] md:pt-0 max-w-[600px]">
+
             <h1
               className="text-4xl md:text-6xl font-bold leading-tight mb-12"
               dangerouslySetInnerHTML={{__html: t('mainTitle')}}
@@ -93,7 +92,7 @@ function Landing(
               <Button
                 variant={ButtonVariant.WHITE}
                 onClick={async () => {
-                  ym(99899620,'reachGoal','sign-in-1')
+                  ym(99899620, 'reachGoal', 'sign-in-1')
                   await signIn('google', {
                     redirect: true,
                     redirectTo: getPathname({href: '/', locale})
@@ -143,7 +142,7 @@ function Landing(
 
       <>
         <section id="demo" className="bg-black">
-          <div className="flex flex-col items-center max-w-6xl mx-auto py-20">
+        <div className="flex flex-col items-center max-w-6xl mx-auto py-20">
             <h2
               className="text-2xl md:text-3xl font-bold text-center mb-12 max-w-[320px] text-white/75"
             >
