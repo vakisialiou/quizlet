@@ -1,22 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:yandex="http://news.yandex.ru" xmlns:turbo="http://turbo.yandex.ru" xmlns:media="http://search.yahoo.com/mrss/">
     <channel>
         <title><![CDATA[Language Learning – Word Trainer, Flashcards | QuizerPlay]]></title>
         <description><![CDATA[An app for language learning: learn words, expand your vocabulary with learning flashcards and associations. Create courses and learn efficiently!]]></description>
         <link>https://quizerplay.com/en</link>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Fri, 14 Feb 2025 08:48:08 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 16 Feb 2025 08:09:30 GMT</lastBuildDate>
         
         <language>en</language>
+        <yandex:logo>
+            <yandex:url>https://quizerplay.com/favicon.svg</yandex:url>
+        </yandex:logo>
         <item turbo="true">
             <title><![CDATA[The app for  learning words.]]></title>
             <description><![CDATA[Smart associations for memorization will help you remember foreign words faster and effectively develop language skills.]]></description>
             <link>https://quizerplay.com/en</link>
             <guid isPermaLink="true">https://quizerplay.com/en</guid>
-            <pubDate>Fri, 14 Feb 2025 08:48:08 GMT</pubDate>
+            <pubDate>Sun, 16 Feb 2025 08:09:30 GMT</pubDate>
             <turbo:content><![CDATA[
-    <h2 style="text-align: center;">Expand your vocabulary by studying new words.</h2>
+    <h2>Expand your vocabulary by studying new words.</h2>
     <figure>
-      <img src="https://quizerplay.com/_next/image?url=%2Fimages%2Fdemo%2Fsections.webp&w=750&q=75" />
+      <img src="https://quizerplay.com/images/720x450.webp" />
       <figcaption>Manage sections and categories for language learning.</figcaption>
     </figure>
   ]]></turbo:content>

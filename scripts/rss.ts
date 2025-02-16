@@ -15,12 +15,20 @@ async function generateRSS(locale: string) {
     description: i18n('metaDescription'),
     site_url: `https://quizerplay.com/${locale}`,
     feed_url: "https://quizerplay.com/rss",
+    custom_namespaces: {
+      yandex: "http://news.yandex.ru",
+      turbo: "http://turbo.yandex.ru",
+      media: "http://search.yahoo.com/mrss/"
+    },
+    custom_elements: [
+      { "yandex:logo": [{ "yandex:url": "https://quizerplay.com/favicon.svg" }] }
+    ],
   })
 
   const turboContent = `
     <h2>${i18n('section2Head2')}</h2>
     <figure>
-      <img src="https://quizerplay.com/_next/image?url=%2Fimages%2Fdemo%2Fsections.webp&w=750&q=75" />
+      <img src="https://quizerplay.com/images/720x450.webp" />
       <figcaption>${i18n('section0Block2Title')}</figcaption>
     </figure>
   `
@@ -39,6 +47,11 @@ async function generateRSS(locale: string) {
     .replace(/<item>/g, '<item turbo="true">')
     .replace(/<language>(.*)<\/language>/g, `<language>${locale}</language>`)
     .replace(/<atom:link[^>]*>/g, '')
+    .replace(/<rss[^>]*>/, (match) =>
+      match.replace(/xmlns:dc="[^"]*"\s?/, '') // Удаляет dc
+        .replace(/xmlns:content="[^"]*"\s?/, '') // Удаляет content
+        .replace(/xmlns:atom="[^"]*"\s?/, '') // Удаляет atom
+    )
 
   const outputDir =  path.join(process.cwd(), "public/rss/turbo")
   fs.mkdirSync(outputDir, { recursive: true })
