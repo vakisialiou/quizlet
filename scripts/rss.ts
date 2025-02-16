@@ -21,7 +21,7 @@ async function generateRSS(locale: string) {
       media: "http://search.yahoo.com/mrss/"
     },
     custom_elements: [
-      { "yandex:logo": [{ "yandex:url": "https://quizerplay.com/favicon.svg" }] }
+      { "yandex:logo": [{ "yandex:url": "https://quizerplay.com/favicon.svg?v=1" }] }
     ],
   })
 
