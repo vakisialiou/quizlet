@@ -3,6 +3,8 @@
     "metaTitle": "Language Learning – Word Trainer, Flashcards | QuizerPlay",
     "metaKeywords": "language learning, word trainer, flashcards, app for learning, English learning, learn words, vocabulary, learning flashcards, associations for memorization, language skills, online courses, course creation, interactive word trainer, word memorization, expanded vocabulary, learning new words, memorization flashcards, sections and categories, memorizing foreign words, developing language skills",
     "metaDescription": "An app for language learning: learn words, expand your vocabulary with learning flashcards and associations. Create courses and learn efficiently!",
+    "schemaOrgName": "Vocabulary Trainer and Flashcards for Language Learning",
+    "schemaOrgDescription": "QuizerPlay is an app for learning English and other languages. Learn new words with interactive flashcards and associations, expand your vocabulary, and create your own courses for effective learning.",
     "mainTitle": "The app for <br/> learning words.",
     "mainDesc1": "Smart associations for memorization will help you remember foreign words faster and effectively develop language skills.",
     "mainDesc2": "Create flashcards for memorization, <br/>online courses, sections, and categories.",
@@ -292,6 +294,7 @@
     "btnStudyTerm": "Study"
   },
   "NavMenu": {
+    "home": "Главная",
     "terms": "Cards",
     "modules": "Courses",
     "noName": "(No Name)"
